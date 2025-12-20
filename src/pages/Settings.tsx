@@ -27,7 +27,7 @@ export default function Settings() {
             settings={settings}
             saving={saving}
             onUpdate={updateSettings}
-            onSave={saveSettings}
+            onSave={() => saveSettings()}
           />
         );
       case "branding":
@@ -42,23 +42,13 @@ export default function Settings() {
         );
       case "payment":
         return (
-          <PaymentDetailsTab
-            settings={settings}
-            saving={saving}
-            onUpdate={updateSettings}
-            onSave={saveSettings}
-          />
+          <PaymentDetailsTab settings={settings} saving={saving} onUpdate={updateSettings} onSave={saveSettings} />
         );
       case "account":
         return <AccountTab />;
       default:
         return (
-          <BusinessProfileTab
-            settings={settings}
-            saving={saving}
-            onUpdate={updateSettings}
-            onSave={saveSettings}
-          />
+          <BusinessProfileTab settings={settings} saving={saving} onUpdate={updateSettings} onSave={saveSettings} />
         );
     }
   };
@@ -93,7 +83,7 @@ export default function Settings() {
                     "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                     activeTab === section.id
                       ? "bg-primary/15 text-primary"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground",
                   )}
                 >
                   <section.icon className="w-4 h-4" />

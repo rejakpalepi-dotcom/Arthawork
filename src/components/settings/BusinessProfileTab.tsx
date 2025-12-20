@@ -74,7 +74,7 @@ export function BusinessProfileTab({ settings, saving, onUpdate, onSave }: Busin
         </div>
 
         <div className="flex justify-end pt-4 border-t border-border">
-          <Button onClick={onSave} disabled={saving}>
+          <Button onClick={() => onSave()} disabled={saving}>
             {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             Save Changes
           </Button>

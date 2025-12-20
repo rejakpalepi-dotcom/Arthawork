@@ -51,17 +51,15 @@ export function useBusinessSettings() {
 
   const fetchSettings = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
         setLoading(false);
         return;
       }
 
-      const { data, error } = await supabase
-        .from("business_settings")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      const { data, error } = await supabase.from("business_settings").select("*").eq("user_id", user.id).maybeSingle();
 
       if (error) throw error;
 
@@ -94,13 +92,28 @@ export function useBusinessSettings() {
   };
 
   const updateSettings = (updates: Partial<BusinessSettings>) => {
-    setSettings(prev => ({ ...prev, ...updates }));
+    setSettings((prev) => ({ ...prev, ...updates }));
   };
 
   const saveSettings = async (updates?: Partial<BusinessSettings>) => {
+    // FIX: Pastikan kita gak nerima objek Event dari klik tombol sebagai data update
+    const cleanUpdates = updates && (updates as any).nativeEvent ? undefined : updates;
+
     setSaving(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("You must be logged in");
+        return false;
+      }
+
+      // Gunakan cleanUpdates di sini
+      const dataToSave = cleanUpdates ? { ...settings, ...cleanUpdates } : settings;
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
         toast.error("You must be logged in");
         return false;
@@ -116,16 +129,11 @@ export function useBusinessSettings() {
         .maybeSingle();
 
       if (existing) {
-        const { error } = await supabase
-          .from("business_settings")
-          .update(settingsWithoutId)
-          .eq("user_id", user.id);
+        const { error } = await supabase.from("business_settings").update(settingsWithoutId).eq("user_id", user.id);
 
         if (error) throw error;
       } else {
-        const { error } = await supabase
-          .from("business_settings")
-          .insert({ ...settingsWithoutId, user_id: user.id });
+        const { error } = await supabase.from("business_settings").insert({ ...settingsWithoutId, user_id: user.id });
 
         if (error) throw error;
       }
@@ -142,24 +150,24 @@ export function useBusinessSettings() {
 
   const uploadLogo = async (file: File): Promise<string | null> => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
         toast.error("You must be logged in");
         return null;
       }
 
-      const fileExt = file.name.split('.').pop();
+      const fileExt = file.name.split(".").pop();
       const fileName = `${user.id}/logo.${fileExt}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("logos")
-        .upload(fileName, file, { upsert: true });
+      const { error: uploadError } = await supabase.storage.from("logos").upload(fileName, file, { upsert: true });
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from("logos")
-        .getPublicUrl(fileName);
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("logos").getPublicUrl(fileName);
 
       return publicUrl;
     } catch (error: any) {
