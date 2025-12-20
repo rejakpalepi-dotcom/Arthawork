@@ -10,7 +10,7 @@ import { useOAuth } from "@/hooks/useOAuth";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { SEOHead } from "@/components/seo/SEOHead";
-import arthaLogo from "@/assets/paprwork-logo.png";
+import { ArthaLogo } from "@/components/brand/ArthaLogo";
 
 // Common password patterns to block (simplified entropy check)
 const COMMON_PASSWORDS = [
@@ -141,10 +141,7 @@ export default function Signup() {
         {/* Left Panel - Branding */}
         <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border">
           <header className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
-              <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
-            </div>
+            <ArthaLogo size="md" withHover />
             <nav className="flex items-center gap-6" aria-label="Site navigation">
               <Link to="#" className="text-muted-foreground hover:text-foreground transition-colors">
                 Explore
@@ -193,10 +190,7 @@ export default function Signup() {
         <section className="flex-1 flex items-center justify-center p-8">
           <div className="w-full max-w-md space-y-8">
             <div className="flex items-center justify-between lg:hidden mb-8">
-              <div className="flex items-center gap-3">
-                <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
-                <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
-              </div>
+              <ArthaLogo size="md" withHover />
               <Link to="/login">
                 <Button variant="outline" size="sm" aria-label="Log in to existing account">Log In</Button>
               </Link>
