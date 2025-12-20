@@ -154,10 +154,8 @@ function ExperiencePreview({
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-5 pb-3">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-[#00ACC1] rounded-full flex items-center justify-center text-white font-black text-[9px] flex-shrink-0">
-            K
-          </div>
-          <span className="text-[11px] font-semibold text-[#1a1a1a]">{data.studioName}</span>
+          
+          
         </div>
         <span className="text-gray-300 text-lg">☰</span>
       </div>
@@ -201,9 +199,9 @@ function ExperiencePreview({
           The Ultimate Project Proposal Template {data.year}
         </div>
         <div className="flex items-center gap-1 text-[8px]">
-          <span className="text-gray-400">©</span>
-          <span className="text-[#00ACC1] font-semibold">{data.studioName}</span>
-          <span className="text-gray-300 text-xs">→</span>
+          
+          
+          
         </div>
       </div>
     </div>;
