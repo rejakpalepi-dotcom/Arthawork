@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { format } from "date-fns";
-import { CalendarIcon, Plus, Trash2 } from "lucide-react";
+import { CalendarIcon, Plus, Trash2, Receipt, User, ListChecks } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,7 +41,6 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
   const { watch, setValue, register, handleSubmit, formState: { errors } } = form;
 
   const lineItems = watch("lineItems");
-  const taxRate = watch("taxRate");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,7 +81,6 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
       
       const updatedItem = { ...item, [field]: value };
       
-      // Recalculate total when quantity or unitPrice changes
       if (field === "quantity" || field === "unitPrice") {
         updatedItem.total = updatedItem.quantity * updatedItem.unitPrice;
       }
@@ -123,7 +121,12 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Invoice Details */}
       <div className="glass-card rounded-2xl p-6">
-        <h3 className="text-lg font-semibold text-foreground mb-4">Invoice Details</h3>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <Receipt className="w-5 h-5 text-primary" />
+          </div>
+          <h3 className="text-lg font-semibold text-foreground">Invoice Details</h3>
+        </div>
         
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -131,7 +134,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
             <Input
               id="invoiceNumber"
               {...register("invoiceNumber")}
-              placeholder="INV-001"
+              placeholder="INV-2024-001"
               className="mt-1.5"
             />
             {errors.invoiceNumber && (
@@ -165,50 +168,17 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
               </PopoverContent>
             </Popover>
           </div>
-          
-          <div>
-            <Label>Due Date</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal mt-1.5",
-                    !watch("dueDate") && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {watch("dueDate") ? format(watch("dueDate"), "PPP") : "Select date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={watch("dueDate")}
-                  onSelect={(date) => date && setValue("dueDate", date)}
-                  initialFocus
-                  className="p-3 pointer-events-auto"
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-          
-          <div>
-            <Label htmlFor="taxRate">Tax Rate (%)</Label>
-            <Input
-              id="taxRate"
-              type="number"
-              {...register("taxRate", { valueAsNumber: true })}
-              placeholder="0"
-              className="mt-1.5"
-            />
-          </div>
         </div>
       </div>
 
-      {/* Client Selection */}
+      {/* Client Information */}
       <div className="glass-card rounded-2xl p-6">
-        <h3 className="text-lg font-semibold text-foreground mb-4">Client Information</h3>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <User className="w-5 h-5 text-primary" />
+          </div>
+          <h3 className="text-lg font-semibold text-foreground">Client Information</h3>
+        </div>
         
         <div className="space-y-4">
           <div>
@@ -233,7 +203,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
               <Input
                 id="clientName"
                 {...register("clientName")}
-                placeholder="Client name"
+                placeholder="Acme Corporation"
                 className="mt-1.5"
               />
               {errors.clientName && (
@@ -242,23 +212,23 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
             </div>
             
             <div>
-              <Label htmlFor="clientEmail">Email</Label>
+              <Label htmlFor="clientEmail">Client Email</Label>
               <Input
                 id="clientEmail"
                 type="email"
                 {...register("clientEmail")}
-                placeholder="client@email.com"
+                placeholder="billing@acmecorp.com"
                 className="mt-1.5"
               />
             </div>
           </div>
           
           <div>
-            <Label htmlFor="clientAddress">Address</Label>
+            <Label htmlFor="clientAddress">Billing Address</Label>
             <Textarea
               id="clientAddress"
               {...register("clientAddress")}
-              placeholder="Client address"
+              placeholder="123 Innovation Dr, Tech City, CA"
               className="mt-1.5"
               rows={2}
             />
@@ -266,10 +236,15 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
         </div>
       </div>
 
-      {/* Line Items */}
+      {/* Services / Line Items */}
       <div className="glass-card rounded-2xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-foreground">Line Items</h3>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <ListChecks className="w-5 h-5 text-primary" />
+            </div>
+            <h3 className="text-lg font-semibold text-foreground">Services</h3>
+          </div>
           <Button type="button" variant="outline" size="sm" onClick={addLineItem} className="gap-2">
             <Plus className="w-4 h-4" />
             Add Item
@@ -278,41 +253,42 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
         
         <div className="space-y-4">
           {lineItems.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <p>No items added yet. Click "Add Item" to start.</p>
+            <div className="text-center py-8 border-2 border-dashed border-border rounded-xl">
+              <ListChecks className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
+              <p className="text-muted-foreground text-sm">No items added yet</p>
+              <Button type="button" variant="link" onClick={addLineItem} className="mt-2">
+                Add your first item
+              </Button>
             </div>
           ) : (
             lineItems.map((item, index) => (
-              <div key={item.id} className="p-4 rounded-xl bg-secondary/30 border border-border/50 space-y-3">
+              <div key={item.id} className="p-4 rounded-xl bg-secondary/30 border border-border/50 space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-muted-foreground">Item {index + 1}</span>
+                  <span className="text-sm font-medium text-foreground">Item #{index + 1}</span>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
                     onClick={() => removeLineItem(item.id)}
-                    className="h-8 w-8 text-destructive"
+                    className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
                 
                 {services.length > 0 && (
-                  <div>
-                    <Label>Quick Add Service</Label>
-                    <Select onValueChange={(serviceId) => applyService(item.id, serviceId)}>
-                      <SelectTrigger className="mt-1.5">
-                        <SelectValue placeholder="Select a service..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {services.map(service => (
-                          <SelectItem key={service.id} value={service.id}>
-                            {service.name} - {formatIDR(service.price)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <Select onValueChange={(serviceId) => applyService(item.id, serviceId)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Quick add from services..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {services.map(service => (
+                        <SelectItem key={service.id} value={service.id}>
+                          {service.name} - {formatIDR(service.price)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 )}
                 
                 <div>
@@ -320,14 +296,14 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                   <Input
                     value={item.description}
                     onChange={(e) => updateLineItem(item.id, "description", e.target.value)}
-                    placeholder="Item description"
+                    placeholder="UI/UX Design - Homepage Redesign"
                     className="mt-1.5"
                   />
                 </div>
                 
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <Label>Quantity</Label>
+                    <Label className="text-xs text-muted-foreground">Qty/Hrs</Label>
                     <Input
                       type="number"
                       min="1"
@@ -337,7 +313,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                     />
                   </div>
                   <div>
-                    <Label>Unit Price</Label>
+                    <Label className="text-xs text-muted-foreground">Rate</Label>
                     <Input
                       type="number"
                       min="0"
@@ -347,8 +323,8 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                     />
                   </div>
                   <div>
-                    <Label>Total</Label>
-                    <div className="mt-1.5 h-10 px-3 flex items-center rounded-md bg-muted text-foreground font-medium font-mono">
+                    <Label className="text-xs text-muted-foreground">Total</Label>
+                    <div className="mt-1.5 h-10 px-3 flex items-center rounded-md bg-muted text-foreground font-medium font-mono text-sm">
                       {formatIDR(item.total)}
                     </div>
                   </div>
@@ -356,27 +332,71 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
               </div>
             ))
           )}
+          
+          {lineItems.length > 0 && (
+            <Button 
+              type="button" 
+              variant="ghost" 
+              onClick={addLineItem} 
+              className="w-full border-2 border-dashed border-border text-muted-foreground hover:text-foreground hover:border-primary/50 gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Add Another Service
+            </Button>
+          )}
         </div>
       </div>
 
-      {/* Notes */}
+      {/* Tax & Notes */}
       <div className="glass-card rounded-2xl p-6">
-        <h3 className="text-lg font-semibold text-foreground mb-4">Notes</h3>
-        <Textarea
-          {...register("notes")}
-          placeholder="Additional notes for the client..."
-          rows={3}
-        />
-      </div>
-
-      {/* Submit */}
-      <div className="flex items-center gap-3">
-        <Button type="submit" disabled={isSubmitting} className="flex-1">
-          {isSubmitting ? "Saving..." : "Save Invoice"}
-        </Button>
-        <Button type="button" variant="outline">
-          Save as Draft
-        </Button>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <Label htmlFor="taxRate">Tax Rate (%)</Label>
+            <Input
+              id="taxRate"
+              type="number"
+              {...register("taxRate", { valueAsNumber: true })}
+              placeholder="0"
+              className="mt-1.5"
+            />
+          </div>
+          <div>
+            <Label>Due Date</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal mt-1.5",
+                    !watch("dueDate") && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {watch("dueDate") ? format(watch("dueDate"), "PPP") : "Select due date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={watch("dueDate") || undefined}
+                  onSelect={(date) => setValue("dueDate", date || null)}
+                  initialFocus
+                  className="p-3 pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        </div>
+        <div>
+          <Label htmlFor="notes">Notes</Label>
+          <Textarea
+            id="notes"
+            {...register("notes")}
+            placeholder="Payment is due within 30 days. Thank you for your business!"
+            className="mt-1.5"
+            rows={3}
+          />
+        </div>
       </div>
     </form>
   );
