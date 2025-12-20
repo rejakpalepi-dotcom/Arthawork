@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatIDR } from "@/lib/currency";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { toast } from "sonner";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -38,9 +39,14 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
+      <SEOHead 
+        title="Dashboard" 
+        description="Your Papr business dashboard. Track revenue, manage proposals, invoices, and clients."
+        noIndex={true}
+      />
       <div className="p-8 font-sans">
         {/* Header with Dynamic Greeting */}
-        <div className="flex items-start justify-between mb-8">
+        <header className="flex items-start justify-between mb-8">
           <div>
             {loading ? (
               <>
@@ -53,25 +59,34 @@ export default function Dashboard() {
                   {greeting}, {userName}
                 </h1>
                 <p className="text-muted-foreground flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-primary" />
+                  <span className="w-2 h-2 rounded-full bg-primary" aria-hidden="true" />
                   {today} • You have {upcomingDeadlines} deadline{upcomingDeadlines !== 1 ? 's' : ''} coming up.
                 </p>
               </>
             )}
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="icon" className="rounded-full bg-secondary border-border">
-              <Bell className="w-5 h-5" />
+          <nav className="flex items-center gap-3" aria-label="Dashboard actions">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="rounded-full bg-secondary border-border"
+              aria-label="View notifications"
+            >
+              <Bell className="w-5 h-5" aria-hidden="true" />
             </Button>
-            <Button className="gap-2" onClick={() => navigate("/projects/new")}>
-              <Plus className="w-4 h-4" />
+            <Button 
+              className="gap-2" 
+              onClick={() => navigate("/projects/new")}
+              aria-label="Create a new project"
+            >
+              <Plus className="w-4 h-4" aria-hidden="true" />
               New Project
             </Button>
-          </div>
-        </div>
+          </nav>
+        </header>
 
         {/* Stats Grid - 4 columns with real-time metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" aria-label="Business metrics">
           {loading ? (
             <>
               <Skeleton className="h-32 rounded-xl" />
@@ -111,7 +126,7 @@ export default function Dashboard() {
               />
             </>
           )}
-        </div>
+        </section>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">

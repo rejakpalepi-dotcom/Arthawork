@@ -1,8 +1,36 @@
+# Papr SEO Configuration
+# Allow indexing of public marketing pages, block private user areas
+
 User-agent: Googlebot
 Allow: /
+Allow: /login
+Allow: /signup
+Allow: /pay/
+Disallow: /dashboard
+Disallow: /dashboard/*
+Disallow: /settings
+Disallow: /settings/*
+Disallow: /clients
+Disallow: /services
+Disallow: /proposals
+Disallow: /proposals/new
+Disallow: /invoices
+Disallow: /invoices/new
+Disallow: /projects
 
 User-agent: Bingbot
 Allow: /
+Allow: /login
+Allow: /signup
+Disallow: /dashboard
+Disallow: /dashboard/*
+Disallow: /settings
+Disallow: /settings/*
+Disallow: /clients
+Disallow: /services
+Disallow: /proposals
+Disallow: /invoices
+Disallow: /projects
 
 User-agent: Twitterbot
 Allow: /
@@ -11,4 +39,15 @@ User-agent: facebookexternalhit
 Allow: /
 
 User-agent: *
-Allow: /
+Allow: /login
+Allow: /signup
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /clients
+Disallow: /services
+Disallow: /proposals
+Disallow: /invoices
+Disallow: /projects
+
+# Sitemap location
+Sitemap: https://papr.app/sitemap.xml
