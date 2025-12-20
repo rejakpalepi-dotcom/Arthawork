@@ -312,10 +312,8 @@ function InvestmentPreview({
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-5 pb-3">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-[#00ACC1] rounded flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-[10px] font-black">💳</span>
-          </div>
-          <span className="text-[10px] text-white/70 font-medium">{data.studioName}</span>
+          
+          
         </div>
         <span className="text-[8px] text-[#00ACC1] font-semibold uppercase tracking-wider">Investment</span>
       </div>
@@ -383,8 +381,8 @@ function InvestmentPreview({
 
       {/* Footer */}
       <div className="px-6 py-3 border-t border-white/10 flex items-center justify-between text-[8px] text-gray-500 font-normal">
-        <span>{data.studioName} © {data.year}</span>
-        <span>Page 6 of 6</span>
+        
+        
       </div>
     </div>;
 }
