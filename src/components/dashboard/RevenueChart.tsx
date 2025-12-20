@@ -1,4 +1,4 @@
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +10,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
   const [period, setPeriod] = useState<"6months" | "year">("6months");
 
   return (
-    <div className="glass-card rounded-2xl p-6 animate-fade-in">
+    <div className="glass-card rounded-2xl p-6 animate-fade-in h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-foreground">Revenue Trends</h3>
@@ -21,61 +21,49 @@ export function RevenueChart({ data }: RevenueChartProps) {
             onClick={() => setPeriod("6months")}
             className={cn(
               "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
-              period === "6months" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+              period === "6months" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
             )}
           >
             Last 6 Months
           </button>
-          <button
-            onClick={() => setPeriod("year")}
-            className={cn(
-              "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
-              period === "year" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            This Year
-          </button>
         </div>
       </div>
-      <div className="h-64">
+      <div className="h-72">
         {data.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+            <AreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                  <stop offset="0%" stopColor="hsl(187, 100%, 38%)" stopOpacity={0.4} />
+                  <stop offset="50%" stopColor="hsl(187, 100%, 38%)" stopOpacity={0.15} />
+                  <stop offset="100%" stopColor="hsl(187, 100%, 38%)" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
               <XAxis 
                 dataKey="month" 
                 axisLine={false} 
                 tickLine={false} 
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-              />
-              <YAxis 
-                axisLine={false} 
-                tickLine={false} 
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                tickFormatter={(value) => `${(value / 1000000).toFixed(0)}M`}
+                tick={{ fill: 'hsl(0, 0%, 55%)', fontSize: 12 }}
+                dy={10}
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'hsl(var(--card))',
-                  border: '1px solid hsl(var(--border))',
+                  backgroundColor: 'hsl(0, 0%, 14%)',
+                  border: '1px solid hsl(0, 0%, 20%)',
                   borderRadius: '8px',
-                  color: 'hsl(var(--foreground))'
+                  color: 'hsl(0, 0%, 95%)'
                 }}
                 formatter={(value: number) => [new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value), 'Revenue']}
               />
               <Area
                 type="monotone"
                 dataKey="revenue"
-                stroke="hsl(var(--primary))"
-                strokeWidth={2}
+                stroke="hsl(187, 100%, 38%)"
+                strokeWidth={3}
                 fillOpacity={1}
                 fill="url(#colorRevenue)"
+                dot={{ fill: 'hsl(187, 100%, 38%)', strokeWidth: 0, r: 4 }}
+                activeDot={{ fill: 'hsl(187, 100%, 45%)', strokeWidth: 3, stroke: 'hsl(0, 0%, 14%)', r: 6 }}
               />
             </AreaChart>
           </ResponsiveContainer>

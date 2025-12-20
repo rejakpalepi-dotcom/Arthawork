@@ -7,7 +7,7 @@ import { ActiveProjects } from "@/components/dashboard/ActiveProjects";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { RecentInvoices } from "@/components/dashboard/RecentInvoices";
 import { TodaysFocus } from "@/components/dashboard/TodaysFocus";
-import { Wallet, Clock, FolderOpen, TrendingUp, Bell, Plus } from "lucide-react";
+import { Wallet, Clock, FolderOpen, BarChart3, Bell, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { formatIDR } from "@/lib/currency";
@@ -17,7 +17,8 @@ interface DashboardStats {
   pendingInvoices: number;
   pendingAmount: number;
   activeProposals: number;
-  awaitingResponse: number;
+  totalProposals: number;
+  acceptedProposals: number;
   totalClients: number;
 }
 
@@ -29,19 +30,32 @@ interface Invoice {
   status: string;
 }
 
+interface Project {
+  id: string;
+  client: string;
+  clientInitials: string;
+  title: string;
+  deadline: string;
+  progress: number;
+  status: "in_progress" | "review" | "planning";
+}
+
 export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats>({
     totalRevenue: 0,
     pendingInvoices: 0,
     pendingAmount: 0,
     activeProposals: 0,
-    awaitingResponse: 0,
+    totalProposals: 0,
+    acceptedProposals: 0,
     totalClients: 0,
   });
   const [recentInvoices, setRecentInvoices] = useState<Invoice[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState("Creator");
   const [revenueData, setRevenueData] = useState<Array<{ month: string; revenue: number }>>([]);
+  const [upcomingDeadlines, setUpcomingDeadlines] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,8 +84,9 @@ export default function Dashboard() {
       // Fetch proposals
       const { data: proposals } = await supabase
         .from("proposals")
-        .select("status")
-        .eq("user_id", user.id);
+        .select("id, title, status, total, valid_until, clients(name)")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
 
       // Fetch clients
       const { data: clients } = await supabase
@@ -82,15 +97,32 @@ export default function Dashboard() {
       // Calculate stats
       const paidInvoices = invoices?.filter(inv => inv.status === "paid") || [];
       const pendingInvs = invoices?.filter(inv => inv.status === "pending" || inv.status === "sent") || [];
-      const activeProps = proposals?.filter(prop => prop.status !== "draft") || [];
-      const awaitingProps = proposals?.filter(prop => prop.status === "sent") || [];
+      const allProposals = proposals || [];
+      const activeProps = allProposals.filter(prop => prop.status !== "draft");
+      const acceptedProps = allProposals.filter(prop => prop.status === "approved");
+
+      // Calculate upcoming deadlines (invoices due within 7 days)
+      const now = new Date();
+      const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      const upcoming = invoices?.filter(inv => {
+        if (!inv.due_date || inv.status === "paid") return false;
+        const dueDate = new Date(inv.due_date);
+        return dueDate >= now && dueDate <= weekFromNow;
+      }).length || 0;
+      setUpcomingDeadlines(upcoming);
+
+      // Calculate win rate
+      const winRate = allProposals.length > 0 
+        ? Math.round((acceptedProps.length / allProposals.length) * 100) 
+        : 0;
 
       setStats({
         totalRevenue: paidInvoices.reduce((sum, inv) => sum + Number(inv.total), 0),
         pendingInvoices: pendingInvs.length,
         pendingAmount: pendingInvs.reduce((sum, inv) => sum + Number(inv.total), 0),
         activeProposals: activeProps.length,
-        awaitingResponse: awaitingProps.length,
+        totalProposals: allProposals.length,
+        acceptedProposals: acceptedProps.length,
         totalClients: clients?.length || 0,
       });
 
@@ -104,6 +136,40 @@ export default function Dashboard() {
           status: inv.status,
         }))
       );
+
+      // Map proposals to projects format
+      const mappedProjects: Project[] = activeProps.slice(0, 3).map((prop: any) => {
+        const clientName = prop.clients?.name || "Unknown Client";
+        const initials = clientName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
+        const deadline = prop.valid_until 
+          ? new Date(prop.valid_until).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          : 'No deadline';
+        
+        // Simulate progress based on status
+        let progress = 0;
+        let status: "in_progress" | "review" | "planning" = "planning";
+        if (prop.status === "approved") {
+          progress = 75;
+          status = "in_progress";
+        } else if (prop.status === "sent") {
+          progress = 50;
+          status = "review";
+        } else {
+          progress = 25;
+          status = "planning";
+        }
+
+        return {
+          id: prop.id,
+          client: clientName,
+          clientInitials: initials,
+          title: prop.title,
+          deadline,
+          progress,
+          status,
+        };
+      });
+      setProjects(mappedProjects);
 
       // Generate revenue data from paid invoices (group by month)
       const revenueByMonth = (paidInvoices || []).reduce((acc, inv) => {
@@ -134,6 +200,10 @@ export default function Dashboard() {
     day: 'numeric' 
   });
 
+  const winRate = stats.totalProposals > 0 
+    ? Math.round((stats.acceptedProposals / stats.totalProposals) * 100) 
+    : 0;
+
   return (
     <DashboardLayout>
       <div className="p-8">
@@ -141,14 +211,15 @@ export default function Dashboard() {
         <div className="flex items-start justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2">
-              Good morning, <span className="gradient-text">{userName}</span>
+              Good morning, {userName}
             </h1>
-            <p className="text-muted-foreground">
-              {today} • You have {stats.pendingInvoices} pending invoices.
+            <p className="text-muted-foreground flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary" />
+              {today} • You have {upcomingDeadlines} deadline{upcomingDeadlines !== 1 ? 's' : ''} coming up.
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="icon" className="relative">
+            <Button variant="outline" size="icon" className="rounded-full bg-secondary border-border">
               <Bell className="w-5 h-5" />
             </Button>
             <Button className="gap-2" onClick={() => navigate("/projects/new")}>
@@ -158,8 +229,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Stats Grid - 4 columns with highlight on last */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <StatsCard
             title="Total Earnings"
             value={formatIDR(stats.totalRevenue)}
@@ -180,31 +251,35 @@ export default function Dashboard() {
           />
           <StatsCard
             title="Win Rate"
-            value={`${stats.totalClients > 0 ? Math.round((stats.activeProposals / Math.max(stats.totalClients, 1)) * 100) : 0}%`}
-            icon={TrendingUp}
+            value={`${winRate}%`}
+            icon={BarChart3}
             trend={{ value: 5, positive: true }}
+            variant="highlight"
           />
         </div>
 
-        {/* Revenue Chart & Active Projects */}
+        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Revenue Chart - takes 2 columns */}
           <div className="lg:col-span-2">
             <RevenueChart data={revenueData} />
           </div>
-          <div>
+          
+          {/* Right sidebar - Quick Actions & Recent Invoices */}
+          <div className="space-y-6">
             <QuickActions />
+            <RecentInvoices invoices={recentInvoices} loading={loading} />
           </div>
         </div>
 
-        {/* Active Projects Table */}
-        <div className="mb-8">
-          <ActiveProjects projects={[]} loading={loading} />
-        </div>
-
-        {/* Bottom Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <RecentInvoices invoices={recentInvoices} loading={loading} />
-          <TodaysFocus />
+        {/* Active Projects Table + Today's Focus */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <ActiveProjects projects={projects} loading={loading} />
+          </div>
+          <div>
+            <TodaysFocus />
+          </div>
         </div>
       </div>
     </DashboardLayout>
