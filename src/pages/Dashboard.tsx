@@ -41,7 +41,7 @@ export default function Dashboard() {
     <DashboardLayout>
       <SEOHead 
         title="Dashboard" 
-        description="Your Papr business dashboard. Track revenue, manage proposals, invoices, and clients."
+        description="Your Artha business dashboard. Track revenue, manage proposals, invoices, and clients."
         noIndex={true}
       />
       <div className="p-8 font-sans">

@@ -76,7 +76,7 @@ const initialProposalData: ProposalData = {
   clientId: null,
   clientName: "",
   clientCompany: "",
-  studioName: "Kalaudra Studio",
+  studioName: "Artha Studio",
   tagline: "Design Fearlessly, Present like a Pro",
   year: new Date().getFullYear().toString(),
   

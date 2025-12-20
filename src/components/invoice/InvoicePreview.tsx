@@ -1,8 +1,9 @@
 import { format } from "date-fns";
-import { Zap, Mail, MapPin } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 import { formatIDR } from "@/lib/currency";
 import { InvoiceFormData } from "./types";
 import { cn } from "@/lib/utils";
+import arthaLogo from "@/assets/artha-logo.png";
 
 interface InvoicePreviewProps {
   data: InvoiceFormData;
@@ -18,14 +19,14 @@ export function InvoicePreview({ data, subtotal, taxAmount, total }: InvoicePrev
       <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-transparent p-6 border-b border-border">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-xl bg-primary flex items-center justify-center shadow-lg glow-primary">
-              <Zap className="w-8 h-8 text-primary-foreground" />
+            <div className="w-14 h-14 rounded-xl overflow-hidden shadow-lg">
+              <img src={arthaLogo} alt="Artha" className="w-full h-full object-contain" />
             </div>
             <div>
-              <h2 className="text-xl font-black text-foreground tracking-tight">Papr</h2>
+              <h2 className="text-xl font-black text-foreground tracking-tight">Artha</h2>
               <p className="text-sm text-muted-foreground mt-1">123 Creative Ave, Studio 4B</p>
               <p className="text-sm text-muted-foreground">San Francisco, CA 94103</p>
-              <p className="text-sm text-primary mt-1">hello@papr.studio</p>
+              <p className="text-sm text-primary mt-1">hello@artha.app</p>
             </div>
           </div>
           <div className="text-right">
@@ -148,7 +149,7 @@ export function InvoicePreview({ data, subtotal, taxAmount, total }: InvoicePrev
             </div>
             <div>
               <p className="text-muted-foreground">Account Name</p>
-              <p className="text-foreground font-medium">Kalaudra Studio</p>
+              <p className="text-foreground font-medium">Artha Studio</p>
             </div>
           </div>
         </div>

@@ -19,7 +19,7 @@ export function AccountTab() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="accountEmail">Email Address</Label>
-            <Input id="accountEmail" type="email" placeholder="alex@papr.studio" />
+            <Input id="accountEmail" type="email" placeholder="alex@artha.app" />
           </div>
         </div>
 

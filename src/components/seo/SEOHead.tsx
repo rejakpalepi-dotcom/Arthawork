@@ -24,12 +24,12 @@ export function SEOHead({
   canonical,
   noIndex = false 
 }: SEOHeadProps) {
-  const baseTitle = "Papr | #1 Proposal & Invoice Builder for Creatives";
-  const baseDescription = "Streamline your freelance business with Papr. Create stunning proposals, automate invoices, and manage clients with ease.";
+  const baseTitle = "Artha | Professional Proposal & Invoice Builder for Creatives";
+  const baseDescription = "Streamline your freelance business with Artha. Create stunning proposals, automate invoices, and manage clients with ease.";
   
   useEffect(() => {
     // Update title
-    document.title = title ? `${title} | Papr` : baseTitle;
+    document.title = title ? `${title} | Artha` : baseTitle;
     
     // Update meta description
     const metaDescription = document.querySelector('meta[name="description"]');
@@ -64,7 +64,7 @@ export function SEOHead({
     // Update OG title
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) {
-      ogTitle.setAttribute("content", title ? `${title} | Papr` : baseTitle);
+      ogTitle.setAttribute("content", title ? `${title} | Artha` : baseTitle);
     }
     
     // Update OG description

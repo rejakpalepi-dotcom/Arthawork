@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    /* Papr Design System - Deep Charcoal & Electric Cyan */
+    /* Artha Design System - Deep Charcoal & Electric Cyan */
     /* Background: #1A1A1A → Deep Charcoal */
     --background: 0 0% 10%;
     --foreground: 0 0% 95%;
@@ -47,7 +47,7 @@
 
     --radius: 1rem;
 
-    /* Custom Kalaudra Tokens */
+    /* Custom Artha Tokens */
     --surface-elevated: 0 0% 16%;
     --surface-subtle: 0 0% 12%;
     --cyan-glow: 187 100% 38%;

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { format } from "date-fns";
 import { 
-  Zap, CheckCircle, Clock, AlertCircle, CreditCard, Building2, 
+  CheckCircle, Clock, AlertCircle, CreditCard, Building2, 
   Lock, Shield, Search, Palette, Code, HelpCircle, Mail
 } from "lucide-react";
+import arthaLogo from "@/assets/artha-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -140,10 +141,8 @@ export default function GuestPayment() {
       <div className="min-h-screen bg-background">
         <header className="border-b border-border py-4 px-6">
           <div className="max-w-6xl mx-auto flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Zap className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="font-black text-foreground tracking-tight">Papr</span>
+            <img src={arthaLogo} alt="Artha" className="h-8 w-8 object-contain" />
+            <span className="font-bold text-foreground tracking-tight">Artha</span>
           </div>
         </header>
 
@@ -171,10 +170,8 @@ export default function GuestPayment() {
       <header className="border-b border-border py-4 px-6 bg-card/50 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Zap className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="font-black text-foreground tracking-tight">Papr</span>
+            <img src={arthaLogo} alt="Artha" className="h-8 w-8 object-contain" />
+            <span className="font-bold text-foreground tracking-tight">Artha</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Lock className="w-4 h-4" />
@@ -193,7 +190,7 @@ export default function GuestPayment() {
                 Complete Your<br />Payment
               </h1>
               <p className="text-muted-foreground mt-3">
-                Securely pay invoice #{invoice.invoice_number} for your recent project with Papr.
+                Securely pay invoice #{invoice.invoice_number} for your recent project with Artha.
               </p>
             </div>
 
@@ -389,7 +386,7 @@ export default function GuestPayment() {
                     </div>
 
                     <p className="text-xs text-muted-foreground text-center mt-4">
-                      By confirming payment, you allow Papr to charge your card for the amount above securely.
+                      By confirming payment, you allow Artha to charge your card for the amount above securely.
                     </p>
                   </div>
                 )}
@@ -408,7 +405,7 @@ export default function GuestPayment() {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Account Name</span>
-                        <span className="font-medium text-foreground">Papr Studio</span>
+                        <span className="font-medium text-foreground">Artha Studio</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Amount</span>
@@ -448,8 +445,8 @@ export default function GuestPayment() {
       {/* Footer */}
       <footer className="border-t border-border py-6 px-6 mt-8">
         <div className="max-w-6xl mx-auto text-center text-muted-foreground text-sm">
-          <p>© 2024 Papr. All rights reserved.</p>
-          <p className="mt-1">Questions about this invoice? Contact us at support@papr.studio</p>
+          <p>© 2025 Artha. All rights reserved.</p>
+          <p className="mt-1">Questions about this invoice? Contact us at support@artha.app</p>
         </div>
       </footer>
     </div>
