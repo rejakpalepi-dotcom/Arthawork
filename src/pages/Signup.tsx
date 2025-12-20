@@ -96,7 +96,7 @@ export default function Signup() {
     } else {
       toast({
         title: "Account Created!",
-        description: "Welcome to Kalaudra Studio.",
+        description: "Welcome to Papr.",
       });
       navigate("/dashboard", { replace: true });
     }
@@ -119,7 +119,7 @@ export default function Signup() {
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary">
               <Zap className="w-6 h-6 text-primary-foreground" />
             </div>
-            <span className="text-xl font-semibold text-foreground">Kalaudra Studio</span>
+            <span className="text-xl font-black text-foreground tracking-tight">Papr</span>
           </div>
           <div className="flex items-center gap-6">
             <Link to="#" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -141,7 +141,7 @@ export default function Signup() {
           </div>
           <h1 className="text-4xl font-bold text-foreground">
             Start your creative journey with{" "}
-            <span className="gradient-text">Kalaudra.</span>
+            <span className="gradient-text">Papr.</span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-md">
             Join the world's leading platform for creative professionals. Manage projects, find talent, and scale your freelance business.
@@ -160,7 +160,7 @@ export default function Signup() {
         </div>
 
         <p className="text-muted-foreground text-sm">
-          © 2024 Kalaudra Studio Inc. All rights reserved.
+          © 2024 Papr Inc. All rights reserved.
         </p>
       </div>
 
@@ -172,7 +172,7 @@ export default function Signup() {
               <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary">
                 <Zap className="w-6 h-6 text-primary-foreground" />
               </div>
-              <span className="text-xl font-semibold text-foreground">Kalaudra Studio</span>
+              <span className="text-xl font-black text-foreground tracking-tight">Papr</span>
             </div>
             <Link to="/login">
               <Button variant="outline" size="sm">Log In</Button>

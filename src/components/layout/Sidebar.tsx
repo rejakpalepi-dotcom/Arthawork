@@ -58,7 +58,7 @@ export function Sidebar() {
             <Zap className="w-5 h-5 text-primary-foreground" />
           </div>
           {!collapsed && (
-            <span className="font-semibold text-foreground whitespace-nowrap">Kalaudra Studio</span>
+            <span className="font-black text-foreground whitespace-nowrap tracking-tight">Papr</span>
           )}
         </div>
         <button

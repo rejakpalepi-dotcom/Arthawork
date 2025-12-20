@@ -69,7 +69,7 @@ export default function Login() {
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary">
             <Zap className="w-6 h-6 text-primary-foreground" />
           </div>
-          <span className="text-xl font-semibold text-foreground">Kalaudra Studio</span>
+            <span className="text-xl font-black text-foreground tracking-tight">Papr</span>
         </div>
         <div className="space-y-4">
           <h1 className="text-4xl font-bold text-foreground">
@@ -81,7 +81,7 @@ export default function Login() {
           </p>
         </div>
         <p className="text-muted-foreground text-sm">
-          © 2024 Kalaudra Studio. All rights reserved.
+          © 2024 Papr. All rights reserved.
         </p>
       </div>
 
@@ -93,7 +93,7 @@ export default function Login() {
               <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary">
                 <Zap className="w-6 h-6 text-primary-foreground" />
               </div>
-              <span className="text-xl font-semibold text-foreground">Kalaudra Studio</span>
+              <span className="text-xl font-black text-foreground tracking-tight">Papr</span>
             </div>
             <h2 className="text-2xl font-bold text-foreground">Welcome back</h2>
             <p className="text-muted-foreground mt-2">Access your creative dashboard</p>
