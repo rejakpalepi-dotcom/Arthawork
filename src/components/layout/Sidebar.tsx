@@ -11,7 +11,7 @@ import {
   Plus,
   LogOut,
 } from "lucide-react";
-import { ArthaLogo, ArthaSymbol } from "@/components/brand/ArthaLogo";
+import arthaLogo from "@/assets/paprwork-logo.png";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -71,10 +71,13 @@ export function Sidebar() {
       {/* Logo */}
       <div className="h-16 flex items-center justify-between px-4 border-b border-sidebar-border">
         <div className={cn("flex items-center gap-2 overflow-hidden", collapsed && "justify-center")}>
-          {collapsed ? (
-            <ArthaSymbol size="md" />
-          ) : (
-            <ArthaLogo size="md" withHover />
+          <img 
+            src={arthaLogo} 
+            alt="Artha" 
+            className="h-8 w-8 shrink-0 object-contain"
+          />
+          {!collapsed && (
+            <span className="font-bold text-foreground whitespace-nowrap tracking-tight">Artha</span>
           )}
         </div>
         <button

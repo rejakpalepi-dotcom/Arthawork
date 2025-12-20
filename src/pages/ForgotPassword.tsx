@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Mail, ArrowLeft, Loader2, CheckCircle } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { z } from "zod";
-import { ArthaLogo } from "@/components/brand/ArthaLogo";
+import arthaLogo from "@/assets/paprwork-logo.png";
 
 const emailSchema = z.string().email("Please enter a valid email address");
 
@@ -54,8 +54,9 @@ export default function ForgotPassword() {
       <main className="min-h-screen bg-background flex">
         {/* Left Panel - Branding */}
         <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border">
-          <header>
-            <ArthaLogo size="md" withHover />
+          <header className="flex items-center gap-3">
+            <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
+            <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
           </header>
           <section className="space-y-4">
             <h1 className="text-4xl font-bold text-foreground">
@@ -74,8 +75,9 @@ export default function ForgotPassword() {
         <section className="flex-1 flex items-center justify-center p-8">
           <div className="w-full max-w-md space-y-8">
             <div className="text-center lg:text-left">
-              <div className="lg:hidden flex items-center justify-center mb-8">
-                <ArthaLogo size="md" withHover />
+              <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+                <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
+                <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
               </div>
               <h2 className="text-2xl font-bold text-foreground">Reset Password</h2>
               <p className="text-muted-foreground mt-2">Enter your email to receive a reset link</p>

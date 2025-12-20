@@ -3,19 +3,17 @@ import { Zap, Mail, MapPin } from "lucide-react";
 import { formatIDR } from "@/lib/currency";
 import { InvoiceFormData } from "./types";
 import { cn } from "@/lib/utils";
+
 interface InvoicePreviewProps {
   data: InvoiceFormData;
   subtotal: number;
   taxAmount: number;
   total: number;
 }
-export function InvoicePreview({
-  data,
-  subtotal,
-  taxAmount,
-  total
-}: InvoicePreviewProps) {
-  return <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-xl">
+
+export function InvoicePreview({ data, subtotal, taxAmount, total }: InvoicePreviewProps) {
+  return (
+    <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-xl">
       {/* Header */}
       <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-transparent p-6 border-b border-border">
         <div className="flex items-start justify-between">
@@ -24,7 +22,7 @@ export function InvoicePreview({
               <Zap className="w-8 h-8 text-primary-foreground" />
             </div>
             <div>
-              <h2 className="text-xl font-black text-foreground tracking-tight">Artha</h2>
+              <h2 className="text-xl font-black text-foreground tracking-tight">Papr</h2>
               <p className="text-sm text-muted-foreground mt-1">123 Creative Ave, Studio 4B</p>
               <p className="text-sm text-muted-foreground">San Francisco, CA 94103</p>
               <p className="text-sm text-primary mt-1">hello@papr.studio</p>
@@ -56,14 +54,18 @@ export function InvoicePreview({
           <p className="text-lg font-semibold text-foreground">
             {data.clientName || "Client Name"}
           </p>
-          {data.clientEmail && <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+          {data.clientEmail && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
               <Mail className="w-4 h-4" />
               {data.clientEmail}
-            </div>}
-          {data.clientAddress && <div className="flex items-start gap-2 text-sm text-muted-foreground mt-1">
+            </div>
+          )}
+          {data.clientAddress && (
+            <div className="flex items-start gap-2 text-sm text-muted-foreground mt-1">
               <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
               <span className="whitespace-pre-line">{data.clientAddress}</span>
-            </div>}
+            </div>
+          )}
         </div>
 
         {/* Line Items Table */}
@@ -86,11 +88,15 @@ export function InvoicePreview({
               </tr>
             </thead>
             <tbody>
-              {data.lineItems.length === 0 ? <tr>
+              {data.lineItems.length === 0 ? (
+                <tr>
                   <td colSpan={4} className="p-6 text-center text-muted-foreground text-sm">
                     No items added
                   </td>
-                </tr> : data.lineItems.map((item, index) => <tr key={item.id} className={cn(index % 2 === 0 ? "bg-card" : "bg-secondary/20")}>
+                </tr>
+              ) : (
+                data.lineItems.map((item, index) => (
+                  <tr key={item.id} className={cn(index % 2 === 0 ? "bg-card" : "bg-secondary/20")}>
                     <td className="p-3 text-sm text-foreground">
                       {item.description || "Item description"}
                     </td>
@@ -101,7 +107,9 @@ export function InvoicePreview({
                     <td className="p-3 text-sm text-foreground text-right font-mono font-medium">
                       {formatIDR(item.total)}
                     </td>
-                  </tr>)}
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -146,12 +154,14 @@ export function InvoicePreview({
         </div>
 
         {/* Notes */}
-        {data.notes && <div className="mt-4 p-4 rounded-xl bg-secondary/30 border border-border/50">
+        {data.notes && (
+          <div className="mt-4 p-4 rounded-xl bg-secondary/30 border border-border/50">
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
               Notes
             </h3>
             <p className="text-sm text-muted-foreground whitespace-pre-line">{data.notes}</p>
-          </div>}
+          </div>
+        )}
       </div>
 
       {/* Footer */}
@@ -160,5 +170,6 @@ export function InvoicePreview({
           Thank you for your business!
         </p>
       </div>
-    </div>;
+    </div>
+  );
 }
