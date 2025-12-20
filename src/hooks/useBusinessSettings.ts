@@ -96,11 +96,12 @@ export function useBusinessSettings() {
   };
 
   const saveSettings = async (updates?: Partial<BusinessSettings>) => {
-    // FIX: Pastikan kita gak nerima objek Event dari klik tombol sebagai data update
+    // 1. Definisikan cleanUpdates di awal
     const cleanUpdates = updates && (updates as any).nativeEvent ? undefined : updates;
 
     setSaving(true);
     try {
+      // 2. Deklarasikan 'user' HANYA SEKALI di sini
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -109,19 +110,11 @@ export function useBusinessSettings() {
         return false;
       }
 
-      // Gunakan cleanUpdates di sini
+      // 3. Deklarasikan 'dataToSave' HANYA SEKALI di sini
       const dataToSave = cleanUpdates ? { ...settings, ...cleanUpdates } : settings;
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("You must be logged in");
-        return false;
-      }
-
-      const dataToSave = updates ? { ...settings, ...updates } : settings;
       const { id, ...settingsWithoutId } = dataToSave;
 
+      // Cek apakah data sudah ada di database
       const { data: existing } = await supabase
         .from("business_settings")
         .select("id")
@@ -141,6 +134,7 @@ export function useBusinessSettings() {
       toast.success("Settings saved successfully!");
       return true;
     } catch (error: any) {
+      // Pastikan toast hanya menerima string message agar tidak circular error
       toast.error(error.message || "Failed to save settings");
       return false;
     } finally {
