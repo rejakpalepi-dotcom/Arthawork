@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Mail, ArrowLeft, Loader2, CheckCircle } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { z } from "zod";
-import arthaLogo from "@/assets/paprwork-logo.png";
+import arthaLogo from "@/assets/artha-logo.png";
 
 const emailSchema = z.string().email("Please enter a valid email address");
 

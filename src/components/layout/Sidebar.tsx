@@ -11,7 +11,7 @@ import {
   Plus,
   LogOut,
 } from "lucide-react";
-import arthaLogo from "@/assets/paprwork-logo.png";
+import arthaLogo from "@/assets/artha-logo.png";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
