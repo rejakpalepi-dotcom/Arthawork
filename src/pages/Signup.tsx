@@ -7,9 +7,10 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useOAuth } from "@/hooks/useOAuth";
-import { Zap, Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { SEOHead } from "@/components/seo/SEOHead";
+import paprworkLogo from "@/assets/paprwork-logo.png";
 
 // Common password patterns to block (simplified entropy check)
 const COMMON_PASSWORDS = [
@@ -141,10 +142,8 @@ export default function Signup() {
         <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border">
           <header className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary" role="img" aria-label="Papr logo">
-                <Zap className="w-6 h-6 text-primary-foreground" aria-hidden="true" />
-              </div>
-              <span className="text-xl font-black text-foreground tracking-tight">Papr</span>
+              <img src={paprworkLogo} alt="Paprwork" className="h-10 w-10 object-contain" />
+              <span className="text-xl font-black text-foreground tracking-tight">Paprwork</span>
             </div>
             <nav className="flex items-center gap-6" aria-label="Site navigation">
               <Link to="#" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -166,7 +165,7 @@ export default function Signup() {
             </div>
             <h1 className="text-4xl font-bold text-foreground">
               Start your creative journey with{" "}
-              <span className="gradient-text">Papr.</span>
+              <span className="gradient-text">Paprwork.</span>
             </h1>
             <p className="text-muted-foreground text-lg max-w-md">
               Join the world's leading platform for creative professionals. Manage projects, find talent, and scale your freelance business.
@@ -186,7 +185,7 @@ export default function Signup() {
           </section>
 
           <footer className="text-muted-foreground text-sm">
-            © 2024 Papr Inc. All rights reserved.
+            © 2025 Paprwork. All rights reserved.
           </footer>
         </aside>
 
@@ -195,10 +194,8 @@ export default function Signup() {
           <div className="w-full max-w-md space-y-8">
             <div className="flex items-center justify-between lg:hidden mb-8">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary" role="img" aria-label="Papr logo">
-                  <Zap className="w-6 h-6 text-primary-foreground" aria-hidden="true" />
-                </div>
-                <span className="text-xl font-black text-foreground tracking-tight">Papr</span>
+                <img src={paprworkLogo} alt="Paprwork" className="h-10 w-10 object-contain" />
+                <span className="text-xl font-black text-foreground tracking-tight">Paprwork</span>
               </div>
               <Link to="/login">
                 <Button variant="outline" size="sm" aria-label="Log in to existing account">Log In</Button>

@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useOAuth } from "@/hooks/useOAuth";
-import { Zap, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
+import paprworkLogo from "@/assets/paprwork-logo.png";
 
 export default function Login() {
   // Load remember me preference and saved email from localStorage
@@ -114,10 +115,8 @@ export default function Login() {
         {/* Left Panel - Branding */}
         <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border">
           <header className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary" role="img" aria-label="Papr logo">
-              <Zap className="w-6 h-6 text-primary-foreground" aria-hidden="true" />
-            </div>
-            <span className="text-xl font-semibold text-foreground">Papr</span>
+            <img src={paprworkLogo} alt="Paprwork" className="h-10 w-10 object-contain" />
+            <span className="text-xl font-semibold text-foreground">Paprwork</span>
           </header>
           <section className="space-y-4">
             <h1 className="text-4xl font-bold text-foreground">
@@ -129,7 +128,7 @@ export default function Login() {
               Streamline invoices, proposals, and client management all in one place.
             </p>
           </section>
-          <footer className="text-muted-foreground text-sm">© 2025 Papr. All rights reserved.</footer>
+          <footer className="text-muted-foreground text-sm">© 2025 Paprwork. All rights reserved.</footer>
         </aside>
 
         {/* Right Panel - Login Form */}
@@ -137,10 +136,8 @@ export default function Login() {
           <div className="w-full max-w-md space-y-8">
             <div className="text-center lg:text-left">
               <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary" role="img" aria-label="Papr logo">
-                  <Zap className="w-6 h-6 text-primary-foreground" aria-hidden="true" />
-                </div>
-                <span className="text-xl font-black text-foreground tracking-tight">Papr</span>
+                <img src={paprworkLogo} alt="Paprwork" className="h-10 w-10 object-contain" />
+                <span className="text-xl font-black text-foreground tracking-tight">Paprwork</span>
               </div>
               <h2 className="text-2xl font-bold text-foreground">Welcome back</h2>
               <p className="text-muted-foreground mt-2">Access your creative dashboard</p>
