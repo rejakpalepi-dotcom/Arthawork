@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { formatIDR } from "@/lib/currency";
+import { Layout, FileText, Briefcase, Gem, Calendar, CreditCard } from "lucide-react";
 import type { ProposalData, Service, Milestone } from "@/pages/ProposalBuilder";
 
 interface Client {
@@ -70,11 +71,11 @@ function CoverEditor({
   return (
     <div className="space-y-6 font-sans">
       <div className="pb-4 border-b border-border">
-        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary">home</span>
+        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+          <Layout className="h-5 w-5 text-primary" />
           Cover Page
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">Set up your proposal's first impression</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Set up your proposal's first impression</p>
       </div>
 
       <div className="space-y-5">
@@ -169,11 +170,11 @@ function IntroEditor({
   return (
     <div className="space-y-6 font-sans">
       <div className="pb-4 border-b border-border">
-        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary">article</span>
+        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+          <FileText className="h-5 w-5 text-primary" />
           Introduction
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">Tell your story and value proposition</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Tell your story and value proposition</p>
       </div>
 
       <div className="space-y-5">
@@ -226,11 +227,11 @@ function ExperienceEditor({
   return (
     <div className="space-y-6 font-sans">
       <div className="pb-4 border-b border-border">
-        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary">work_history</span>
-          Experience
+        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+          <Briefcase className="h-5 w-5 text-primary" />
+          Track Record
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">Showcase your track record</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Showcase your experience and accomplishments</p>
       </div>
 
       <div className="space-y-5">
@@ -363,11 +364,11 @@ function ServicesEditor({
   return (
     <div className="space-y-6 font-sans">
       <div className="pb-4 border-b border-border">
-        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary">design_services</span>
-          Services
+        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+          <Gem className="h-5 w-5 text-primary" />
+          Design Services
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">Select services to include in this proposal</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Select services to include in this proposal</p>
       </div>
 
       <div className="space-y-3">
@@ -462,11 +463,11 @@ function TimelineEditor({
   return (
     <div className="space-y-6 font-sans">
       <div className="pb-4 border-b border-border">
-        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary">schedule</span>
+        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+          <Calendar className="h-5 w-5 text-primary" />
           Project Timeline
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">Define project milestones and schedule</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Define project milestones and schedule</p>
       </div>
 
       <div className="space-y-4">
@@ -543,11 +544,11 @@ function InvestmentEditor({
   return (
     <div className="space-y-6 font-sans">
       <div className="pb-4 border-b border-border">
-        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary">payments</span>
+        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+          <CreditCard className="h-5 w-5 text-primary" />
           Investment
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">Review scope of work and pricing</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Review scope of work and pricing</p>
       </div>
 
       {data.selectedServices.length === 0 ? (

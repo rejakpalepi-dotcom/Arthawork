@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ProposalEditor } from "@/components/proposal/ProposalEditor";
 import { ProposalPreview } from "@/components/proposal/ProposalPreview";
+import { Layout, FileText, Briefcase, Gem, Calendar, CreditCard, Loader2 } from "lucide-react";
 
 export interface Service {
   id: string;
@@ -92,12 +93,12 @@ const initialProposalData: ProposalData = {
 };
 
 const pages = [
-  { id: 1, label: "Cover", icon: "home" },
-  { id: 2, label: "Intro", icon: "article" },
-  { id: 3, label: "Experience", icon: "work_history" },
-  { id: 4, label: "Services", icon: "design_services" },
-  { id: 5, label: "Timeline", icon: "schedule" },
-  { id: 6, label: "Investment", icon: "payments" },
+  { id: 1, label: "Cover Page", icon: Layout },
+  { id: 2, label: "Introduction", icon: FileText },
+  { id: 3, label: "Track Record", icon: Briefcase },
+  { id: 4, label: "Design Services", icon: Gem },
+  { id: 5, label: "Project Timeline", icon: Calendar },
+  { id: 6, label: "Investment", icon: CreditCard },
 ];
 
 export default function ProposalBuilder() {
@@ -181,7 +182,19 @@ export default function ProposalBuilder() {
 
   return (
     <DashboardLayout>
-      <div className="h-[calc(100vh-2rem)] flex flex-col font-[Inter,sans-serif]">
+      <div className="h-[calc(100vh-2rem)] flex flex-col font-sans">
+        {/* Global Loading Overlay */}
+        {(isLoading || isSaving) && (
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="text-sm text-muted-foreground">
+                {isSaving ? "Saving proposal..." : "Loading..."}
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -206,28 +219,34 @@ export default function ProposalBuilder() {
               onClick={() => toast.info("Export functionality coming soon")}
               className="px-4 py-2 text-sm bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 font-medium"
             >
-              <span className="material-symbols-outlined text-lg">share</span>
               Export
             </button>
           </div>
         </div>
 
-        {/* Page Navigation - All tabs enabled */}
+        {/* Professional Tab Navigation with Lucide Icons */}
         <div className="flex items-center gap-1 mb-4 p-1.5 bg-card rounded-xl border border-border w-fit">
-          {pages.map((page) => (
-            <button
-              key={page.id}
-              onClick={() => setCurrentPage(page.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                currentPage === page.id
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
-              }`}
-            >
-              <span className="material-symbols-outlined text-lg">{page.icon}</span>
-              {page.label}
-            </button>
-          ))}
+          {pages.map((page) => {
+            const IconComponent = page.icon;
+            const isActive = currentPage === page.id;
+            return (
+              <button
+                key={page.id}
+                onClick={() => setCurrentPage(page.id)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all relative ${
+                  isActive
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                <IconComponent className="h-4 w-4" />
+                <span>{page.label}</span>
+                {isActive && (
+                  <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full" />
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {/* Split Screen Layout */}
@@ -247,12 +266,12 @@ export default function ProposalBuilder() {
           {/* Right Panel - Live Preview with A4 aspect ratio */}
           <div className="bg-muted/30 rounded-xl border border-border p-5 overflow-hidden flex flex-col">
             <div className="text-xs text-muted-foreground mb-3 flex items-center gap-2 font-medium">
-              <span className="material-symbols-outlined text-sm">visibility</span>
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               Live Preview
             </div>
             <div className="flex-1 flex items-center justify-center min-h-0">
               <div 
-                className="bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden w-full"
+                className="bg-white rounded-lg shadow-2xl border-2 border-border/50 overflow-hidden w-full"
                 style={{ 
                   aspectRatio: '8.5/11',
                   maxHeight: 'calc(100vh - 16rem)',
