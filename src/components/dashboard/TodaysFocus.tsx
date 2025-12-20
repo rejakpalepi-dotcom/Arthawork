@@ -13,9 +13,9 @@ interface TodaysFocusProps {
 }
 
 const defaultItems: FocusItem[] = [
-  { id: "1", label: "Send final assets to client", completed: false },
+  { id: "1", label: "Send final assets to Nexus Tech", completed: false },
   { id: "2", label: "Draft proposal for new lead", completed: false },
-  { id: "3", label: "Follow up on pending invoices", completed: false },
+  { id: "3", label: "Follow up on Invoice #1024", completed: false },
 ];
 
 export function TodaysFocus({ items = defaultItems }: TodaysFocusProps) {
@@ -32,19 +32,19 @@ export function TodaysFocus({ items = defaultItems }: TodaysFocusProps) {
   return (
     <div className="glass-card rounded-2xl p-6 animate-fade-in">
       <h3 className="text-lg font-semibold text-foreground mb-4">Today's Focus</h3>
-      <div className="space-y-3">
+      <div className="space-y-1">
         {focusItems.map((item) => (
           <label
             key={item.id}
             className={cn(
-              "flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all border border-transparent hover:border-border/50",
-              item.completed && "opacity-60"
+              "flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all hover:bg-secondary/50",
+              item.completed && "opacity-50"
             )}
           >
             <Checkbox
               checked={item.completed}
               onCheckedChange={() => toggleItem(item.id)}
-              className="border-border"
+              className="border-primary data-[state=checked]:bg-primary data-[state=checked]:border-primary"
             />
             <span
               className={cn(

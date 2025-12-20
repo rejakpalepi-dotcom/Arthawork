@@ -1,27 +1,29 @@
-import { Plus, Send, FileText, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { FilePlus, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const actions = [
-  { label: "New Invoice", icon: Plus, variant: "default" as const },
-  { label: "New Proposal", icon: FileText, variant: "secondary" as const },
-  { label: "Add Client", icon: Users, variant: "secondary" as const },
-  { label: "Send Reminder", icon: Send, variant: "secondary" as const },
+  { label: "New Invoice", icon: FilePlus, path: "/invoices/new" },
+  { label: "Proposal", icon: FileText, path: "/proposals/new" },
 ];
 
 export function QuickActions() {
+  const navigate = useNavigate();
+
   return (
     <div className="glass-card rounded-2xl p-6 animate-fade-in">
       <h3 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
       <div className="grid grid-cols-2 gap-3">
         {actions.map((action) => (
-          <Button
+          <button
             key={action.label}
-            variant={action.variant}
-            className="h-auto py-4 flex flex-col items-center gap-2"
+            onClick={() => navigate(action.path)}
+            className="flex flex-col items-center justify-center gap-3 p-6 rounded-xl bg-secondary/50 border border-border hover:border-primary/30 hover:bg-secondary transition-all duration-200"
           >
-            <action.icon className="w-5 h-5" />
-            <span className="text-xs">{action.label}</span>
-          </Button>
+            <div className="p-3 rounded-xl bg-card">
+              <action.icon className="w-5 h-5 text-muted-foreground" />
+            </div>
+            <span className="text-sm font-medium text-foreground">{action.label}</span>
+          </button>
         ))}
       </div>
     </div>
