@@ -279,6 +279,10 @@ export type Database = {
           total: number
         }[]
       }
+      invoice_has_payment_token: {
+        Args: { invoice_uuid: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
