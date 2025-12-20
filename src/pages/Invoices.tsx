@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Plus, Receipt, Clock, CheckCircle, Send, AlertTriangle, MoreHorizontal, Trash2, CreditCard, Inbox } from "lucide-react";
+import { Plus, Receipt, Clock, CheckCircle, Send, AlertTriangle, MoreHorizontal, Trash2, CreditCard, Inbox, FileDown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +16,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { exportToPDF } from "@/lib/pdfExport";
+import { format } from "date-fns";
 
 interface Invoice {
   id: string;
@@ -24,6 +26,13 @@ interface Invoice {
   total: number;
   status: string;
   due_date: string | null;
+  issue_date: string;
+  subtotal: number;
+  tax_rate: number | null;
+  tax_amount: number | null;
+  notes: string | null;
+  client_email?: string | null;
+  client_address?: string | null;
 }
 
 const statusConfig = {
@@ -41,6 +50,7 @@ export default function Invoices() {
     invoiceId: null,
   });
   const [deleting, setDeleting] = useState(false);
+  const [exportingId, setExportingId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const fetchInvoices = async () => {
@@ -52,7 +62,7 @@ export default function Invoices() {
 
     const { data, error } = await supabase
       .from("invoices")
-      .select("id, invoice_number, total, status, due_date, clients(name)")
+      .select("id, invoice_number, total, status, due_date, issue_date, subtotal, tax_rate, tax_amount, notes, clients(name, email, address)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -61,9 +71,16 @@ export default function Invoices() {
         id: inv.id,
         invoice_number: inv.invoice_number,
         client_name: (inv.clients as any)?.name || null,
+        client_email: (inv.clients as any)?.email || null,
+        client_address: (inv.clients as any)?.address || null,
         total: Number(inv.total),
         status: inv.status,
         due_date: inv.due_date,
+        issue_date: inv.issue_date,
+        subtotal: Number(inv.subtotal),
+        tax_rate: inv.tax_rate,
+        tax_amount: inv.tax_amount ? Number(inv.tax_amount) : null,
+        notes: inv.notes,
       })));
     }
 
@@ -93,6 +110,12 @@ export default function Invoices() {
     if (!deleteModal.invoiceId) return;
     setDeleting(true);
     try {
+      // First delete invoice items
+      await supabase
+        .from("invoice_items")
+        .delete()
+        .eq("invoice_id", deleteModal.invoiceId);
+
       const { error } = await supabase
         .from("invoices")
         .delete()
@@ -106,6 +129,104 @@ export default function Invoices() {
     } finally {
       setDeleting(false);
       setDeleteModal({ open: false, invoiceId: null });
+    }
+  };
+
+  const handleExportPDF = async (invoice: Invoice) => {
+    setExportingId(invoice.id);
+    try {
+      // Fetch invoice items for PDF
+      const { data: items } = await supabase
+        .from("invoice_items")
+        .select("*")
+        .eq("invoice_id", invoice.id);
+
+      // Create a temporary element for PDF rendering
+      const container = document.createElement("div");
+      container.id = `invoice-pdf-${invoice.id}`;
+      container.innerHTML = `
+        <div style="padding: 40px; font-family: system-ui, -apple-system, sans-serif; background: white; color: #1a1a1a; max-width: 794px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 40px; border-bottom: 2px solid #00D9FF; padding-bottom: 20px;">
+            <div>
+              <h2 style="font-size: 24px; font-weight: bold; color: #1a1a1a; margin: 0;">Artha</h2>
+              <p style="color: #666; margin: 8px 0;">123 Creative Ave, Studio 4B</p>
+              <p style="color: #666; margin: 4px 0;">San Francisco, CA 94103</p>
+              <p style="color: #00D9FF; margin: 4px 0;">hello@artha.app</p>
+            </div>
+            <div style="text-align: right;">
+              <h1 style="font-size: 32px; font-weight: bold; color: #00D9FF; margin: 0;">INVOICE</h1>
+              <p style="font-family: monospace; font-size: 18px; margin: 8px 0;">#${invoice.invoice_number}</p>
+              <p style="color: #666; margin: 8px 0;">Issued: ${format(new Date(invoice.issue_date), "MMM d, yyyy")}</p>
+              ${invoice.due_date ? `<p style="color: #666; margin: 4px 0;">Due: ${format(new Date(invoice.due_date), "MMM d, yyyy")}</p>` : ""}
+            </div>
+          </div>
+          
+          <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+            <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Bill To</h3>
+            <p style="font-size: 18px; font-weight: 600; margin: 0;">${invoice.client_name || "Client"}</p>
+            ${invoice.client_email ? `<p style="color: #666; margin: 4px 0;">${invoice.client_email}</p>` : ""}
+            ${invoice.client_address ? `<p style="color: #666; margin: 4px 0;">${invoice.client_address}</p>` : ""}
+          </div>
+          
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+            <thead>
+              <tr style="background: #f5f5f5;">
+                <th style="text-align: left; padding: 12px; font-size: 12px; color: #666; text-transform: uppercase;">Description</th>
+                <th style="text-align: center; padding: 12px; font-size: 12px; color: #666; text-transform: uppercase;">Qty</th>
+                <th style="text-align: right; padding: 12px; font-size: 12px; color: #666; text-transform: uppercase;">Rate</th>
+                <th style="text-align: right; padding: 12px; font-size: 12px; color: #666; text-transform: uppercase;">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${(items || []).map((item: any, i: number) => `
+                <tr style="border-bottom: 1px solid #eee; background: ${i % 2 === 0 ? "white" : "#fafafa"};">
+                  <td style="padding: 12px;">${item.description}</td>
+                  <td style="padding: 12px; text-align: center;">${item.quantity}</td>
+                  <td style="padding: 12px; text-align: right; font-family: monospace;">Rp ${Number(item.unit_price).toLocaleString("id-ID")}</td>
+                  <td style="padding: 12px; text-align: right; font-family: monospace; font-weight: 600;">Rp ${Number(item.total).toLocaleString("id-ID")}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+          
+          <div style="display: flex; justify-content: flex-end;">
+            <div style="width: 250px;">
+              <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                <span style="color: #666;">Subtotal</span>
+                <span style="font-family: monospace;">Rp ${invoice.subtotal.toLocaleString("id-ID")}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                <span style="color: #666;">Tax (${invoice.tax_rate || 0}%)</span>
+                <span style="font-family: monospace;">Rp ${(invoice.tax_amount || 0).toLocaleString("id-ID")}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 12px 0; border-top: 2px solid #1a1a1a; margin-top: 8px;">
+                <span style="font-weight: 600;">Total Due</span>
+                <span style="font-size: 20px; font-weight: bold; color: #00D9FF; font-family: monospace;">Rp ${invoice.total.toLocaleString("id-ID")}</span>
+              </div>
+            </div>
+          </div>
+          
+          ${invoice.notes ? `
+            <div style="margin-top: 24px; padding: 16px; background: #f5f5f5; border-radius: 8px;">
+              <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Notes</h3>
+              <p style="color: #666; margin: 0; white-space: pre-line;">${invoice.notes}</p>
+            </div>
+          ` : ""}
+          
+          <div style="margin-top: 40px; padding: 16px; background: #f0feff; text-align: center; border-radius: 8px;">
+            <p style="margin: 0; font-weight: 500;">Thank you for your business!</p>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(container);
+
+      await exportToPDF(`invoice-pdf-${invoice.id}`, `Invoice-${invoice.invoice_number}.pdf`);
+      document.body.removeChild(container);
+      toast.success("PDF exported successfully!");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to export PDF");
+    } finally {
+      setExportingId(null);
     }
   };
 
@@ -211,6 +332,17 @@ export default function Invoices() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
+                            <DropdownMenuItem 
+                              onClick={() => handleExportPDF(invoice)}
+                              disabled={exportingId === invoice.id}
+                            >
+                              {exportingId === invoice.id ? (
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              ) : (
+                                <FileDown className="w-4 h-4 mr-2" />
+                              )}
+                              Download PDF
+                            </DropdownMenuItem>
                             {invoice.status !== "paid" && (
                               <DropdownMenuItem onClick={() => handleMarkAsPaid(invoice.id)}>
                                 <CreditCard className="w-4 h-4 mr-2" />

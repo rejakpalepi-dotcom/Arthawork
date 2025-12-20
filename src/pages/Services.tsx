@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { supabase } from "@/integrations/supabase/client";
 import { AddServiceModal } from "@/components/modals/AddServiceModal";
+import { EditServiceModal } from "@/components/modals/EditServiceModal";
 import { DeleteConfirmModal } from "@/components/modals/DeleteConfirmModal";
 import { formatIDR } from "@/lib/currency";
 import { toast } from "sonner";
@@ -20,6 +21,10 @@ export default function Services() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editModal, setEditModal] = useState<{ open: boolean; service: Service | null }>({
+    open: false,
+    service: null,
+  });
   const [deleteModal, setDeleteModal] = useState<{ open: boolean; serviceId: string | null }>({
     open: false,
     serviceId: null,
@@ -49,6 +54,10 @@ export default function Services() {
   useEffect(() => {
     fetchServices();
   }, []);
+
+  const handleEdit = (service: Service) => {
+    setEditModal({ open: true, service });
+  };
 
   const handleDelete = async () => {
     if (!deleteModal.serviceId) return;
@@ -143,7 +152,12 @@ export default function Services() {
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => handleEdit(service)}
+                        >
                           <Pencil className="w-4 h-4" />
                         </Button>
                         <Button
@@ -168,6 +182,13 @@ export default function Services() {
         open={showAddModal}
         onOpenChange={setShowAddModal}
         onSuccess={fetchServices}
+      />
+
+      <EditServiceModal
+        open={editModal.open}
+        onOpenChange={(open) => setEditModal({ open, service: editModal.service })}
+        onSuccess={fetchServices}
+        service={editModal.service}
       />
 
       <DeleteConfirmModal

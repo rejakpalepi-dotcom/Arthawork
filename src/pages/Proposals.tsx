@@ -1,13 +1,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Plus, FileText, Clock, CheckCircle, Send, Inbox, MoreHorizontal, TrendingUp, DollarSign, AlertCircle, Grid, List, Filter, Search, FileCheck } from "lucide-react";
+import { Plus, FileText, Clock, CheckCircle, Send, Inbox, MoreHorizontal, TrendingUp, DollarSign, AlertCircle, Grid, List, Filter, Search, FileCheck, Pencil, Trash2, FileDown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { formatIDR } from "@/lib/currency";
+import { toast } from "sonner";
+import { DeleteConfirmModal } from "@/components/modals/DeleteConfirmModal";
+import { exportToPDF } from "@/lib/pdfExport";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Proposal {
   id: string;
@@ -73,92 +83,175 @@ export default function Proposals() {
   const [activeTab, setActiveTab] = useState("All Proposals");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteModal, setDeleteModal] = useState<{ open: boolean; proposalId: string | null }>({
+    open: false,
+    proposalId: null,
+  });
+  const [deleting, setDeleting] = useState(false);
+  const [exportingId, setExportingId] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchProposals = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("proposals")
-        .select("id, title, description, total, status, created_at, updated_at, clients(name)")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-
-      if (!error && data) {
-        const mappedProposals = data.map((p) => {
-          const clientName = (p.clients as any)?.name || "Unknown Client";
-          return {
-            id: p.id,
-            title: p.title,
-            description: p.description,
-            client_name: clientName,
-            client_initials: getInitials(clientName),
-            total: Number(p.total),
-            status: p.status,
-            created_at: p.created_at,
-            updated_at: p.updated_at,
-          };
-        });
-
-        setProposals(mappedProposals);
-
-        // Calculate stats
-        const activeProposals = mappedProposals.filter(p => p.status !== "draft");
-        const acceptedProposals = mappedProposals.filter(p => p.status === "approved");
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-        const newThisWeek = mappedProposals.filter(p => new Date(p.created_at) > oneWeekAgo).length;
-
-        // Calculate MoM trends
-        const now = new Date();
-        const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-        const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
-
-        const currentMonthProposals = mappedProposals.filter(p => new Date(p.created_at) >= currentMonthStart);
-        const prevMonthProposals = mappedProposals.filter(p => {
-          const date = new Date(p.created_at);
-          return date >= prevMonthStart && date <= prevMonthEnd;
-        });
-
-        // Pipeline: current month non-rejected vs previous month
-        const currentPipeline = currentMonthProposals.filter(p => p.status !== "rejected").reduce((sum, p) => sum + p.total, 0);
-        const prevPipeline = prevMonthProposals.filter(p => p.status !== "rejected").reduce((sum, p) => sum + p.total, 0);
-        const pipelineTrend = prevPipeline > 0 ? Math.round(((currentPipeline - prevPipeline) / prevPipeline) * 100) : 0;
-
-        // Acceptance rate trend
-        const currentAccepted = currentMonthProposals.filter(p => p.status === "approved").length;
-        const currentTotal = currentMonthProposals.length;
-        const currentRate = currentTotal > 0 ? (currentAccepted / currentTotal) * 100 : 0;
-        
-        const prevAccepted = prevMonthProposals.filter(p => p.status === "approved").length;
-        const prevTotal = prevMonthProposals.length;
-        const prevRate = prevTotal > 0 ? (prevAccepted / prevTotal) * 100 : 0;
-        const acceptanceTrend = prevRate > 0 ? Math.round(((currentRate - prevRate) / prevRate) * 100) : 0;
-
-        setStats({
-          pipelineValue: activeProposals.reduce((sum, p) => sum + p.total, 0),
-          pipelineTrend,
-          acceptanceRate: mappedProposals.length > 0 ? Math.round((acceptedProposals.length / mappedProposals.length) * 100) : 0,
-          acceptanceTrend,
-          activeCount: activeProposals.length,
-          newThisWeek,
-        });
-      }
-
+  const fetchProposals = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       setLoading(false);
-    };
+      return;
+    }
 
+    const { data, error } = await supabase
+      .from("proposals")
+      .select("id, title, description, total, status, created_at, updated_at, clients(name)")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      const mappedProposals = data.map((p) => {
+        const clientName = (p.clients as any)?.name || "Unknown Client";
+        return {
+          id: p.id,
+          title: p.title,
+          description: p.description,
+          client_name: clientName,
+          client_initials: getInitials(clientName),
+          total: Number(p.total),
+          status: p.status,
+          created_at: p.created_at,
+          updated_at: p.updated_at,
+        };
+      });
+
+      setProposals(mappedProposals);
+
+      // Calculate stats
+      const activeProposals = mappedProposals.filter(p => p.status !== "draft");
+      const acceptedProposals = mappedProposals.filter(p => p.status === "approved");
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const newThisWeek = mappedProposals.filter(p => new Date(p.created_at) > oneWeekAgo).length;
+
+      // Calculate MoM trends
+      const now = new Date();
+      const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+
+      const currentMonthProposals = mappedProposals.filter(p => new Date(p.created_at) >= currentMonthStart);
+      const prevMonthProposals = mappedProposals.filter(p => {
+        const date = new Date(p.created_at);
+        return date >= prevMonthStart && date <= prevMonthEnd;
+      });
+
+      // Pipeline: current month non-rejected vs previous month
+      const currentPipeline = currentMonthProposals.filter(p => p.status !== "rejected").reduce((sum, p) => sum + p.total, 0);
+      const prevPipeline = prevMonthProposals.filter(p => p.status !== "rejected").reduce((sum, p) => sum + p.total, 0);
+      const pipelineTrend = prevPipeline > 0 ? Math.round(((currentPipeline - prevPipeline) / prevPipeline) * 100) : 0;
+
+      // Acceptance rate trend
+      const currentAccepted = currentMonthProposals.filter(p => p.status === "approved").length;
+      const currentTotal = currentMonthProposals.length;
+      const currentRate = currentTotal > 0 ? (currentAccepted / currentTotal) * 100 : 0;
+      
+      const prevAccepted = prevMonthProposals.filter(p => p.status === "approved").length;
+      const prevTotal = prevMonthProposals.length;
+      const prevRate = prevTotal > 0 ? (prevAccepted / prevTotal) * 100 : 0;
+      const acceptanceTrend = prevRate > 0 ? Math.round(((currentRate - prevRate) / prevRate) * 100) : 0;
+
+      setStats({
+        pipelineValue: activeProposals.reduce((sum, p) => sum + p.total, 0),
+        pipelineTrend,
+        acceptanceRate: mappedProposals.length > 0 ? Math.round((acceptedProposals.length / mappedProposals.length) * 100) : 0,
+        acceptanceTrend,
+        activeCount: activeProposals.length,
+        newThisWeek,
+      });
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
     fetchProposals();
   }, []);
 
   const handleNewProposal = () => {
     navigate("/proposals/new");
+  };
+
+  const handleEdit = (proposalId: string) => {
+    navigate(`/proposals/${proposalId}/edit`);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteModal.proposalId) return;
+    setDeleting(true);
+    try {
+      const { error } = await supabase
+        .from("proposals")
+        .delete()
+        .eq("id", deleteModal.proposalId);
+
+      if (error) throw error;
+      toast.success("Proposal deleted successfully!");
+      fetchProposals();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete proposal");
+    } finally {
+      setDeleting(false);
+      setDeleteModal({ open: false, proposalId: null });
+    }
+  };
+
+  const handleExportPDF = async (proposal: Proposal) => {
+    setExportingId(proposal.id);
+    try {
+      // Create a temporary element for PDF rendering
+      const container = document.createElement("div");
+      container.id = `proposal-pdf-${proposal.id}`;
+      container.innerHTML = `
+        <div style="padding: 40px; font-family: system-ui, -apple-system, sans-serif; background: white; color: #1a1a1a; max-width: 794px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 40px; border-bottom: 2px solid #00D9FF; padding-bottom: 20px;">
+            <div>
+              <h2 style="font-size: 24px; font-weight: bold; color: #1a1a1a; margin: 0;">Artha</h2>
+              <p style="color: #666; margin: 8px 0;">Creative Solutions</p>
+            </div>
+            <div style="text-align: right;">
+              <h1 style="font-size: 32px; font-weight: bold; color: #00D9FF; margin: 0;">PROPOSAL</h1>
+              <p style="color: #666; margin: 8px 0;">Created: ${new Date(proposal.created_at).toLocaleDateString()}</p>
+            </div>
+          </div>
+          
+          <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+            <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Prepared For</h3>
+            <p style="font-size: 18px; font-weight: 600; margin: 0;">${proposal.client_name}</p>
+          </div>
+          
+          <div style="margin-bottom: 24px;">
+            <h2 style="font-size: 24px; font-weight: bold; margin: 0 0 16px 0;">${proposal.title}</h2>
+            ${proposal.description ? `<p style="color: #666; line-height: 1.6;">${proposal.description}</p>` : ""}
+          </div>
+          
+          <div style="display: flex; justify-content: flex-end; margin-top: 40px;">
+            <div style="background: #f5f5f5; padding: 24px; border-radius: 8px; text-align: right;">
+              <p style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Total Investment</p>
+              <p style="font-size: 28px; font-weight: bold; color: #00D9FF; font-family: monospace; margin: 0;">Rp ${proposal.total.toLocaleString("id-ID")}</p>
+            </div>
+          </div>
+          
+          <div style="margin-top: 40px; padding: 16px; background: #f0feff; text-align: center; border-radius: 8px;">
+            <p style="margin: 0; font-weight: 500;">Thank you for considering us!</p>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(container);
+
+      await exportToPDF(`proposal-pdf-${proposal.id}`, `Proposal-${proposal.title.replace(/[^a-z0-9]/gi, "-")}.pdf`);
+      document.body.removeChild(container);
+      toast.success("PDF exported successfully!");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to export PDF");
+    } finally {
+      setExportingId(null);
+    }
   };
 
   const filteredProposals = proposals.filter(p => {
@@ -374,7 +467,7 @@ export default function Proposals() {
               return (
                 <div
                   key={proposal.id}
-                  className="glass-card rounded-2xl p-6 card-hover animate-fade-in cursor-pointer"
+                  className="glass-card rounded-2xl p-6 card-hover animate-fade-in"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <div className="flex items-start justify-between mb-4">
@@ -387,9 +480,38 @@ export default function Proposals() {
                         <p className="text-xs text-muted-foreground">{timeLabel}</p>
                       </div>
                     </div>
-                    <button className="p-1 hover:bg-secondary rounded-lg transition-colors">
-                      <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
-                    </button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="p-1 hover:bg-secondary rounded-lg transition-colors">
+                          <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handleEdit(proposal.id)}>
+                          <Pencil className="w-4 h-4 mr-2" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={() => handleExportPDF(proposal)}
+                          disabled={exportingId === proposal.id}
+                        >
+                          {exportingId === proposal.id ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <FileDown className="w-4 h-4 mr-2" />
+                          )}
+                          Export PDF
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive"
+                          onClick={() => setDeleteModal({ open: true, proposalId: proposal.id })}
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
 
                   <h3 className="text-lg font-semibold text-foreground mb-2">{proposal.title}</h3>
@@ -417,6 +539,15 @@ export default function Proposals() {
           </div>
         )}
       </div>
+
+      <DeleteConfirmModal
+        open={deleteModal.open}
+        onOpenChange={(open) => setDeleteModal({ open, proposalId: deleteModal.proposalId })}
+        onConfirm={handleDelete}
+        loading={deleting}
+        title="Delete Proposal?"
+        description="This will permanently delete this proposal. This action cannot be undone."
+      />
     </DashboardLayout>
   );
 }
