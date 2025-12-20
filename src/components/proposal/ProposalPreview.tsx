@@ -34,18 +34,18 @@ function CoverPreview({ data }: { data: ProposalData }) {
   const secondLine = titleWords.slice(2).join(" ");
 
   return (
-    <div className="h-full bg-[#1a1a1a] text-white flex flex-col relative overflow-hidden font-[Inter,sans-serif]">
+    <div className="h-full bg-[#1a1a1a] text-white flex flex-col relative overflow-hidden font-sans">
       {/* Background Pattern */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-80 h-80 bg-[#00ACC1]/10 rounded-full blur-[100px] transform translate-x-1/3 -translate-y-1/3" />
         <div className="absolute bottom-0 left-0 w-60 h-60 bg-[#00ACC1]/8 rounded-full blur-[80px] transform -translate-x-1/3 translate-y-1/3" />
       </div>
 
-      {/* Header - with proper spacing */}
-      <div className="relative z-10 flex items-center justify-between px-6 pt-6 pb-2">
+      {/* Header - Fixed spacing to prevent overlap */}
+      <div className="relative z-10 flex items-center justify-between px-6 pt-6 pb-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 bg-[#00ACC1] rounded-md flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-white text-sm">design_services</span>
+            <span className="text-white text-[10px] font-black">K</span>
           </div>
           <span className="font-semibold text-[10px] tracking-[0.15em] uppercase text-white/90">
             {data.studioName}
@@ -59,14 +59,14 @@ function CoverPreview({ data }: { data: ProposalData }) {
         )}
       </div>
 
-      {/* Main Content - centered with flex-1 */}
-      <div className="flex-1 flex flex-col justify-center px-6 relative z-10">
+      {/* Main Content - Properly centered with clear hierarchy */}
+      <div className="flex-1 flex flex-col justify-center px-6 pt-4 relative z-10">
         <div className="space-y-4">
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="text-[#00ACC1] text-[9px] font-semibold tracking-[0.2em] uppercase">
               Project Proposal
             </div>
-            <h1 className="text-[28px] font-extrabold leading-[1.1] tracking-tight">
+            <h1 className="text-[26px] font-black leading-[1.15] tracking-tight">
               {firstLine}
               {secondLine && (
                 <>
@@ -76,7 +76,7 @@ function CoverPreview({ data }: { data: ProposalData }) {
               )}
             </h1>
           </div>
-          <p className="text-gray-400 text-[11px] max-w-[240px] leading-relaxed">
+          <p className="text-gray-400 text-[11px] max-w-[240px] leading-relaxed font-normal">
             {data.tagline}
           </p>
         </div>
@@ -84,7 +84,7 @@ function CoverPreview({ data }: { data: ProposalData }) {
 
       {/* Footer */}
       <div className="relative z-10 px-6 pb-6 flex items-end justify-between">
-        <div className="text-[9px] text-gray-500 space-y-0.5">
+        <div className="text-[9px] text-gray-500 space-y-0.5 font-normal">
           {data.clientName && <div>For: {data.clientName}</div>}
           <div>{data.year}</div>
         </div>
@@ -107,12 +107,12 @@ function CoverPreview({ data }: { data: ProposalData }) {
 
 function IntroPreview({ data }: { data: ProposalData }) {
   return (
-    <div className="h-full bg-white flex flex-col font-[Inter,sans-serif]">
+    <div className="h-full bg-white flex flex-col font-sans">
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-5 pb-3">
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 bg-[#1a1a1a] rounded flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-[8px] font-bold">S</span>
+            <span className="text-white text-[8px] font-black">K</span>
           </div>
           <span className="text-[10px] text-gray-400 font-medium">{data.studioName}</span>
         </div>
@@ -129,7 +129,7 @@ function IntroPreview({ data }: { data: ProposalData }) {
             <img src={data.heroImageUrl} alt="Hero" className="w-full h-full object-cover rounded-lg" />
           ) : (
             <div className="text-center text-gray-400">
-              <span className="material-symbols-outlined text-3xl text-gray-300">public</span>
+              <span className="text-3xl text-gray-300">🌐</span>
               <p className="text-[10px] mt-1 font-medium">Place Image Here</p>
             </div>
           )}
@@ -140,10 +140,10 @@ function IntroPreview({ data }: { data: ProposalData }) {
           <div className="text-[8px] text-[#00ACC1] font-semibold tracking-[0.15em] uppercase mb-1.5">
             Value Proposition
           </div>
-          <h2 className="text-lg font-bold text-[#1a1a1a] mb-3 leading-tight">
+          <h2 className="text-lg font-black text-[#1a1a1a] mb-3 leading-tight">
             {data.introTitle}
           </h2>
-          <div className="text-[11px] text-gray-600 leading-[1.6] space-y-2 overflow-y-auto">
+          <div className="text-[11px] text-gray-600 leading-[1.6] space-y-2 overflow-y-auto font-normal">
             {data.introText.split("\n\n").map((paragraph, i) => (
               <p key={i}>{paragraph}</p>
             ))}
@@ -152,7 +152,7 @@ function IntroPreview({ data }: { data: ProposalData }) {
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-3 border-t border-gray-100 flex items-center justify-between text-[8px] text-gray-400">
+      <div className="px-6 py-3 border-t border-gray-100 flex items-center justify-between text-[8px] text-gray-400 font-normal">
         <span>{data.studioName} © {data.year}</span>
         <span>Proposal Template</span>
       </div>
@@ -162,40 +162,40 @@ function IntroPreview({ data }: { data: ProposalData }) {
 
 function ExperiencePreview({ data }: { data: ProposalData }) {
   return (
-    <div className="h-full bg-white flex flex-col font-[Inter,sans-serif]">
+    <div className="h-full bg-white flex flex-col font-sans">
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-5 pb-3">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-[#00ACC1] rounded-full flex items-center justify-center text-white font-bold text-[9px] flex-shrink-0">
-            SS
+          <div className="w-6 h-6 bg-[#00ACC1] rounded-full flex items-center justify-center text-white font-black text-[9px] flex-shrink-0">
+            K
           </div>
           <span className="text-[11px] font-semibold text-[#1a1a1a]">{data.studioName}</span>
         </div>
-        <span className="material-symbols-outlined text-gray-300 text-lg">menu</span>
+        <span className="text-gray-300 text-lg">☰</span>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col justify-center px-6 min-h-0">
-        <h2 className="text-xl font-bold text-[#1a1a1a] mb-2 leading-tight lowercase italic">
+        <h2 className="text-xl font-black text-[#1a1a1a] mb-2 leading-tight lowercase italic">
           {data.experienceTitle}
         </h2>
-        <p className="text-[11px] text-gray-500 mb-5 max-w-xs leading-relaxed">
+        <p className="text-[11px] text-gray-500 mb-5 max-w-xs leading-relaxed font-normal">
           {data.experienceSubtitle}
         </p>
 
-        {/* Stats */}
+        {/* Stats - Bold accents */}
         <div className="flex gap-6 mb-5">
           <div>
-            <div className="text-xl font-extrabold text-[#1a1a1a]">{data.projectCount}</div>
-            <div className="text-[8px] text-gray-400 uppercase tracking-wider mt-0.5">Projects</div>
+            <div className="text-xl font-black text-[#1a1a1a]">{data.projectCount}</div>
+            <div className="text-[8px] text-gray-400 uppercase tracking-wider mt-0.5 font-medium">Projects</div>
           </div>
           <div>
-            <div className="text-xl font-extrabold text-[#1a1a1a]">{data.countriesCount}</div>
-            <div className="text-[8px] text-gray-400 uppercase tracking-wider mt-0.5">Countries</div>
+            <div className="text-xl font-black text-[#1a1a1a]">{data.countriesCount}</div>
+            <div className="text-[8px] text-gray-400 uppercase tracking-wider mt-0.5 font-medium">Countries</div>
           </div>
           <div>
-            <div className="text-xl font-extrabold text-[#1a1a1a]">{data.rating}</div>
-            <div className="text-[8px] text-gray-400 uppercase tracking-wider mt-0.5">Rating</div>
+            <div className="text-xl font-black text-[#1a1a1a]">{data.rating}</div>
+            <div className="text-[8px] text-gray-400 uppercase tracking-wider mt-0.5 font-medium">Rating</div>
           </div>
         </div>
 
@@ -206,7 +206,7 @@ function ExperiencePreview({ data }: { data: ProposalData }) {
               key={i}
               className="aspect-square bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100"
             >
-              <span className="material-symbols-outlined text-gray-200 text-xl">image</span>
+              <span className="text-gray-200 text-xl">🏢</span>
             </div>
           ))}
         </div>
@@ -214,13 +214,13 @@ function ExperiencePreview({ data }: { data: ProposalData }) {
 
       {/* Footer */}
       <div className="px-6 py-3 border-t border-gray-100 flex items-center justify-between">
-        <div className="text-[8px] text-gray-400">
+        <div className="text-[8px] text-gray-400 font-normal">
           The Ultimate Project Proposal Template {data.year}
         </div>
         <div className="flex items-center gap-1 text-[8px]">
           <span className="text-gray-400">©</span>
           <span className="text-[#00ACC1] font-semibold">{data.studioName}</span>
-          <span className="material-symbols-outlined text-gray-300 text-xs">arrow_forward</span>
+          <span className="text-gray-300 text-xs">→</span>
         </div>
       </div>
     </div>
@@ -229,12 +229,12 @@ function ExperiencePreview({ data }: { data: ProposalData }) {
 
 function ServicesPreview({ data }: { data: ProposalData }) {
   return (
-    <div className="h-full bg-white flex flex-col font-[Inter,sans-serif]">
+    <div className="h-full bg-white flex flex-col font-sans">
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-gray-100">
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 bg-[#1a1a1a] rounded flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-[8px] font-bold">S</span>
+            <span className="text-white text-[8px] font-black">K</span>
           </div>
           <span className="text-[10px] text-gray-400 font-medium">{data.studioName}</span>
         </div>
@@ -243,13 +243,13 @@ function ServicesPreview({ data }: { data: ProposalData }) {
 
       {/* Content */}
       <div className="flex-1 px-6 py-4 overflow-y-auto">
-        <h2 className="text-lg font-bold text-[#1a1a1a] mb-1">Our Services</h2>
-        <p className="text-[10px] text-gray-500 mb-4">What we bring to the table</p>
+        <h2 className="text-lg font-black text-[#1a1a1a] mb-1">Our Services</h2>
+        <p className="text-[10px] text-gray-500 mb-4 font-normal">What we bring to the table</p>
 
         {data.selectedServices.length === 0 ? (
           <div className="text-center py-8 text-gray-400">
-            <span className="material-symbols-outlined text-3xl mb-2">design_services</span>
-            <p className="text-[10px]">No services selected yet</p>
+            <span className="text-3xl mb-2">💎</span>
+            <p className="text-[10px] font-normal">No services selected yet</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -266,7 +266,7 @@ function ServicesPreview({ data }: { data: ProposalData }) {
                     <div>
                       <h3 className="text-[11px] font-semibold text-[#1a1a1a]">{service.name}</h3>
                       {service.description && (
-                        <p className="text-[9px] text-gray-500 mt-0.5 line-clamp-2">{service.description}</p>
+                        <p className="text-[9px] text-gray-500 mt-0.5 line-clamp-2 font-normal">{service.description}</p>
                       )}
                     </div>
                   </div>
@@ -281,7 +281,7 @@ function ServicesPreview({ data }: { data: ProposalData }) {
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-3 border-t border-gray-100 flex items-center justify-between text-[8px] text-gray-400">
+      <div className="px-6 py-3 border-t border-gray-100 flex items-center justify-between text-[8px] text-gray-400 font-normal">
         <span>{data.studioName} © {data.year}</span>
         <span>Page 4 of 6</span>
       </div>
@@ -291,12 +291,12 @@ function ServicesPreview({ data }: { data: ProposalData }) {
 
 function TimelinePreview({ data }: { data: ProposalData }) {
   return (
-    <div className="h-full bg-white flex flex-col font-[Inter,sans-serif]">
+    <div className="h-full bg-white flex flex-col font-sans">
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-gray-100">
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 bg-[#1a1a1a] rounded flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-[8px] font-bold">S</span>
+            <span className="text-white text-[8px] font-black">K</span>
           </div>
           <span className="text-[10px] text-gray-400 font-medium">{data.studioName}</span>
         </div>
@@ -305,13 +305,13 @@ function TimelinePreview({ data }: { data: ProposalData }) {
 
       {/* Content */}
       <div className="flex-1 px-6 py-4 overflow-y-auto">
-        <h2 className="text-lg font-bold text-[#1a1a1a] mb-1">Project Timeline</h2>
-        <p className="text-[10px] text-gray-500 mb-5">Our roadmap to success</p>
+        <h2 className="text-lg font-black text-[#1a1a1a] mb-1">Project Timeline</h2>
+        <p className="text-[10px] text-gray-500 mb-5 font-normal">Our roadmap to success</p>
 
         {data.milestones.length === 0 ? (
           <div className="text-center py-8 text-gray-400">
-            <span className="material-symbols-outlined text-3xl mb-2">schedule</span>
-            <p className="text-[10px]">No milestones defined yet</p>
+            <span className="text-3xl mb-2">📅</span>
+            <p className="text-[10px] font-normal">No milestones defined yet</p>
           </div>
         ) : (
           <div className="relative">
@@ -334,7 +334,7 @@ function TimelinePreview({ data }: { data: ProposalData }) {
                       {milestone.title || "Untitled Phase"}
                     </h3>
                     {milestone.description && (
-                      <p className="text-[9px] text-gray-500 mt-0.5 leading-relaxed">
+                      <p className="text-[9px] text-gray-500 mt-0.5 leading-relaxed font-normal">
                         {milestone.description}
                       </p>
                     )}
@@ -347,7 +347,7 @@ function TimelinePreview({ data }: { data: ProposalData }) {
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-3 border-t border-gray-100 flex items-center justify-between text-[8px] text-gray-400">
+      <div className="px-6 py-3 border-t border-gray-100 flex items-center justify-between text-[8px] text-gray-400 font-normal">
         <span>{data.studioName} © {data.year}</span>
         <span>Page 5 of 6</span>
       </div>
@@ -361,12 +361,12 @@ function InvestmentPreview({ data }: { data: ProposalData }) {
   const total = subtotal + taxAmount;
 
   return (
-    <div className="h-full bg-[#1a1a1a] text-white flex flex-col font-[Inter,sans-serif]">
+    <div className="h-full bg-[#1a1a1a] text-white flex flex-col font-sans">
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-5 pb-3">
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 bg-[#00ACC1] rounded flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-white text-xs">payments</span>
+            <span className="text-white text-[10px] font-black">💳</span>
           </div>
           <span className="text-[10px] text-white/70 font-medium">{data.studioName}</span>
         </div>
@@ -375,13 +375,13 @@ function InvestmentPreview({ data }: { data: ProposalData }) {
 
       {/* Content */}
       <div className="flex-1 px-6 py-4 overflow-y-auto">
-        <h2 className="text-lg font-bold text-white mb-1">Project Investment</h2>
-        <p className="text-[10px] text-gray-400 mb-4">Scope of work and pricing</p>
+        <h2 className="text-lg font-black text-white mb-1">Project Investment</h2>
+        <p className="text-[10px] text-gray-400 mb-4 font-normal">Scope of work and pricing</p>
 
         {data.selectedServices.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
-            <span className="material-symbols-outlined text-3xl mb-2">shopping_cart</span>
-            <p className="text-[10px]">No services selected</p>
+            <span className="text-3xl mb-2">🛒</span>
+            <p className="text-[10px] font-normal">No services selected</p>
           </div>
         ) : (
           <>
@@ -395,8 +395,8 @@ function InvestmentPreview({ data }: { data: ProposalData }) {
               {data.selectedServices.map((service) => (
                 <div key={service.id} className="px-3 py-2.5 border-t border-white/5 grid grid-cols-3 text-[10px]">
                   <span className="text-white font-medium">{service.name}</span>
-                  <span className="text-center text-gray-400">{service.unit || "—"}</span>
-                  <span className="text-right text-white">{formatIDR(service.price)}</span>
+                  <span className="text-center text-gray-400 font-normal">{service.unit || "—"}</span>
+                  <span className="text-right text-white font-normal">{formatIDR(service.price)}</span>
                 </div>
               ))}
             </div>
@@ -404,16 +404,16 @@ function InvestmentPreview({ data }: { data: ProposalData }) {
             {/* Totals */}
             <div className="space-y-2 mb-4">
               <div className="flex justify-between text-[10px]">
-                <span className="text-gray-400">Subtotal</span>
-                <span className="text-white">{formatIDR(subtotal)}</span>
+                <span className="text-gray-400 font-normal">Subtotal</span>
+                <span className="text-white font-normal">{formatIDR(subtotal)}</span>
               </div>
               {data.taxRate > 0 && (
                 <div className="flex justify-between text-[10px]">
-                  <span className="text-gray-400">Tax ({data.taxRate}%)</span>
-                  <span className="text-white">{formatIDR(taxAmount)}</span>
+                  <span className="text-gray-400 font-normal">Tax ({data.taxRate}%)</span>
+                  <span className="text-white font-normal">{formatIDR(taxAmount)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-sm font-bold pt-2 border-t border-white/10">
+              <div className="flex justify-between text-sm font-black pt-2 border-t border-white/10">
                 <span className="text-white">Total Investment</span>
                 <span className="text-[#00ACC1]">{formatIDR(total)}</span>
               </div>
@@ -423,7 +423,7 @@ function InvestmentPreview({ data }: { data: ProposalData }) {
             {data.investmentNotes && (
               <div className="p-3 rounded-lg bg-white/5 border border-white/10">
                 <div className="text-[8px] text-[#00ACC1] font-semibold uppercase tracking-wider mb-1">Notes</div>
-                <p className="text-[9px] text-gray-300 leading-relaxed">{data.investmentNotes}</p>
+                <p className="text-[9px] text-gray-300 leading-relaxed font-normal">{data.investmentNotes}</p>
               </div>
             )}
           </>
@@ -434,18 +434,18 @@ function InvestmentPreview({ data }: { data: ProposalData }) {
       <div className="px-6 pb-5">
         <div className="bg-[#00ACC1] rounded-lg px-4 py-3 flex items-center justify-between">
           <div>
-            <div className="text-[8px] text-white/70 uppercase tracking-wider">Project Total</div>
-            <div className="text-base font-bold text-white">{formatIDR(total)}</div>
+            <div className="text-[8px] text-white/70 uppercase tracking-wider font-medium">Project Total</div>
+            <div className="text-base font-black text-white">{formatIDR(total)}</div>
           </div>
           <div className="flex items-center gap-1 text-white text-[10px] font-semibold">
             Start Project
-            <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            <span className="text-sm">→</span>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-3 border-t border-white/10 flex items-center justify-between text-[8px] text-gray-500">
+      <div className="px-6 py-3 border-t border-white/10 flex items-center justify-between text-[8px] text-gray-500 font-normal">
         <span>{data.studioName} © {data.year}</span>
         <span>Page 6 of 6</span>
       </div>
