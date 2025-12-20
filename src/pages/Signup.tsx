@@ -10,12 +10,26 @@ import { useOAuth } from "@/hooks/useOAuth";
 import { Zap, Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
 import { z } from "zod";
 
+// Common password patterns to block (simplified entropy check)
+const COMMON_PASSWORDS = [
+  "password123", "123456789", "qwerty123", "letmein123", "welcome123",
+  "admin123", "password1", "12345678", "iloveyou", "sunshine"
+];
+
 const signupSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string()
-    .min(8, "Password must be at least 8 characters")
+    .min(10, "Password must be at least 10 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
     .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(/[!@#$%^&*(),.?":{}|<>]/, "Password must contain at least one symbol"),
+    .regex(/[!@#$%^&*(),.?":{}|<>]/, "Password must contain at least one symbol")
+    .refine(
+      (password) => !COMMON_PASSWORDS.some(common => 
+        password.toLowerCase().includes(common.toLowerCase())
+      ),
+      "Password is too common. Please choose a stronger password."
+    ),
 });
 
 export default function Signup() {
@@ -107,9 +121,11 @@ export default function Signup() {
   };
 
   const passwordRequirements = [
-    { met: password.length >= 8, text: "At least 8 characters" },
-    { met: /[0-9]/.test(password), text: "One number" },
-    { met: /[!@#$%^&*(),.?":{}|<>]/.test(password), text: "One symbol" },
+    { met: password.length >= 10, text: "10+ characters" },
+    { met: /[A-Z]/.test(password), text: "Uppercase" },
+    { met: /[a-z]/.test(password), text: "Lowercase" },
+    { met: /[0-9]/.test(password), text: "Number" },
+    { met: /[!@#$%^&*(),.?":{}|<>]/.test(password), text: "Symbol" },
   ];
 
   return (
