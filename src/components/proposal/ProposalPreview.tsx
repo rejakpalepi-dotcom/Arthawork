@@ -191,9 +191,7 @@ function ExperiencePreview({
 
       {/* Footer */}
       <div className="px-6 py-3 border-t border-gray-100 flex items-center justify-between">
-        <div className="text-[8px] text-gray-400 font-normal">
-          The Ultimate Project Proposal Template {data.year}
-        </div>
+        
         <div className="flex items-center gap-1 text-[8px]">
           
           
