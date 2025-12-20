@@ -1,5 +1,10 @@
-import { FileText, Receipt, Users, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
+import { FileText, Receipt, Users, Clock, Inbox } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { formatIDR } from "@/lib/currency";
+import { EmptyState } from "@/components/ui/empty-state";
+import { formatDistanceToNow } from "date-fns";
 
 interface ActivityItem {
   id: string;
@@ -7,42 +12,8 @@ interface ActivityItem {
   title: string;
   subtitle: string;
   timestamp: string;
-  status?: "sent" | "paid" | "approved" | "draft";
+  status?: "sent" | "paid" | "approved" | "draft" | "pending";
 }
-
-const mockActivities: ActivityItem[] = [
-  {
-    id: "1",
-    type: "invoice",
-    title: "Invoice #INV-001 Sent",
-    subtitle: "Acme Corporation - $2,500.00",
-    timestamp: "2 hours ago",
-    status: "sent",
-  },
-  {
-    id: "2",
-    type: "proposal",
-    title: "Proposal Approved",
-    subtitle: "Tech Startup Inc - Website Redesign",
-    timestamp: "5 hours ago",
-    status: "approved",
-  },
-  {
-    id: "3",
-    type: "client",
-    title: "New Client Added",
-    subtitle: "Digital Agency Co.",
-    timestamp: "1 day ago",
-  },
-  {
-    id: "4",
-    type: "invoice",
-    title: "Payment Received",
-    subtitle: "Creative Labs - $4,200.00",
-    timestamp: "2 days ago",
-    status: "paid",
-  },
-];
 
 const iconMap = {
   invoice: Receipt,
@@ -55,9 +26,123 @@ const statusColors = {
   paid: "bg-success/20 text-success",
   approved: "bg-primary/20 text-primary",
   draft: "bg-muted text-muted-foreground",
+  pending: "bg-warning/20 text-warning",
 };
 
 export function RecentActivity() {
+  const [activities, setActivities] = useState<ActivityItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      const allActivities: ActivityItem[] = [];
+
+      // Fetch recent invoices
+      const { data: invoices } = await supabase
+        .from("invoices")
+        .select("id, invoice_number, total, status, created_at, clients(name)")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(5);
+
+      invoices?.forEach((inv) => {
+        allActivities.push({
+          id: inv.id,
+          type: "invoice",
+          title: `Invoice ${inv.invoice_number}`,
+          subtitle: `${(inv.clients as any)?.name || "Unknown Client"} - ${formatIDR(Number(inv.total))}`,
+          timestamp: formatDistanceToNow(new Date(inv.created_at), { addSuffix: true }),
+          status: inv.status as any,
+        });
+      });
+
+      // Fetch recent proposals
+      const { data: proposals } = await supabase
+        .from("proposals")
+        .select("id, title, status, created_at, clients(name)")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(5);
+
+      proposals?.forEach((prop) => {
+        allActivities.push({
+          id: prop.id,
+          type: "proposal",
+          title: prop.title,
+          subtitle: (prop.clients as any)?.name || "Unknown Client",
+          timestamp: formatDistanceToNow(new Date(prop.created_at), { addSuffix: true }),
+          status: prop.status as any,
+        });
+      });
+
+      // Fetch recent clients
+      const { data: clients } = await supabase
+        .from("clients")
+        .select("id, name, company, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(5);
+
+      clients?.forEach((client) => {
+        allActivities.push({
+          id: client.id,
+          type: "client",
+          title: "New Client Added",
+          subtitle: client.company || client.name,
+          timestamp: formatDistanceToNow(new Date(client.created_at), { addSuffix: true }),
+        });
+      });
+
+      // Sort by most recent
+      allActivities.sort((a, b) => {
+        // Simple sort by timestamp string - not perfect but works for display
+        return 0;
+      });
+
+      setActivities(allActivities.slice(0, 8));
+      setLoading(false);
+    };
+
+    fetchActivities();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="glass-card rounded-2xl p-6 animate-fade-in">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-foreground">Recent Activity</h3>
+        </div>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-16 bg-muted/50 rounded-xl animate-pulse" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (activities.length === 0) {
+    return (
+      <div className="glass-card rounded-2xl p-6 animate-fade-in">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-foreground">Recent Activity</h3>
+        </div>
+        <EmptyState
+          icon={Inbox}
+          title="No activity yet"
+          description="Your recent invoices, proposals, and client activity will appear here."
+          className="py-8"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="glass-card rounded-2xl p-6 animate-fade-in">
       <div className="flex items-center justify-between mb-6">
@@ -65,7 +150,7 @@ export function RecentActivity() {
         <button className="text-sm text-primary hover:underline">View All</button>
       </div>
       <div className="space-y-4">
-        {mockActivities.map((activity, index) => {
+        {activities.map((activity, index) => {
           const Icon = iconMap[activity.type];
           return (
             <div
