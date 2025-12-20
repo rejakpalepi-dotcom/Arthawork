@@ -63,9 +63,9 @@ export default function Proposals() {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [stats, setStats] = useState<ProposalStats>({
     pipelineValue: 0,
-    pipelineTrend: 12,
+    pipelineTrend: 0,
     acceptanceRate: 0,
-    acceptanceTrend: 5,
+    acceptanceTrend: 0,
     activeCount: 0,
     newThisWeek: 0,
   });
@@ -114,11 +114,38 @@ export default function Proposals() {
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
         const newThisWeek = mappedProposals.filter(p => new Date(p.created_at) > oneWeekAgo).length;
 
+        // Calculate MoM trends
+        const now = new Date();
+        const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+
+        const currentMonthProposals = mappedProposals.filter(p => new Date(p.created_at) >= currentMonthStart);
+        const prevMonthProposals = mappedProposals.filter(p => {
+          const date = new Date(p.created_at);
+          return date >= prevMonthStart && date <= prevMonthEnd;
+        });
+
+        // Pipeline: current month non-rejected vs previous month
+        const currentPipeline = currentMonthProposals.filter(p => p.status !== "rejected").reduce((sum, p) => sum + p.total, 0);
+        const prevPipeline = prevMonthProposals.filter(p => p.status !== "rejected").reduce((sum, p) => sum + p.total, 0);
+        const pipelineTrend = prevPipeline > 0 ? Math.round(((currentPipeline - prevPipeline) / prevPipeline) * 100) : 0;
+
+        // Acceptance rate trend
+        const currentAccepted = currentMonthProposals.filter(p => p.status === "approved").length;
+        const currentTotal = currentMonthProposals.length;
+        const currentRate = currentTotal > 0 ? (currentAccepted / currentTotal) * 100 : 0;
+        
+        const prevAccepted = prevMonthProposals.filter(p => p.status === "approved").length;
+        const prevTotal = prevMonthProposals.length;
+        const prevRate = prevTotal > 0 ? (prevAccepted / prevTotal) * 100 : 0;
+        const acceptanceTrend = prevRate > 0 ? Math.round(((currentRate - prevRate) / prevRate) * 100) : 0;
+
         setStats({
           pipelineValue: activeProposals.reduce((sum, p) => sum + p.total, 0),
-          pipelineTrend: 12,
+          pipelineTrend,
           acceptanceRate: mappedProposals.length > 0 ? Math.round((acceptedProposals.length / mappedProposals.length) * 100) : 0,
-          acceptanceTrend: 5,
+          acceptanceTrend,
           activeCount: activeProposals.length,
           newThisWeek,
         });
@@ -219,11 +246,18 @@ export default function Proposals() {
               <span className="text-sm text-muted-foreground">Pipeline Value</span>
             </div>
             <p className="text-2xl font-bold text-foreground mb-1">{formatIDR(stats.pipelineValue)}</p>
-            <div className="flex items-center gap-1">
-              <TrendingUp className="w-4 h-4 text-success" />
-              <span className="text-sm text-success">{stats.pipelineTrend}%</span>
-              <span className="text-xs text-muted-foreground">vs last month</span>
-            </div>
+            {stats.pipelineValue > 0 && stats.pipelineTrend !== 0 ? (
+              <div className="flex items-center gap-1">
+                <TrendingUp className={cn("w-4 h-4", stats.pipelineTrend > 0 ? "text-success" : "text-destructive rotate-180")} />
+                <span className={cn("text-sm", stats.pipelineTrend > 0 ? "text-success" : "text-destructive")}>{Math.abs(stats.pipelineTrend)}%</span>
+                <span className="text-xs text-muted-foreground">vs last month</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1">
+                <span className="text-sm text-muted-foreground">0%</span>
+                <span className="text-xs text-muted-foreground">vs last month</span>
+              </div>
+            )}
           </div>
           
           <div className="glass-card rounded-2xl p-6">
@@ -234,11 +268,18 @@ export default function Proposals() {
               <span className="text-sm text-muted-foreground">Acceptance Rate</span>
             </div>
             <p className="text-2xl font-bold text-foreground mb-1">{stats.acceptanceRate}%</p>
-            <div className="flex items-center gap-1">
-              <TrendingUp className="w-4 h-4 text-success" />
-              <span className="text-sm text-success">{stats.acceptanceTrend}%</span>
-              <span className="text-xs text-muted-foreground">vs last month</span>
-            </div>
+            {stats.acceptanceRate > 0 && stats.acceptanceTrend !== 0 ? (
+              <div className="flex items-center gap-1">
+                <TrendingUp className={cn("w-4 h-4", stats.acceptanceTrend > 0 ? "text-success" : "text-destructive rotate-180")} />
+                <span className={cn("text-sm", stats.acceptanceTrend > 0 ? "text-success" : "text-destructive")}>{Math.abs(stats.acceptanceTrend)}%</span>
+                <span className="text-xs text-muted-foreground">vs last month</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1">
+                <span className="text-sm text-muted-foreground">0%</span>
+                <span className="text-xs text-muted-foreground">vs last month</span>
+              </div>
+            )}
           </div>
           
           <div className="glass-card rounded-2xl p-6">
