@@ -7,19 +7,18 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useOAuth } from "@/hooks/useOAuth";
-import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Zap, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
-import paprworkLogo from "@/assets/paprwork-logo.png";
 
 export default function Login() {
   // Load remember me preference and saved email from localStorage
   const [rememberMe, setRememberMe] = useState(() => {
-    const saved = localStorage.getItem('papr_remember_me');
-    return saved !== null ? saved === 'true' : true;
+    const saved = localStorage.getItem("papr_remember_me");
+    return saved !== null ? saved === "true" : true;
   });
   const [email, setEmail] = useState(() => {
     // Pre-fill email if remember me was enabled
-    const savedEmail = localStorage.getItem('papr_saved_email');
+    const savedEmail = localStorage.getItem("papr_saved_email");
     return savedEmail || "";
   });
   const [password, setPassword] = useState("");
@@ -31,11 +30,11 @@ export default function Login() {
 
   // Persist remember me preference and email to localStorage
   useEffect(() => {
-    localStorage.setItem('papr_remember_me', String(rememberMe));
+    localStorage.setItem("papr_remember_me", String(rememberMe));
     if (rememberMe && email) {
-      localStorage.setItem('papr_saved_email', email);
+      localStorage.setItem("papr_saved_email", email);
     } else if (!rememberMe) {
-      localStorage.removeItem('papr_saved_email');
+      localStorage.removeItem("papr_saved_email");
     }
   }, [rememberMe, email]);
 
@@ -65,9 +64,9 @@ export default function Login() {
     // If rememberMe is false, we'll manually clear the session on browser close
     if (!rememberMe) {
       // Store a flag to indicate session-only persistence
-      sessionStorage.setItem('papr_session_only', 'true');
+      sessionStorage.setItem("papr_session_only", "true");
     } else {
-      sessionStorage.removeItem('papr_session_only');
+      sessionStorage.removeItem("papr_session_only");
     }
 
     const { error } = await supabase.auth.signInWithPassword({
@@ -84,7 +83,7 @@ export default function Login() {
     } else {
       toast({
         title: "Welcome back!",
-        description: rememberMe 
+        description: rememberMe
           ? "You have been logged in. Your session will be remembered."
           : "You have been logged in for this session only.",
       });
@@ -97,17 +96,17 @@ export default function Login() {
   // Handle Google OAuth with rememberMe preference
   const handleGoogleLogin = () => {
     if (!rememberMe) {
-      sessionStorage.setItem('papr_session_only', 'true');
+      sessionStorage.setItem("papr_session_only", "true");
     } else {
-      sessionStorage.removeItem('papr_session_only');
+      sessionStorage.removeItem("papr_session_only");
     }
     signInWithOAuth("google");
   };
 
   return (
     <>
-      <SEOHead 
-        title="Login" 
+      <SEOHead
+        title="Login"
         description="Sign in to Papr to manage your creative business. Access your proposals, invoices, and client management dashboard."
         canonical="https://papr.app/login"
       />
@@ -115,8 +114,14 @@ export default function Login() {
         {/* Left Panel - Branding */}
         <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border">
           <header className="flex items-center gap-3">
-            <img src={paprworkLogo} alt="Paprwork" className="h-10 w-10 object-contain" />
-            <span className="text-xl font-semibold text-foreground">Paprwork</span>
+            <div
+              className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary"
+              role="img"
+              aria-label="Papr logo"
+            >
+              <Zap className="w-6 h-6 text-primary-foreground" aria-hidden="true" />
+            </div>
+            <span className="text-xl font-semibold text-foreground">Papr</span>
           </header>
           <section className="space-y-4">
             <h1 className="text-4xl font-bold text-foreground">
@@ -128,32 +133,35 @@ export default function Login() {
               Streamline invoices, proposals, and client management all in one place.
             </p>
           </section>
-          <footer className="text-muted-foreground text-sm">© 2025 Paprwork. All rights reserved.</footer>
+          <footer className="text-muted-foreground text-sm">© 2025 Papr. All rights reserved.</footer>
         </aside>
 
         {/* Right Panel - Login Form */}
         <section className="flex-1 flex items-center justify-center p-8">
           <div className="w-full max-w-md space-y-8">
             <div className="text-center lg:text-left">
-              <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-                <img src={paprworkLogo} alt="Paprwork" className="h-10 w-10 object-contain" />
-                <span className="text-xl font-black text-foreground tracking-tight">Paprwork</span>
+              <div className="lg:hidden flex items-center justify-center gap-2 mb-8">
+                <div
+                  className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary"
+                  role="img"
+                  aria-label="Papr logo"
+                >
+                  <Zap className="w-6 h-6 text-primary-foreground" aria-hidden="true" />
+                </div>
+                <span className="text-xl font-black text-foreground tracking-tight">Papr</span>
               </div>
               <h2 className="text-2xl font-bold text-foreground">Welcome back</h2>
               <p className="text-muted-foreground mt-2">Access your creative dashboard</p>
             </div>
 
-            <form 
-              onSubmit={handleLogin} 
-              className="space-y-6" 
-              autoComplete="on"
-              method="post"
-              action="#"
-            >
+            <form onSubmit={handleLogin} className="space-y-6" autoComplete="on" method="post" action="#">
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" aria-hidden="true" />
+                  <Mail
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none"
+                    aria-hidden="true"
+                  />
                   <input
                     id="email"
                     name="email"
@@ -172,7 +180,10 @@ export default function Login() {
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" aria-hidden="true" />
+                  <Lock
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none"
+                    aria-hidden="true"
+                  />
                   <input
                     id="password"
                     name="password"
@@ -204,9 +215,9 @@ export default function Login() {
                     onCheckedChange={(checked) => setRememberMe(checked === true)}
                     className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                   />
-                  <Label 
-                    htmlFor="remember" 
-                    className={`text-sm cursor-pointer transition-colors ${rememberMe ? 'text-primary' : 'text-muted-foreground'}`}
+                  <Label
+                    htmlFor="remember"
+                    className={`text-sm cursor-pointer transition-colors ${rememberMe ? "text-primary" : "text-muted-foreground"}`}
                   >
                     Remember me
                   </Label>
@@ -216,12 +227,7 @@ export default function Login() {
                 </Link>
               </div>
 
-              <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={loading}
-                aria-label="Sign in to your Papr account"
-              >
+              <Button type="submit" className="w-full" disabled={loading} aria-label="Sign in to your Papr account">
                 {loading ? "Signing in..." : "Sign In"}
               </Button>
 
@@ -234,10 +240,10 @@ export default function Login() {
                 </div>
               </div>
 
-              <Button 
-                variant="outline" 
-                type="button" 
-                className="w-full gap-2" 
+              <Button
+                variant="outline"
+                type="button"
+                className="w-full gap-2"
                 onClick={handleGoogleLogin}
                 disabled={oauthLoading !== null}
               >
