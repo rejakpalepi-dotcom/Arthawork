@@ -1,0 +1,34 @@
+<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="arthaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#00D4E5" />
+      <stop offset="100%" stopColor="#00ACC1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Left diagonal stroke -->
+  <path
+    d="M8 40L22 8"
+    stroke="url(#arthaGradient)"
+    stroke-width="4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  
+  <!-- Right diagonal stroke -->
+  <path
+    d="M26 8L40 40"
+    stroke="url(#arthaGradient)"
+    stroke-width="4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  
+  <!-- Horizontal bar -->
+  <path
+    d="M14 28H34"
+    stroke="url(#arthaGradient)"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+</svg>
