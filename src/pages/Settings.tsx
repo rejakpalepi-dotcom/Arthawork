@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Building2, CreditCard, Palette, User } from "lucide-react";
+import { Building2, CreditCard, Palette, User, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BusinessProfileTab } from "@/components/settings/BusinessProfileTab";
 import { BrandingTab } from "@/components/settings/BrandingTab";
 import { PaymentDetailsTab } from "@/components/settings/PaymentDetailsTab";
 import { AccountTab } from "@/components/settings/AccountTab";
+import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 
 const settingsSections = [
   { id: "business", label: "Business Profile", icon: Building2 },
@@ -16,21 +17,61 @@ const settingsSections = [
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("business");
+  const { settings, loading, saving, updateSettings, saveSettings, uploadLogo } = useBusinessSettings();
 
   const renderActiveTab = () => {
     switch (activeTab) {
       case "business":
-        return <BusinessProfileTab />;
+        return (
+          <BusinessProfileTab
+            settings={settings}
+            saving={saving}
+            onUpdate={updateSettings}
+            onSave={saveSettings}
+          />
+        );
       case "branding":
-        return <BrandingTab />;
+        return (
+          <BrandingTab
+            settings={settings}
+            saving={saving}
+            onUpdate={updateSettings}
+            onSave={saveSettings}
+            onUploadLogo={uploadLogo}
+          />
+        );
       case "payment":
-        return <PaymentDetailsTab />;
+        return (
+          <PaymentDetailsTab
+            settings={settings}
+            saving={saving}
+            onUpdate={updateSettings}
+            onSave={saveSettings}
+          />
+        );
       case "account":
         return <AccountTab />;
       default:
-        return <BusinessProfileTab />;
+        return (
+          <BusinessProfileTab
+            settings={settings}
+            saving={saving}
+            onUpdate={updateSettings}
+            onSave={saveSettings}
+          />
+        );
     }
   };
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="p-8 flex items-center justify-center min-h-[400px]">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>

@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      business_settings: {
+        Row: {
+          accent_color: string | null
+          account_name: string | null
+          account_number: string | null
+          address: string | null
+          bank_name: string | null
+          business_name: string | null
+          created_at: string
+          email: string | null
+          id: string
+          logo_url: string | null
+          payment_notes: string | null
+          phone: string | null
+          primary_color: string | null
+          routing_number: string | null
+          stripe_connected: boolean | null
+          tagline: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          accent_color?: string | null
+          account_name?: string | null
+          account_number?: string | null
+          address?: string | null
+          bank_name?: string | null
+          business_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          payment_notes?: string | null
+          phone?: string | null
+          primary_color?: string | null
+          routing_number?: string | null
+          stripe_connected?: boolean | null
+          tagline?: string | null
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          accent_color?: string | null
+          account_name?: string | null
+          account_number?: string | null
+          address?: string | null
+          bank_name?: string | null
+          business_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          payment_notes?: string | null
+          phone?: string | null
+          primary_color?: string | null
+          routing_number?: string | null
+          stripe_connected?: boolean | null
+          tagline?: string | null
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           address: string | null
