@@ -14,7 +14,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true); // Default to true for better retention
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -42,6 +42,15 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
 
+    // Configure session persistence based on rememberMe
+    // If rememberMe is false, we'll manually clear the session on browser close
+    if (!rememberMe) {
+      // Store a flag to indicate session-only persistence
+      sessionStorage.setItem('papr_session_only', 'true');
+    } else {
+      sessionStorage.removeItem('papr_session_only');
+    }
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -56,12 +65,24 @@ export default function Login() {
     } else {
       toast({
         title: "Welcome back!",
-        description: "You have been logged in successfully.",
+        description: rememberMe 
+          ? "You have been logged in. Your session will be remembered."
+          : "You have been logged in for this session only.",
       });
       navigate("/dashboard", { replace: true });
     }
 
     setLoading(false);
+  };
+
+  // Handle Google OAuth with rememberMe preference
+  const handleGoogleLogin = () => {
+    if (!rememberMe) {
+      sessionStorage.setItem('papr_session_only', 'true');
+    } else {
+      sessionStorage.removeItem('papr_session_only');
+    }
+    signInWithOAuth("google");
   };
 
   return (
@@ -153,8 +174,12 @@ export default function Login() {
                   id="remember"
                   checked={rememberMe}
                   onCheckedChange={(checked) => setRememberMe(checked === true)}
+                  className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                 />
-                <Label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">
+                <Label 
+                  htmlFor="remember" 
+                  className={`text-sm cursor-pointer transition-colors ${rememberMe ? 'text-primary' : 'text-muted-foreground'}`}
+                >
                   Remember me
                 </Label>
               </div>
@@ -186,7 +211,7 @@ export default function Login() {
             variant="outline" 
             type="button" 
             className="w-full gap-2" 
-            onClick={() => signInWithOAuth("google")}
+            onClick={handleGoogleLogin}
             disabled={oauthLoading !== null}
           >
             {oauthLoading === "google" ? (
