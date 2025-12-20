@@ -11,7 +11,7 @@ import {
   Plus,
   LogOut,
 } from "lucide-react";
-import paprworkLogo from "@/assets/paprwork-logo.png";
+import arthaLogo from "@/assets/paprwork-logo.png";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -49,7 +49,7 @@ export function Sidebar() {
 
   const handleLogout = async () => {
     // Clear all session-related storage
-    sessionStorage.removeItem('papr_session_only');
+    sessionStorage.removeItem('artha_session_only');
     localStorage.removeItem('sb-sfkcncwbsoaqqteqguyf-auth-token');
     
     await supabase.auth.signOut();
@@ -72,12 +72,12 @@ export function Sidebar() {
       <div className="h-16 flex items-center justify-between px-4 border-b border-sidebar-border">
         <div className={cn("flex items-center gap-2 overflow-hidden", collapsed && "justify-center")}>
           <img 
-            src={paprworkLogo} 
-            alt="Paprwork" 
+            src={arthaLogo} 
+            alt="Artha" 
             className="h-8 w-8 shrink-0 object-contain"
           />
           {!collapsed && (
-            <span className="font-black text-foreground whitespace-nowrap tracking-tight">Paprwork</span>
+            <span className="font-bold text-foreground whitespace-nowrap tracking-tight">Artha</span>
           )}
         </div>
         <button
@@ -160,7 +160,7 @@ export function Sidebar() {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Sign out of Papr?</AlertDialogTitle>
+              <AlertDialogTitle>Sign out of Artha?</AlertDialogTitle>
               <AlertDialogDescription>
                 This will end your current session and clear all stored authentication data. 
                 You'll need to sign in again to access your account.
