@@ -8,10 +8,10 @@ import {
   Briefcase,
   ChevronLeft,
   ChevronRight,
-  Zap,
   Plus,
   LogOut,
 } from "lucide-react";
+import paprworkLogo from "@/assets/paprwork-logo.png";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -71,11 +71,13 @@ export function Sidebar() {
       {/* Logo */}
       <div className="h-16 flex items-center justify-between px-4 border-b border-sidebar-border">
         <div className={cn("flex items-center gap-2 overflow-hidden", collapsed && "justify-center")}>
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
-            <Zap className="w-5 h-5 text-primary-foreground" />
-          </div>
+          <img 
+            src={paprworkLogo} 
+            alt="Paprwork" 
+            className="h-8 w-8 shrink-0 object-contain"
+          />
           {!collapsed && (
-            <span className="font-black text-foreground whitespace-nowrap tracking-tight">Papr</span>
+            <span className="font-black text-foreground whitespace-nowrap tracking-tight">Paprwork</span>
           )}
         </div>
         <button
