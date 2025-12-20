@@ -13,6 +13,7 @@ import Proposals from "./pages/Proposals";
 import Invoices from "./pages/Invoices";
 import InvoiceBuilder from "./pages/InvoiceBuilder";
 import ProjectBuilder from "./pages/ProjectBuilder";
+import ProposalBuilder from "./pages/ProposalBuilder";
 import Settings from "./pages/Settings";
 import GuestPayment from "./pages/GuestPayment";
 import NotFound from "./pages/NotFound";
@@ -93,6 +94,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <ProjectBuilder />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/proposals/new"
+            element={
+              <ProtectedRoute>
+                <ProposalBuilder />
               </ProtectedRoute>
             }
           />
