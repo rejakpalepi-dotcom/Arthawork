@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -8,8 +8,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { formatIDR } from "@/lib/currency";
-import { Layout, FileText, Briefcase, Gem, Calendar, CreditCard } from "lucide-react";
-import type { ProposalData, Service, Milestone } from "@/pages/ProposalBuilder";
+import { Layout, FileText, Briefcase, Gem, Calendar, CreditCard, Plus, Trash2, Upload, ImagePlus } from "lucide-react";
+import type { ProposalData, Service, Milestone, CustomService } from "@/pages/ProposalBuilder";
 
 interface Client {
   id: string;
@@ -167,6 +167,17 @@ function IntroEditor({
   data: ProposalData;
   onUpdate: (updates: Partial<ProposalData>) => void;
 }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Create a local URL for preview (in production, upload to storage)
+      const url = URL.createObjectURL(file);
+      onUpdate({ heroImageUrl: url });
+    }
+  };
+
   return (
     <div className="space-y-6 font-sans">
       <div className="pb-4 border-b border-border">
@@ -206,11 +217,34 @@ function IntroEditor({
 
         <div className="space-y-2">
           <Label className="text-sm font-medium text-foreground">Hero Image</Label>
-          <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors cursor-pointer bg-muted/30">
-            <span className="material-symbols-outlined text-4xl text-muted-foreground mb-2">add_photo_alternate</span>
-            <p className="text-sm text-muted-foreground font-medium">Click to upload or drag and drop</p>
-            <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 10MB</p>
-          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+          />
+          {data.heroImageUrl ? (
+            <div className="relative rounded-xl overflow-hidden border border-border">
+              <img src={data.heroImageUrl} alt="Hero" className="w-full h-40 object-cover" />
+              <button
+                onClick={() => onUpdate({ heroImageUrl: "" })}
+                className="absolute top-2 right-2 p-1.5 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors cursor-pointer bg-muted/30 group"
+            >
+              <ImagePlus className="h-10 w-10 text-muted-foreground mx-auto mb-2 group-hover:text-primary transition-colors" />
+              <p className="text-sm text-muted-foreground font-medium group-hover:text-foreground transition-colors">Upload Image Here</p>
+              <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 10MB</p>
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -224,6 +258,24 @@ function ExperienceEditor({
   data: ProposalData;
   onUpdate: (updates: Partial<ProposalData>) => void;
 }) {
+  const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const handleLogoUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      const newLogos = [...(data.clientLogos || [])];
+      newLogos[index] = url;
+      onUpdate({ clientLogos: newLogos });
+    }
+  };
+
+  const removeLogo = (index: number) => {
+    const newLogos = [...(data.clientLogos || [])];
+    newLogos[index] = "";
+    onUpdate({ clientLogos: newLogos });
+  };
+
   return (
     <div className="space-y-6 font-sans">
       <div className="pb-4 border-b border-border">
@@ -303,16 +355,42 @@ function ExperienceEditor({
         <div className="space-y-2">
           <Label className="text-sm font-medium text-foreground">Client Logos</Label>
           <div className="grid grid-cols-3 gap-3">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div
-                key={i}
-                className="aspect-square border-2 border-dashed border-border rounded-xl flex items-center justify-center hover:border-primary/50 transition-colors cursor-pointer bg-muted/30"
-              >
-                <span className="material-symbols-outlined text-2xl text-muted-foreground">add</span>
-              </div>
-            ))}
+            {[0, 1, 2, 3, 4, 5].map((i) => {
+              const logo = data.clientLogos?.[i];
+              return (
+                <div key={i} className="relative">
+                  <input
+                    ref={(el) => (fileInputRefs.current[i] = el)}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleLogoUpload(i, e)}
+                    className="hidden"
+                  />
+                  {logo ? (
+                    <div className="aspect-square rounded-xl overflow-hidden border border-border relative group">
+                      <img src={logo} alt={`Logo ${i + 1}`} className="w-full h-full object-contain bg-white p-2" />
+                      <button
+                        onClick={() => removeLogo(i)}
+                        className="absolute top-1 right-1 p-1 bg-destructive text-destructive-foreground rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => fileInputRefs.current[i]?.click()}
+                      className="w-full aspect-square border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center hover:border-primary/50 transition-colors cursor-pointer bg-muted/30 group"
+                    >
+                      <Upload className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="text-[10px] text-muted-foreground mt-1 group-hover:text-foreground transition-colors">Upload</span>
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
-          <p className="text-xs text-muted-foreground">Upload up to 6 client logos</p>
+          <p className="text-xs text-muted-foreground">PNG, JPG up to 10MB</p>
         </div>
       </div>
     </div>
@@ -361,6 +439,38 @@ function ServicesEditor({
     }
   };
 
+  // Custom services management
+  const addCustomService = () => {
+    const newService: CustomService = {
+      id: crypto.randomUUID(),
+      name: "",
+      description: "",
+      price: 0,
+      unit: "project",
+    };
+    onUpdate({ customServices: [...(data.customServices || []), newService] });
+  };
+
+  const updateCustomService = (id: string, updates: Partial<CustomService>) => {
+    onUpdate({
+      customServices: (data.customServices || []).map((s) =>
+        s.id === id ? { ...s, ...updates } : s
+      ),
+    });
+  };
+
+  const removeCustomService = (id: string) => {
+    onUpdate({
+      customServices: (data.customServices || []).filter((s) => s.id !== id),
+    });
+  };
+
+  const allServices = [
+    ...data.selectedServices,
+    ...(data.customServices || []),
+  ];
+  const totalPrice = allServices.reduce((sum, s) => sum + s.price, 0);
+
   return (
     <div className="space-y-6 font-sans">
       <div className="pb-4 border-b border-border">
@@ -368,20 +478,21 @@ function ServicesEditor({
           <Gem className="h-5 w-5 text-primary" />
           Design Services
         </h2>
-        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Select services to include in this proposal</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Select or add custom services for this proposal</p>
       </div>
 
+      {/* Available Services from Database */}
       <div className="space-y-3">
+        <Label className="text-sm font-medium text-foreground">Select From Catalog</Label>
         {isLoading ? (
           <>
             <Skeleton className="h-16 w-full" />
             <Skeleton className="h-16 w-full" />
-            <Skeleton className="h-16 w-full" />
           </>
         ) : availableServices.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <span className="material-symbols-outlined text-4xl mb-2">inventory_2</span>
-            <p className="text-sm">No services found. Add services first.</p>
+          <div className="text-center py-4 text-muted-foreground border border-dashed border-border rounded-xl">
+            <Gem className="h-8 w-8 mx-auto mb-2 text-muted-foreground/50" />
+            <p className="text-sm">No services in catalog. Add custom services below.</p>
           </div>
         ) : (
           availableServices.map((service) => {
@@ -417,12 +528,84 @@ function ServicesEditor({
         )}
       </div>
 
-      {data.selectedServices.length > 0 && (
+      {/* Custom Services */}
+      <div className="space-y-3 pt-4 border-t border-border">
+        <Label className="text-sm font-medium text-foreground">Custom Services</Label>
+        {(data.customServices || []).map((service, index) => (
+          <div key={service.id} className="p-4 rounded-xl border border-border bg-muted/30 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+                Custom Item {index + 1}
+              </span>
+              <button
+                type="button"
+                onClick={() => removeCustomService(service.id)}
+                className="text-muted-foreground hover:text-destructive transition-colors p-1"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="space-y-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">Service Name</Label>
+                <Input
+                  value={service.name}
+                  onChange={(e) => updateCustomService(service.id, { name: e.target.value })}
+                  placeholder="e.g., Brand Identity Design"
+                  className="bg-background border-border text-sm"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">Task Details / Deliverables</Label>
+                <Textarea
+                  value={service.description || ""}
+                  onChange={(e) => updateCustomService(service.id, { description: e.target.value })}
+                  placeholder="Describe the deliverables..."
+                  className="bg-background border-border text-sm min-h-[60px] resize-none"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-muted-foreground">Investment (IDR)</Label>
+                  <Input
+                    type="number"
+                    value={service.price}
+                    onChange={(e) => updateCustomService(service.id, { price: parseFloat(e.target.value) || 0 })}
+                    placeholder="0"
+                    className="bg-background border-border text-sm"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-muted-foreground">Unit</Label>
+                  <Input
+                    value={service.unit || ""}
+                    onChange={(e) => updateCustomService(service.id, { unit: e.target.value })}
+                    placeholder="e.g., project, hour"
+                    className="bg-background border-border text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        <Button
+          type="button"
+          variant="outline"
+          onClick={addCustomService}
+          className="w-full border-dashed border-border hover:border-primary"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add Custom Service
+        </Button>
+      </div>
+
+      {allServices.length > 0 && (
         <div className="pt-4 border-t border-border">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">{data.selectedServices.length} service(s) selected</span>
-            <span className="font-semibold text-foreground">
-              Total: {formatIDR(data.selectedServices.reduce((sum, s) => sum + s.price, 0))}
+            <span className="text-muted-foreground">{allServices.length} service(s) total</span>
+            <span className="font-semibold text-primary text-base">
+              {formatIDR(totalPrice)}
             </span>
           </div>
         </div>
@@ -478,10 +661,11 @@ function TimelineEditor({
                 Milestone {index + 1}
               </span>
               <button
+                type="button"
                 onClick={() => removeMilestone(milestone.id)}
-                className="text-muted-foreground hover:text-destructive transition-colors"
+                className="text-muted-foreground hover:text-destructive transition-colors p-1"
               >
-                <span className="material-symbols-outlined text-lg">delete</span>
+                <Trash2 className="h-4 w-4" />
               </button>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -522,7 +706,7 @@ function TimelineEditor({
           onClick={addMilestone}
           className="w-full border-dashed border-border hover:border-primary"
         >
-          <span className="material-symbols-outlined text-lg mr-2">add</span>
+          <Plus className="h-4 w-4 mr-2" />
           Add Milestone
         </Button>
       </div>
@@ -537,7 +721,13 @@ function InvestmentEditor({
   data: ProposalData;
   onUpdate: (updates: Partial<ProposalData>) => void;
 }) {
-  const subtotal = data.selectedServices.reduce((sum, s) => sum + s.price, 0);
+  // Combine selected and custom services
+  const allServices = [
+    ...data.selectedServices.map(s => ({ ...s, isCustom: false })),
+    ...(data.customServices || []).map(s => ({ ...s, isCustom: true })),
+  ];
+  
+  const subtotal = allServices.reduce((sum, s) => sum + s.price, 0);
   const taxAmount = subtotal * (data.taxRate / 100);
   const total = subtotal + taxAmount;
 
@@ -551,10 +741,11 @@ function InvestmentEditor({
         <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Review scope of work and pricing</p>
       </div>
 
-      {data.selectedServices.length === 0 ? (
-        <div className="text-center py-8 text-muted-foreground">
-          <span className="material-symbols-outlined text-4xl mb-2">shopping_cart</span>
-          <p className="text-sm">No services selected. Go to Services tab to add items.</p>
+      {allServices.length === 0 ? (
+        <div className="text-center py-8 text-muted-foreground border border-dashed border-border rounded-xl">
+          <CreditCard className="h-10 w-10 mx-auto mb-2 text-muted-foreground/50" />
+          <p className="text-sm font-medium">No services added yet</p>
+          <p className="text-xs mt-1">Go to Design Services tab to add items.</p>
         </div>
       ) : (
         <>
@@ -566,9 +757,14 @@ function InvestmentEditor({
                 <span className="text-center">Unit</span>
                 <span className="text-right">Price</span>
               </div>
-              {data.selectedServices.map((service) => (
-                <div key={service.id} className="px-4 py-3 border-b border-border last:border-0 grid grid-cols-3 text-sm">
-                  <span className="text-foreground font-medium">{service.name}</span>
+              {allServices.map((service) => (
+                <div key={service.id} className="px-4 py-3 border-b border-border last:border-0 grid grid-cols-3 text-sm items-center">
+                  <div>
+                    <span className="text-foreground font-medium">{service.name || "Untitled Service"}</span>
+                    {service.isCustom && (
+                      <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium">Custom</span>
+                    )}
+                  </div>
                   <span className="text-center text-muted-foreground">{service.unit || "—"}</span>
                   <span className="text-right text-foreground">{formatIDR(service.price)}</span>
                 </div>
@@ -609,10 +805,12 @@ function InvestmentEditor({
               <span className="text-muted-foreground">Subtotal</span>
               <span className="text-foreground">{formatIDR(subtotal)}</span>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Tax ({data.taxRate}%)</span>
-              <span className="text-foreground">{formatIDR(taxAmount)}</span>
-            </div>
+            {data.taxRate > 0 && (
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Tax ({data.taxRate}%)</span>
+                <span className="text-foreground">{formatIDR(taxAmount)}</span>
+              </div>
+            )}
             <div className="flex justify-between text-lg font-bold pt-2 border-t border-border">
               <span className="text-foreground">Total Investment</span>
               <span className="text-primary">{formatIDR(total)}</span>

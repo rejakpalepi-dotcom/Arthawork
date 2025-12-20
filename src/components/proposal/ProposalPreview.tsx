@@ -211,6 +211,11 @@ function ServicesPreview({
 }: {
   data: ProposalData;
 }) {
+  const allServices = [
+    ...data.selectedServices,
+    ...(data.customServices || []),
+  ];
+
   return <div className="h-full bg-white flex flex-col font-sans">
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-gray-100">
@@ -228,18 +233,18 @@ function ServicesPreview({
         <h2 className="text-lg font-black text-[#1a1a1a] mb-1">Our Services</h2>
         <p className="text-[10px] text-gray-500 mb-4 font-normal">What we bring to the table</p>
 
-        {data.selectedServices.length === 0 ? <div className="text-center py-8 text-gray-400">
+        {allServices.length === 0 ? <div className="text-center py-8 text-gray-400">
             <span className="text-3xl mb-2">💎</span>
             <p className="text-[10px] font-normal">No services selected yet</p>
           </div> : <div className="space-y-2">
-            {data.selectedServices.map((service, index) => <div key={service.id} className="p-3 rounded-lg bg-gray-50 border border-gray-100">
+            {allServices.map((service, index) => <div key={service.id} className="p-3 rounded-lg bg-gray-50 border border-gray-100">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-start gap-2">
                     <div className="w-5 h-5 rounded bg-[#00ACC1]/10 text-[#00ACC1] flex items-center justify-center text-[9px] font-bold flex-shrink-0 mt-0.5">
                       {index + 1}
                     </div>
                     <div>
-                      <h3 className="text-[11px] font-semibold text-[#1a1a1a]">{service.name}</h3>
+                      <h3 className="text-[11px] font-semibold text-[#1a1a1a]">{service.name || "Untitled Service"}</h3>
                       {service.description && <p className="text-[9px] text-gray-500 mt-0.5 line-clamp-2 font-normal">{service.description}</p>}
                     </div>
                   </div>

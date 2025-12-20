@@ -15,6 +15,14 @@ export interface Service {
   unit: string | null;
 }
 
+export interface CustomService {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  unit: string;
+}
+
 export interface Milestone {
   id: string;
   week: string;
@@ -43,9 +51,11 @@ export interface ProposalData {
   projectCount: string;
   countriesCount: string;
   rating: string;
+  clientLogos: string[];
   
   // Page 4 - Services
   selectedServices: Service[];
+  customServices: CustomService[];
   
   // Page 5 - Timeline
   milestones: Milestone[];
@@ -79,8 +89,10 @@ const initialProposalData: ProposalData = {
   projectCount: "50+",
   countriesCount: "12",
   rating: "5.0",
+  clientLogos: ["", "", "", "", "", ""],
   
   selectedServices: [],
+  customServices: [],
   
   milestones: [
     { id: crypto.randomUUID(), week: "Week 1", title: "Initial Planning & Discovery", description: "Research, stakeholder interviews, and project kickoff" },
