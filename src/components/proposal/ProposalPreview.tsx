@@ -47,7 +47,7 @@ function CoverPreview({
       <div className="relative z-10 flex items-center justify-between px-6 pt-6 pb-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 bg-[#00ACC1] rounded-md flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-[10px] font-black">K</span>
+            <span className="text-white text-[10px] font-black">P</span>
           </div>
           <span className="font-semibold text-[10px] tracking-[0.15em] uppercase text-white/90">
             {data.studioName}

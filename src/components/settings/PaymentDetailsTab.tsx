@@ -19,7 +19,7 @@ export function PaymentDetailsTab() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="accountName">Account Name</Label>
-            <Input id="accountName" placeholder="Kalaudra Studio" />
+            <Input id="accountName" placeholder="Papr Studio" />
           </div>
         </div>
 

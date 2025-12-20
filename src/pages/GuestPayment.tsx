@@ -147,7 +147,7 @@ export default function GuestPayment() {
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Zap className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-semibold text-foreground">Kalaudra Studio</span>
+            <span className="font-black text-foreground tracking-tight">Papr</span>
           </div>
         </header>
 
@@ -178,7 +178,7 @@ export default function GuestPayment() {
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Zap className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-semibold text-foreground">Kalaudra Studio</span>
+            <span className="font-black text-foreground tracking-tight">Papr</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Lock className="w-4 h-4" />
@@ -197,7 +197,7 @@ export default function GuestPayment() {
                 Complete Your<br />Payment
               </h1>
               <p className="text-muted-foreground mt-3">
-                Securely pay invoice #{invoice.invoice_number} for your recent project with Kalaudra Studio.
+                Securely pay invoice #{invoice.invoice_number} for your recent project with Papr.
               </p>
             </div>
 
@@ -394,7 +394,7 @@ export default function GuestPayment() {
                     </div>
 
                     <p className="text-xs text-muted-foreground text-center mt-4">
-                      By confirming payment, you allow Kalaudra Studio to charge your card for the amount above securely.
+                      By confirming payment, you allow Papr to charge your card for the amount above securely.
                     </p>
                   </div>
                 )}
@@ -413,7 +413,7 @@ export default function GuestPayment() {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Account Name</span>
-                        <span className="font-medium text-foreground">Kalaudra Studio</span>
+                        <span className="font-medium text-foreground">Papr Studio</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Amount</span>
@@ -453,8 +453,8 @@ export default function GuestPayment() {
       {/* Footer */}
       <footer className="border-t border-border py-6 px-6 mt-8">
         <div className="max-w-6xl mx-auto text-center text-muted-foreground text-sm">
-          <p>© 2024 Kalaudra Studio. All rights reserved.</p>
-          <p className="mt-1">Questions about this invoice? Contact us at support@kalaudra.studio</p>
+          <p>© 2024 Papr. All rights reserved.</p>
+          <p className="mt-1">Questions about this invoice? Contact us at support@papr.studio</p>
         </div>
       </footer>
     </div>

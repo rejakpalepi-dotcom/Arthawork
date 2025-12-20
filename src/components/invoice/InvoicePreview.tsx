@@ -22,10 +22,10 @@ export function InvoicePreview({ data, subtotal, taxAmount, total }: InvoicePrev
               <Zap className="w-8 h-8 text-primary-foreground" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-foreground">Kalaudra Studio</h2>
+              <h2 className="text-xl font-black text-foreground tracking-tight">Papr</h2>
               <p className="text-sm text-muted-foreground mt-1">123 Creative Ave, Studio 4B</p>
               <p className="text-sm text-muted-foreground">San Francisco, CA 94103</p>
-              <p className="text-sm text-primary mt-1">hello@kalaudra.com</p>
+              <p className="text-sm text-primary mt-1">hello@papr.studio</p>
             </div>
           </div>
           <div className="text-right">
