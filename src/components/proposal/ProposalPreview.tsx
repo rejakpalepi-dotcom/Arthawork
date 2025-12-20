@@ -104,10 +104,8 @@ function IntroPreview({
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-5 pb-3">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-[#1a1a1a] rounded flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-[8px] font-black">K</span>
-          </div>
-          <span className="text-[10px] text-gray-400 font-medium">{data.studioName}</span>
+          
+          
         </div>
         {data.clientCompany && <span className="text-[10px] text-gray-400">{data.clientCompany}</span>}
       </div>
