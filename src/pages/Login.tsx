@@ -11,23 +11,32 @@ import { Zap, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  // Load remember me preference from localStorage, default to true
+  // Load remember me preference and saved email from localStorage
   const [rememberMe, setRememberMe] = useState(() => {
     const saved = localStorage.getItem('papr_remember_me');
     return saved !== null ? saved === 'true' : true;
   });
+  const [email, setEmail] = useState(() => {
+    // Pre-fill email if remember me was enabled
+    const savedEmail = localStorage.getItem('papr_saved_email');
+    return savedEmail || "";
+  });
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { oauthLoading, signInWithOAuth } = useOAuth();
 
-  // Persist remember me preference to localStorage
+  // Persist remember me preference and email to localStorage
   useEffect(() => {
     localStorage.setItem('papr_remember_me', String(rememberMe));
-  }, [rememberMe]);
+    if (rememberMe && email) {
+      localStorage.setItem('papr_saved_email', email);
+    } else if (!rememberMe) {
+      localStorage.removeItem('papr_saved_email');
+    }
+  }, [rememberMe, email]);
 
   useEffect(() => {
     const {
@@ -146,7 +155,7 @@ export default function Login() {
                   id="email"
                   name="email"
                   type="email"
-                  autoComplete="email"
+                  autoComplete="username"
                   placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
