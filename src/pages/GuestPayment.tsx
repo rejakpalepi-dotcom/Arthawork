@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { format } from "date-fns";
-import { Zap, CheckCircle, Clock, AlertCircle, CreditCard, Building2, Mail, MapPin } from "lucide-react";
+import { 
+  Zap, CheckCircle, Clock, AlertCircle, CreditCard, Building2, 
+  Lock, Shield, Search, Palette, Code, HelpCircle, Mail
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { formatIDR } from "@/lib/currency";
 import { cn } from "@/lib/utils";
@@ -36,18 +42,28 @@ interface InvoiceData {
 }
 
 const statusConfig = {
-  draft: { label: "Draft", icon: Clock, color: "text-muted-foreground", bg: "bg-muted" },
-  pending: { label: "Pending", icon: Clock, color: "text-warning", bg: "bg-warning/20" },
-  sent: { label: "Awaiting Payment", icon: Clock, color: "text-warning", bg: "bg-warning/20" },
-  paid: { label: "Paid", icon: CheckCircle, color: "text-success", bg: "bg-success/20" },
-  overdue: { label: "Overdue", icon: AlertCircle, color: "text-destructive", bg: "bg-destructive/20" },
+  draft: { label: "Draft", color: "text-muted-foreground", bg: "bg-muted" },
+  pending: { label: "Pending", color: "text-warning", bg: "bg-warning/20" },
+  sent: { label: "Awaiting Payment", color: "text-warning", bg: "bg-warning/20" },
+  paid: { label: "Paid", color: "text-success", bg: "bg-success/20" },
+  overdue: { label: "Overdue", color: "text-destructive", bg: "bg-destructive/20" },
 };
+
+const serviceIcons: Record<number, typeof Search> = {
+  0: Search,
+  1: Palette,
+  2: Code,
+};
+
+type PaymentMethod = "card" | "bank" | "paypal";
 
 export default function GuestPayment() {
   const { token } = useParams<{ token: string }>();
   const [invoice, setInvoice] = useState<InvoiceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
+  const [useBillingAddress, setUseBillingAddress] = useState(true);
 
   useEffect(() => {
     const fetchInvoice = async () => {
@@ -58,7 +74,6 @@ export default function GuestPayment() {
       }
 
       try {
-        // Fetch invoice by payment token
         const { data: invoiceData, error: invoiceError } = await supabase
           .from("invoices")
           .select(`
@@ -90,7 +105,6 @@ export default function GuestPayment() {
           return;
         }
 
-        // Fetch invoice items
         const { data: itemsData, error: itemsError } = await supabase
           .from("invoice_items")
           .select("id, description, quantity, unit_price, total")
@@ -129,7 +143,7 @@ export default function GuestPayment() {
     return (
       <div className="min-h-screen bg-background">
         <header className="border-b border-border py-4 px-6">
-          <div className="max-w-4xl mx-auto flex items-center gap-3">
+          <div className="max-w-6xl mx-auto flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Zap className="w-5 h-5 text-primary-foreground" />
             </div>
@@ -154,177 +168,291 @@ export default function GuestPayment() {
   const isOverdue = invoice.status !== "paid" && invoice.due_date && new Date(invoice.due_date) < new Date();
   const statusKey = isOverdue ? "overdue" : invoice.status;
   const status = statusConfig[statusKey as keyof typeof statusConfig] || statusConfig.pending;
-  const StatusIcon = status.icon;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border py-4 px-6">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+      <header className="border-b border-border py-4 px-6 bg-card/50 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Zap className="w-5 h-5 text-primary-foreground" />
             </div>
             <span className="font-semibold text-foreground">Kalaudra Studio</span>
           </div>
-          <span className={cn("px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-1.5", status.bg, status.color)}>
-            <StatusIcon className="w-4 h-4" />
-            {status.label}
-          </span>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Lock className="w-4 h-4" />
+            <span>Secure Checkout</span>
+          </div>
         </div>
       </header>
 
-      {/* Content */}
-      <main className="flex-1 max-w-4xl mx-auto p-6 w-full">
-        <div className="glass-card rounded-2xl overflow-hidden">
-          {/* Invoice Header */}
-          <div className="bg-gradient-to-r from-primary/20 to-primary/5 p-8 border-b border-border">
-            <div className="flex items-start justify-between">
+      <main className="max-w-6xl mx-auto p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Side - Invoice Summary */}
+          <div className="space-y-6">
+            <div>
+              <p className="text-sm text-primary font-medium mb-2">Payment Portal</p>
+              <h1 className="text-3xl font-bold text-foreground">
+                Complete Your<br />Payment
+              </h1>
+              <p className="text-muted-foreground mt-3">
+                Securely pay invoice #{invoice.invoice_number} for your recent project with Kalaudra Studio.
+              </p>
+            </div>
+
+            {/* Project & Due Date */}
+            <div className="flex items-center gap-6">
               <div>
-                <h1 className="text-3xl font-bold gradient-text mb-1">INVOICE</h1>
-                <p className="text-xl font-mono text-foreground">{invoice.invoice_number}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm text-muted-foreground">Issue Date</p>
-                <p className="text-foreground font-medium">
-                  {format(new Date(invoice.issue_date), "MMMM d, yyyy")}
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">Project</p>
+                <p className="text-sm font-medium text-foreground mt-1">
+                  {invoice.items[0]?.description?.split(' - ')[0] || "Project"}
                 </p>
-                {invoice.due_date && (
-                  <>
-                    <p className="text-sm text-muted-foreground mt-2">Due Date</p>
-                    <p className={cn("font-medium", isOverdue ? "text-destructive" : "text-foreground")}>
-                      {format(new Date(invoice.due_date), "MMMM d, yyyy")}
-                    </p>
-                  </>
-                )}
+              </div>
+              {invoice.due_date && (
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Due Date</p>
+                  <p className={cn("text-sm font-medium mt-1", isOverdue ? "text-destructive" : "text-foreground")}>
+                    {format(new Date(invoice.due_date), "MMM d, yyyy")}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Services List */}
+            <div className="glass-card rounded-2xl p-6 space-y-4">
+              {invoice.items.map((item, index) => {
+                const Icon = serviceIcons[index % 3] || Search;
+                return (
+                  <div key={item.id} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <Icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <span className="text-sm font-medium text-foreground">{item.description}</span>
+                    </div>
+                    <span className="font-mono text-sm font-medium text-foreground">{formatIDR(item.total)}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Total Amount */}
+            <div className="glass-card rounded-2xl p-6 bg-gradient-to-br from-primary/10 to-transparent">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Amount Due</p>
+                  <p className="text-xs text-muted-foreground">Including all applicable taxes</p>
+                </div>
+                <span className="text-3xl font-bold gradient-text font-mono">{formatIDR(invoice.total)}</span>
+              </div>
+            </div>
+
+            {/* Client & Invoice Info */}
+            <div className="flex items-center gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-muted-foreground" />
+                <div>
+                  <p className="text-muted-foreground">Client</p>
+                  <p className="font-medium text-foreground">{invoice.client?.name || "Client"}</p>
+                  {invoice.client?.address && (
+                    <p className="text-xs text-muted-foreground">{invoice.client.address.split(',')[1]?.trim()}</p>
+                  )}
+                </div>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Invoice ID</p>
+                <p className="font-medium text-foreground font-mono">#{invoice.invoice_number}</p>
+                <span className={cn("px-2 py-0.5 rounded text-xs font-medium", status.bg, status.color)}>
+                  {status.label}
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="p-8">
-            {/* Client Info */}
-            {invoice.client && (
-              <div className="mb-8 p-4 rounded-xl bg-secondary/30 border border-border/50">
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Bill To</h3>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Building2 className="w-6 h-6 text-primary" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-lg font-semibold text-foreground">{invoice.client.name}</p>
-                    {invoice.client.company && (
-                      <p className="text-sm text-muted-foreground">{invoice.client.company}</p>
-                    )}
-                    {invoice.client.email && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Mail className="w-4 h-4" />
-                        {invoice.client.email}
-                      </div>
-                    )}
-                    {invoice.client.address && (
-                      <div className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
-                        <span className="whitespace-pre-line">{invoice.client.address}</span>
-                      </div>
-                    )}
-                  </div>
+          {/* Right Side - Payment Form */}
+          <div className="glass-card rounded-2xl p-8">
+            {invoice.status === "paid" ? (
+              <div className="text-center py-12">
+                <div className="w-20 h-20 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-10 h-10 text-success" />
                 </div>
-              </div>
-            )}
-
-            {/* Line Items */}
-            <div className="rounded-xl overflow-hidden border border-border mb-6">
-              <table className="w-full">
-                <thead className="bg-secondary/50">
-                  <tr>
-                    <th className="text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider p-4">
-                      Description
-                    </th>
-                    <th className="text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider p-4 w-20">
-                      Qty
-                    </th>
-                    <th className="text-right text-xs font-semibold text-muted-foreground uppercase tracking-wider p-4 w-32">
-                      Unit Price
-                    </th>
-                    <th className="text-right text-xs font-semibold text-muted-foreground uppercase tracking-wider p-4 w-32">
-                      Total
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {invoice.items.map((item, index) => (
-                    <tr key={item.id} className={index % 2 === 0 ? "bg-card" : "bg-secondary/20"}>
-                      <td className="p-4 text-sm text-foreground">{item.description}</td>
-                      <td className="p-4 text-sm text-foreground text-center">{item.quantity}</td>
-                      <td className="p-4 text-sm text-foreground text-right font-mono">
-                        {formatIDR(item.unit_price)}
-                      </td>
-                      <td className="p-4 text-sm text-foreground text-right font-mono font-medium">
-                        {formatIDR(item.total)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Totals */}
-            <div className="flex justify-end mb-8">
-              <div className="w-72 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-mono text-foreground">{formatIDR(invoice.subtotal)}</span>
-                </div>
-                {invoice.tax_rate && invoice.tax_rate > 0 && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Tax ({invoice.tax_rate}%)</span>
-                    <span className="font-mono text-foreground">{formatIDR(invoice.tax_amount || 0)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between pt-3 border-t border-border">
-                  <span className="text-xl font-semibold text-foreground">Total Due</span>
-                  <span className="text-2xl font-bold font-mono gradient-text">{formatIDR(invoice.total)}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Notes */}
-            {invoice.notes && (
-              <div className="p-4 rounded-xl bg-secondary/30 border border-border/50 mb-8">
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Notes</h3>
-                <p className="text-sm text-muted-foreground whitespace-pre-line">{invoice.notes}</p>
-              </div>
-            )}
-
-            {/* Payment Button */}
-            {invoice.status !== "paid" && (
-              <div className="space-y-4">
-                <Button className="w-full h-14 text-lg gap-3" size="lg">
-                  <CreditCard className="w-5 h-5" />
-                  Pay {formatIDR(invoice.total)}
-                </Button>
-                <p className="text-center text-xs text-muted-foreground">
-                  Secure payment powered by our payment gateway. Your payment information is encrypted.
-                </p>
-              </div>
-            )}
-
-            {invoice.status === "paid" && (
-              <div className="p-6 rounded-xl bg-success/10 border border-success/30 text-center">
-                <CheckCircle className="w-12 h-12 text-success mx-auto mb-3" />
-                <h3 className="text-lg font-semibold text-success mb-1">Payment Complete</h3>
-                <p className="text-sm text-muted-foreground">
+                <h2 className="text-2xl font-bold text-success mb-2">Payment Complete</h2>
+                <p className="text-muted-foreground">
                   Thank you for your payment. This invoice has been paid.
                 </p>
               </div>
+            ) : (
+              <>
+                {/* Payment Method Tabs */}
+                <div className="flex items-center gap-2 p-1 bg-secondary rounded-xl mb-6">
+                  {[
+                    { id: "card" as const, label: "Card Payment", icon: CreditCard },
+                    { id: "bank" as const, label: "Bank Transfer", icon: Building2 },
+                    { id: "paypal" as const, label: "PayPal", icon: null },
+                  ].map((method) => (
+                    <button
+                      key={method.id}
+                      onClick={() => setPaymentMethod(method.id)}
+                      className={cn(
+                        "flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2",
+                        paymentMethod === method.id
+                          ? "bg-card text-foreground shadow-sm"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {method.icon && <method.icon className="w-4 h-4" />}
+                      {method.label}
+                    </button>
+                  ))}
+                </div>
+
+                {paymentMethod === "card" && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground">Payment Details</h3>
+                    
+                    <div>
+                      <Label htmlFor="cardNumber">Card Number</Label>
+                      <div className="relative mt-1.5">
+                        <Input
+                          id="cardNumber"
+                          placeholder="4242 4242 4242 4242"
+                          className="pl-10"
+                        />
+                        <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="expiry">MM / YY</Label>
+                        <Input
+                          id="expiry"
+                          placeholder="12 / 25"
+                          className="mt-1.5"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="cvc" className="flex items-center gap-1">
+                          CVC
+                          <HelpCircle className="w-3 h-3 text-muted-foreground" />
+                        </Label>
+                        <Input
+                          id="cvc"
+                          placeholder="123"
+                          className="mt-1.5"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="cardholderName">Cardholder Name</Label>
+                      <Input
+                        id="cardholderName"
+                        placeholder="John Doe"
+                        className="mt-1.5"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="email">Email for Receipt</Label>
+                      <div className="relative mt-1.5">
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="billing@acmecorp.com"
+                          defaultValue={invoice.client?.email || ""}
+                          className="pl-10"
+                        />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Checkbox 
+                        id="useBilling" 
+                        checked={useBillingAddress}
+                        onCheckedChange={(checked) => setUseBillingAddress(checked === true)}
+                      />
+                      <label htmlFor="useBilling" className="text-sm text-muted-foreground cursor-pointer">
+                        Use shipping address for billing
+                      </label>
+                    </div>
+
+                    <Button className="w-full h-12 text-base gap-2 mt-4">
+                      <Lock className="w-4 h-4" />
+                      Pay {formatIDR(invoice.total)}
+                    </Button>
+
+                    <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Shield className="w-3.5 h-3.5" />
+                        256-bit SSL Encrypted
+                      </div>
+                      <span>•</span>
+                      <span>Powered by Stripe</span>
+                    </div>
+
+                    <p className="text-xs text-muted-foreground text-center mt-4">
+                      By confirming payment, you allow Kalaudra Studio to charge your card for the amount above securely.
+                    </p>
+                  </div>
+                )}
+
+                {paymentMethod === "bank" && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground">Bank Transfer Details</h3>
+                    <div className="space-y-3 p-4 rounded-xl bg-secondary/30 border border-border/50">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Bank Name</span>
+                        <span className="font-medium text-foreground">Bank Central Asia (BCA)</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Account Number</span>
+                        <span className="font-medium text-foreground font-mono">8839 2992 001</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Account Name</span>
+                        <span className="font-medium text-foreground">Kalaudra Studio</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Amount</span>
+                        <span className="font-bold text-primary font-mono">{formatIDR(invoice.total)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Reference</span>
+                        <span className="font-medium text-foreground font-mono">{invoice.invoice_number}</span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Please include the reference number in your transfer description. Payment confirmation may take 1-2 business days.
+                    </p>
+                  </div>
+                )}
+
+                {paymentMethod === "paypal" && (
+                  <div className="space-y-4 text-center py-8">
+                    <div className="w-16 h-16 rounded-2xl bg-[#0070ba]/10 flex items-center justify-center mx-auto">
+                      <span className="text-2xl font-bold text-[#0070ba]">P</span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground">Pay with PayPal</h3>
+                    <p className="text-sm text-muted-foreground">
+                      You'll be redirected to PayPal to complete your payment securely.
+                    </p>
+                    <Button className="w-full h-12 bg-[#0070ba] hover:bg-[#005ea6] gap-2">
+                      Continue to PayPal
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border py-6 px-6">
-        <div className="max-w-4xl mx-auto text-center text-muted-foreground text-sm">
+      <footer className="border-t border-border py-6 px-6 mt-8">
+        <div className="max-w-6xl mx-auto text-center text-muted-foreground text-sm">
           <p>© 2024 Kalaudra Studio. All rights reserved.</p>
           <p className="mt-1">Questions about this invoice? Contact us at support@kalaudra.studio</p>
         </div>
