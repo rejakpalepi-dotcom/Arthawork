@@ -34,9 +34,7 @@ interface InvoiceData {
   notes: string | null;
   client: {
     name: string;
-    email: string | null;
     company: string | null;
-    address: string | null;
   } | null;
   items: InvoiceItem[];
 }
@@ -89,9 +87,7 @@ export default function GuestPayment() {
             notes,
             clients (
               name,
-              email,
-              company,
-              address
+              company
             )
           `)
           .eq("payment_token", token)
@@ -255,8 +251,8 @@ export default function GuestPayment() {
                 <div>
                   <p className="text-muted-foreground">Client</p>
                   <p className="font-medium text-foreground">{invoice.client?.name || "Client"}</p>
-                  {invoice.client?.address && (
-                    <p className="text-xs text-muted-foreground">{invoice.client.address.split(',')[1]?.trim()}</p>
+                  {invoice.client?.company && (
+                    <p className="text-xs text-muted-foreground">{invoice.client.company}</p>
                   )}
                 </div>
               </div>
@@ -361,7 +357,6 @@ export default function GuestPayment() {
                           id="email"
                           type="email"
                           placeholder="billing@acmecorp.com"
-                          defaultValue={invoice.client?.email || ""}
                           className="pl-10"
                         />
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
