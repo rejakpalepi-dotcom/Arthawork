@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { RevenueChart } from "@/components/dashboard/RevenueChart";
@@ -41,6 +42,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState("Creator");
   const [revenueData, setRevenueData] = useState<Array<{ month: string; revenue: number }>>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -149,7 +151,7 @@ export default function Dashboard() {
             <Button variant="outline" size="icon" className="relative">
               <Bell className="w-5 h-5" />
             </Button>
-            <Button className="gap-2">
+            <Button className="gap-2" onClick={() => navigate("/projects/new")}>
               <Plus className="w-4 h-4" />
               New Project
             </Button>

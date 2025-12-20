@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/empty-state";
 import { supabase } from "@/integrations/supabase/client";
+import { AddClientModal } from "@/components/modals/AddClientModal";
 
 interface Client {
   id: string;
@@ -20,28 +21,29 @@ export default function Clients() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const fetchClients = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("clients")
+      .select("id, name, email, phone, company, address, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setClients(data);
+    }
+
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchClients = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("clients")
-        .select("id, name, email, phone, company, address, created_at")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-
-      if (!error && data) {
-        setClients(data);
-      }
-
-      setLoading(false);
-    };
-
     fetchClients();
   }, []);
 
@@ -79,7 +81,7 @@ export default function Clients() {
             <h1 className="text-3xl font-bold text-foreground mb-2">Clients</h1>
             <p className="text-muted-foreground">Manage your client relationships</p>
           </div>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => setShowAddModal(true)}>
             <Plus className="w-4 h-4" />
             Add Client
           </Button>
@@ -104,7 +106,7 @@ export default function Clients() {
               title="No clients yet"
               description="Add your first client to start managing your relationships."
               actionLabel="Add Client"
-              onAction={() => {}}
+              onAction={() => setShowAddModal(true)}
             />
           </div>
         ) : filteredClients.length === 0 ? (
@@ -158,6 +160,12 @@ export default function Clients() {
           </div>
         )}
       </div>
+
+      <AddClientModal
+        open={showAddModal}
+        onOpenChange={setShowAddModal}
+        onSuccess={fetchClients}
+      />
     </DashboardLayout>
   );
 }
