@@ -16,6 +16,17 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
@@ -31,15 +42,21 @@ const bottomItems = [
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleLogout = async () => {
+    // Clear all session-related storage
+    sessionStorage.removeItem('papr_session_only');
+    localStorage.removeItem('sb-sfkcncwbsoaqqteqguyf-auth-token');
+    
     await supabase.auth.signOut();
+    
     toast({
       title: "Signed out",
-      description: "You have been signed out successfully.",
+      description: "You have been signed out and your session has been cleared.",
     });
     navigate("/login", { replace: true });
   };
@@ -126,16 +143,35 @@ export function Sidebar() {
             </NavLink>
           );
         })}
-        <button
-          onClick={handleLogout}
-          className={cn(
-            "sidebar-item sidebar-item-inactive w-full",
-            collapsed && "justify-center px-2"
-          )}
-        >
-          <LogOut className="w-5 h-5 shrink-0" />
-          {!collapsed && <span>Sign Out</span>}
-        </button>
+        <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+          <AlertDialogTrigger asChild>
+            <button
+              className={cn(
+                "sidebar-item sidebar-item-inactive w-full",
+                collapsed && "justify-center px-2"
+              )}
+              aria-label="Sign out of your account"
+            >
+              <LogOut className="w-5 h-5 shrink-0" aria-hidden="true" />
+              {!collapsed && <span>Sign Out</span>}
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Sign out of Papr?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will end your current session and clear all stored authentication data. 
+                You'll need to sign in again to access your account.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleLogout} className="bg-destructive hover:bg-destructive/90">
+                Sign Out
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </aside>
   );
