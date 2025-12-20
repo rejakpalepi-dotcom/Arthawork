@@ -131,7 +131,7 @@ export default function Proposals() {
   }, []);
 
   const handleNewProposal = () => {
-    navigate("/proposals");
+    navigate("/proposals/new");
   };
 
   const filteredProposals = proposals.filter(p => {
