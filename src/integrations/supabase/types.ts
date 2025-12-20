@@ -269,7 +269,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_public_invoice_by_token: {
+        Args: { token: string }
+        Returns: {
+          due_date: string
+          invoice_number: string
+          issue_date: string
+          status: string
+          total: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

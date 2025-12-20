@@ -79,13 +79,14 @@ export function StatsCard({
             <div className="flex items-center gap-1.5">
               <TrendingUp className={cn(
                 "w-4 h-4",
-                isHighlight ? "text-primary-foreground" : "text-success"
+                isHighlight ? "text-primary-foreground" : (trend.positive ? "text-success" : "text-destructive"),
+                !trend.positive && "rotate-180"
               )} />
               <span className={cn(
                 "text-sm font-medium",
-                isHighlight ? "text-primary-foreground" : "text-success"
+                isHighlight ? "text-primary-foreground" : (trend.positive ? "text-success" : "text-destructive")
               )}>
-                +{trend.value}%
+                {trend.positive ? "+" : "-"}{trend.value}%
               </span>
               <span className={cn(
                 "text-xs",
