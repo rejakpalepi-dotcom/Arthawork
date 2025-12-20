@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Mail, ArrowLeft, Loader2, CheckCircle } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { z } from "zod";
-import paprworkLogo from "@/assets/paprwork-logo.png";
+import arthaLogo from "@/assets/paprwork-logo.png";
 
 const emailSchema = z.string().email("Please enter a valid email address");
 
@@ -47,16 +47,16 @@ export default function ForgotPassword() {
     <>
       <SEOHead 
         title="Forgot Password" 
-        description="Reset your Papr account password. Enter your email to receive a password reset link."
-        canonical="https://papr.app/forgot-password"
+        description="Reset your Artha account password. Enter your email to receive a password reset link."
+        canonical="https://artha.app/forgot-password"
         noIndex
       />
       <main className="min-h-screen bg-background flex">
         {/* Left Panel - Branding */}
         <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border">
           <header className="flex items-center gap-3">
-            <img src={paprworkLogo} alt="Paprwork" className="h-10 w-10 object-contain" />
-            <span className="text-xl font-semibold text-foreground">Paprwork</span>
+            <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
+            <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
           </header>
           <section className="space-y-4">
             <h1 className="text-4xl font-bold text-foreground">
@@ -68,7 +68,7 @@ export default function ForgotPassword() {
               Enter your email and we'll send you a link to reset your password.
             </p>
           </section>
-          <footer className="text-muted-foreground text-sm">© 2025 Paprwork. All rights reserved.</footer>
+          <footer className="text-muted-foreground text-sm">© 2025 Artha. All rights reserved.</footer>
         </aside>
 
         {/* Right Panel - Reset Form */}
@@ -76,8 +76,8 @@ export default function ForgotPassword() {
           <div className="w-full max-w-md space-y-8">
             <div className="text-center lg:text-left">
               <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-                <img src={paprworkLogo} alt="Paprwork" className="h-10 w-10 object-contain" />
-                <span className="text-xl font-black text-foreground tracking-tight">Paprwork</span>
+                <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
+                <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
               </div>
               <h2 className="text-2xl font-bold text-foreground">Reset Password</h2>
               <p className="text-muted-foreground mt-2">Enter your email to receive a reset link</p>

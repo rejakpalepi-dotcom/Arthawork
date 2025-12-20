@@ -1,4 +1,4 @@
-# Papr SEO Configuration
+# Artha SEO Configuration
 # Allow indexing of public marketing pages, block private user areas
 
 User-agent: Googlebot
@@ -50,4 +50,4 @@ Disallow: /invoices
 Disallow: /projects
 
 # Sitemap location
-Sitemap: https://papr.app/sitemap.xml
+Sitemap: https://artha.app/sitemap.xml

@@ -13,12 +13,12 @@ import { SEOHead } from "@/components/seo/SEOHead";
 export default function Login() {
   // Load remember me preference and saved email from localStorage
   const [rememberMe, setRememberMe] = useState(() => {
-    const saved = localStorage.getItem("papr_remember_me");
+    const saved = localStorage.getItem("artha_remember_me");
     return saved !== null ? saved === "true" : true;
   });
   const [email, setEmail] = useState(() => {
     // Pre-fill email if remember me was enabled
-    const savedEmail = localStorage.getItem("papr_saved_email");
+    const savedEmail = localStorage.getItem("artha_saved_email");
     return savedEmail || "";
   });
   const [password, setPassword] = useState("");
@@ -30,11 +30,11 @@ export default function Login() {
 
   // Persist remember me preference and email to localStorage
   useEffect(() => {
-    localStorage.setItem("papr_remember_me", String(rememberMe));
+    localStorage.setItem("artha_remember_me", String(rememberMe));
     if (rememberMe && email) {
-      localStorage.setItem("papr_saved_email", email);
+      localStorage.setItem("artha_saved_email", email);
     } else if (!rememberMe) {
-      localStorage.removeItem("papr_saved_email");
+      localStorage.removeItem("artha_saved_email");
     }
   }, [rememberMe, email]);
 
@@ -64,9 +64,9 @@ export default function Login() {
     // If rememberMe is false, we'll manually clear the session on browser close
     if (!rememberMe) {
       // Store a flag to indicate session-only persistence
-      sessionStorage.setItem("papr_session_only", "true");
+      sessionStorage.setItem("artha_session_only", "true");
     } else {
-      sessionStorage.removeItem("papr_session_only");
+      sessionStorage.removeItem("artha_session_only");
     }
 
     const { error } = await supabase.auth.signInWithPassword({
@@ -96,9 +96,9 @@ export default function Login() {
   // Handle Google OAuth with rememberMe preference
   const handleGoogleLogin = () => {
     if (!rememberMe) {
-      sessionStorage.setItem("papr_session_only", "true");
+      sessionStorage.setItem("artha_session_only", "true");
     } else {
-      sessionStorage.removeItem("papr_session_only");
+      sessionStorage.removeItem("artha_session_only");
     }
     signInWithOAuth("google");
   };
@@ -107,8 +107,8 @@ export default function Login() {
     <>
       <SEOHead
         title="Login"
-        description="Sign in to Papr to manage your creative business. Access your proposals, invoices, and client management dashboard."
-        canonical="https://papr.app/login"
+        description="Sign in to Artha to manage your creative business. Access your proposals, invoices, and client management dashboard."
+        canonical="https://artha.app/login"
       />
       <main className="min-h-screen bg-background flex">
         {/* Left Panel - Branding */}
@@ -117,11 +117,11 @@ export default function Login() {
             <div
               className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary"
               role="img"
-              aria-label="Papr logo"
+              aria-label="Artha logo"
             >
               <Zap className="w-6 h-6 text-primary-foreground" aria-hidden="true" />
             </div>
-            <span className="text-xl font-semibold text-foreground">Papr</span>
+            <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
           </header>
           <section className="space-y-4">
             <h1 className="text-4xl font-bold text-foreground">
@@ -133,7 +133,7 @@ export default function Login() {
               Streamline invoices, proposals, and client management all in one place.
             </p>
           </section>
-          <footer className="text-muted-foreground text-sm">© 2025 Papr. All rights reserved.</footer>
+          <footer className="text-muted-foreground text-sm">© 2025 Artha. All rights reserved.</footer>
         </aside>
 
         {/* Right Panel - Login Form */}
@@ -144,13 +144,13 @@ export default function Login() {
                 <div
                   className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary"
                   role="img"
-                  aria-label="Papr logo"
+                  aria-label="Artha logo"
                 >
                   <Zap className="w-6 h-6 text-primary-foreground" aria-hidden="true" />
                 </div>
-                <span className="text-xl font-black text-foreground tracking-tight">Papr</span>
+                <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
               </div>
-              <h2 className="text-2xl font-bold text-foreground">Welcome back</h2>
+              <h2 className="text-2xl font-bold text-foreground">Welcome to Artha</h2>
               <p className="text-muted-foreground mt-2">Access your creative dashboard</p>
             </div>
 
@@ -227,7 +227,7 @@ export default function Login() {
                 </Link>
               </div>
 
-              <Button type="submit" className="w-full" disabled={loading} aria-label="Sign in to your Papr account">
+              <Button type="submit" className="w-full" disabled={loading} aria-label="Sign in to your Artha account">
                 {loading ? "Signing in..." : "Sign In"}
               </Button>
 
