@@ -81,32 +81,32 @@ export default function Dashboard() {
             </>
           ) : (
             <>
-              <StatsCard
+            <StatsCard
                 title="Pipeline Value"
                 value={formatIDR(stats.pipelineValue)}
                 subtitle={`${stats.activeProposals} active proposals`}
                 icon={TrendingUp}
-                trend={stats.pipelineTrend !== 0 ? { value: Math.abs(stats.pipelineTrend), positive: stats.pipelineTrend > 0 } : undefined}
+                trend={stats.pipelineValue > 0 && stats.pipelineTrend !== 0 ? { value: Math.abs(stats.pipelineTrend), positive: stats.pipelineTrend > 0 } : undefined}
               />
               <StatsCard
                 title="Acceptance Rate"
                 value={`${acceptanceRate}%`}
                 subtitle={`${stats.acceptedProposals} of ${stats.totalProposals} proposals`}
                 icon={Target}
-                trend={stats.acceptanceTrend !== 0 ? { value: Math.abs(stats.acceptanceTrend), positive: stats.acceptanceTrend > 0 } : undefined}
+                trend={stats.totalProposals > 0 && stats.acceptanceTrend !== 0 ? { value: Math.abs(stats.acceptanceTrend), positive: stats.acceptanceTrend > 0 } : undefined}
               />
               <StatsCard
                 title="Active Proposals"
                 value={stats.sentProposals.toString()}
                 subtitle="Awaiting response"
                 icon={FileText}
-                trend={stats.proposalsTrend !== 0 ? { value: Math.abs(stats.proposalsTrend), positive: stats.proposalsTrend > 0 } : undefined}
+                trend={stats.sentProposals > 0 && stats.proposalsTrend !== 0 ? { value: Math.abs(stats.proposalsTrend), positive: stats.proposalsTrend > 0 } : undefined}
               />
               <StatsCard
                 title="Total Earnings"
                 value={formatIDR(stats.totalRevenue)}
                 icon={Wallet}
-                trend={stats.revenueTrend !== 0 ? { value: Math.abs(stats.revenueTrend), positive: stats.revenueTrend > 0 } : undefined}
+                trend={stats.totalRevenue > 0 && stats.revenueTrend !== 0 ? { value: Math.abs(stats.revenueTrend), positive: stats.revenueTrend > 0 } : undefined}
                 variant="highlight"
               />
             </>
