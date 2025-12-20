@@ -38,10 +38,10 @@ export function ProposalEditor({
     return <ExperienceEditor data={data} onUpdate={onUpdate} />;
   }
   return (
-    <div className="flex items-center justify-center h-full text-muted-foreground">
+    <div className="flex items-center justify-center h-full text-muted-foreground font-sans">
       <div className="text-center">
         <span className="material-symbols-outlined text-4xl mb-2">construction</span>
-        <p>This page is coming soon</p>
+        <p className="text-sm">This page is coming soon</p>
       </div>
     </div>
   );
@@ -61,36 +61,41 @@ function CoverEditor({
   isLoading: boolean;
 }) {
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-lg font-semibold text-foreground mb-1 flex items-center gap-2">
+    <div className="space-y-6 font-sans">
+      <div className="pb-4 border-b border-border">
+        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">home</span>
           Cover Page
         </h2>
-        <p className="text-sm text-muted-foreground">Set up your proposal's first impression</p>
+        <p className="text-sm text-muted-foreground mt-1">Set up your proposal's first impression</p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         <div className="space-y-2">
-          <Label htmlFor="studioName">Studio / Business Name</Label>
+          <Label htmlFor="studioName" className="text-sm font-medium text-foreground">
+            Studio / Business Name
+          </Label>
           <Input
             id="studioName"
             value={data.studioName}
             onChange={(e) => onUpdate({ studioName: e.target.value })}
             placeholder="Your Studio Name"
+            className="bg-muted/50 border-border"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="client">Client</Label>
+          <Label htmlFor="client" className="text-sm font-medium text-foreground">
+            Client
+          </Label>
           {isLoading ? (
             <Skeleton className="h-10 w-full" />
           ) : (
             <Select value={data.clientId || ""} onValueChange={onClientChange}>
-              <SelectTrigger>
+              <SelectTrigger className="bg-muted/50 border-border">
                 <SelectValue placeholder="Select a client" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-card border-border">
                 {clients.map((client) => (
                   <SelectItem key={client.id} value={client.id}>
                     {client.name} {client.company && `(${client.company})`}
@@ -105,32 +110,41 @@ function CoverEditor({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="projectTitle">Project Title</Label>
+          <Label htmlFor="projectTitle" className="text-sm font-medium text-foreground">
+            Project Title
+          </Label>
           <Input
             id="projectTitle"
             value={data.projectTitle}
             onChange={(e) => onUpdate({ projectTitle: e.target.value })}
             placeholder="The Ultimate Project Proposal"
+            className="bg-muted/50 border-border"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="tagline">Tagline</Label>
+          <Label htmlFor="tagline" className="text-sm font-medium text-foreground">
+            Tagline
+          </Label>
           <Input
             id="tagline"
             value={data.tagline}
             onChange={(e) => onUpdate({ tagline: e.target.value })}
             placeholder="Design Fearlessly, Present like a Pro"
+            className="bg-muted/50 border-border"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="year">Year</Label>
+          <Label htmlFor="year" className="text-sm font-medium text-foreground">
+            Year
+          </Label>
           <Input
             id="year"
             value={data.year}
             onChange={(e) => onUpdate({ year: e.target.value })}
             placeholder={new Date().getFullYear().toString()}
+            className="bg-muted/50 border-border"
           />
         </div>
       </div>
@@ -146,42 +160,47 @@ function IntroEditor({
   onUpdate: (updates: Partial<ProposalData>) => void;
 }) {
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-lg font-semibold text-foreground mb-1 flex items-center gap-2">
+    <div className="space-y-6 font-sans">
+      <div className="pb-4 border-b border-border">
+        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">article</span>
           Introduction
         </h2>
-        <p className="text-sm text-muted-foreground">Tell your story and value proposition</p>
+        <p className="text-sm text-muted-foreground mt-1">Tell your story and value proposition</p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         <div className="space-y-2">
-          <Label htmlFor="introTitle">Section Title</Label>
+          <Label htmlFor="introTitle" className="text-sm font-medium text-foreground">
+            Section Title
+          </Label>
           <Input
             id="introTitle"
             value={data.introTitle}
             onChange={(e) => onUpdate({ introTitle: e.target.value })}
             placeholder="Why work with me?"
+            className="bg-muted/50 border-border"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="introText">Introduction Text</Label>
+          <Label htmlFor="introText" className="text-sm font-medium text-foreground">
+            Introduction Text
+          </Label>
           <Textarea
             id="introText"
             value={data.introText}
             onChange={(e) => onUpdate({ introText: e.target.value })}
             placeholder="Tell your story..."
-            className="min-h-[200px]"
+            className="min-h-[180px] bg-muted/50 border-border resize-none"
           />
         </div>
 
         <div className="space-y-2">
-          <Label>Hero Image</Label>
-          <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer">
+          <Label className="text-sm font-medium text-foreground">Hero Image</Label>
+          <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors cursor-pointer bg-muted/30">
             <span className="material-symbols-outlined text-4xl text-muted-foreground mb-2">add_photo_alternate</span>
-            <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
+            <p className="text-sm text-muted-foreground font-medium">Click to upload or drag and drop</p>
             <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 10MB</p>
           </div>
         </div>
@@ -198,75 +217,88 @@ function ExperienceEditor({
   onUpdate: (updates: Partial<ProposalData>) => void;
 }) {
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-lg font-semibold text-foreground mb-1 flex items-center gap-2">
+    <div className="space-y-6 font-sans">
+      <div className="pb-4 border-b border-border">
+        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">work_history</span>
           Experience
         </h2>
-        <p className="text-sm text-muted-foreground">Showcase your track record</p>
+        <p className="text-sm text-muted-foreground mt-1">Showcase your track record</p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         <div className="space-y-2">
-          <Label htmlFor="experienceTitle">Headline</Label>
+          <Label htmlFor="experienceTitle" className="text-sm font-medium text-foreground">
+            Headline
+          </Label>
           <Textarea
             id="experienceTitle"
             value={data.experienceTitle}
             onChange={(e) => onUpdate({ experienceTitle: e.target.value })}
             placeholder="I've worked with clients near and far..."
-            className="min-h-[80px]"
+            className="min-h-[80px] bg-muted/50 border-border resize-none"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="experienceSubtitle">Subtitle</Label>
+          <Label htmlFor="experienceSubtitle" className="text-sm font-medium text-foreground">
+            Subtitle
+          </Label>
           <Textarea
             id="experienceSubtitle"
             value={data.experienceSubtitle}
             onChange={(e) => onUpdate({ experienceSubtitle: e.target.value })}
             placeholder="From local startups to international enterprises..."
-            className="min-h-[80px]"
+            className="min-h-[80px] bg-muted/50 border-border resize-none"
           />
         </div>
 
         <div className="grid grid-cols-3 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="projectCount">Projects</Label>
+            <Label htmlFor="projectCount" className="text-sm font-medium text-foreground">
+              Projects
+            </Label>
             <Input
               id="projectCount"
               value={data.projectCount}
               onChange={(e) => onUpdate({ projectCount: e.target.value })}
               placeholder="50+"
+              className="bg-muted/50 border-border"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="countriesCount">Countries</Label>
+            <Label htmlFor="countriesCount" className="text-sm font-medium text-foreground">
+              Countries
+            </Label>
             <Input
               id="countriesCount"
               value={data.countriesCount}
               onChange={(e) => onUpdate({ countriesCount: e.target.value })}
               placeholder="12"
+              className="bg-muted/50 border-border"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="rating">Rating</Label>
+            <Label htmlFor="rating" className="text-sm font-medium text-foreground">
+              Rating
+            </Label>
             <Input
               id="rating"
               value={data.rating}
               onChange={(e) => onUpdate({ rating: e.target.value })}
               placeholder="5.0"
+              className="bg-muted/50 border-border"
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label>Client Logos</Label>
-          <div className="grid grid-cols-3 gap-2">
+          <Label className="text-sm font-medium text-foreground">Client Logos</Label>
+          <div className="grid grid-cols-3 gap-3">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="aspect-video border-2 border-dashed border-border rounded-lg flex items-center justify-center hover:border-primary/50 transition-colors cursor-pointer"
+                className="aspect-square border-2 border-dashed border-border rounded-xl flex items-center justify-center hover:border-primary/50 transition-colors cursor-pointer bg-muted/30"
               >
                 <span className="material-symbols-outlined text-2xl text-muted-foreground">add</span>
               </div>

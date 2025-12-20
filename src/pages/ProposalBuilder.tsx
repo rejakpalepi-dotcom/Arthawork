@@ -112,7 +112,7 @@ export default function ProposalBuilder() {
 
   return (
     <DashboardLayout>
-      <div className="h-[calc(100vh-2rem)] flex flex-col">
+      <div className="h-[calc(100vh-2rem)] flex flex-col font-sans">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -128,13 +128,13 @@ export default function ProposalBuilder() {
             </button>
             <button
               onClick={() => toast.info("Save functionality coming in Phase 2")}
-              className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+              className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
             >
               Save Draft
             </button>
             <button
               onClick={() => toast.info("Export functionality coming in Phase 2")}
-              className="px-4 py-2 text-sm bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2"
+              className="px-4 py-2 text-sm bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 font-medium"
             >
               <span className="material-symbols-outlined text-lg">share</span>
               Export
@@ -143,17 +143,17 @@ export default function ProposalBuilder() {
         </div>
 
         {/* Page Navigation */}
-        <div className="flex items-center gap-1 mb-4 p-1 bg-card rounded-lg border border-border w-fit">
+        <div className="flex items-center gap-1 mb-4 p-1.5 bg-card rounded-xl border border-border w-fit">
           {pages.map((page) => (
             <button
               key={page.id}
               onClick={() => !page.disabled && setCurrentPage(page.id)}
               disabled={page.disabled}
-              className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 currentPage === page.id
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-primary text-primary-foreground shadow-sm"
                   : page.disabled
-                  ? "text-muted-foreground/50 cursor-not-allowed"
+                  ? "text-muted-foreground/40 cursor-not-allowed"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
@@ -164,7 +164,7 @@ export default function ProposalBuilder() {
         </div>
 
         {/* Split Screen Layout */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 min-h-0">
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-5 min-h-0">
           {/* Left Panel - Editor */}
           <div className="bg-card rounded-xl border border-border p-6 overflow-y-auto">
             <ProposalEditor
@@ -178,13 +178,22 @@ export default function ProposalBuilder() {
           </div>
 
           {/* Right Panel - Live Preview */}
-          <div className="bg-muted/30 rounded-xl border border-border p-4 overflow-y-auto">
-            <div className="text-xs text-muted-foreground mb-3 flex items-center gap-2">
+          <div className="bg-muted/30 rounded-xl border border-border p-5 overflow-hidden flex flex-col">
+            <div className="text-xs text-muted-foreground mb-3 flex items-center gap-2 font-medium">
               <span className="material-symbols-outlined text-sm">visibility</span>
               Live Preview
             </div>
-            <div className="bg-white rounded-lg shadow-xl overflow-hidden aspect-[8.5/11] max-h-[calc(100vh-16rem)]">
-              <ProposalPreview currentPage={currentPage} data={proposalData} />
+            <div className="flex-1 flex items-center justify-center min-h-0">
+              <div 
+                className="bg-white rounded-lg shadow-2xl overflow-hidden w-full"
+                style={{ 
+                  aspectRatio: '8.5/11',
+                  maxHeight: 'calc(100vh - 18rem)',
+                  maxWidth: 'calc((100vh - 18rem) * 8.5 / 11)'
+                }}
+              >
+                <ProposalPreview currentPage={currentPage} data={proposalData} />
+              </div>
             </div>
           </div>
         </div>
