@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useOAuth } from "@/hooks/useOAuth";
 import { Zap, Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
 import { z } from "zod";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 // Common password patterns to block (simplified entropy check)
 const COMMON_PASSWORDS = [
@@ -129,73 +130,80 @@ export default function Signup() {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Left Panel - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary">
-              <Zap className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-black text-foreground tracking-tight">Papr</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <Link to="#" className="text-muted-foreground hover:text-foreground transition-colors">
-              Explore
-            </Link>
-            <Link to="#" className="text-muted-foreground hover:text-foreground transition-colors">
-              Talent
-            </Link>
-            <Link to="#" className="text-muted-foreground hover:text-foreground transition-colors">
-              Community
-            </Link>
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          <div className="flex items-center gap-2 text-primary">
-            <CheckCircle className="w-5 h-5" />
-            <span className="text-sm font-medium">Trusted by 10,000+ Studios</span>
-          </div>
-          <h1 className="text-4xl font-bold text-foreground">
-            Start your creative journey with{" "}
-            <span className="gradient-text">Papr.</span>
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-md">
-            Join the world's leading platform for creative professionals. Manage projects, find talent, and scale your freelance business.
-          </p>
-          <div className="flex items-center gap-2">
-            <div className="flex -space-x-2">
-              {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/30 to-primary/60 border-2 border-background"
-                />
-              ))}
-            </div>
-            <span className="text-sm text-muted-foreground">+2k</span>
-          </div>
-        </div>
-
-        <p className="text-muted-foreground text-sm">
-          © 2024 Papr Inc. All rights reserved.
-        </p>
-      </div>
-
-      {/* Right Panel - Signup Form */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-md space-y-8">
-          <div className="flex items-center justify-between lg:hidden mb-8">
+    <>
+      <SEOHead 
+        title="Sign Up" 
+        description="Create your free Papr account. Start managing proposals, invoices, and clients in minutes. Built for creative professionals."
+        canonical="https://papr.app/signup"
+      />
+      <main className="min-h-screen bg-background flex">
+        {/* Left Panel - Branding */}
+        <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border">
+          <header className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary">
-                <Zap className="w-6 h-6 text-primary-foreground" />
+              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary" role="img" aria-label="Papr logo">
+                <Zap className="w-6 h-6 text-primary-foreground" aria-hidden="true" />
               </div>
               <span className="text-xl font-black text-foreground tracking-tight">Papr</span>
             </div>
-            <Link to="/login">
-              <Button variant="outline" size="sm">Log In</Button>
-            </Link>
-          </div>
+            <nav className="flex items-center gap-6" aria-label="Site navigation">
+              <Link to="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                Explore
+              </Link>
+              <Link to="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                Talent
+              </Link>
+              <Link to="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                Community
+              </Link>
+            </nav>
+          </header>
+
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 text-primary">
+              <CheckCircle className="w-5 h-5" aria-hidden="true" />
+              <span className="text-sm font-medium">Trusted by 10,000+ Studios</span>
+            </div>
+            <h1 className="text-4xl font-bold text-foreground">
+              Start your creative journey with{" "}
+              <span className="gradient-text">Papr.</span>
+            </h1>
+            <p className="text-muted-foreground text-lg max-w-md">
+              Join the world's leading platform for creative professionals. Manage projects, find talent, and scale your freelance business.
+            </p>
+            <div className="flex items-center gap-2">
+              <div className="flex -space-x-2" aria-label="User avatars">
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/30 to-primary/60 border-2 border-background"
+                    aria-hidden="true"
+                  />
+                ))}
+              </div>
+              <span className="text-sm text-muted-foreground">+2k</span>
+            </div>
+          </section>
+
+          <footer className="text-muted-foreground text-sm">
+            © 2024 Papr Inc. All rights reserved.
+          </footer>
+        </aside>
+
+        {/* Right Panel - Signup Form */}
+        <section className="flex-1 flex items-center justify-center p-8">
+          <div className="w-full max-w-md space-y-8">
+            <div className="flex items-center justify-between lg:hidden mb-8">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary" role="img" aria-label="Papr logo">
+                  <Zap className="w-6 h-6 text-primary-foreground" aria-hidden="true" />
+                </div>
+                <span className="text-xl font-black text-foreground tracking-tight">Papr</span>
+              </div>
+              <Link to="/login">
+                <Button variant="outline" size="sm" aria-label="Log in to existing account">Log In</Button>
+              </Link>
+            </div>
 
           <div className="hidden lg:flex justify-end">
             <p className="text-muted-foreground text-sm">
@@ -354,8 +362,9 @@ export default function Signup() {
             Having trouble?{" "}
             <Link to="#" className="text-primary hover:underline">Contact Support</Link>
           </p>
-        </div>
-      </div>
-    </div>
+          </div>
+        </section>
+      </main>
+    </>
   );
 }
