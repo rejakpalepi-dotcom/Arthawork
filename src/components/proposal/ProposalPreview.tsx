@@ -295,8 +295,8 @@ function TimelinePreview({
 
       {/* Footer */}
       <div className="px-6 py-3 border-t border-gray-100 flex items-center justify-between text-[8px] text-gray-400 font-normal">
-        <span>{data.studioName} © {data.year}</span>
-        <span>Page 5 of 6</span>
+        
+        
       </div>
     </div>;
 }
