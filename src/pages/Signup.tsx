@@ -10,7 +10,7 @@ import { useOAuth } from "@/hooks/useOAuth";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { SEOHead } from "@/components/seo/SEOHead";
-import arthaLogo from "@/assets/paprwork-logo.png";
+import arthaLogo from "@/assets/artha-logo.png";
 
 // Common password patterns to block (simplified entropy check)
 const COMMON_PASSWORDS = [

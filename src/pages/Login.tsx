@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useOAuth } from "@/hooks/useOAuth";
-import { Zap, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import arthaLogo from "@/assets/artha-logo.png";
 import { SEOHead } from "@/components/seo/SEOHead";
 
 export default function Login() {
@@ -114,13 +115,7 @@ export default function Login() {
         {/* Left Panel - Branding */}
         <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border">
           <header className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary"
-              role="img"
-              aria-label="Artha logo"
-            >
-              <Zap className="w-6 h-6 text-primary-foreground" aria-hidden="true" />
-            </div>
+            <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
             <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
           </header>
           <section className="space-y-4">
@@ -140,14 +135,8 @@ export default function Login() {
         <section className="flex-1 flex items-center justify-center p-8">
           <div className="w-full max-w-md space-y-8">
             <div className="text-center lg:text-left">
-              <div className="lg:hidden flex items-center justify-center gap-2 mb-8">
-                <div
-                  className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center glow-primary"
-                  role="img"
-                  aria-label="Artha logo"
-                >
-                  <Zap className="w-6 h-6 text-primary-foreground" aria-hidden="true" />
-                </div>
+              <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+                <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
                 <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
               </div>
               <h2 className="text-2xl font-bold text-foreground">Welcome to Artha</h2>
