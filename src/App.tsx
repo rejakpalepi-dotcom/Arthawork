@@ -12,6 +12,7 @@ import Services from "./pages/Services";
 import Proposals from "./pages/Proposals";
 import Invoices from "./pages/Invoices";
 import InvoiceBuilder from "./pages/InvoiceBuilder";
+import ProjectBuilder from "./pages/ProjectBuilder";
 import Settings from "./pages/Settings";
 import GuestPayment from "./pages/GuestPayment";
 import NotFound from "./pages/NotFound";
@@ -84,6 +85,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Settings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/new"
+            element={
+              <ProtectedRoute>
+                <ProjectBuilder />
               </ProtectedRoute>
             }
           />
