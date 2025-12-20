@@ -350,7 +350,7 @@ export function useDashboardData() {
     const csvRows: string[] = [];
     
     // Header
-    csvRows.push("Papr Monthly Report - " + now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }));
+    csvRows.push("Artha Monthly Report - " + now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }));
     csvRows.push("");
     
     // Paid Invoices Section
@@ -383,7 +383,7 @@ export function useDashboardData() {
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
-    link.setAttribute("download", `papr-report-${now.toISOString().split('T')[0]}.csv`);
+    link.setAttribute("download", `artha-report-${now.toISOString().split('T')[0]}.csv`);
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();

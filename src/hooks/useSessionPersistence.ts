@@ -9,14 +9,14 @@ import { supabase } from "@/integrations/supabase/client";
 export function useSessionPersistence() {
   useEffect(() => {
     // Check if this is a session-only login
-    const isSessionOnly = sessionStorage.getItem('papr_session_only') === 'true';
+    const isSessionOnly = sessionStorage.getItem('artha_session_only') === 'true';
     
     if (isSessionOnly) {
       // Add beforeunload listener to clear session when browser closes
       const handleBeforeUnload = () => {
         // Note: We can't reliably sign out here due to async limitations
         // Instead, we mark for cleanup on next load
-        localStorage.setItem('papr_cleanup_session', 'true');
+        localStorage.setItem('artha_cleanup_session', 'true');
       };
 
       window.addEventListener('beforeunload', handleBeforeUnload);
@@ -29,14 +29,14 @@ export function useSessionPersistence() {
 
   useEffect(() => {
     // Check if we need to clean up a previous session-only login
-    const shouldCleanup = localStorage.getItem('papr_cleanup_session') === 'true';
+    const shouldCleanup = localStorage.getItem('artha_cleanup_session') === 'true';
     
     if (shouldCleanup) {
       // Clean up the flag
-      localStorage.removeItem('papr_cleanup_session');
+      localStorage.removeItem('artha_cleanup_session');
       
       // If there's no active session marker in sessionStorage, sign out
-      if (!sessionStorage.getItem('papr_session_only')) {
+      if (!sessionStorage.getItem('artha_session_only')) {
         supabase.auth.signOut();
       }
     }
