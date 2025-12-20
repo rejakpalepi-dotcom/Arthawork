@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -9,12 +9,16 @@ import {
   ChevronLeft,
   ChevronRight,
   Zap,
+  Plus,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const navItems = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/" },
+  { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
   { label: "Clients", icon: Users, path: "/clients" },
   { label: "Services", icon: Briefcase, path: "/services" },
   { label: "Proposals", icon: FileText, path: "/proposals" },
@@ -28,6 +32,17 @@ const bottomItems = [
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Signed out",
+      description: "You have been signed out successfully.",
+    });
+    navigate("/login", { replace: true });
+  };
 
   return (
     <aside
@@ -55,6 +70,20 @@ export function Sidebar() {
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
         </button>
+      </div>
+
+      {/* Quick Action */}
+      <div className="p-3 border-b border-sidebar-border">
+        <NavLink
+          to="/invoices/new"
+          className={cn(
+            "flex items-center gap-2 px-3 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium transition-all duration-200 hover:bg-primary/90",
+            collapsed && "justify-center px-2"
+          )}
+        >
+          <Plus className="w-5 h-5 shrink-0" />
+          {!collapsed && <span>New Invoice</span>}
+        </NavLink>
       </div>
 
       {/* Navigation */}
@@ -97,6 +126,16 @@ export function Sidebar() {
             </NavLink>
           );
         })}
+        <button
+          onClick={handleLogout}
+          className={cn(
+            "sidebar-item sidebar-item-inactive w-full",
+            collapsed && "justify-center px-2"
+          )}
+        >
+          <LogOut className="w-5 h-5 shrink-0" />
+          {!collapsed && <span>Sign Out</span>}
+        </button>
       </div>
     </aside>
   );
