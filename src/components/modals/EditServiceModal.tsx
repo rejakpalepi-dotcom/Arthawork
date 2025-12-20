@@ -12,7 +12,7 @@ import { Package, DollarSign, Loader2 } from "lucide-react";
 
 const serviceSchema = z.object({
   name: z.string().min(1, "Service name is required").max(100, "Name must be less than 100 characters"),
-  price: z.number().min(0, "Price must be positive").or(z.string().transform((val) => parseFloat(val) || 0)),
+  price: z.coerce.number().min(0, "Price must be positive"),
 });
 
 type ServiceFormData = z.infer<typeof serviceSchema>;
@@ -54,14 +54,14 @@ export function EditServiceModal({ open, onOpenChange, onSuccess, service }: Edi
 
   const onSubmit = async (data: ServiceFormData) => {
     if (!service) return;
-    
+
     setLoading(true);
     try {
       const { error } = await supabase
         .from("services")
         .update({
           name: data.name,
-          price: typeof data.price === 'string' ? parseFloat(data.price) : data.price,
+          price: data.price, // data.price sudah otomatis jadi number oleh zod
         })
         .eq("id", service.id);
 
@@ -86,9 +86,7 @@ export function EditServiceModal({ open, onOpenChange, onSuccess, service }: Edi
             <Package className="w-5 h-5 text-primary" />
             Edit Service
           </DialogTitle>
-          <DialogDescription>
-            Update the service details and pricing.
-          </DialogDescription>
+          <DialogDescription>Update the service details and pricing.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
@@ -103,9 +101,7 @@ export function EditServiceModal({ open, onOpenChange, onSuccess, service }: Edi
               {...register("name")}
               className={errors.name ? "border-destructive" : ""}
             />
-            {errors.name && (
-              <p className="text-sm text-destructive">{errors.name.message}</p>
-            )}
+            {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -114,9 +110,7 @@ export function EditServiceModal({ open, onOpenChange, onSuccess, service }: Edi
               Base Price *
             </Label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                Rp
-              </span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">Rp</span>
               <Input
                 id="edit-price"
                 type="number"
@@ -127,18 +121,11 @@ export function EditServiceModal({ open, onOpenChange, onSuccess, service }: Edi
                 className={`pl-10 ${errors.price ? "border-destructive" : ""}`}
               />
             </div>
-            {errors.price && (
-              <p className="text-sm text-destructive">{errors.price.message}</p>
-            )}
+            {errors.price && <p className="text-sm text-destructive">{errors.price.message}</p>}
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-border">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={loading}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
