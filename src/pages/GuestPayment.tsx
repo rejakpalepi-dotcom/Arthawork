@@ -33,11 +33,16 @@ interface InvoiceData {
   tax_amount: number | null;
   total: number;
   notes: string | null;
-  client: {
-    name: string;
-    company: string | null;
-  } | null;
+  client_name: string | null;
+  client_company: string | null;
   items: InvoiceItem[];
+}
+
+interface BusinessPaymentInfo {
+  bank_name: string | null;
+  account_name: string | null;
+  account_number: string | null;
+  payment_notes: string | null;
 }
 
 const statusConfig = {
@@ -59,6 +64,7 @@ type PaymentMethod = "card" | "bank" | "paypal";
 export default function GuestPayment() {
   const { token } = useParams<{ token: string }>();
   const [invoice, setInvoice] = useState<InvoiceData | null>(null);
+  const [businessPayment, setBusinessPayment] = useState<BusinessPaymentInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
@@ -73,49 +79,42 @@ export default function GuestPayment() {
       }
 
       try {
+        // Use security definer function - no direct table access
         const { data: invoiceData, error: invoiceError } = await supabase
-          .from("invoices")
-          .select(`
-            id,
-            invoice_number,
-            status,
-            issue_date,
-            due_date,
-            subtotal,
-            tax_rate,
-            tax_amount,
-            total,
-            notes,
-            clients (
-              name,
-              company
-            )
-          `)
-          .eq("payment_token", token)
-          .maybeSingle();
+          .rpc('get_guest_invoice_by_token', { p_token: token });
 
         if (invoiceError) throw invoiceError;
 
-        if (!invoiceData) {
+        if (!invoiceData || invoiceData.length === 0) {
           setError("Invoice not found or link has expired");
           setLoading(false);
           return;
         }
 
+        const invoice = invoiceData[0];
+
+        // Fetch items using security definer function
         const { data: itemsData, error: itemsError } = await supabase
-          .from("invoice_items")
-          .select("id, description, quantity, unit_price, total")
-          .eq("invoice_id", invoiceData.id);
+          .rpc('get_guest_invoice_items', { 
+            p_invoice_id: invoice.id, 
+            p_token: token 
+          });
 
         if (itemsError) throw itemsError;
 
+        // Fetch business payment info using security definer function
+        const { data: paymentInfo, error: paymentError } = await supabase
+          .rpc('get_business_payment_info_by_token', { p_token: token });
+
+        if (!paymentError && paymentInfo && paymentInfo.length > 0) {
+          setBusinessPayment(paymentInfo[0]);
+        }
+
         setInvoice({
-          ...invoiceData,
-          client: invoiceData.clients as InvoiceData["client"],
+          ...invoice,
           items: itemsData || [],
         });
-      } catch (err: any) {
-        console.error("Error fetching invoice:", err);
+      } catch (err) {
         setError("Failed to load invoice");
       } finally {
         setLoading(false);
@@ -247,9 +246,9 @@ export default function GuestPayment() {
                 <Building2 className="w-4 h-4 text-muted-foreground" />
                 <div>
                   <p className="text-muted-foreground">Client</p>
-                  <p className="font-medium text-foreground">{invoice.client?.name || "Client"}</p>
-                  {invoice.client?.company && (
-                    <p className="text-xs text-muted-foreground">{invoice.client.company}</p>
+                  <p className="font-medium text-foreground">{invoice.client_name || "Client"}</p>
+                  {invoice.client_company && (
+                    <p className="text-xs text-muted-foreground">{invoice.client_company}</p>
                   )}
                 </div>
               </div>
@@ -397,15 +396,15 @@ export default function GuestPayment() {
                     <div className="space-y-3 p-4 rounded-xl bg-secondary/30 border border-border/50">
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Bank Name</span>
-                        <span className="font-medium text-foreground">Bank Central Asia (BCA)</span>
+                        <span className="font-medium text-foreground">{businessPayment?.bank_name || "Contact vendor for details"}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Account Number</span>
-                        <span className="font-medium text-foreground font-mono">8839 2992 001</span>
+                        <span className="font-medium text-foreground font-mono">{businessPayment?.account_number || "N/A"}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Account Name</span>
-                        <span className="font-medium text-foreground">Artha Studio</span>
+                        <span className="font-medium text-foreground">{businessPayment?.account_name || "N/A"}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Amount</span>
@@ -417,7 +416,7 @@ export default function GuestPayment() {
                       </div>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Please include the reference number in your transfer description. Payment confirmation may take 1-2 business days.
+                      {businessPayment?.payment_notes || "Please include the reference number in your transfer description. Payment confirmation may take 1-2 business days."}
                     </p>
                   </div>
                 )}

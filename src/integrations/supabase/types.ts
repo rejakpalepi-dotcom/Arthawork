@@ -335,6 +335,42 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_business_payment_info_by_token: {
+        Args: { p_token: string }
+        Returns: {
+          account_name: string
+          account_number: string
+          bank_name: string
+          payment_notes: string
+        }[]
+      }
+      get_guest_invoice_by_token: {
+        Args: { p_token: string }
+        Returns: {
+          client_company: string
+          client_name: string
+          due_date: string
+          id: string
+          invoice_number: string
+          issue_date: string
+          notes: string
+          status: string
+          subtotal: number
+          tax_amount: number
+          tax_rate: number
+          total: number
+        }[]
+      }
+      get_guest_invoice_items: {
+        Args: { p_invoice_id: string; p_token: string }
+        Returns: {
+          description: string
+          id: string
+          quantity: number
+          total: number
+          unit_price: number
+        }[]
+      }
       get_public_invoice_by_token: {
         Args: { token: string }
         Returns: {
