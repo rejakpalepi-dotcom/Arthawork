@@ -55,8 +55,7 @@ function CoverPreview({ data }: { data: ProposalData }) {
         <div className="space-y-4">
           <div className="space-y-3">
             <div className="text-[#00ACC1] text-[9px] font-extrabold tracking-[0.2em] uppercase">Project Proposal</div>
-            {/* Tambahkan class 'uppercase' di baris h1 ini */}
-            <h1 className="text-[26px] font-black leading-[1.15] tracking-tight uppercase">
+            <h1 className="text-[26px] font-black leading-[1.15] tracking-tight">
               {firstLine}
               {secondLine && (
                 <>
@@ -114,7 +113,7 @@ function IntroPreview({ data }: { data: ProposalData }) {
             Value Proposition
           </div>
           <h2 className="text-lg font-black text-[#1a1a1a] mb-3 leading-tight">{data.introTitle}</h2>
-          <div className="text-[11px] text-gray-600 leading-[1.6] space-y-2 overflow-y-auto font-normal">
+          <div className="text-[11px] text-gray-600 leading-[1.6] space-y-2 overflow-y-auto font-normal uppercase">
             {data.introText.split("\n\n").map((paragraph, i) => (
               <p key={i}>{paragraph}</p>
             ))}
