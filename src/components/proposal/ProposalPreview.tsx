@@ -136,7 +136,7 @@ function ExperiencePreview({
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col justify-center px-6 min-h-0">
-        <h2 className="text-xl font-black text-[#1a1a1a] mb-2 leading-tight bold uppercase">{data.experienceTitle}</h2>
+        <h2 className="text-xl font-black text-[#1a1a1a] mb-2 leading-tight uppercase bold">{data.experienceTitle}</h2>
         <p className="text-[11px] text-gray-500 mb-5 max-w-xs leading-relaxed font-normal">{data.experienceSubtitle}</p>
 
         {/* Stats - Bold accents */}
