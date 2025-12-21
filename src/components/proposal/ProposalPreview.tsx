@@ -55,7 +55,8 @@ function CoverPreview({ data }: { data: ProposalData }) {
         <div className="space-y-4">
           <div className="space-y-3">
             <div className="text-[#00ACC1] text-[9px] font-extrabold tracking-[0.2em] uppercase">Project Proposal</div>
-            <h1 className="text-[26px] font-black leading-[1.15] tracking-tight">
+            {/* Tambahkan class 'uppercase' di baris h1 ini */}
+            <h1 className="text-[26px] font-black leading-[1.15] tracking-tight uppercase">
               {firstLine}
               {secondLine && (
                 <>
