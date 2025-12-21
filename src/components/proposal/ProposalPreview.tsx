@@ -112,7 +112,7 @@ function IntroPreview({ data }: { data: ProposalData }) {
           <div className="text-[8px] text-[#00ACC1] font-semibold tracking-[0.15em] uppercase mb-1.5">
             Value Proposition
           </div>
-          <h2 className="text-lg font-black text-[#1a1a1a] mb-3 leading-tight">{data.introTitle}</h2>
+          <h2 className="text-lg font-black text-[#1a1a1a] mb-3 leading-tight uppercase">{data.introTitle}</h2>
           <div className="text-[11px] text-gray-600 leading-[1.6] space-y-2 overflow-y-auto font-normal">
             {data.introText.split("\n\n").map((paragraph, i) => (
               <p key={i}>{paragraph}</p>
@@ -186,7 +186,7 @@ function ServicesPreview({ data }: { data: ProposalData }) {
 
       {/* Content */}
       <div className="flex-1 px-6 py-4 overflow-y-auto">
-        <h2 className="text-lg font-black text-[#1a1a1a] mb-1">Our Services</h2>
+        <h2 className="text-lg font-black text-[#1a1a1a] mb-1uppercase">Our Services</h2>
         <p className="text-[10px] text-gray-500 mb-4 font-normal">What we bring to the table</p>
 
         {allServices.length === 0 ? (
@@ -239,7 +239,7 @@ function TimelinePreview({ data }: { data: ProposalData }) {
 
       {/* Content */}
       <div className="flex-1 px-6 py-4 overflow-y-auto">
-        <h2 className="text-lg font-black text-[#1a1a1a] mb-1">Project Timeline</h2>
+        <h2 className="text-lg font-black text-[#1a1a1a] mb-1 uppercase">Project Timeline</h2>
         <p className="text-[10px] text-gray-500 mb-5 font-normal">Our roadmap to success</p>
 
         {data.milestones.length === 0 ? (
@@ -297,7 +297,7 @@ function InvestmentPreview({ data }: { data: ProposalData }) {
 
       {/* Content */}
       <div className="flex-1 px-6 py-4 overflow-y-auto">
-        <h2 className="text-lg font-black text-white mb-1">Project Investment</h2>
+        <h2 className="text-lg font-black text-white mb-1 uppercase">Project Investment</h2>
         <p className="text-[10px] text-gray-400 mb-4 font-normal">Scope of work and pricing</p>
 
         {data.selectedServices.length === 0 ? (
