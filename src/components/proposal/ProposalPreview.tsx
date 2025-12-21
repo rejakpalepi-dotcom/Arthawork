@@ -55,7 +55,7 @@ function CoverPreview({ data }: { data: ProposalData }) {
         <div className="space-y-4">
           <div className="space-y-3">
             <div className="text-[#00ACC1] text-[9px] font-extrabold tracking-[0.2em] uppercase">Project Proposal</div>
-            <h1 className="text-[26px] font-black leading-[1.15] tracking-tight">
+            <h1 className="text-[26px] font-black leading-[1.15] tracking-tight uppercase">
               {firstLine}
               {secondLine && (
                 <>
@@ -112,7 +112,7 @@ function IntroPreview({ data }: { data: ProposalData }) {
           <div className="text-[8px] text-[#00ACC1] font-semibold tracking-[0.15em] uppercase mb-1.5">
             Value Proposition
           </div>
-          <h2 className="text-lg font-black text-[#1a1a1a] mb-3 leading-tight uppercase">{data.introTitle}</h2>
+          <h2 className="text-lg font-black text-[#1a1a1a] mb-3 leading-tight">{data.introTitle}</h2>
           <div className="text-[11px] text-gray-600 leading-[1.6] space-y-2 overflow-y-auto font-normal">
             {data.introText.split("\n\n").map((paragraph, i) => (
               <p key={i}>{paragraph}</p>
