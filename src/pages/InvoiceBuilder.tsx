@@ -10,13 +10,14 @@ import { InvoicePreview } from "@/components/invoice/InvoicePreview";
 import { invoiceFormSchema, InvoiceFormData } from "@/components/invoice/types";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 
 export default function InvoiceBuilder() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [previewScale, setPreviewScale] = useState(1);
+  const { settings: businessSettings } = useBusinessSettings();
 
   const form = useForm<InvoiceFormData>({
     resolver: zodResolver(invoiceFormSchema),
@@ -243,6 +244,7 @@ export default function InvoiceBuilder() {
                     subtotal={subtotal}
                     taxAmount={taxAmount}
                     total={total}
+                    businessSettings={businessSettings}
                   />
                 </div>
               </div>
