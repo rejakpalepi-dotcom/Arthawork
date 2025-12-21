@@ -80,14 +80,14 @@ export default function Settings() {
                   key={section.id}
                   onClick={() => setActiveTab(section.id)}
                   className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                    "w-full flex items-center justify-start gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-left transition-colors",
                     activeTab === section.id
                       ? "bg-primary/15 text-primary"
                       : "text-muted-foreground hover:bg-secondary hover:text-foreground",
                   )}
                 >
-                  <section.icon className="w-4 h-4" />
-                  {section.label}
+                  <section.icon className="w-4 h-4 shrink-0" />
+                  <span>{section.label}</span>
                 </button>
               ))}
             </nav>

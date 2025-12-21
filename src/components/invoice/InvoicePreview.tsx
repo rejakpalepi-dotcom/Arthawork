@@ -3,30 +3,46 @@ import { Mail, MapPin } from "lucide-react";
 import { formatIDR } from "@/lib/currency";
 import { InvoiceFormData } from "./types";
 import { cn } from "@/lib/utils";
-import arthaLogo from "@/assets/artha-logo.png";
+import { BusinessSettings } from "@/hooks/useBusinessSettings";
 
 interface InvoicePreviewProps {
   data: InvoiceFormData;
   subtotal: number;
   taxAmount: number;
   total: number;
+  businessSettings?: BusinessSettings;
 }
 
-export function InvoicePreview({ data, subtotal, taxAmount, total }: InvoicePreviewProps) {
+export function InvoicePreview({ data, subtotal, taxAmount, total, businessSettings }: InvoicePreviewProps) {
+  const businessName = businessSettings?.business_name || "Your Business Name";
+  const businessAddress = businessSettings?.address || "Your Business Address";
+  const businessEmail = businessSettings?.email || "Your Business Email";
+  const logoUrl = businessSettings?.logo_url;
+  const bankName = businessSettings?.bank_name || "Your Bank";
+  const accountNumber = businessSettings?.account_number || "XXXX XXXX XXX";
+  const accountName = businessSettings?.account_name || "Account Name";
+
   return (
     <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-xl">
       {/* Header */}
       <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-transparent p-6 border-b border-border">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-xl overflow-hidden shadow-lg">
-              <img src={arthaLogo} alt="Artha" className="w-full h-full object-contain" />
-            </div>
+            {logoUrl ? (
+              <div className="w-14 h-14 rounded-xl overflow-hidden shadow-lg">
+                <img src={logoUrl} alt={businessName} className="w-full h-full object-contain" />
+              </div>
+            ) : (
+              <div className="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center shadow-lg">
+                <span className="text-xl font-bold text-primary">
+                  {businessName.charAt(0).toUpperCase()}
+                </span>
+              </div>
+            )}
             <div>
-              <h2 className="text-xl font-black text-foreground tracking-tight">Artha</h2>
-              <p className="text-sm text-muted-foreground mt-1">123 Creative Ave, Studio 4B</p>
-              <p className="text-sm text-muted-foreground">San Francisco, CA 94103</p>
-              <p className="text-sm text-primary mt-1">hello@artha.app</p>
+              <h2 className="text-xl font-black text-foreground tracking-tight">{businessName}</h2>
+              <p className="text-sm text-muted-foreground mt-1 whitespace-pre-line">{businessAddress}</p>
+              <p className="text-sm text-primary mt-1">{businessEmail}</p>
             </div>
           </div>
           <div className="text-right">
@@ -141,15 +157,15 @@ export function InvoicePreview({ data, subtotal, taxAmount, total }: InvoicePrev
           <div className="grid grid-cols-3 gap-4 text-sm">
             <div>
               <p className="text-muted-foreground">Bank</p>
-              <p className="text-foreground font-medium">Bank Central Asia</p>
+              <p className="text-foreground font-medium">{bankName}</p>
             </div>
             <div>
               <p className="text-muted-foreground">Account</p>
-              <p className="text-foreground font-medium font-mono">8839 2992 001</p>
+              <p className="text-foreground font-medium font-mono">{accountNumber}</p>
             </div>
             <div>
               <p className="text-muted-foreground">Account Name</p>
-              <p className="text-foreground font-medium">Artha Studio</p>
+              <p className="text-foreground font-medium">{accountName}</p>
             </div>
           </div>
         </div>
