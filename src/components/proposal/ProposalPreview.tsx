@@ -153,7 +153,7 @@ function ExperiencePreview({
           
           
         </div>
-        <span className="text-gray-300 text-lg">☰</span>
+        
       </div>
 
       {/* Main Content */}
