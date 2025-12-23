@@ -232,9 +232,12 @@ function TimelinePreview({ data }: { data: ProposalData }) {
 }
 
 function InvestmentPreview({ data }: { data: ProposalData }) {
-  const subtotal = data.selectedServices.reduce((sum, s) => sum + s.price, 0);
+  // Include both selected services AND custom services for reactive preview
+  const allServices = [...data.selectedServices, ...(data.customServices || [])];
+  const subtotal = allServices.reduce((sum, s) => sum + s.price, 0);
   const taxAmount = subtotal * (data.taxRate / 100);
   const total = subtotal + taxAmount;
+  
   return (
     <div className="h-full bg-[#1a1a1a] text-white flex flex-col font-sans">
       <div className="flex items-center justify-between px-6 pt-5 pb-3">
@@ -243,7 +246,6 @@ function InvestmentPreview({ data }: { data: ProposalData }) {
       </div>
 
       <div className="flex-1 px-6 py-4 overflow-y-auto">
-        {/* STYLING FIX: Uppercase */}
         <h2 className="text-lg font-black text-white mb-1 uppercase tracking-tight">Project Investment</h2>
         <p className="text-[10px] text-gray-400 mb-4 font-normal">Scope of work and pricing</p>
 
@@ -253,14 +255,27 @@ function InvestmentPreview({ data }: { data: ProposalData }) {
             <span className="text-center">Unit</span>
             <span className="text-right">Amount</span>
           </div>
-          {data.selectedServices.map((service) => (
+          {allServices.map((service) => (
             <div key={service.id} className="px-3 py-2.5 border-t border-white/5 grid grid-cols-3 text-[10px]">
-              <span className="text-white font-medium">{service.name}</span>
+              <span className="text-white font-medium">{service.name || "Untitled"}</span>
               <span className="text-center text-gray-400 font-normal">{service.unit || "—"}</span>
               <span className="text-right text-white font-normal">{formatIDR(service.price)}</span>
             </div>
           ))}
         </div>
+
+        {data.taxRate > 0 && (
+          <div className="space-y-1 mb-2 text-[10px]">
+            <div className="flex justify-between">
+              <span className="text-gray-400">Subtotal</span>
+              <span className="text-white">{formatIDR(subtotal)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Tax ({data.taxRate}%)</span>
+              <span className="text-white">{formatIDR(taxAmount)}</span>
+            </div>
+          </div>
+        )}
 
         <div className="space-y-2 mb-4">
           <div className="flex justify-between text-sm font-black pt-2 border-t border-white/10">

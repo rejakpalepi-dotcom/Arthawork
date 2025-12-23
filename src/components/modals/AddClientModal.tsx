@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { User, Mail, Phone, MapPin, Loader2 } from "lucide-react";
+import { User, Mail, Phone, MapPin, Building2, Loader2 } from "lucide-react";
 
 const clientSchema = z.object({
+  company: z.string().max(100, "Company name must be less than 100 characters").optional(),
   name: z.string().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
   email: z.string().email("Invalid email address").or(z.literal("")).optional(),
   phone: z.string().max(20, "Phone must be less than 20 characters").optional(),
@@ -36,6 +37,7 @@ export function AddClientModal({ open, onOpenChange, onSuccess }: AddClientModal
   } = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
     defaultValues: {
+      company: "",
       name: "",
       email: "",
       phone: "",
@@ -53,6 +55,7 @@ export function AddClientModal({ open, onOpenChange, onSuccess }: AddClientModal
       }
 
       const { error } = await supabase.from("clients").insert({
+        company: data.company || null,
         name: data.name,
         email: data.email || null,
         phone: data.phone || null,
@@ -88,13 +91,29 @@ export function AddClientModal({ open, onOpenChange, onSuccess }: AddClientModal
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
           <div className="space-y-2">
+            <Label htmlFor="company" className="flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-muted-foreground" />
+              Company Name
+            </Label>
+            <Input
+              id="company"
+              placeholder="Company or organization name"
+              {...register("company")}
+              className={errors.company ? "border-destructive" : ""}
+            />
+            {errors.company && (
+              <p className="text-sm text-destructive">{errors.company.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="name" className="flex items-center gap-2">
               <User className="w-4 h-4 text-muted-foreground" />
-              Name *
+              Contact Person (PIC) *
             </Label>
             <Input
               id="name"
-              placeholder="Client name"
+              placeholder="Person in charge name"
               {...register("name")}
               className={errors.name ? "border-destructive" : ""}
             />
