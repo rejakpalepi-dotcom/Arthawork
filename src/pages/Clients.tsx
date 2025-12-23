@@ -95,14 +95,14 @@ export default function Clients() {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="p-8">
-          <div className="flex items-center justify-between mb-8">
+        <div className="p-4 md:p-8">
+          <div className="flex items-center justify-between mb-6 md:mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Clients</h1>
-              <p className="text-muted-foreground">Manage your client relationships</p>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">Clients</h1>
+              <p className="text-sm md:text-base text-muted-foreground">Manage your client relationships</p>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {[1, 2, 3].map((i) => (
               <div key={i} className="h-40 bg-muted/50 rounded-2xl animate-pulse" />
             ))}
@@ -114,24 +114,24 @@ export default function Clients() {
 
   return (
     <DashboardLayout>
-      <div className="p-8">
-        <div className="flex items-center justify-between mb-8">
+      <div className="p-4 md:p-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Clients</h1>
-            <p className="text-muted-foreground">Manage your client relationships</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">Clients</h1>
+            <p className="text-sm md:text-base text-muted-foreground">Manage your client relationships</p>
           </div>
-          <Button className="gap-2" onClick={() => setShowAddModal(true)}>
+          <Button className="gap-2 w-full sm:w-auto min-h-[44px]" onClick={() => setShowAddModal(true)}>
             <Plus className="w-4 h-4" />
             Add Client
           </Button>
         </div>
 
         {/* Search */}
-        <div className="relative mb-6">
+        <div className="relative mb-4 md:mb-6">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input 
             placeholder="Search clients..." 
-            className="pl-10 max-w-md"
+            className="pl-10 w-full md:max-w-md min-h-[44px]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -153,7 +153,7 @@ export default function Clients() {
             <p className="text-muted-foreground">No clients match your search.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {filteredClients.map((client, index) => (
               <div
                 key={client.id}

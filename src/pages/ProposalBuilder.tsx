@@ -6,7 +6,8 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ProposalEditor } from "@/components/proposal/ProposalEditor";
 import { ProposalPreview } from "@/components/proposal/ProposalPreview";
 import { exportProposalToPDF } from "@/lib/proposalPdfExport";
-import { Layout, FileText, Briefcase, Gem, Calendar, CreditCard, Loader2, Download } from "lucide-react";
+import { Layout, FileText, Briefcase, Gem, Calendar, CreditCard, Loader2, Download, Eye, FileEdit } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface Service {
   id: string;
@@ -106,12 +107,12 @@ const initialProposalData: ProposalData = {
 };
 
 const pages = [
-  { id: 1, label: "Cover Page", icon: Layout },
-  { id: 2, label: "Introduction", icon: FileText },
-  { id: 3, label: "Track Record", icon: Briefcase },
-  { id: 4, label: "Design Services", icon: Gem },
-  { id: 5, label: "Project Timeline", icon: Calendar },
-  { id: 6, label: "Investment", icon: CreditCard },
+  { id: 1, label: "Cover", fullLabel: "Cover Page", icon: Layout },
+  { id: 2, label: "Intro", fullLabel: "Introduction", icon: FileText },
+  { id: 3, label: "Track", fullLabel: "Track Record", icon: Briefcase },
+  { id: 4, label: "Services", fullLabel: "Design Services", icon: Gem },
+  { id: 5, label: "Timeline", fullLabel: "Project Timeline", icon: Calendar },
+  { id: 6, label: "Price", fullLabel: "Investment", icon: CreditCard },
 ];
 
 export default function ProposalBuilder() {
@@ -122,6 +123,7 @@ export default function ProposalBuilder() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [mobileView, setMobileView] = useState<"form" | "preview">("form");
 
   useEffect(() => {
     fetchClients();
@@ -211,22 +213,22 @@ export default function ProposalBuilder() {
         )}
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 md:mb-4 px-4 md:px-0">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Proposal Builder</h1>
-            <p className="text-muted-foreground text-sm">Create a stunning proposal for your client</p>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">Proposal Builder</h1>
+            <p className="text-muted-foreground text-xs md:text-sm">Create a stunning proposal for your client</p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate("/proposals")}
-              className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="px-3 md:px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[40px]"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={isSaving || isExporting}
-              className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50"
+              className="px-3 md:px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50 min-h-[40px]"
             >
               {isSaving ? "Saving..." : "Save Draft"}
             </button>
@@ -245,7 +247,7 @@ export default function ProposalBuilder() {
                 }
               }}
               disabled={isExporting}
-              className="px-4 py-2 text-sm bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 font-medium disabled:opacity-50"
+              className="hidden sm:flex px-3 md:px-4 py-2 text-sm bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors items-center gap-2 font-medium disabled:opacity-50 min-h-[40px]"
             >
               <Download className="h-4 w-4" />
               {isExporting ? "Exporting..." : "Export PDF"}
@@ -254,34 +256,69 @@ export default function ProposalBuilder() {
         </div>
 
         {/* Professional Tab Navigation with Lucide Icons */}
-        <div className="flex items-center gap-1 mb-4 p-1.5 bg-card rounded-xl border border-border w-fit">
-          {pages.map((page) => {
-            const IconComponent = page.icon;
-            const isActive = currentPage === page.id;
-            return (
-              <button
-                key={page.id}
-                onClick={() => setCurrentPage(page.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all relative ${
-                  isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
-              >
-                <IconComponent className="h-4 w-4" />
-                <span>{page.label}</span>
-                {isActive && (
-                  <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full" />
-                )}
-              </button>
-            );
-          })}
+        <div className="overflow-x-auto mb-3 md:mb-4 px-4 md:px-0 -mx-4 md:mx-0">
+          <div className="flex items-center gap-1 p-1.5 bg-card rounded-xl border border-border w-fit min-w-max mx-4 md:mx-0">
+            {pages.map((page) => {
+              const IconComponent = page.icon;
+              const isActive = currentPage === page.id;
+              return (
+                <button
+                  key={page.id}
+                  onClick={() => setCurrentPage(page.id)}
+                  className={cn(
+                    "flex items-center gap-1.5 md:gap-2 px-2.5 md:px-4 py-2 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all relative min-h-[40px]",
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  )}
+                >
+                  <IconComponent className="h-4 w-4" />
+                  <span className="md:hidden">{page.label}</span>
+                  <span className="hidden md:inline">{page.fullLabel}</span>
+                  {isActive && (
+                    <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Mobile View Toggle */}
+        <div className="flex lg:hidden border-t border-b border-border mb-3 -mx-4 px-4 md:mx-0 md:px-0">
+          <button
+            onClick={() => setMobileView("form")}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
+              mobileView === "form" 
+                ? "text-primary border-b-2 border-primary bg-primary/5" 
+                : "text-muted-foreground"
+            )}
+          >
+            <FileEdit className="w-4 h-4" />
+            Edit Form
+          </button>
+          <button
+            onClick={() => setMobileView("preview")}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
+              mobileView === "preview" 
+                ? "text-primary border-b-2 border-primary bg-primary/5" 
+                : "text-muted-foreground"
+            )}
+          >
+            <Eye className="w-4 h-4" />
+            Preview
+          </button>
         </div>
 
         {/* Split Screen Layout */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-5 min-h-0">
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-5 min-h-0 px-4 md:px-0">
           {/* Left Panel - Editor */}
-          <div className="bg-card rounded-xl border border-border p-6 overflow-y-auto">
+          <div className={cn(
+            "bg-card rounded-xl border border-border p-4 md:p-6 overflow-y-auto",
+            mobileView !== "form" && "hidden lg:block"
+          )}>
             <ProposalEditor
               currentPage={currentPage}
               data={proposalData}
@@ -293,7 +330,10 @@ export default function ProposalBuilder() {
           </div>
 
           {/* Right Panel - Live Preview with A4 aspect ratio */}
-          <div className="bg-muted/30 rounded-xl border border-border p-5 overflow-hidden flex flex-col">
+          <div className={cn(
+            "bg-muted/30 rounded-xl border border-border p-3 md:p-5 overflow-hidden flex flex-col",
+            mobileView !== "preview" && "hidden lg:block"
+          )}>
             <div className="text-xs text-muted-foreground mb-3 flex items-center gap-2 font-medium">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               Live Preview
@@ -303,8 +343,8 @@ export default function ProposalBuilder() {
                 className="bg-white rounded-lg shadow-2xl border-2 border-border/50 overflow-hidden w-full"
                 style={{ 
                   aspectRatio: '8.5/11',
-                  maxHeight: 'calc(100vh - 16rem)',
-                  maxWidth: 'calc((100vh - 16rem) * 8.5 / 11)'
+                  maxHeight: 'calc(100vh - 20rem)',
+                  maxWidth: 'calc((100vh - 20rem) * 8.5 / 11)'
                 }}
               >
                 <ProposalPreview currentPage={currentPage} data={proposalData} />

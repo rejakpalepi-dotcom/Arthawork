@@ -52,22 +52,22 @@ export function StatsCard({
       )}
 
       <div className="relative flex items-start justify-between">
-        <div className="space-y-2">
+        <div className="space-y-1 md:space-y-2 flex-1 min-w-0">
           <p className={cn(
-            "text-sm font-medium",
+            "text-xs md:text-sm font-medium truncate",
             isHighlight ? "text-primary-foreground/80" : "text-muted-foreground"
           )}>
             {title}
           </p>
           <p className={cn(
-            "text-3xl font-bold",
+            "text-xl md:text-3xl font-bold truncate",
             isHighlight ? "text-primary-foreground" : "text-foreground"
           )}>
             {value}
           </p>
           {subtitle && (
             <span className={cn(
-              "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
+              "hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
               isHighlight 
                 ? "bg-primary-foreground/20 text-primary-foreground" 
                 : "bg-primary/10 text-primary"
@@ -76,20 +76,20 @@ export function StatsCard({
             </span>
           )}
           {trend && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1 md:gap-1.5">
               <TrendingUp className={cn(
-                "w-4 h-4",
+                "w-3 h-3 md:w-4 md:h-4",
                 isHighlight ? "text-primary-foreground" : (trend.positive ? "text-success" : "text-destructive"),
                 !trend.positive && "rotate-180"
               )} />
               <span className={cn(
-                "text-sm font-medium",
+                "text-xs md:text-sm font-medium",
                 isHighlight ? "text-primary-foreground" : (trend.positive ? "text-success" : "text-destructive")
               )}>
                 {trend.positive ? "+" : "-"}{trend.value}%
               </span>
               <span className={cn(
-                "text-xs",
+                "text-xs hidden lg:inline",
                 isHighlight ? "text-primary-foreground/70" : "text-muted-foreground"
               )}>
                 vs last month
@@ -98,11 +98,11 @@ export function StatsCard({
           )}
         </div>
         <div className={cn(
-          "p-3 rounded-xl",
+          "p-2 md:p-3 rounded-lg md:rounded-xl shrink-0 ml-2",
           isHighlight ? "bg-primary-foreground/20" : "bg-secondary"
         )}>
           <Icon className={cn(
-            "w-6 h-6",
+            "w-4 h-4 md:w-6 md:h-6",
             isHighlight ? "text-primary-foreground" : "text-muted-foreground"
           )} />
         </div>
