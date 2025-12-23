@@ -13,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { formatIDR } from "@/lib/currency";
 import { cn } from "@/lib/utils";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 interface InvoiceItem {
   id: string;
@@ -164,7 +165,12 @@ export default function GuestPayment() {
   const status = statusConfig[statusKey as keyof typeof statusConfig] || statusConfig.pending;
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <SEOHead
+        title={`Invoice #${invoice.invoice_number} - Payment`}
+        description={`Complete your payment for Invoice #${invoice.invoice_number}. Secure checkout powered by Artha.`}
+      />
+      <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border py-4 px-6 bg-card/50 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
