@@ -159,7 +159,8 @@ export default function ProposalBuilder() {
   };
 
   const calculateTotal = () => {
-    const subtotal = proposalData.selectedServices.reduce((sum, s) => sum + s.price, 0);
+    const allServices = [...proposalData.selectedServices, ...(proposalData.customServices || [])];
+    const subtotal = allServices.reduce((sum, s) => sum + s.price, 0);
     const taxAmount = subtotal * (proposalData.taxRate / 100);
     return subtotal + taxAmount;
   };
