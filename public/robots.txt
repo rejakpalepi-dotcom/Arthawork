@@ -1,7 +1,7 @@
 # Artha SEO Configuration
 # Allow indexing of public marketing pages, block private user areas
 
-User-agent: Googlebot
+User-agent: *
 Allow: /
 Allow: /login
 Allow: /signup
@@ -13,24 +13,19 @@ Disallow: /settings/*
 Disallow: /clients
 Disallow: /services
 Disallow: /proposals
-Disallow: /proposals/new
+Disallow: /proposals/*
 Disallow: /invoices
-Disallow: /invoices/new
+Disallow: /invoices/*
 Disallow: /projects
+Disallow: /supabase/*
+
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
-Allow: /login
-Allow: /signup
-Disallow: /dashboard
-Disallow: /dashboard/*
-Disallow: /settings
-Disallow: /settings/*
-Disallow: /clients
-Disallow: /services
-Disallow: /proposals
-Disallow: /invoices
-Disallow: /projects
+Crawl-delay: 2
 
 User-agent: Twitterbot
 Allow: /
@@ -38,16 +33,14 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
-Allow: /login
-Allow: /signup
-Disallow: /dashboard
-Disallow: /settings
-Disallow: /clients
-Disallow: /services
-Disallow: /proposals
-Disallow: /invoices
-Disallow: /projects
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: Slackbot
+Allow: /
 
 # Sitemap location
 Sitemap: https://artha.app/sitemap.xml

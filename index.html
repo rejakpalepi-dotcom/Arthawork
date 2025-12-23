@@ -2,32 +2,43 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    
+    <!-- Performance: DNS Prefetch & Preconnect -->
+    <link rel="dns-prefetch" href="https://sfkcncwbsoaqqteqguyf.supabase.co" />
+    <link rel="preconnect" href="https://sfkcncwbsoaqqteqguyf.supabase.co" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
     <!-- Primary Meta Tags -->
-    <title>Artha | Professional Proposal & Invoice Builder for Creatives</title>
-    <meta name="title" content="Artha | Professional Proposal & Invoice Builder for Creatives" />
+    <title>Artha | #1 Professional Proposal & Invoice Builder for Creatives</title>
+    <meta name="title" content="Artha | #1 Professional Proposal & Invoice Builder for Creatives" />
     <meta name="description" content="Streamline your freelance business with Artha. Create stunning proposals, automate invoices, and manage clients with ease. Designed for designers, photographers, and creative pros." />
-    <meta name="keywords" content="artha, invoice generator, project proposal builder, freelance tools, creative invoice app, professional proposal template, business management SaaS" />
+    <meta name="keywords" content="artha, invoice generator, project proposal builder, freelance tools Indonesia, creative invoice app, professional proposal template, business management SaaS, invoice builder, creative proposal, freelance business tools" />
     <meta name="author" content="Artha" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="https://artha.app/" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://artha.app/" />
-    <meta property="og:title" content="Artha | Professional Proposal & Invoice Builder for Creatives" />
+    <meta property="og:title" content="Artha | #1 Professional Proposal & Invoice Builder for Creatives" />
     <meta property="og:description" content="Streamline your freelance business with Artha. Create stunning proposals, automate invoices, and manage clients with ease. Designed for creative professionals." />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta property="og:image" content="https://artha.app/artha-logo.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="Artha - Professional Proposal & Invoice Builder" />
     <meta property="og:site_name" content="Artha" />
     <meta property="og:locale" content="en_US" />
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://artha.app/" />
-    <meta name="twitter:title" content="Artha | Professional Proposal & Invoice Builder for Creatives" />
+    <meta name="twitter:title" content="Artha | #1 Professional Proposal & Invoice Builder for Creatives" />
     <meta name="twitter:description" content="Streamline your freelance business with Artha. Create stunning proposals, automate invoices, and manage clients. Designed for creative professionals." />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta name="twitter:image" content="https://artha.app/artha-logo.png" />
     <meta name="twitter:site" content="@ArthaHQ" />
     <meta name="twitter:creator" content="@ArthaHQ" />
     
@@ -38,7 +49,7 @@
       "@type": "SoftwareApplication",
       "name": "Artha",
       "applicationCategory": "BusinessApplication",
-      "operatingSystem": "Web",
+      "operatingSystem": "Web, Android, iOS",
       "description": "Professional proposal and invoice builder for creative freelancers. Manage clients, create stunning proposals, and automate invoicing.",
       "url": "https://artha.app",
       "offers": {
@@ -57,9 +68,11 @@
         "Automated Invoice Generation",
         "Client Management",
         "Online Payments via Stripe",
-        "Business Analytics Dashboard"
+        "Business Analytics Dashboard",
+        "Mobile-First Design",
+        "Offline Access via PWA"
       ],
-      "screenshot": "https://lovable.dev/opengraph-image-p98pqg.png",
+      "screenshot": "https://artha.app/artha-logo.png",
       "author": {
         "@type": "Organization",
         "name": "Artha",
@@ -68,13 +81,24 @@
     }
     </script>
     
-    <!-- Additional SEO -->
-    <meta name="theme-color" content="#00E5CC" />
+    <!-- PWA & Mobile -->
+    <meta name="theme-color" content="#1a1a1a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Artha" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Artha" />
+    <meta name="msapplication-TileColor" content="#1a1a1a" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="format-detection" content="telephone=no" />
+    
+    <!-- Favicons -->
     <link rel="icon" type="image/png" href="/artha-logo.png" />
     <link rel="apple-touch-icon" href="/artha-logo.png" />
+    <link rel="mask-icon" href="/artha-logo.png" color="#00E5CC" />
+    
+    <!-- PWA Manifest (generated by vite-plugin-pwa) -->
+    <link rel="manifest" href="/manifest.webmanifest" />
   </head>
 
   <body>
