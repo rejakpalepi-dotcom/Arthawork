@@ -44,28 +44,28 @@ export default function Dashboard() {
         description="Your Artha business dashboard. Track revenue, manage proposals, invoices, and clients."
         noIndex={true}
       />
-      <div className="p-8 font-sans">
+      <div className="p-4 md:p-8 font-sans">
         {/* Header with Dynamic Greeting */}
-        <header className="flex items-start justify-between mb-8">
+        <header className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6 md:mb-8">
           <div>
             {loading ? (
               <>
-                <Skeleton className="h-9 w-64 mb-2" />
-                <Skeleton className="h-5 w-48" />
+                <Skeleton className="h-8 md:h-9 w-48 md:w-64 mb-2" />
+                <Skeleton className="h-4 md:h-5 w-36 md:w-48" />
               </>
             ) : (
               <>
-                <h1 className="text-3xl font-bold text-foreground mb-2">
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">
                   {greeting}, {userName}
                 </h1>
-                <p className="text-muted-foreground flex items-center gap-2">
+                <p className="text-sm md:text-base text-muted-foreground flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-primary" aria-hidden="true" />
-                  {today} • You have {upcomingDeadlines} deadline{upcomingDeadlines !== 1 ? 's' : ''} coming up.
+                  <span className="hidden sm:inline">{today} •</span> {upcomingDeadlines} deadline{upcomingDeadlines !== 1 ? 's' : ''} coming up
                 </p>
               </>
             )}
           </div>
-          <nav className="flex items-center gap-3" aria-label="Dashboard actions">
+          <nav className="hidden md:flex items-center gap-3" aria-label="Dashboard actions">
             <Button 
               variant="outline" 
               size="icon" 
@@ -86,13 +86,13 @@ export default function Dashboard() {
         </header>
 
         {/* Stats Grid - 4 columns with real-time metrics */}
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" aria-label="Business metrics">
+        <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8" aria-label="Business metrics">
           {loading ? (
             <>
-              <Skeleton className="h-32 rounded-xl" />
-              <Skeleton className="h-32 rounded-xl" />
-              <Skeleton className="h-32 rounded-xl" />
-              <Skeleton className="h-32 rounded-xl" />
+              <Skeleton className="h-24 md:h-32 rounded-xl" />
+              <Skeleton className="h-24 md:h-32 rounded-xl" />
+              <Skeleton className="h-24 md:h-32 rounded-xl" />
+              <Skeleton className="h-24 md:h-32 rounded-xl" />
             </>
           ) : (
             <>
@@ -129,34 +129,37 @@ export default function Dashboard() {
         </section>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
           {/* Revenue Chart - takes 2 columns */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-foreground">Revenue Trends</h2>
+          <div className="lg:col-span-2 order-2 lg:order-1">
+            <div className="flex items-center justify-between mb-3 md:mb-4">
+              <h2 className="text-base md:text-lg font-semibold text-foreground">Revenue Trends</h2>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="gap-2"
+                className="gap-2 text-xs md:text-sm"
                 onClick={handleExport}
                 disabled={loading}
               >
-                <FileDown className="w-4 h-4" />
-                Export Report
+                <FileDown className="w-3 h-3 md:w-4 md:h-4" />
+                <span className="hidden sm:inline">Export Report</span>
+                <span className="sm:hidden">Export</span>
               </Button>
             </div>
             <RevenueChart data={revenueData} />
           </div>
           
           {/* Right sidebar - Quick Actions & Recent Invoices */}
-          <div className="space-y-6">
-            <QuickActions />
+          <div className="space-y-4 md:space-y-6 order-1 lg:order-2">
+            <div className="hidden md:block">
+              <QuickActions />
+            </div>
             <RecentInvoices invoices={recentInvoices} loading={loading} />
           </div>
         </div>
 
         {/* Active Projects Table + Today's Focus */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           <div className="lg:col-span-2">
             <ActiveProjects projects={projects} loading={loading} />
           </div>

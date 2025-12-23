@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, CheckCircle, Save, Send, ZoomIn, ZoomOut, Zap } from "lucide-react";
+import { ArrowLeft, CheckCircle, Save, Send, ZoomIn, ZoomOut, Zap, Eye, FileEdit } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { InvoiceForm } from "@/components/invoice/InvoiceForm";
@@ -11,12 +11,14 @@ import { invoiceFormSchema, InvoiceFormData } from "@/components/invoice/types";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
+import { cn } from "@/lib/utils";
 
 export default function InvoiceBuilder() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [previewScale, setPreviewScale] = useState(1);
+  const [mobileView, setMobileView] = useState<"form" | "preview">("form");
   const { settings: businessSettings } = useBusinessSettings();
 
   const form = useForm<InvoiceFormData>({
@@ -124,17 +126,17 @@ export default function InvoiceBuilder() {
       <div className="flex flex-col h-full">
         {/* Top Header Bar */}
         <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-          <div className="flex items-center justify-between px-6 py-4">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-                <ArrowLeft className="w-5 h-5" />
+          <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4">
+            <div className="flex items-center gap-2 md:gap-4">
+              <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="h-9 w-9 md:h-10 md:w-10">
+                <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
               </Button>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-primary-foreground" />
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary flex items-center justify-center">
+                  <Zap className="w-4 h-4 md:w-6 md:h-6 text-primary-foreground" />
                 </div>
-                <div>
-                  <h1 className="text-lg font-semibold text-foreground">Invoice Builder</h1>
+                <div className="hidden sm:block">
+                  <h1 className="text-base md:text-lg font-semibold text-foreground">Invoice Builder</h1>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <CheckCircle className="w-3.5 h-3.5 text-success" />
                     All changes saved
@@ -143,29 +145,31 @@ export default function InvoiceBuilder() {
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
               <Button
                 variant="outline"
                 onClick={() => handleSave("draft")}
                 disabled={isSaving}
-                className="gap-2"
+                className="gap-2 text-xs md:text-sm min-h-[40px] md:min-h-[44px] px-3 md:px-4"
               >
                 <Save className="w-4 h-4" />
-                {isSaving ? "Saving..." : "Save Draft"}
+                <span className="hidden sm:inline">{isSaving ? "Saving..." : "Save Draft"}</span>
+                <span className="sm:hidden">{isSaving ? "..." : "Save"}</span>
               </Button>
               <Button
                 onClick={() => handleSave("sent")}
                 disabled={isSubmitting}
-                className="gap-2"
+                className="gap-2 text-xs md:text-sm min-h-[40px] md:min-h-[44px] px-3 md:px-4"
               >
                 <Send className="w-4 h-4" />
-                {isSubmitting ? "Sending..." : "Send Invoice"}
+                <span className="hidden sm:inline">{isSubmitting ? "Sending..." : "Send Invoice"}</span>
+                <span className="sm:hidden">{isSubmitting ? "..." : "Send"}</span>
               </Button>
             </div>
           </div>
 
-          {/* Step Indicator */}
-          <div className="px-6 pb-4">
+          {/* Step Indicator - Hidden on mobile */}
+          <div className="hidden md:block px-6 pb-4">
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-success text-success-foreground text-xs font-medium flex items-center justify-center">
@@ -189,16 +193,47 @@ export default function InvoiceBuilder() {
               </div>
             </div>
           </div>
+
+          {/* Mobile View Toggle */}
+          <div className="flex lg:hidden border-t border-border">
+            <button
+              onClick={() => setMobileView("form")}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
+                mobileView === "form" 
+                  ? "text-primary border-b-2 border-primary bg-primary/5" 
+                  : "text-muted-foreground"
+              )}
+            >
+              <FileEdit className="w-4 h-4" />
+              Edit Form
+            </button>
+            <button
+              onClick={() => setMobileView("preview")}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
+                mobileView === "preview" 
+                  ? "text-primary border-b-2 border-primary bg-primary/5" 
+                  : "text-muted-foreground"
+              )}
+            >
+              <Eye className="w-4 h-4" />
+              Preview
+            </button>
+          </div>
         </div>
 
         {/* Main Content */}
         <div className="flex-1 overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
             {/* Form Side */}
-            <div className="overflow-y-auto p-6 border-r border-border">
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-foreground mb-1">Build Invoice</h2>
-                <p className="text-sm text-muted-foreground">
+            <div className={cn(
+              "overflow-y-auto p-4 md:p-6 border-r border-border",
+              mobileView !== "form" && "hidden lg:block"
+            )}>
+              <div className="mb-4 md:mb-6">
+                <h2 className="text-lg md:text-xl font-semibold text-foreground mb-1">Build Invoice</h2>
+                <p className="text-xs md:text-sm text-muted-foreground">
                   Fill in the project scope and billing details below.
                 </p>
               </div>
@@ -210,8 +245,11 @@ export default function InvoiceBuilder() {
             </div>
 
             {/* Preview Side */}
-            <div className="bg-secondary/20 overflow-y-auto">
-              <div className="sticky top-0 z-10 bg-secondary/80 backdrop-blur-sm border-b border-border px-6 py-3 flex items-center justify-between">
+            <div className={cn(
+              "bg-secondary/20 overflow-y-auto",
+              mobileView !== "preview" && "hidden lg:block"
+            )}>
+              <div className="sticky top-0 z-10 bg-secondary/80 backdrop-blur-sm border-b border-border px-4 md:px-6 py-3 flex items-center justify-between">
                 <h2 className="text-sm font-medium text-foreground">Live Preview</h2>
                 <div className="flex items-center gap-1">
                   <Button
@@ -235,7 +273,7 @@ export default function InvoiceBuilder() {
                   </Button>
                 </div>
               </div>
-              <div className="p-6">
+              <div className="p-4 md:p-6">
                 <div 
                   className="transition-transform origin-top"
                   style={{ transform: `scale(${previewScale})` }}
