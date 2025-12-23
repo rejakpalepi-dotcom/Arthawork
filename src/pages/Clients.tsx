@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Plus, Search, MoreVertical, Users, Mail, Phone, Building2 } from "lucide-react";
+import { Plus, Search, MoreVertical, Users, Mail, Phone, Building2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -124,7 +124,7 @@ export default function Clients() {
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                     <span className="text-lg font-bold text-primary">
-                      {client.name.charAt(0).toUpperCase()}
+                      {(client.company || client.name).charAt(0).toUpperCase()}
                     </span>
                   </div>
                   <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -132,12 +132,15 @@ export default function Clients() {
                   </Button>
                 </div>
                 
-                <h3 className="text-lg font-semibold text-foreground mb-1">{client.name}</h3>
+                {/* Company as primary, client name as PIC */}
+                <h3 className="text-lg font-semibold text-foreground mb-1">
+                  {client.company || client.name}
+                </h3>
                 
                 {client.company && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                    <Building2 className="w-4 h-4" />
-                    {client.company}
+                    <User className="w-4 h-4" />
+                    <span>PIC: {client.name}</span>
                   </div>
                 )}
                 

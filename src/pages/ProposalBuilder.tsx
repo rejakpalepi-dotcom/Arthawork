@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ProposalEditor } from "@/components/proposal/ProposalEditor";
 import { ProposalPreview } from "@/components/proposal/ProposalPreview";
-import { Layout, FileText, Briefcase, Gem, Calendar, CreditCard, Loader2 } from "lucide-react";
+import { exportProposalToPDF } from "@/lib/proposalPdfExport";
+import { Layout, FileText, Briefcase, Gem, Calendar, CreditCard, Loader2, Download } from "lucide-react";
 
 export interface Service {
   id: string;
@@ -120,6 +121,7 @@ export default function ProposalBuilder() {
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     fetchClients();
@@ -222,16 +224,30 @@ export default function ProposalBuilder() {
             </button>
             <button
               onClick={handleSave}
-              disabled={isSaving}
+              disabled={isSaving || isExporting}
               className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50"
             >
               {isSaving ? "Saving..." : "Save Draft"}
             </button>
             <button
-              onClick={() => toast.info("Export functionality coming soon")}
-              className="px-4 py-2 text-sm bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 font-medium"
+              onClick={async () => {
+                setIsExporting(true);
+                try {
+                  const fileName = `${proposalData.projectTitle.replace(/\s+/g, "-").toLowerCase()}-proposal.pdf`;
+                  await exportProposalToPDF(proposalData, fileName);
+                  toast.success("Proposal exported successfully!");
+                } catch (error) {
+                  console.error("Export error:", error);
+                  toast.error("Failed to export proposal");
+                } finally {
+                  setIsExporting(false);
+                }
+              }}
+              disabled={isExporting}
+              className="px-4 py-2 text-sm bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 font-medium disabled:opacity-50"
             >
-              Export
+              <Download className="h-4 w-4" />
+              {isExporting ? "Exporting..." : "Export PDF"}
             </button>
           </div>
         </div>
