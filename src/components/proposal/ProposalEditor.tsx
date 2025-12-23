@@ -731,6 +731,32 @@ function InvestmentEditor({
   const taxAmount = subtotal * (data.taxRate / 100);
   const total = subtotal + taxAmount;
 
+  // Add custom service directly from Investment tab
+  const addCustomService = () => {
+    const newService: CustomService = {
+      id: crypto.randomUUID(),
+      name: "",
+      description: "",
+      price: 0,
+      unit: "project",
+    };
+    onUpdate({ customServices: [...(data.customServices || []), newService] });
+  };
+
+  const updateCustomService = (id: string, updates: Partial<CustomService>) => {
+    onUpdate({
+      customServices: (data.customServices || []).map((s) =>
+        s.id === id ? { ...s, ...updates } : s
+      ),
+    });
+  };
+
+  const removeCustomService = (id: string) => {
+    onUpdate({
+      customServices: (data.customServices || []).filter((s) => s.id !== id),
+    });
+  };
+
   return (
     <div className="space-y-6 font-sans">
       <div className="pb-4 border-b border-border">
@@ -745,20 +771,42 @@ function InvestmentEditor({
         <div className="text-center py-8 text-muted-foreground border border-dashed border-border rounded-xl">
           <CreditCard className="h-10 w-10 mx-auto mb-2 text-muted-foreground/50" />
           <p className="text-sm font-medium">No services added yet</p>
-          <p className="text-xs mt-1">Go to Design Services tab to add items.</p>
+          <p className="text-xs mt-1 mb-4">Go to Design Services tab to select from catalog, or add a custom service below.</p>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={addCustomService}
+            className="border-dashed border-primary/50 hover:border-primary"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Custom Service
+          </Button>
         </div>
       ) : (
         <>
           <div className="space-y-3">
-            <Label className="text-sm font-medium text-foreground">Scope of Work</Label>
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-medium text-foreground">Scope of Work</Label>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={addCustomService}
+                className="text-primary hover:text-primary/80 h-7 text-xs"
+              >
+                <Plus className="h-3 w-3 mr-1" />
+                Add Service
+              </Button>
+            </div>
             <div className="rounded-xl border border-border overflow-hidden">
-              <div className="bg-muted/50 px-4 py-2 border-b border-border grid grid-cols-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <div className="bg-muted/50 px-4 py-2 border-b border-border grid grid-cols-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 <span>Service</span>
                 <span className="text-center">Unit</span>
                 <span className="text-right">Price</span>
+                <span className="text-right">Action</span>
               </div>
               {allServices.map((service) => (
-                <div key={service.id} className="px-4 py-3 border-b border-border last:border-0 grid grid-cols-3 text-sm items-center">
+                <div key={service.id} className="px-4 py-3 border-b border-border last:border-0 grid grid-cols-4 text-sm items-center gap-2">
                   <div>
                     <span className="text-foreground font-medium">{service.name || "Untitled Service"}</span>
                     {service.isCustom && (
@@ -767,10 +815,58 @@ function InvestmentEditor({
                   </div>
                   <span className="text-center text-muted-foreground">{service.unit || "—"}</span>
                   <span className="text-right text-foreground">{formatIDR(service.price)}</span>
+                  <div className="flex justify-end">
+                    {service.isCustom && (
+                      <button
+                        type="button"
+                        onClick={() => removeCustomService(service.id)}
+                        className="text-muted-foreground hover:text-destructive transition-colors p-1"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Custom Service Editor for new entries */}
+          {(data.customServices || []).filter(s => !s.name).map((service) => (
+            <div key={service.id} className="p-4 rounded-xl border border-dashed border-primary/50 bg-primary/5 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-primary uppercase tracking-wider">New Custom Service</span>
+                <button
+                  type="button"
+                  onClick={() => removeCustomService(service.id)}
+                  className="text-muted-foreground hover:text-destructive transition-colors p-1"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-muted-foreground">Service Name</Label>
+                  <Input
+                    value={service.name}
+                    onChange={(e) => updateCustomService(service.id, { name: e.target.value })}
+                    placeholder="e.g., Custom Design"
+                    className="bg-background border-border text-sm"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-muted-foreground">Price</Label>
+                  <Input
+                    type="number"
+                    value={service.price || ""}
+                    onChange={(e) => updateCustomService(service.id, { price: parseFloat(e.target.value) || 0 })}
+                    placeholder="0"
+                    className="bg-background border-border text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
 
           <div className="space-y-3">
             <div className="flex items-center gap-3">
