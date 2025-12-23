@@ -455,5 +455,6 @@ export default function GuestPayment() {
         </div>
       </footer>
     </div>
+    </>
   );
 }
