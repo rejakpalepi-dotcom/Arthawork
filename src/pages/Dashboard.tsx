@@ -99,16 +99,16 @@ export default function Dashboard() {
             <StatsCard
                 title="Pipeline Value"
                 value={formatIDR(stats.pipelineValue)}
-                subtitle={`${stats.activeProposals} active proposals`}
+                subtitle={`${stats.sentProposals} sent proposals`}
                 icon={TrendingUp}
                 trend={stats.pipelineValue > 0 && stats.pipelineTrend !== 0 ? { value: Math.abs(stats.pipelineTrend), positive: stats.pipelineTrend > 0 } : undefined}
               />
               <StatsCard
                 title="Acceptance Rate"
                 value={`${acceptanceRate}%`}
-                subtitle={`${stats.acceptedProposals} of ${stats.totalProposals} proposals`}
+                subtitle={`${stats.acceptedProposals} accepted of ${stats.sentProposals + stats.acceptedProposals} sent`}
                 icon={Target}
-                trend={stats.totalProposals > 0 && stats.acceptanceTrend !== 0 ? { value: Math.abs(stats.acceptanceTrend), positive: stats.acceptanceTrend > 0 } : undefined}
+                trend={(stats.sentProposals + stats.acceptedProposals) > 0 && stats.acceptanceTrend !== 0 ? { value: Math.abs(stats.acceptanceTrend), positive: stats.acceptanceTrend > 0 } : undefined}
               />
               <StatsCard
                 title="Active Proposals"

@@ -191,14 +191,15 @@ export function useDashboardData() {
     const pendingInvs = invoices?.filter(inv => inv.status === "pending" || inv.status === "sent") || [];
     const allProposalsList = proposals || [];
     
-    // Pipeline Value: SUM of all proposals NOT rejected
-    const pipelineProposals = allProposalsList.filter(prop => prop.status !== "rejected");
-    const pipelineValue = pipelineProposals.reduce((sum, prop) => sum + Number(prop.total || 0), 0);
-    
-    // Active Proposals: COUNT where status is 'sent'
+    // Pipeline Value: SUM of all proposals with status 'sent' (awaiting response)
     const sentProposals = allProposalsList.filter(prop => prop.status === "sent");
+    const pipelineValue = sentProposals.reduce((sum, prop) => sum + Number(prop.total || 0), 0);
     
-    // Acceptance Rate: approved / total * 100
+    // Acceptance Rate: approved / (sent + approved + rejected) * 100
+    // Only count proposals that have been sent (not drafts)
+    const processedProposals = allProposalsList.filter(prop => 
+      prop.status === "sent" || prop.status === "approved" || prop.status === "rejected"
+    );
     const acceptedProps = allProposalsList.filter(prop => prop.status === "approved");
     const activeProps = allProposalsList.filter(prop => prop.status !== "draft");
 
@@ -396,9 +397,11 @@ export function useDashboardData() {
     day: 'numeric' 
   });
 
-  // Acceptance Rate calculation
-  const acceptanceRate = stats.totalProposals > 0 
-    ? Math.round((stats.acceptedProposals / stats.totalProposals) * 100) 
+  // Acceptance Rate calculation: Accepted / (Sent + Accepted + Rejected)
+  // This calculates from proposals that have been processed (not drafts)
+  const processedProposals = stats.sentProposals + stats.acceptedProposals;
+  const acceptanceRate = processedProposals > 0 
+    ? Math.round((stats.acceptedProposals / processedProposals) * 100) 
     : 0;
 
   return {

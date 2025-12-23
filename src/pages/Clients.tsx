@@ -1,11 +1,21 @@
 import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Plus, Search, MoreVertical, Users, Mail, Phone, Building2, User } from "lucide-react";
+import { Plus, Search, MoreVertical, Users, Mail, Phone, Building2, User, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/empty-state";
 import { supabase } from "@/integrations/supabase/client";
 import { AddClientModal } from "@/components/modals/AddClientModal";
+import { EditClientModal } from "@/components/modals/EditClientModal";
+import { DeleteConfirmModal } from "@/components/modals/DeleteConfirmModal";
+import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Client {
   id: string;
@@ -22,6 +32,15 @@ export default function Clients() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editModal, setEditModal] = useState<{ open: boolean; client: Client | null }>({
+    open: false,
+    client: null,
+  });
+  const [deleteModal, setDeleteModal] = useState<{ open: boolean; clientId: string | null }>({
+    open: false,
+    clientId: null,
+  });
+  const [deleting, setDeleting] = useState(false);
 
   const fetchClients = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -46,6 +65,26 @@ export default function Clients() {
   useEffect(() => {
     fetchClients();
   }, []);
+
+  const handleDelete = async () => {
+    if (!deleteModal.clientId) return;
+    setDeleting(true);
+    try {
+      const { error } = await supabase
+        .from("clients")
+        .delete()
+        .eq("id", deleteModal.clientId);
+
+      if (error) throw error;
+      toast.success("Client deleted successfully!");
+      fetchClients();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete client");
+    } finally {
+      setDeleting(false);
+      setDeleteModal({ open: false, clientId: null });
+    }
+  };
 
   const filteredClients = clients.filter(client =>
     client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -127,9 +166,27 @@ export default function Clients() {
                       {(client.company || client.name).charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreVertical className="w-4 h-4" />
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreVertical className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-card border-border">
+                      <DropdownMenuItem onClick={() => setEditModal({ open: true, client })}>
+                        <Pencil className="w-4 h-4 mr-2" />
+                        Edit Client
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="text-destructive focus:text-destructive"
+                        onClick={() => setDeleteModal({ open: true, clientId: client.id })}
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete Client
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
                 
                 {/* Company as primary, client name as PIC */}
@@ -168,6 +225,22 @@ export default function Clients() {
         open={showAddModal}
         onOpenChange={setShowAddModal}
         onSuccess={fetchClients}
+      />
+
+      <EditClientModal
+        open={editModal.open}
+        onOpenChange={(open) => setEditModal({ open, client: editModal.client })}
+        client={editModal.client}
+        onSuccess={fetchClients}
+      />
+
+      <DeleteConfirmModal
+        open={deleteModal.open}
+        onOpenChange={(open) => setDeleteModal({ open, clientId: deleteModal.clientId })}
+        onConfirm={handleDelete}
+        loading={deleting}
+        title="Delete Client?"
+        description="This will permanently delete this client. This action cannot be undone."
       />
     </DashboardLayout>
   );
