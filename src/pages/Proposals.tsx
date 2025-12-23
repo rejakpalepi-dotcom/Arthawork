@@ -181,6 +181,29 @@ export default function Proposals() {
     navigate(`/proposals/${proposalId}/edit`);
   };
 
+  const handleStatusUpdate = async (proposalId: string, newStatus: string) => {
+    try {
+      const { error } = await supabase
+        .from("proposals")
+        .update({ status: newStatus })
+        .eq("id", proposalId);
+
+      if (error) throw error;
+      
+      const statusLabels: Record<string, string> = {
+        sent: "Sent",
+        approved: "Accepted",
+        rejected: "Declined",
+        draft: "Draft",
+      };
+      
+      toast.success(`Proposal marked as ${statusLabels[newStatus] || newStatus}!`);
+      fetchProposals();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update status");
+    }
+  };
+
   const handleDelete = async () => {
     if (!deleteModal.proposalId) return;
     setDeleting(true);
@@ -486,7 +509,7 @@ export default function Proposals() {
                           <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
                         </button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent align="end" className="bg-card border-border">
                         <DropdownMenuItem onClick={() => handleEdit(proposal.id)}>
                           <Pencil className="w-4 h-4 mr-2" />
                           Edit
@@ -502,6 +525,25 @@ export default function Proposals() {
                           )}
                           Export PDF
                         </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        {proposal.status === "draft" && (
+                          <DropdownMenuItem onClick={() => handleStatusUpdate(proposal.id, "sent")}>
+                            <Send className="w-4 h-4 mr-2" />
+                            Mark as Sent
+                          </DropdownMenuItem>
+                        )}
+                        {proposal.status === "sent" && (
+                          <>
+                            <DropdownMenuItem onClick={() => handleStatusUpdate(proposal.id, "approved")}>
+                              <CheckCircle className="w-4 h-4 mr-2" />
+                              Mark as Accepted
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleStatusUpdate(proposal.id, "rejected")}>
+                              <AlertCircle className="w-4 h-4 mr-2" />
+                              Mark as Declined
+                            </DropdownMenuItem>
+                          </>
+                        )}
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           className="text-destructive focus:text-destructive"

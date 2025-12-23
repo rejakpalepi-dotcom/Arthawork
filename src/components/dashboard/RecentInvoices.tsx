@@ -104,7 +104,7 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
                         variant="outline" 
                         size="sm" 
                         className="h-8 text-xs"
-                        onClick={() => navigate("/invoices")}
+                        onClick={() => navigate(`/invoices/${invoice.id}`)}
                       >
                         View details
                       </Button>
