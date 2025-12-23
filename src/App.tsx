@@ -14,6 +14,7 @@ import Services from "./pages/Services";
 import Proposals from "./pages/Proposals";
 import Invoices from "./pages/Invoices";
 import InvoiceBuilder from "./pages/InvoiceBuilder";
+import InvoiceDetail from "./pages/InvoiceDetail";
 import ProjectBuilder from "./pages/ProjectBuilder";
 import ProposalBuilder from "./pages/ProposalBuilder";
 import Settings from "./pages/Settings";
@@ -92,6 +93,14 @@ const App = () => (
               }
             />
             <Route
+              path="/invoices/:id"
+              element={
+                <ProtectedRoute>
+                  <InvoiceDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/settings"
               element={
                 <ProtectedRoute>
@@ -109,6 +118,14 @@ const App = () => (
             />
             <Route
               path="/proposals/new"
+              element={
+                <ProtectedRoute>
+                  <ProposalBuilder />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/proposals/:id/edit"
               element={
                 <ProtectedRoute>
                   <ProposalBuilder />
