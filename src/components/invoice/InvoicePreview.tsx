@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { Mail, MapPin } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { formatIDR } from "@/lib/currency";
 import { InvoiceFormData } from "./types";
 import { cn } from "@/lib/utils";
@@ -75,6 +75,12 @@ export function InvoicePreview({ data, subtotal, taxAmount, total, businessSetti
             <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
               <Mail className="w-4 h-4" />
               {data.clientEmail}
+            </div>
+          )}
+          {data.clientPhone && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+              <Phone className="w-4 h-4" />
+              {data.clientPhone}
             </div>
           )}
           {data.clientAddress && (

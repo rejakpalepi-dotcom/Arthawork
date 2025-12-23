@@ -26,6 +26,7 @@ export default function InvoiceBuilder() {
       clientId: null,
       clientName: "",
       clientEmail: "",
+      clientPhone: "",
       clientAddress: "",
       issueDate: new Date(),
       dueDate: null,
