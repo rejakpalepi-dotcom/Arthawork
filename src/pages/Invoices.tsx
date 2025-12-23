@@ -24,6 +24,7 @@ interface Invoice {
   id: string;
   invoice_number: string;
   client_name: string | null;
+  client_phone: string | null;
   total: number;
   status: string;
   due_date: string | null;
@@ -64,7 +65,7 @@ export default function Invoices() {
 
     const { data, error } = await supabase
       .from("invoices")
-      .select("id, invoice_number, total, status, due_date, issue_date, subtotal, tax_rate, tax_amount, notes, clients(name, email, address)")
+      .select("id, invoice_number, total, status, due_date, issue_date, subtotal, tax_rate, tax_amount, notes, clients(name, email, phone, address)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -74,6 +75,7 @@ export default function Invoices() {
         invoice_number: inv.invoice_number,
         client_name: (inv.clients as any)?.name || null,
         client_email: (inv.clients as any)?.email || null,
+        client_phone: (inv.clients as any)?.phone || null,
         client_address: (inv.clients as any)?.address || null,
         total: Number(inv.total),
         status: inv.status,
@@ -177,8 +179,9 @@ export default function Invoices() {
           <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
             <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Bill To</h3>
             <p style="font-size: 18px; font-weight: 600; margin: 0;">${invoice.client_name || "Client"}</p>
-            ${invoice.client_email ? `<p style="color: #666; margin: 4px 0;">${invoice.client_email}</p>` : ""}
-            ${invoice.client_address ? `<p style="color: #666; margin: 4px 0;">${invoice.client_address}</p>` : ""}
+            ${invoice.client_email ? `<p style="color: #666; margin: 4px 0;">📧 ${invoice.client_email}</p>` : ""}
+            ${invoice.client_phone ? `<p style="color: #666; margin: 4px 0;">📞 ${invoice.client_phone}</p>` : ""}
+            ${invoice.client_address ? `<p style="color: #666; margin: 4px 0;">📍 ${invoice.client_address}</p>` : ""}
           </div>
           
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">

@@ -14,6 +14,7 @@ export const invoiceFormSchema = z.object({
   clientId: z.string().nullable(),
   clientName: z.string().min(1, "Client name is required"),
   clientEmail: z.string().email("Invalid email").or(z.literal("")),
+  clientPhone: z.string(),
   clientAddress: z.string(),
   issueDate: z.date(),
   dueDate: z.date().nullable(),

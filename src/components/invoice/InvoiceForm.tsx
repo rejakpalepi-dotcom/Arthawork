@@ -18,6 +18,7 @@ interface Client {
   id: string;
   name: string;
   email: string | null;
+  phone: string | null;
   company: string | null;
   address: string | null;
 }
@@ -48,7 +49,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
       if (!user) return;
 
       const [clientsRes, servicesRes] = await Promise.all([
-        supabase.from("clients").select("id, name, email, company, address").eq("user_id", user.id),
+        supabase.from("clients").select("id, name, email, phone, company, address").eq("user_id", user.id),
         supabase.from("services").select("id, name, price, description").eq("user_id", user.id),
       ]);
 
@@ -113,6 +114,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
     if (client) {
       setValue("clientName", client.name);
       setValue("clientEmail", client.email || "");
+      setValue("clientPhone", client.phone || "");
       setValue("clientAddress", client.address || "");
     }
   };
@@ -221,6 +223,16 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                 className="mt-1.5"
               />
             </div>
+          </div>
+          
+          <div>
+            <Label htmlFor="clientPhone">Phone Number</Label>
+            <Input
+              id="clientPhone"
+              {...register("clientPhone")}
+              placeholder="+62 812 3456 7890"
+              className="mt-1.5"
+            />
           </div>
           
           <div>

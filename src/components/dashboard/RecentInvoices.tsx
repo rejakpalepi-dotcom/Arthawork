@@ -1,4 +1,5 @@
 import { AlertTriangle, Clock, CheckCircle, MoreHorizontal, Receipt } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { formatIDR } from "@/lib/currency";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -27,6 +28,7 @@ const statusConfig = {
 };
 
 export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
+  const navigate = useNavigate();
   if (loading) {
     return (
       <div className="glass-card rounded-2xl p-6 animate-fade-in">
@@ -98,7 +100,12 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
                       </span>
                     </div>
                     <div className="flex items-center gap-2 mt-3">
-                      <Button variant="outline" size="sm" className="h-8 text-xs">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="h-8 text-xs"
+                        onClick={() => navigate("/invoices")}
+                      >
                         View details
                       </Button>
                       {isOverdue && (
