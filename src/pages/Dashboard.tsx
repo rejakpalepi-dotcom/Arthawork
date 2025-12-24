@@ -28,6 +28,7 @@ export default function Dashboard() {
     today,
     acceptanceRate,
     exportReport,
+    refetch,
   } = useDashboardData();
 
   const handleExport = () => {
@@ -161,7 +162,7 @@ export default function Dashboard() {
         {/* Active Projects Table + Today's Focus */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           <div className="lg:col-span-2">
-            <ActiveProjects projects={projects} loading={loading} />
+            <ActiveProjects projects={projects} loading={loading} onStatusChange={refetch} />
           </div>
           <div>
             <TodaysFocus />

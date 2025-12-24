@@ -39,7 +39,8 @@ interface Project {
   title: string;
   deadline: string;
   progress: number;
-  status: "in_progress" | "review" | "planning";
+  status: "draft" | "sent" | "approved" | "rejected" | "progressing" | "done" | "canceled";
+  total: number;
 }
 
 // Dynamic greeting based on time of day
@@ -244,26 +245,28 @@ export function useDashboardData() {
       }))
     );
 
-    // Map proposals to projects format
-    const mappedProjects: Project[] = activeProps.slice(0, 3).map((prop: any) => {
+    // Map ALL proposals to projects format (not just active ones)
+    const proposalsForProjects = proposals || [];
+    const mappedProjects: Project[] = proposalsForProjects.slice(0, 5).map((prop: any) => {
       const clientName = prop.clients?.name || "Unknown Client";
       const initials = clientName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
       const deadline = prop.valid_until 
         ? new Date(prop.valid_until).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
         : 'No deadline';
       
+      // Map status to new format or keep as is
+      let mappedStatus = prop.status as Project['status'];
+      
       // Simulate progress based on status
       let progress = 0;
-      let status: "in_progress" | "review" | "planning" = "planning";
-      if (prop.status === "approved") {
-        progress = 75;
-        status = "in_progress";
-      } else if (prop.status === "sent") {
+      if (mappedStatus === "done" || mappedStatus === "approved") {
+        progress = 100;
+      } else if (mappedStatus === "progressing" || mappedStatus === "sent") {
         progress = 50;
-        status = "review";
+      } else if (mappedStatus === "canceled" || mappedStatus === "rejected") {
+        progress = 0;
       } else {
         progress = 25;
-        status = "planning";
       }
 
       return {
@@ -273,7 +276,8 @@ export function useDashboardData() {
         title: prop.title,
         deadline,
         progress,
-        status,
+        status: mappedStatus,
+        total: Number(prop.total || 0),
       };
     });
     setProjects(mappedProjects);
