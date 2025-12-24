@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["artha-logo.png", "favicon.ico"],
+      includeAssets: ["icon-512.png", "favicon.ico", "og-preview.jpg"],
       manifest: {
         name: "Artha - Professional Proposal & Invoice Builder",
         short_name: "Artha",
@@ -29,13 +29,13 @@ export default defineConfig(({ mode }) => ({
         categories: ["business", "productivity", "finance"],
         icons: [
           {
-            src: "/artha-logo.png",
+            src: "/icon-512.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "any"
           },
           {
-            src: "/artha-logo.png",
+            src: "/icon-512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "maskable"
@@ -43,9 +43,9 @@ export default defineConfig(({ mode }) => ({
         ],
         screenshots: [
           {
-            src: "/artha-logo.png",
-            sizes: "512x512",
-            type: "image/png",
+            src: "/og-preview.jpg",
+            sizes: "1200x640",
+            type: "image/jpeg",
             form_factor: "wide",
             label: "Artha Dashboard"
           }

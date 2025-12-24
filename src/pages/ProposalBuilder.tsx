@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
@@ -117,6 +118,7 @@ const pages = [
 
 export default function ProposalBuilder() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
   const [proposalData, setProposalData] = useState<ProposalData>(initialProposalData);
   const [clients, setClients] = useState<Client[]>([]);
@@ -187,6 +189,10 @@ export default function ProposalBuilder() {
       });
 
       if (error) throw error;
+
+      // Invalidate dashboard queries for real-time sync
+      queryClient.invalidateQueries({ queryKey: ['proposals'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
 
       toast.success("Proposal saved successfully!");
       navigate("/proposals");
