@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, CheckCircle, Save, Send, ZoomIn, ZoomOut, Zap, Eye, FileEdit } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
@@ -15,6 +16,7 @@ import { cn } from "@/lib/utils";
 
 export default function InvoiceBuilder() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [previewScale, setPreviewScale] = useState(1);
@@ -106,6 +108,10 @@ export default function InvoiceBuilder() {
 
         if (itemsError) throw itemsError;
       }
+
+      // Invalidate dashboard queries for real-time sync
+      queryClient.invalidateQueries({ queryKey: ['invoices'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
 
       toast.success(status === "draft" ? "Draft saved!" : "Invoice created successfully!");
       navigate("/invoices");
