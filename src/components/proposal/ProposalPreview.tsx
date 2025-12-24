@@ -133,14 +133,21 @@ function ExperiencePreview({ data }: { data: ProposalData }) {
         </div>
 
         <div className="grid grid-cols-3 gap-2">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div
-              key={i}
-              className="aspect-square bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100"
-            >
-              <span className="text-gray-200 text-xl">🏢</span>
-            </div>
-          ))}
+          {[0, 1, 2, 3, 4, 5].map((i) => {
+            const logoUrl = data.clientLogos?.[i];
+            return (
+              <div
+                key={i}
+                className="aspect-square bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100 overflow-hidden"
+              >
+                {logoUrl ? (
+                  <img src={logoUrl} alt={`Client ${i + 1}`} className="w-full h-full object-contain p-1" />
+                ) : (
+                  <span className="text-gray-200 text-xl">🏢</span>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

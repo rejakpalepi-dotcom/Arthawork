@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Lock, AlertTriangle, Loader2 } from "lucide-react";
+import { User, Lock, AlertTriangle, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { DeleteConfirmModal } from "@/components/modals/DeleteConfirmModal";
@@ -15,6 +15,49 @@ export function AccountTab() {
   const [updating, setUpdating] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [restartingTour, setRestartingTour] = useState(false);
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setEmail(user.email || "");
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name")
+          .eq("id", user.id)
+          .maybeSingle();
+        if (profile?.full_name) {
+          setFullName(profile.full_name);
+        }
+      }
+    };
+    loadUserData();
+  }, []);
+
+  const handleRestartTour = async () => {
+    setRestartingTour(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Please log in to restart the tour");
+        return;
+      }
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({ has_completed_onboarding: false })
+        .eq("id", user.id);
+
+      if (error) throw error;
+
+      toast.success("Tour reset! Navigate to Dashboard to start the guide.");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to reset tour");
+    } finally {
+      setRestartingTour(false);
+    }
+  };
 
   const handleUpdatePassword = async () => {
     if (!newPassword || newPassword.length < 6) {
@@ -139,6 +182,27 @@ export function AccountTab() {
           >
             {changingPassword && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             Update Password
+          </Button>
+        </div>
+
+        <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+          <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-primary" />
+            Onboarding Tour
+          </h3>
+          <p className="text-sm text-muted-foreground mb-3">
+            Restart the feature guide to learn about Artha's capabilities.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRestartTour}
+            disabled={restartingTour}
+            className="border-primary/30 text-primary hover:bg-primary/10"
+          >
+            {restartingTour && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+            <Sparkles className="w-4 h-4 mr-2" />
+            Start Guide
           </Button>
         </div>
 

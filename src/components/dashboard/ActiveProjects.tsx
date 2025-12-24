@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Folder } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
@@ -34,6 +35,8 @@ const avatarColors = [
 ];
 
 export function ActiveProjects({ projects, loading }: ActiveProjectsProps) {
+  const navigate = useNavigate();
+
   if (loading) {
     return (
       <div className="glass-card rounded-2xl p-6 animate-fade-in">
@@ -53,7 +56,10 @@ export function ActiveProjects({ projects, loading }: ActiveProjectsProps) {
     <div className="glass-card rounded-2xl p-6 animate-fade-in">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-foreground">Active Projects</h3>
-        <button className="text-sm text-primary hover:text-primary/80 transition-colors font-medium">
+        <button 
+          onClick={() => navigate("/proposals")}
+          className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
+        >
           View All
         </button>
       </div>
