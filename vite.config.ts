@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => ({
         name: "Artha - Professional Proposal & Invoice Builder",
         short_name: "Artha",
         description: "Streamline your freelance business with Artha. Create stunning proposals, automate invoices, and manage clients with ease.",
+        id: "com.arthawork.app",
         theme_color: "#1a1a1a",
         background_color: "#0f0f0f",
         display: "standalone",
@@ -27,6 +28,7 @@ export default defineConfig(({ mode }) => ({
         scope: "/",
         start_url: "/",
         categories: ["business", "productivity", "finance"],
+        prefer_related_applications: false,
         icons: [
           {
             src: "/icon-512.png",
@@ -41,10 +43,33 @@ export default defineConfig(({ mode }) => ({
             purpose: "maskable"
           }
         ],
+        shortcuts: [
+          {
+            name: "New Invoice",
+            short_name: "Invoice",
+            description: "Create a new invoice quickly",
+            url: "/invoices/new",
+            icons: [{ src: "/icon-512.png", sizes: "192x192" }]
+          },
+          {
+            name: "Active Proposals",
+            short_name: "Proposals",
+            description: "View all active proposals",
+            url: "/proposals",
+            icons: [{ src: "/icon-512.png", sizes: "192x192" }]
+          },
+          {
+            name: "Dashboard",
+            short_name: "Home",
+            description: "Go to dashboard",
+            url: "/dashboard",
+            icons: [{ src: "/icon-512.png", sizes: "192x192" }]
+          }
+        ],
         screenshots: [
           {
             src: "/og-preview.jpg",
-            sizes: "1200x640",
+            sizes: "1200x630",
             type: "image/jpeg",
             form_factor: "wide",
             label: "Artha Dashboard"
