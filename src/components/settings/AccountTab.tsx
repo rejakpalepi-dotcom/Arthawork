@@ -53,9 +53,9 @@ export function AccountTab() {
 
       toast.success("Tour reset! Redirecting to Dashboard...");
       
-      // Redirect to dashboard to start the tour
+      // Redirect to dashboard with startTour param to force trigger
       setTimeout(() => {
-        window.location.href = "/dashboard";
+        window.location.href = "/dashboard?startTour=true";
       }, 1000);
     } catch (error: any) {
       toast.error(error.message || "Failed to reset tour");

@@ -1,14 +1,15 @@
 import { useEffect, useState, useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { driver, DriveStep, Driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import { supabase } from "@/integrations/supabase/client";
 
 export function OnboardingTour() {
   const location = useLocation();
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [shouldStartTour, setShouldStartTour] = useState(false);
   const [driverInstance, setDriverInstance] = useState<Driver | null>(null);
+  const [hasChecked, setHasChecked] = useState(false);
 
   const completeOnboarding = useCallback(async () => {
     try {
@@ -19,10 +20,16 @@ export function OnboardingTour() {
         .from("profiles")
         .update({ has_completed_onboarding: true })
         .eq("id", user.id);
+      
+      // Clear URL param after tour completes
+      if (searchParams.has("startTour")) {
+        searchParams.delete("startTour");
+        setSearchParams(searchParams, { replace: true });
+      }
     } catch (error) {
       console.error("Error completing onboarding:", error);
     }
-  }, []);
+  }, [searchParams, setSearchParams]);
 
   const tourSteps: DriveStep[] = [
     // Welcome Step
@@ -36,20 +43,30 @@ export function OnboardingTour() {
     },
     // Dashboard Stats - Pipeline Value
     {
-      element: '[aria-label="Business metrics"]',
+      element: '[aria-label="Business metrics"] > div:first-child',
       popover: {
         title: "PIPELINE VALUE",
-        description: "Monitor your potential earnings from all active proposals. Watch this number grow as you send more proposals to clients.",
+        description: "Ini adalah potensi duit yang lagi lu kejar dari semua proposal aktif. Pantau angka ini buat lihat seberapa besar peluang income lu.",
+        side: "bottom",
+        align: "start",
+      },
+    },
+    // Acceptance Rate
+    {
+      element: '[aria-label="Business metrics"] > div:nth-child(2)',
+      popover: {
+        title: "ACCEPTANCE RATE",
+        description: "Seberapa jago lu memenangkan project? Ukur efektivitas proposal lu di sini. Makin tinggi persentase, makin oke pitching lu!",
         side: "bottom",
         align: "start",
       },
     },
     // Revenue Trends
     {
-      element: '[aria-label="Business metrics"] + section, .lg\\:col-span-2:first-child',
+      element: '.lg\\:col-span-2',
       popover: {
         title: "REVENUE TRENDS",
-        description: "Visualize your monthly earnings with real-time charts. Track patterns and make data-driven decisions to grow your business.",
+        description: "Visualisasi pertumbuhan pendapatan bulanan lu secara real-time. Pantau pola dan buat keputusan bisnis berbasis data.",
         side: "bottom",
         align: "center",
       },
@@ -59,17 +76,7 @@ export function OnboardingTour() {
       element: 'aside nav',
       popover: {
         title: "NAVIGATION HUB",
-        description: "Access all your tools from here: Clients, Services, Proposals, and Invoices. Everything you need to run your freelance business.",
-        side: "right",
-        align: "start",
-      },
-    },
-    // New Invoice Button
-    {
-      element: 'aside .border-b a[href="/invoices/new"]',
-      popover: {
-        title: "QUICK CREATE",
-        description: "Create professional invoices in minutes. Click here to start billing your clients with stunning, branded documents.",
+        description: "Akses semua tools lu dari sini: Clients, Services, Proposals, dan Invoices. Semua yang lu butuhkan untuk menjalankan bisnis freelance.",
         side: "right",
         align: "start",
       },
@@ -79,7 +86,7 @@ export function OnboardingTour() {
       element: 'aside nav a[href="/clients"]',
       popover: {
         title: "CLIENT MANAGEMENT",
-        description: "Store all your client information here. Contact details sync automatically to every invoice and proposal you create.",
+        description: "Simpan semua info klien di sini. Detail kontak otomatis sync ke setiap invoice dan proposal yang lu buat.",
         side: "right",
         align: "center",
       },
@@ -89,7 +96,7 @@ export function OnboardingTour() {
       element: 'aside nav a[href="/services"]',
       popover: {
         title: "SERVICE CATALOG",
-        description: "Define your services with pricing. Quickly add them to invoices without retyping—save time on every project.",
+        description: "Definisikan jasa lu dengan harga. Tambahkan ke invoice dengan cepat tanpa ngetik ulang—hemat waktu di setiap project.",
         side: "right",
         align: "center",
       },
@@ -99,7 +106,7 @@ export function OnboardingTour() {
       element: 'aside nav a[href="/proposals"]',
       popover: {
         title: "PROPOSAL BUILDER",
-        description: "Create agency-quality proposals that win clients. Track Record, Investment, and Timeline sections included.",
+        description: "Buat proposal berkualitas agency yang memenangkan klien. Lengkap dengan Track Record, Investment, dan Timeline.",
         side: "right",
         align: "center",
       },
@@ -109,7 +116,17 @@ export function OnboardingTour() {
       element: 'aside nav a[href="/invoices"]',
       popover: {
         title: "INVOICE CENTER",
-        description: "Manage all your invoices in one place. Track paid, unpaid, and overdue invoices with real-time status updates.",
+        description: "Kelola semua invoice lu di satu tempat. Track status paid, unpaid, dan overdue dengan update real-time.",
+        side: "right",
+        align: "center",
+      },
+    },
+    // Quick Actions
+    {
+      element: 'aside a[href="/invoices/new"]',
+      popover: {
+        title: "QUICK CREATE",
+        description: "Buat Invoice profesional dalam hitungan menit! Klik di sini untuk mulai menagih klien dengan dokumen yang stunning.",
         side: "right",
         align: "center",
       },
@@ -119,7 +136,7 @@ export function OnboardingTour() {
       element: 'aside a[href="/settings"]',
       popover: {
         title: "BUSINESS PROFILE",
-        description: "IMPORTANT: Set up your business details and upload your logo here. They'll appear on every document you create.",
+        description: "PENTING: Setup profil bisnis dan upload logo lu di sini. Mereka akan muncul di setiap dokumen yang lu buat!",
         side: "right",
         align: "center",
       },
@@ -128,7 +145,18 @@ export function OnboardingTour() {
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
+      if (hasChecked) return;
+      
       try {
+        // Check if forced via URL param
+        const forceStart = searchParams.get("startTour") === "true";
+        
+        if (forceStart) {
+          setShouldStartTour(true);
+          setHasChecked(true);
+          return;
+        }
+
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
@@ -141,13 +169,16 @@ export function OnboardingTour() {
         if (profile && !profile.has_completed_onboarding) {
           setShouldStartTour(true);
         }
+        setHasChecked(true);
       } catch (error) {
         console.error("Error checking onboarding status:", error);
       }
     };
 
-    checkOnboardingStatus();
-  }, []);
+    if (location.pathname === "/dashboard") {
+      checkOnboardingStatus();
+    }
+  }, [location.pathname, searchParams, hasChecked]);
 
   useEffect(() => {
     // Only start tour on dashboard
@@ -179,7 +210,7 @@ export function OnboardingTour() {
 
       setDriverInstance(driverObj);
       driverObj.drive();
-    }, 800);
+    }, 1000);
 
     return () => {
       clearTimeout(timer);
