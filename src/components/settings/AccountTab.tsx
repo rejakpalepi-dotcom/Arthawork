@@ -51,7 +51,12 @@ export function AccountTab() {
 
       if (error) throw error;
 
-      toast.success("Tour reset! Navigate to Dashboard to start the guide.");
+      toast.success("Tour reset! Redirecting to Dashboard...");
+      
+      // Redirect to dashboard to start the tour
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1000);
     } catch (error: any) {
       toast.error(error.message || "Failed to reset tour");
     } finally {

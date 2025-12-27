@@ -135,4 +135,98 @@
   .stat-card {
     @apply glass-card rounded-2xl p-6 card-hover;
   }
+
+  /* Driver.js Artha Electric Cyan Theme */
+  .artha-driver-popover {
+    background: hsl(0 0% 12%) !important;
+    border: 1px solid hsl(187 100% 38% / 0.3) !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 0 40px -10px hsl(187 100% 38% / 0.4), 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .artha-driver-popover .driver-popover-title {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    color: hsl(187 100% 45%) !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .artha-driver-popover .driver-popover-description {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+    color: hsl(0 0% 75%) !important;
+  }
+
+  .artha-driver-popover .driver-popover-progress-text {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.75rem !important;
+    color: hsl(0 0% 55%) !important;
+  }
+
+  .artha-driver-popover .driver-popover-footer {
+    padding-top: 1rem !important;
+    margin-top: 1rem !important;
+    border-top: 1px solid hsl(0 0% 20%) !important;
+  }
+
+  .artha-driver-popover .driver-popover-prev-btn,
+  .artha-driver-popover .driver-popover-next-btn {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 0.5rem !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .artha-driver-popover .driver-popover-prev-btn {
+    background: transparent !important;
+    color: hsl(0 0% 75%) !important;
+    border: 1px solid hsl(0 0% 25%) !important;
+  }
+
+  .artha-driver-popover .driver-popover-prev-btn:hover {
+    background: hsl(0 0% 18%) !important;
+    color: hsl(0 0% 95%) !important;
+  }
+
+  .artha-driver-popover .driver-popover-next-btn {
+    background: hsl(187 100% 38%) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 0 20px -5px hsl(187 100% 38% / 0.5) !important;
+  }
+
+  .artha-driver-popover .driver-popover-next-btn:hover {
+    background: hsl(187 100% 45%) !important;
+  }
+
+  .artha-driver-popover .driver-popover-close-btn {
+    color: hsl(0 0% 55%) !important;
+    transition: color 0.2s ease !important;
+  }
+
+  .artha-driver-popover .driver-popover-close-btn:hover {
+    color: hsl(0 0% 95%) !important;
+  }
+
+  .artha-driver-popover .driver-popover-arrow-side-left {
+    border-left-color: hsl(0 0% 12%) !important;
+  }
+
+  .artha-driver-popover .driver-popover-arrow-side-right {
+    border-right-color: hsl(0 0% 12%) !important;
+  }
+
+  .artha-driver-popover .driver-popover-arrow-side-top {
+    border-top-color: hsl(0 0% 12%) !important;
+  }
+
+  .artha-driver-popover .driver-popover-arrow-side-bottom {
+    border-bottom-color: hsl(0 0% 12%) !important;
+  }
 }
