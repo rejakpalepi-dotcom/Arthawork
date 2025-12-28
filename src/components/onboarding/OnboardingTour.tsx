@@ -1,35 +1,18 @@
 import { useEffect, useState, useCallback } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { driver, DriveStep, Driver } from "driver.js";
 import "driver.js/dist/driver.css";
-import { supabase } from "@/integrations/supabase/client";
+
+const SESSION_TOUR_KEY = "artha_tour_shown_this_session";
 
 export function OnboardingTour() {
   const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
   const [shouldStartTour, setShouldStartTour] = useState(false);
   const [driverInstance, setDriverInstance] = useState<Driver | null>(null);
-  const [hasChecked, setHasChecked] = useState(false);
 
-  const completeOnboarding = useCallback(async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      await supabase
-        .from("profiles")
-        .update({ has_completed_onboarding: true })
-        .eq("id", user.id);
-      
-      // Clear URL param after tour completes
-      if (searchParams.has("startTour")) {
-        searchParams.delete("startTour");
-        setSearchParams(searchParams, { replace: true });
-      }
-    } catch (error) {
-      console.error("Error completing onboarding:", error);
-    }
-  }, [searchParams, setSearchParams]);
+  const markTourComplete = useCallback(() => {
+    sessionStorage.setItem(SESSION_TOUR_KEY, "true");
+  }, []);
 
   const tourSteps: DriveStep[] = [
     // Welcome Step
@@ -144,41 +127,14 @@ export function OnboardingTour() {
   ];
 
   useEffect(() => {
-    const checkOnboardingStatus = async () => {
-      if (hasChecked) return;
-      
-      try {
-        // Check if forced via URL param
-        const forceStart = searchParams.get("startTour") === "true";
-        
-        if (forceStart) {
-          setShouldStartTour(true);
-          setHasChecked(true);
-          return;
-        }
-
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("has_completed_onboarding")
-          .eq("id", user.id)
-          .single();
-
-        if (profile && !profile.has_completed_onboarding) {
-          setShouldStartTour(true);
-        }
-        setHasChecked(true);
-      } catch (error) {
-        console.error("Error checking onboarding status:", error);
-      }
-    };
-
+    // Auto-start on Dashboard mount if not shown this session
     if (location.pathname === "/dashboard") {
-      checkOnboardingStatus();
+      const alreadyShown = sessionStorage.getItem(SESSION_TOUR_KEY);
+      if (!alreadyShown) {
+        setShouldStartTour(true);
+      }
     }
-  }, [location.pathname, searchParams, hasChecked]);
+  }, [location.pathname]);
 
   useEffect(() => {
     // Only start tour on dashboard
@@ -201,7 +157,7 @@ export function OnboardingTour() {
         prevBtnText: "← Back",
         doneBtnText: "Get Started",
         onDestroyStarted: () => {
-          completeOnboarding();
+          markTourComplete();
           driverObj.destroy();
           setShouldStartTour(false);
         },
@@ -218,7 +174,7 @@ export function OnboardingTour() {
         driverInstance.destroy();
       }
     };
-  }, [shouldStartTour, location.pathname, completeOnboarding]);
+  }, [shouldStartTour, location.pathname, markTourComplete]);
 
   return null;
 }
