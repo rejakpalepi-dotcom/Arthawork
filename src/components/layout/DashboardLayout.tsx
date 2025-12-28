@@ -5,6 +5,7 @@ import { MobileHeader } from "./MobileHeader";
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { useSessionTimeout } from "@/hooks/useSessionTimeout";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -14,6 +15,9 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children, title }: DashboardLayoutProps) {
   // Enable global keyboard shortcuts (Cmd+N, Cmd+Shift+I, Cmd+Shift+P, etc.)
   useKeyboardShortcuts();
+
+  // Session timeout - auto logout after 30 minutes of inactivity
+  useSessionTimeout({ timeoutMs: 30 * 60 * 1000, enabled: true });
 
   return (
     <div className="min-h-screen bg-background">
