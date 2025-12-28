@@ -6,6 +6,7 @@ import { ActiveProjects } from "@/components/dashboard/ActiveProjects";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { RecentInvoices } from "@/components/dashboard/RecentInvoices";
 import { TodaysFocus } from "@/components/dashboard/TodaysFocus";
+import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 import { Wallet, Bell, Plus, TrendingUp, FileText, Target, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -45,6 +46,7 @@ export default function Dashboard() {
         description="Your Artha business dashboard. Track revenue, manage proposals, invoices, and clients."
         noIndex={true}
       />
+      <OnboardingTour />
       <div className="p-4 md:p-8 font-sans">
         {/* Header with Dynamic Greeting */}
         <header className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6 md:mb-8">
