@@ -159,3 +159,73 @@ export function formatSubscriptionPrice(tier: SubscriptionTier): string {
     if (config.price === 0) return "Free";
     return `${config.priceDisplay}/month`;
 }
+
+/**
+ * Developer emails that get full access (bypass subscription)
+ * Add your email here!
+ */
+export const DEVELOPER_EMAILS: string[] = [
+    "rejakpalepi@gmail.com", // Add your email
+    "admin@arthawork.com",
+    // Add more developer emails as needed
+];
+
+/**
+ * Check if email is a developer (gets full access)
+ */
+export function isDeveloper(email: string | null | undefined): boolean {
+    if (!email) return false;
+    return DEVELOPER_EMAILS.includes(email.toLowerCase());
+}
+
+/**
+ * Pro/Business feature definitions
+ */
+export type ProFeature =
+    | "premium_templates"
+    | "custom_branding"
+    | "payment_reminders"
+    | "analytics_dashboard"
+    | "priority_support";
+
+export type BusinessFeature =
+    | "team_members"
+    | "api_access"
+    | "white_label"
+    | "advanced_analytics"
+    | "custom_integrations"
+    | "audit_logs";
+
+/**
+ * Check if tier has access to a Pro feature
+ */
+export function hasProFeature(tier: SubscriptionTier, feature: ProFeature): boolean {
+    return tier === "pro" || tier === "business";
+}
+
+/**
+ * Check if tier has access to a Business feature
+ */
+export function hasBusinessFeature(tier: SubscriptionTier, feature: BusinessFeature): boolean {
+    return tier === "business";
+}
+
+/**
+ * Get feature display name in Indonesian
+ */
+export function getFeatureDisplayName(feature: ProFeature | BusinessFeature): string {
+    const names: Record<string, string> = {
+        premium_templates: "Template Premium",
+        custom_branding: "Custom Branding",
+        payment_reminders: "Pengingat Pembayaran",
+        analytics_dashboard: "Dashboard Analytics",
+        priority_support: "Priority Support",
+        team_members: "Tim Members",
+        api_access: "API Access",
+        white_label: "White Label",
+        advanced_analytics: "Advanced Analytics",
+        custom_integrations: "Custom Integrations",
+        audit_logs: "Audit Logs",
+    };
+    return names[feature] || feature;
+}
