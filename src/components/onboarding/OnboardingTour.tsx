@@ -18,8 +18,26 @@ export function OnboardingTour() {
     // Welcome Step
     {
       popover: {
-        title: "WELCOME TO ARTHA",
-        description: "Your professional workspace for freelance success. Let us show you how to maximize your business potential with our powerful tools.",
+        title: "🚀 WELCOME TO ARTHA",
+        description: "Your professional workspace for freelance success! Let us show you how to maximize your business potential with our powerful tools.",
+        side: "over",
+        align: "center",
+      },
+    },
+    // Subscription Intro
+    {
+      popover: {
+        title: "💎 CHOOSE YOUR PLAN",
+        description: "Artha offers 3 plans: Free (3 invoices/month), Pro (Rp 50k - unlimited), and Business (Rp 199k - team features). Start free and upgrade anytime!",
+        side: "over",
+        align: "center",
+      },
+    },
+    // Payment Methods
+    {
+      popover: {
+        title: "💳 MULTIPLE PAYMENT OPTIONS",
+        description: "Accept payments via QRIS, Virtual Account (BCA, Mandiri, BNI), and E-Wallets (GoPay, OVO, DANA). Your clients can pay how they prefer!",
         side: "over",
         align: "center",
       },
@@ -28,7 +46,7 @@ export function OnboardingTour() {
     {
       element: '[aria-label="Business metrics"] > div:first-child',
       popover: {
-        title: "PIPELINE VALUE",
+        title: "📊 PIPELINE VALUE",
         description: "Ini adalah potensi duit yang lagi lu kejar dari semua proposal aktif. Pantau angka ini buat lihat seberapa besar peluang income lu.",
         side: "bottom",
         align: "start",
@@ -38,7 +56,7 @@ export function OnboardingTour() {
     {
       element: '[aria-label="Business metrics"] > div:nth-child(2)',
       popover: {
-        title: "ACCEPTANCE RATE",
+        title: "📈 ACCEPTANCE RATE",
         description: "Seberapa jago lu memenangkan project? Ukur efektivitas proposal lu di sini. Makin tinggi persentase, makin oke pitching lu!",
         side: "bottom",
         align: "start",
@@ -48,7 +66,7 @@ export function OnboardingTour() {
     {
       element: '.lg\\:col-span-2',
       popover: {
-        title: "REVENUE TRENDS",
+        title: "📉 REVENUE TRENDS",
         description: "Visualisasi pertumbuhan pendapatan bulanan lu secara real-time. Pantau pola dan buat keputusan bisnis berbasis data.",
         side: "bottom",
         align: "center",
@@ -58,7 +76,7 @@ export function OnboardingTour() {
     {
       element: 'aside nav',
       popover: {
-        title: "NAVIGATION HUB",
+        title: "🧭 NAVIGATION HUB",
         description: "Akses semua tools lu dari sini: Clients, Services, Proposals, dan Invoices. Semua yang lu butuhkan untuk menjalankan bisnis freelance.",
         side: "right",
         align: "start",
@@ -68,18 +86,8 @@ export function OnboardingTour() {
     {
       element: 'aside nav a[href="/clients"]',
       popover: {
-        title: "CLIENT MANAGEMENT",
+        title: "👥 CLIENT MANAGEMENT",
         description: "Simpan semua info klien di sini. Detail kontak otomatis sync ke setiap invoice dan proposal yang lu buat.",
-        side: "right",
-        align: "center",
-      },
-    },
-    // Services Menu
-    {
-      element: 'aside nav a[href="/services"]',
-      popover: {
-        title: "SERVICE CATALOG",
-        description: "Definisikan jasa lu dengan harga. Tambahkan ke invoice dengan cepat tanpa ngetik ulang—hemat waktu di setiap project.",
         side: "right",
         align: "center",
       },
@@ -88,7 +96,7 @@ export function OnboardingTour() {
     {
       element: 'aside nav a[href="/proposals"]',
       popover: {
-        title: "PROPOSAL BUILDER",
+        title: "📝 PROPOSAL BUILDER",
         description: "Buat proposal berkualitas agency yang memenangkan klien. Lengkap dengan Track Record, Investment, dan Timeline.",
         side: "right",
         align: "center",
@@ -98,7 +106,7 @@ export function OnboardingTour() {
     {
       element: 'aside nav a[href="/invoices"]',
       popover: {
-        title: "INVOICE CENTER",
+        title: "💰 INVOICE CENTER",
         description: "Kelola semua invoice lu di satu tempat. Track status paid, unpaid, dan overdue dengan update real-time.",
         side: "right",
         align: "center",
@@ -108,7 +116,7 @@ export function OnboardingTour() {
     {
       element: 'aside a[href="/invoices/new"]',
       popover: {
-        title: "QUICK CREATE",
+        title: "⚡ QUICK CREATE",
         description: "Buat Invoice profesional dalam hitungan menit! Klik di sini untuk mulai menagih klien dengan dokumen yang stunning.",
         side: "right",
         align: "center",
@@ -118,9 +126,18 @@ export function OnboardingTour() {
     {
       element: 'aside a[href="/settings"]',
       popover: {
-        title: "BUSINESS PROFILE",
-        description: "PENTING: Setup profil bisnis dan upload logo lu di sini. Mereka akan muncul di setiap dokumen yang lu buat!",
+        title: "⚙️ SETTINGS & SUBSCRIPTION",
+        description: "Setup profil bisnis, upload logo, dan kelola subscription lu di sini. Upgrade ke Pro untuk fitur unlimited!",
         side: "right",
+        align: "center",
+      },
+    },
+    // Keyboard Shortcuts Tip
+    {
+      popover: {
+        title: "⌨️ PRO TIPS",
+        description: "Gunakan Cmd+K untuk Global Search, Cmd+N untuk New Project, dan Cmd+Shift+I untuk New Invoice. Kerja makin cepat!",
+        side: "over",
         align: "center",
       },
     },
@@ -155,7 +172,7 @@ export function OnboardingTour() {
         progressText: "{{current}} of {{total}}",
         nextBtnText: "Next →",
         prevBtnText: "← Back",
-        doneBtnText: "Get Started",
+        doneBtnText: "Let's Go! 🚀",
         onDestroyStarted: () => {
           markTourComplete();
           driverObj.destroy();

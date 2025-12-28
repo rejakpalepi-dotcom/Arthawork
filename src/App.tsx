@@ -19,6 +19,8 @@ import ProjectBuilder from "./pages/ProjectBuilder";
 import ProposalBuilder from "./pages/ProposalBuilder";
 import Settings from "./pages/Settings";
 import GuestPayment from "./pages/GuestPayment";
+import Pricing from "./pages/Pricing";
+import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +44,15 @@ const App = () => (
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/pay/:token" element={<GuestPayment />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Protected Routes */}
             <Route

@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Building2, CreditCard, Palette, User, Loader2, Shield } from "lucide-react";
+import { Building2, CreditCard, Palette, User, Loader2, Shield, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BusinessProfileTab } from "@/components/settings/BusinessProfileTab";
 import { BrandingTab } from "@/components/settings/BrandingTab";
 import { PaymentDetailsTab } from "@/components/settings/PaymentDetailsTab";
 import { AccountTab } from "@/components/settings/AccountTab";
 import { SecurityTab } from "@/components/settings/SecurityTab";
+import { SubscriptionTab } from "@/components/settings/SubscriptionTab";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 
 const settingsSections = [
   { id: "business", label: "Business Profile", icon: Building2 },
   { id: "branding", label: "Branding", icon: Palette },
   { id: "payment", label: "Payment Details", icon: CreditCard },
+  { id: "subscription", label: "Subscription", icon: Crown },
   { id: "security", label: "Security", icon: Shield },
   { id: "account", label: "Account", icon: User },
 ];
@@ -46,6 +48,8 @@ export default function Settings() {
         return (
           <PaymentDetailsTab settings={settings} saving={saving} onUpdate={updateSettings} onSave={saveSettings} />
         );
+      case "subscription":
+        return <SubscriptionTab />;
       case "security":
         return <SecurityTab />;
       case "account":
