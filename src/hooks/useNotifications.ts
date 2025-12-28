@@ -12,6 +12,7 @@ export interface Notification {
     entityType?: "invoice" | "proposal" | "client";
 }
 
+// Local storage key for notifications
 const NOTIFICATIONS_KEY = "artha_notifications";
 const MAX_NOTIFICATIONS = 50;
 
@@ -20,7 +21,10 @@ function loadNotifications(): Notification[] {
         const stored = localStorage.getItem(NOTIFICATIONS_KEY);
         if (stored) {
             const parsed = JSON.parse(stored);
-            return parsed.map((n: any) => ({ ...n, timestamp: new Date(n.timestamp) }));
+            return parsed.map((n: any) => ({
+                ...n,
+                timestamp: new Date(n.timestamp),
+            }));
         }
     } catch (e) {
         console.error("Failed to load notifications:", e);
@@ -30,6 +34,7 @@ function loadNotifications(): Notification[] {
 
 function saveNotifications(notifications: Notification[]) {
     try {
+        // Keep only the most recent notifications
         const trimmed = notifications.slice(0, MAX_NOTIFICATIONS);
         localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(trimmed));
     } catch (e) {
@@ -41,12 +46,14 @@ export function useNotifications() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
 
+    // Load notifications from localStorage on mount
     useEffect(() => {
         const stored = loadNotifications();
         setNotifications(stored);
         setUnreadCount(stored.filter(n => !n.read).length);
     }, []);
 
+    // Add a new notification
     const addNotification = useCallback((notification: Omit<Notification, "id" | "timestamp" | "read">) => {
         const newNotification: Notification = {
             ...notification,
@@ -63,6 +70,7 @@ export function useNotifications() {
         setUnreadCount(prev => prev + 1);
     }, []);
 
+    // Mark notification as read
     const markAsRead = useCallback((id: string) => {
         setNotifications(prev => {
             const updated = prev.map(n => n.id === id ? { ...n, read: true } : n);
@@ -72,6 +80,7 @@ export function useNotifications() {
         setUnreadCount(prev => Math.max(0, prev - 1));
     }, []);
 
+    // Mark all as read
     const markAllAsRead = useCallback(() => {
         setNotifications(prev => {
             const updated = prev.map(n => ({ ...n, read: true }));
@@ -81,23 +90,34 @@ export function useNotifications() {
         setUnreadCount(0);
     }, []);
 
+    // Clear all notifications
     const clearAll = useCallback(() => {
         setNotifications([]);
         setUnreadCount(0);
         localStorage.removeItem(NOTIFICATIONS_KEY);
     }, []);
 
+    // Subscribe to real-time changes
     useEffect(() => {
         const setupSubscriptions = async () => {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return;
 
+            // Listen for invoice status changes
             const invoicesChannel = supabase
                 .channel('notifications-invoices')
-                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'invoices', filter: `user_id=eq.${user.id}` },
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'invoices',
+                        filter: `user_id=eq.${user.id}`
+                    },
                     (payload) => {
                         const newData = payload.new as any;
                         const oldData = payload.old as any;
+
                         if (oldData.status !== 'paid' && newData.status === 'paid') {
                             addNotification({
                                 type: "invoice_paid",
@@ -111,12 +131,21 @@ export function useNotifications() {
                 )
                 .subscribe();
 
+            // Listen for proposal status changes
             const proposalsChannel = supabase
                 .channel('notifications-proposals')
-                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'proposals', filter: `user_id=eq.${user.id}` },
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'proposals',
+                        filter: `user_id=eq.${user.id}`
+                    },
                     (payload) => {
                         const newData = payload.new as any;
                         const oldData = payload.old as any;
+
                         if (oldData.status !== 'approved' && newData.status === 'approved') {
                             addNotification({
                                 type: "proposal_accepted",
@@ -138,9 +167,17 @@ export function useNotifications() {
                 )
                 .subscribe();
 
+            // Listen for new clients
             const clientsChannel = supabase
                 .channel('notifications-clients')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'clients', filter: `user_id=eq.${user.id}` },
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'clients',
+                        filter: `user_id=eq.${user.id}`
+                    },
                     (payload) => {
                         const newData = payload.new as any;
                         addNotification({
@@ -164,5 +201,12 @@ export function useNotifications() {
         setupSubscriptions();
     }, [addNotification]);
 
-    return { notifications, unreadCount, addNotification, markAsRead, markAllAsRead, clearAll };
+    return {
+        notifications,
+        unreadCount,
+        addNotification,
+        markAsRead,
+        markAllAsRead,
+        clearAll,
+    };
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Check, CheckCheck, Trash2, FileText, CreditCard, Users, Clock } from "lucide-react";
+import { Bell, CheckCheck, Trash2, FileText, CreditCard, Users, Clock } from "lucide-react";
 import { useNotifications, Notification } from "@/hooks/useNotifications";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,6 +49,8 @@ export function NotificationCenter() {
 
     const handleNotificationClick = (notification: Notification) => {
         markAsRead(notification.id);
+
+        // Navigate to the relevant page
         if (notification.entityType && notification.entityId) {
             switch (notification.entityType) {
                 case "invoice":
@@ -83,6 +85,7 @@ export function NotificationCenter() {
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-80 md:w-96 p-0 bg-card border-border" align="end" sideOffset={8}>
+                {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-border">
                     <h3 className="font-semibold text-foreground">Notifications</h3>
                     <div className="flex items-center gap-2">
@@ -100,6 +103,7 @@ export function NotificationCenter() {
                     </div>
                 </div>
 
+                {/* Notifications List */}
                 {notifications.length === 0 ? (
                     <div className="py-12 px-4 text-center">
                         <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center mx-auto mb-3">

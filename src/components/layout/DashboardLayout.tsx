@@ -24,7 +24,7 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
       {/* Onboarding Tour */}
       <OnboardingTour />
 
-      {/* Global Search (Cmd+K) */}
+      {/* Global Search (Cmd+K) - available on all pages */}
       <GlobalSearch />
 
       {/* Desktop Sidebar */}
@@ -45,4 +45,3 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
     </div>
   );
 }
-

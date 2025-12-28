@@ -7,7 +7,8 @@ import { QuickActions } from "@/components/dashboard/QuickActions";
 import { RecentInvoices } from "@/components/dashboard/RecentInvoices";
 import { TodaysFocus } from "@/components/dashboard/TodaysFocus";
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
-import { Wallet, Bell, Plus, TrendingUp, FileText, Target, FileDown } from "lucide-react";
+import { NotificationCenter } from "@/components/NotificationCenter";
+import { Wallet, Plus, TrendingUp, FileText, Target, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatIDR } from "@/lib/currency";
@@ -41,8 +42,8 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <SEOHead 
-        title="Dashboard" 
+      <SEOHead
+        title="Dashboard"
         description="Your Artha business dashboard. Track revenue, manage proposals, invoices, and clients."
         noIndex={true}
       />
@@ -69,16 +70,9 @@ export default function Dashboard() {
             )}
           </div>
           <nav className="hidden md:flex items-center gap-3" aria-label="Dashboard actions">
-            <Button 
-              variant="outline" 
-              size="icon" 
-              className="rounded-full bg-secondary border-border"
-              aria-label="View notifications"
-            >
-              <Bell className="w-5 h-5" aria-hidden="true" />
-            </Button>
-            <Button 
-              className="gap-2" 
+            <NotificationCenter />
+            <Button
+              className="gap-2"
               onClick={() => navigate("/projects/new")}
               aria-label="Create a new project"
             >
@@ -99,7 +93,7 @@ export default function Dashboard() {
             </>
           ) : (
             <>
-            <StatsCard
+              <StatsCard
                 title="Pipeline Value"
                 value={formatIDR(stats.pipelineValue)}
                 subtitle={`${stats.sentProposals} sent proposals`}
@@ -137,9 +131,9 @@ export default function Dashboard() {
           <div className="lg:col-span-2 order-2 lg:order-1">
             <div className="flex items-center justify-between mb-3 md:mb-4">
               <h2 className="text-base md:text-lg font-semibold text-foreground">Revenue Trends</h2>
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 className="gap-2 text-xs md:text-sm"
                 onClick={handleExport}
                 disabled={loading}
@@ -151,7 +145,7 @@ export default function Dashboard() {
             </div>
             <RevenueChart data={revenueData} />
           </div>
-          
+
           {/* Right sidebar - Quick Actions & Recent Invoices */}
           <div className="space-y-4 md:space-y-6 order-1 lg:order-2">
             <div className="hidden md:block">

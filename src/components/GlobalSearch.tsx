@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, FileText, CreditCard, Users, FolderOpen, Settings, Plus, Command } from "lucide-react";
+import { FileText, CreditCard, Users, FolderOpen, Settings, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
     CommandDialog,
@@ -43,6 +43,7 @@ export function GlobalSearch() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    // Keyboard shortcut (Cmd+K or Ctrl+K)
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -54,6 +55,7 @@ export function GlobalSearch() {
         return () => document.removeEventListener("keydown", handleKeyDown);
     }, []);
 
+    // Search when query changes
     const search = useCallback(async (searchQuery: string) => {
         if (!searchQuery.trim()) {
             setResults([]);
@@ -69,6 +71,7 @@ export function GlobalSearch() {
 
         const searchResults: SearchResult[] = [];
 
+        // Search clients
         const { data: clients } = await supabase
             .from("clients")
             .select("id, name, company")
@@ -87,6 +90,7 @@ export function GlobalSearch() {
             });
         });
 
+        // Search invoices
         const { data: invoices } = await supabase
             .from("invoices")
             .select("id, invoice_number, total, status")
@@ -105,6 +109,7 @@ export function GlobalSearch() {
             });
         });
 
+        // Search proposals
         const { data: proposals } = await supabase
             .from("proposals")
             .select("id, title, total, status")
@@ -127,6 +132,7 @@ export function GlobalSearch() {
         setLoading(false);
     }, []);
 
+    // Debounced search
     useEffect(() => {
         const timer = setTimeout(() => {
             search(query);
