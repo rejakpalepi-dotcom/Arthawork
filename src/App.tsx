@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useSessionPersistence } from "@/hooks/useSessionPersistence";
+import { SupportWidget } from "@/components/support/SupportWidget";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -21,6 +22,10 @@ import Settings from "./pages/Settings";
 import GuestPayment from "./pages/GuestPayment";
 import Pricing from "./pages/Pricing";
 import Checkout from "./pages/Checkout";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import FAQ from "./pages/FAQ";
+import Changelog from "./pages/Changelog";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +50,10 @@ const App = () => (
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/pay/:token" element={<GuestPayment />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/changelog" element={<Changelog />} />
             <Route
               path="/checkout"
               element={
@@ -158,6 +167,9 @@ const App = () => (
             {/* 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+
+          {/* Global Support Widget */}
+          <SupportWidget whatsappNumber="6281234567890" />
         </BrowserRouter>
       </SessionWrapper>
     </TooltipProvider>
