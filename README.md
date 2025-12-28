@@ -1,73 +1,100 @@
-# Welcome to your Lovable project
+# Arthawork
 
-## Project info
+Platform profesional untuk freelancer Indonesia - kelola invoice, proposal, dan klien dengan mudah.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🚀 Quick Start
 
-## How can I edit this code?
+```bash
+# Install dependencies
+npm install
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Run development server
 npm run dev
+
+# Build for production
+npm run build
 ```
 
-**Edit a file directly in GitHub**
+## 🔧 Environment Variables
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Create `.env` file:
 
-**Use GitHub Codespaces**
+```env
+# Supabase
+VITE_SUPABASE_URL=your-supabase-url
+VITE_SUPABASE_ANON_KEY=your-anon-key
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Midtrans (optional)
+VITE_MIDTRANS_CLIENT_KEY=your-client-key
 
-## What technologies are used for this project?
+# Analytics (optional)
+VITE_SENTRY_DSN=your-sentry-dsn
+VITE_POSTHOG_KEY=your-posthog-key
+VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+```
 
-This project is built with:
+## 📁 Project Structure
 
+```
+src/
+├── components/     # React components
+│   ├── auth/       # Auth (login, signup)
+│   ├── dashboard/  # Dashboard widgets
+│   ├── invoice/    # Invoice components
+│   ├── layout/     # Layout (sidebar, header)
+│   ├── payment/    # Payment selector
+│   ├── settings/   # Settings tabs
+│   └── ui/         # shadcn/ui components
+├── hooks/          # Custom React hooks
+├── lib/            # Utilities & services
+├── pages/          # Route pages
+└── integrations/   # External integrations
+
+supabase/
+├── functions/      # Edge Functions
+│   ├── create-midtrans-transaction/
+│   └── midtrans-webhook/
+└── migrations/     # Database migrations
+```
+
+## 🗄️ Database
+
+Tables:
+- `profiles` - User profiles
+- `clients` - Client contacts
+- `services` - Service catalog
+- `invoices` - Invoice records
+- `invoice_items` - Invoice line items
+- `proposals` - Proposal documents
+- `business_settings` - Business config
+- `subscriptions` - User subscriptions
+- `payment_history` - Payment records
+- `audit_logs` - Audit trail
+
+## 📦 Key Dependencies
+
+- React 18 + TypeScript
 - Vite
-- TypeScript
-- React
-- shadcn-ui
 - Tailwind CSS
+- shadcn/ui
+- @tanstack/react-query
+- Supabase JS
+- Midtrans Snap
 
-## How can I deploy this project?
+## 🔐 Security
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+- Row Level Security (RLS) on all tables
+- UUID-based IDs
+- 2FA support (TOTP)
+- Session timeout (30 min)
+- Rate limiting
+- Audit logging
 
-## Can I connect a custom domain to my Lovable project?
+## 📄 Documentation
 
-Yes, you can!
+- [PRD](docs/PRD.md) - Product Requirements
+- [Technical Audit](docs/technical_audit.md) - Architecture review
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 📜 License
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Proprietary - All rights reserved
