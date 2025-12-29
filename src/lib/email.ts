@@ -67,7 +67,9 @@ export async function sendEmail(params: SendEmailParams): Promise<{ success: boo
             return { success: false, error: error.message };
         }
 
-        console.log("[Email] Sent successfully:", params.template, params.to);
+        if (import.meta.env.DEV) {
+            console.log("[Email] Sent successfully:", params.template);
+        }
         return { success: true };
     } catch (err: any) {
         console.error("[Email] Error:", err);

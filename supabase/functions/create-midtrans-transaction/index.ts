@@ -4,10 +4,26 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// Allowed origins for CORS
+const ALLOWED_ORIGINS = [
+    "https://arthawork.com",
+    "https://www.arthawork.com",
+    "https://arthawork.lovable.app",
+    "http://localhost:8080",
+    "http://localhost:5173",
+];
+
+function getCorsHeaders(origin: string | null) {
+    const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin)
+        ? origin
+        : ALLOWED_ORIGINS[0];
+
+    return {
+        "Access-Control-Allow-Origin": allowedOrigin,
+        "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+    };
+}
 
 interface TransactionRequest {
     orderId: string;
@@ -19,6 +35,9 @@ interface TransactionRequest {
 }
 
 serve(async (req) => {
+    const origin = req.headers.get("origin");
+    const corsHeaders = getCorsHeaders(origin);
+
     // Handle CORS preflight
     if (req.method === "OPTIONS") {
         return new Response("ok", { headers: corsHeaders });
@@ -77,9 +96,9 @@ serve(async (req) => {
                 first_name: customerName || "Customer",
             },
             callbacks: {
-                finish: `${req.headers.get("origin")}/dashboard?payment=success`,
-                error: `${req.headers.get("origin")}/dashboard?payment=error`,
-                pending: `${req.headers.get("origin")}/dashboard?payment=pending`,
+                finish: `${origin || "https://arthawork.com"}/dashboard?payment=success`,
+                error: `${origin || "https://arthawork.com"}/dashboard?payment=error`,
+                pending: `${origin || "https://arthawork.com"}/dashboard?payment=pending`,
             },
         };
 
@@ -120,7 +139,8 @@ serve(async (req) => {
 
         if (!midtransResponse.ok) {
             const errorBody = await midtransResponse.text();
-            console.error("Midtrans error:", errorBody);
+            // Log error without sensitive data
+            console.error("Midtrans API error:", midtransResponse.status);
             throw new Error(`Midtrans API error: ${midtransResponse.status}`);
         }
 
@@ -138,8 +158,8 @@ serve(async (req) => {
             });
 
         if (insertError) {
-            console.error("Failed to save payment record:", insertError);
-            // Continue anyway, payment can still proceed
+            // Log without exposing full error object
+            console.error("Payment record insert failed");
         }
 
         return new Response(
@@ -153,7 +173,8 @@ serve(async (req) => {
             }
         );
     } catch (error) {
-        console.error("Error:", error);
+        // Only log error message, not full stack
+        console.error("Transaction error:", error.message);
         return new Response(
             JSON.stringify({ error: error.message }),
             {

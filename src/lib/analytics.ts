@@ -61,10 +61,9 @@ export function initAnalytics() {
         window.gtag("config", GA_MEASUREMENT_ID);
     }
 
-    console.log("[Analytics] Initialized", {
-        posthog: !!POSTHOG_KEY,
-        ga4: !!GA_MEASUREMENT_ID,
-    });
+    if (import.meta.env.DEV) {
+        console.log("[Analytics] Initialized", { posthog: !!POSTHOG_KEY, ga4: !!GA_MEASUREMENT_ID });
+    }
 }
 
 /**
@@ -81,7 +80,9 @@ export function trackEvent(eventName: string, properties?: Record<string, unknow
         window.gtag("event", eventName, properties);
     }
 
-    console.log("[Analytics] Event:", eventName, properties);
+    if (import.meta.env.DEV) {
+        console.log("[Analytics] Event:", eventName);
+    }
 }
 
 /**
@@ -98,7 +99,9 @@ export function trackPageView(path: string, title?: string) {
         });
     }
 
-    console.log("[Analytics] Page View:", path);
+    if (import.meta.env.DEV) {
+        console.log("[Analytics] Page View:", path);
+    }
 }
 
 /**
@@ -124,7 +127,9 @@ export function identifyUser(userId: string, properties?: {
         }
     }
 
-    console.log("[Analytics] Identify:", userId, properties);
+    if (import.meta.env.DEV) {
+        console.log("[Analytics] Identify:", userId);
+    }
 }
 
 /**
@@ -134,7 +139,9 @@ export function resetUser() {
     if (window.posthog) {
         window.posthog.reset();
     }
-    console.log("[Analytics] User reset");
+    if (import.meta.env.DEV) {
+        console.log("[Analytics] User reset");
+    }
 }
 
 /**

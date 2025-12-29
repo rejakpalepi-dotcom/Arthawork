@@ -5,10 +5,33 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts";
 
-const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// Allowed origins for CORS
+const ALLOWED_ORIGINS = [
+    "https://arthawork.com",
+    "https://www.arthawork.com",
+    "https://arthawork.lovable.app",
+    "http://localhost:8080",
+    "http://localhost:5173",
+];
+
+// Midtrans IP whitelist (production)
+const MIDTRANS_IPS = [
+    "103.208.23.0/24",
+    "103.208.22.0/24",
+    "103.127.16.0/23",
+];
+
+function getCorsHeaders(origin: string | null) {
+    const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin)
+        ? origin
+        : ALLOWED_ORIGINS[0];
+
+    return {
+        "Access-Control-Allow-Origin": allowedOrigin,
+        "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+    };
+}
 
 interface MidtransNotification {
     transaction_status: string;
@@ -42,6 +65,9 @@ function verifySignature(
 }
 
 serve(async (req) => {
+    const origin = req.headers.get("origin");
+    const corsHeaders = getCorsHeaders(origin);
+
     // Handle CORS preflight
     if (req.method === "OPTIONS") {
         return new Response("ok", { headers: corsHeaders });
@@ -69,7 +95,8 @@ serve(async (req) => {
             fraud_status,
         } = notification;
 
-        console.log(`Received notification for order: ${order_id}, status: ${transaction_status}`);
+        // Log order ID only (no sensitive data)
+        console.log(`Webhook received for order: ${order_id}`);
 
         // Verify signature
         const isValid = verifySignature(
@@ -81,7 +108,7 @@ serve(async (req) => {
         );
 
         if (!isValid) {
-            console.error("Invalid signature for order:", order_id);
+            console.error("Invalid webhook signature for order:", order_id);
             return new Response(
                 JSON.stringify({ error: "Invalid signature" }),
                 { headers: corsHeaders, status: 403 }
@@ -131,7 +158,7 @@ serve(async (req) => {
             .single();
 
         if (paymentError) {
-            console.error("Error updating payment:", paymentError);
+            console.error("Payment update failed for order:", order_id);
             throw new Error("Failed to update payment record");
         }
 
@@ -157,9 +184,9 @@ serve(async (req) => {
                 });
 
             if (subscriptionError) {
-                console.error("Error updating subscription:", subscriptionError);
+                console.error("Subscription update failed for order:", order_id);
             } else {
-                console.log(`Subscription upgraded to ${tier} for user ${payment.user_id}`);
+                console.log(`Subscription upgraded: ${order_id} -> ${tier}`);
             }
         }
 
@@ -171,7 +198,7 @@ serve(async (req) => {
             }
         );
     } catch (error) {
-        console.error("Webhook error:", error);
+        console.error("Webhook error:", error.message);
         return new Response(
             JSON.stringify({ error: error.message }),
             {
