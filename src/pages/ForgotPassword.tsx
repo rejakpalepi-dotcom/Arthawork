@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Mail, ArrowLeft, Loader2, CheckCircle } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { z } from "zod";
-import arthaLogo from "@/assets/artha-logo.png";
+const arthaLogo = "/icon-512.png";
 
 const emailSchema = z.string().email("Please enter a valid email address");
 
@@ -19,7 +19,7 @@ export default function ForgotPassword() {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate email
     const result = emailSchema.safeParse(email);
     if (!result.success) {
@@ -45,8 +45,8 @@ export default function ForgotPassword() {
 
   return (
     <>
-      <SEOHead 
-        title="Forgot Password" 
+      <SEOHead
+        title="Forgot Password"
         description="Reset your Artha account password. Enter your email to receive a password reset link."
         canonical="https://artha.app/forgot-password"
         noIndex
@@ -96,8 +96,8 @@ export default function ForgotPassword() {
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Didn't receive the email? Check your spam folder or{" "}
-                  <button 
-                    onClick={() => setSent(false)} 
+                  <button
+                    onClick={() => setSent(false)}
                     className="text-primary hover:underline"
                   >
                     try again
@@ -122,9 +122,9 @@ export default function ForgotPassword() {
                   </div>
                 </div>
 
-                <Button 
-                  type="submit" 
-                  className="w-full" 
+                <Button
+                  type="submit"
+                  className="w-full"
                   disabled={loading}
                   aria-label="Send password reset link"
                 >
@@ -140,8 +140,8 @@ export default function ForgotPassword() {
               </form>
             )}
 
-            <Link 
-              to="/login" 
+            <Link
+              to="/login"
               className="flex items-center justify-center gap-2 text-primary hover:underline"
             >
               <ArrowLeft className="w-4 h-4" />

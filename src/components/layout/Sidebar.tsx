@@ -11,8 +11,9 @@ import {
   Plus,
   LogOut,
 } from "lucide-react";
-import arthaLogo from "@/assets/artha-logo.png";
 import { cn } from "@/lib/utils";
+
+const arthaLogo = "/icon-512.png";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -51,9 +52,9 @@ export function Sidebar() {
     // Clear all session-related storage
     sessionStorage.removeItem('artha_session_only');
     localStorage.removeItem('sb-sfkcncwbsoaqqteqguyf-auth-token');
-    
+
     await supabase.auth.signOut();
-    
+
     toast({
       title: "Signed out",
       description: "You have been signed out and your session has been cleared.",
@@ -71,9 +72,9 @@ export function Sidebar() {
       {/* Logo */}
       <div className="h-16 flex items-center justify-between px-4 border-b border-sidebar-border">
         <div className={cn("flex items-center gap-2 overflow-hidden", collapsed && "justify-center")}>
-          <img 
-            src={arthaLogo} 
-            alt="Artha" 
+          <img
+            src={arthaLogo}
+            alt="Artha"
             className="h-8 w-8 shrink-0 object-contain"
           />
           {!collapsed && (
@@ -162,7 +163,7 @@ export function Sidebar() {
             <AlertDialogHeader>
               <AlertDialogTitle>Sign out of Artha?</AlertDialogTitle>
               <AlertDialogDescription>
-                This will end your current session and clear all stored authentication data. 
+                This will end your current session and clear all stored authentication data.
                 You'll need to sign in again to access your account.
               </AlertDialogDescription>
             </AlertDialogHeader>

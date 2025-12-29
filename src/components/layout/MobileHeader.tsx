@@ -1,6 +1,7 @@
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import arthaLogo from "@/assets/artha-logo.png";
+
+const arthaLogo = "/icon-512.png";
 
 interface MobileHeaderProps {
   title?: string;

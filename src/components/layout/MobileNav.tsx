@@ -1,9 +1,9 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  Users, 
-  FileText, 
-  Receipt, 
+import {
+  LayoutDashboard,
+  Users,
+  FileText,
+  Receipt,
   Menu,
   X,
   Briefcase,
@@ -15,7 +15,6 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import arthaLogo from "@/assets/artha-logo.png";
 import {
   Sheet,
   SheetContent,
@@ -34,6 +33,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+
+const arthaLogo = "/icon-512.png";
 
 const bottomNavItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
@@ -86,17 +87,17 @@ export function MobileNav() {
           {bottomNavItems.map((item) => {
             const isActive = location.pathname === item.path;
             const isActionButton = item.isAction;
-            
+
             return (
               <button
                 key={item.label}
                 onClick={() => handleNavClick(item)}
                 className={cn(
                   "flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 py-1 rounded-lg transition-colors",
-                  isActionButton 
+                  isActionButton
                     ? "bg-primary text-primary-foreground -mt-4 w-14 h-14 rounded-full shadow-lg"
-                    : isActive 
-                      ? "text-primary" 
+                    : isActive
+                      ? "text-primary"
                       : "text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -119,7 +120,7 @@ export function MobileNav() {
               <span className="font-bold text-foreground">Artha</span>
             </SheetTitle>
           </SheetHeader>
-          
+
           <div className="py-4">
             {menuItems.map((item) => {
               const isActive = location.pathname === item.path;
@@ -130,8 +131,8 @@ export function MobileNav() {
                   onClick={() => setIsOpen(false)}
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 min-h-[48px] transition-colors",
-                    isActive 
-                      ? "bg-primary/10 text-primary border-r-2 border-primary" 
+                    isActive
+                      ? "bg-primary/10 text-primary border-r-2 border-primary"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                 >

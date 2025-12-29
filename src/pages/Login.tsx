@@ -8,8 +8,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useOAuth } from "@/hooks/useOAuth";
 import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
-import arthaLogo from "@/assets/artha-logo.png";
 import { SEOHead } from "@/components/seo/SEOHead";
+
+const arthaLogo = "/icon-512.png";
 
 export default function Login() {
   // Load remember me preference and saved email from localStorage
