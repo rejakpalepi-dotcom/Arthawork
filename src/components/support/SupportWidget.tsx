@@ -18,7 +18,8 @@ export function SupportWidget({
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
     return (
-        <div className="fixed bottom-4 right-4 z-50">
+        // Hidden on mobile (< 768px) to avoid blocking navigation
+        <div className="fixed bottom-4 right-4 z-40 hidden md:block">
             {/* Compact Widget */}
             {isOpen && (
                 <div className="absolute bottom-14 right-0 w-64 rounded-xl shadow-xl overflow-hidden animate-in slide-in-from-bottom-3 fade-in duration-150 bg-card border border-border/50">
@@ -63,7 +64,7 @@ export function SupportWidget({
                 </div>
             )}
 
-            {/* Compact FAB */}
+            {/* Compact FAB - Only visible on tablet/desktop */}
             <Button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
