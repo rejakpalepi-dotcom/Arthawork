@@ -13,7 +13,9 @@ const IS_PRODUCTION = import.meta.env.PROD;
  */
 export function initSentry() {
     if (!SENTRY_DSN) {
-        console.log("[Sentry] No DSN configured, skipping initialization");
+        if (import.meta.env.DEV) {
+            console.log("[Sentry] No DSN configured, skipping initialization");
+        }
         return;
     }
 
@@ -52,7 +54,9 @@ export function initSentry() {
         },
     });
 
-    console.log("[Sentry] Initialized for", IS_PRODUCTION ? "production" : "development");
+    if (import.meta.env.DEV) {
+        console.log("[Sentry] Initialized for", IS_PRODUCTION ? "production" : "development");
+    }
 }
 
 /**
