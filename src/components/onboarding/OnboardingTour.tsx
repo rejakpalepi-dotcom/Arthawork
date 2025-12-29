@@ -14,134 +14,157 @@ export function OnboardingTour() {
     sessionStorage.setItem(SESSION_TOUR_KEY, "true");
   }, []);
 
-  const tourSteps: DriveStep[] = [
-    // Welcome Step
-    {
-      popover: {
-        title: "🚀 SELAMAT DATANG DI ARTHA",
-        description: "Workspace profesional untuk kesuksesan bisnis freelance lu! Yuk kita tunjukin cara memaksimalkan potensi bisnis lu dengan tools canggih kita.",
-        side: "over",
-        align: "center",
+  // Detect if mobile (sidebar not visible)
+  const isMobile = () => window.innerWidth < 1024;
+
+  const getTourSteps = (): DriveStep[] => {
+    const mobileMode = isMobile();
+
+    // Base steps that work on all devices
+    const baseSteps: DriveStep[] = [
+      // Welcome Step
+      {
+        popover: {
+          title: "🚀 SELAMAT DATANG DI ARTHA",
+          description: "Workspace profesional untuk kesuksesan bisnis freelance lu! Yuk kita tunjukin cara memaksimalkan potensi bisnis lu.",
+          side: "over",
+          align: "center",
+        },
       },
-    },
-    // Subscription Intro
-    {
-      popover: {
-        title: "💎 PILIH PAKET LU",
-        description: "Artha punya 3 paket: Free (3 invoice/bulan), Pro (Rp 50k - unlimited), dan Business (Rp 199k - fitur tim). Mulai gratis dan upgrade kapan aja!",
-        side: "over",
-        align: "center",
+      // Subscription Info
+      {
+        popover: {
+          title: "💎 PILIH PAKET LU",
+          description: "Artha punya 3 paket: Free (3 invoice/bulan), Pro (Rp 50k - unlimited), dan Business (Rp 199k - fitur tim).",
+          side: "over",
+          align: "center",
+        },
       },
-    },
-    // Payment Methods
-    {
-      popover: {
-        title: "💳 BANYAK PILIHAN PEMBAYARAN",
-        description: "Terima pembayaran via QRIS, Virtual Account (BCA, Mandiri, BNI), dan E-Wallet (GoPay, OVO, DANA). Klien lu bisa bayar sesuai preferensi mereka!",
-        side: "over",
-        align: "center",
+      // Payment Methods
+      {
+        popover: {
+          title: "💳 BANYAK PILIHAN PEMBAYARAN",
+          description: "Terima pembayaran via QRIS, Virtual Account (BCA, Mandiri, BNI), dan E-Wallet (GoPay, OVO, DANA)!",
+          side: "over",
+          align: "center",
+        },
       },
-    },
-    // Dashboard Stats - Pipeline Value
-    {
-      element: '[aria-label="Business metrics"] > div:first-child',
-      popover: {
-        title: "📊 PIPELINE VALUE",
-        description: "Ini adalah potensi duit yang lagi lu kejar dari semua proposal aktif. Pantau angka ini buat lihat seberapa besar peluang income lu.",
-        side: "bottom",
-        align: "start",
+    ];
+
+    // Desktop-only steps (sidebar visible)
+    const desktopSteps: DriveStep[] = [
+      // Pipeline Value
+      {
+        element: '[aria-label="Business metrics"] > div:first-child',
+        popover: {
+          title: "📊 PIPELINE VALUE",
+          description: "Total potensi duit dari semua proposal aktif. Pantau peluang income lu!",
+          side: "bottom",
+          align: "start",
+        },
       },
-    },
-    // Acceptance Rate
-    {
-      element: '[aria-label="Business metrics"] > div:nth-child(2)',
-      popover: {
-        title: "📈 ACCEPTANCE RATE",
-        description: "Seberapa jago lu memenangkan project? Ukur efektivitas proposal lu di sini. Makin tinggi persentase, makin oke pitching lu!",
-        side: "bottom",
-        align: "start",
+      // Acceptance Rate
+      {
+        element: '[aria-label="Business metrics"] > div:nth-child(2)',
+        popover: {
+          title: "📈 ACCEPTANCE RATE",
+          description: "Seberapa jago lu memenangkan project? Makin tinggi, makin oke pitching lu!",
+          side: "bottom",
+          align: "start",
+        },
       },
-    },
-    // Revenue Trends
-    {
-      element: '.lg\\:col-span-2',
-      popover: {
-        title: "📉 TREN PENDAPATAN",
-        description: "Visualisasi pertumbuhan pendapatan bulanan lu secara real-time. Pantau pola dan buat keputusan bisnis berbasis data.",
-        side: "bottom",
-        align: "center",
+      // Sidebar Navigation
+      {
+        element: 'aside nav',
+        popover: {
+          title: "🧭 PUSAT NAVIGASI",
+          description: "Akses Clients, Services, Proposals, dan Invoices dari sini.",
+          side: "right",
+          align: "start",
+        },
       },
-    },
-    // Sidebar Navigation
-    {
-      element: 'aside nav',
-      popover: {
-        title: "🧭 PUSAT NAVIGASI",
-        description: "Akses semua tools lu dari sini: Clients, Services, Proposals, dan Invoices. Semua yang lu butuhkan untuk menjalankan bisnis freelance.",
-        side: "right",
-        align: "start",
+      // Clients
+      {
+        element: 'aside nav a[href="/clients"]',
+        popover: {
+          title: "👥 MANAJEMEN KLIEN",
+          description: "Simpan semua info klien. Auto-sync ke invoice dan proposal.",
+          side: "right",
+          align: "center",
+        },
       },
-    },
-    // Clients Menu
-    {
-      element: 'aside nav a[href="/clients"]',
-      popover: {
-        title: "👥 MANAJEMEN KLIEN",
-        description: "Simpan semua info klien di sini. Detail kontak otomatis sync ke setiap invoice dan proposal yang lu buat.",
-        side: "right",
-        align: "center",
+      // Invoices
+      {
+        element: 'aside nav a[href="/invoices"]',
+        popover: {
+          title: "💰 PUSAT INVOICE",
+          description: "Track status lunas, belum bayar, dan overdue.",
+          side: "right",
+          align: "center",
+        },
       },
-    },
-    // Proposals Menu
-    {
-      element: 'aside nav a[href="/proposals"]',
-      popover: {
-        title: "📝 PROPOSAL BUILDER",
-        description: "Buat proposal berkualitas agency yang memenangkan klien. Lengkap dengan Track Record, Investment, dan Timeline.",
-        side: "right",
-        align: "center",
+      // New Invoice Button
+      {
+        element: 'aside a[href="/invoices/new"]',
+        popover: {
+          title: "⚡ BUAT CEPAT",
+          description: "Klik untuk buat Invoice profesional dalam hitungan menit!",
+          side: "right",
+          align: "center",
+        },
       },
-    },
-    // Invoices Menu
-    {
-      element: 'aside nav a[href="/invoices"]',
-      popover: {
-        title: "💰 PUSAT INVOICE",
-        description: "Kelola semua invoice lu di satu tempat. Track status lunas, belum bayar, dan overdue dengan update real-time.",
-        side: "right",
-        align: "center",
+      // Settings
+      {
+        element: 'aside a[href="/settings"]',
+        popover: {
+          title: "⚙️ PENGATURAN",
+          description: "Setup profil bisnis dan kelola subscription lu di sini.",
+          side: "right",
+          align: "center",
+        },
       },
-    },
-    // Quick Actions
-    {
-      element: 'aside a[href="/invoices/new"]',
-      popover: {
-        title: "⚡ BUAT CEPAT",
-        description: "Buat Invoice profesional dalam hitungan menit! Klik di sini untuk mulai menagih klien dengan dokumen yang stunning.",
-        side: "right",
-        align: "center",
+    ];
+
+    // Mobile-only steps (focus on visible elements)
+    const mobileSteps: DriveStep[] = [
+      // Stats cards (exist on mobile)
+      {
+        popover: {
+          title: "📊 DASHBOARD STATS",
+          description: "Lihat Pipeline Value, Acceptance Rate, dan Total Earnings di bagian atas. Scroll untuk jelajahi fitur lainnya!",
+          side: "over",
+          align: "center",
+        },
       },
-    },
-    // Settings Menu
-    {
-      element: 'aside a[href="/settings"]',
-      popover: {
-        title: "⚙️ PENGATURAN & LANGGANAN",
-        description: "Setup profil bisnis, upload logo, dan kelola subscription lu di sini. Upgrade ke Pro untuk fitur unlimited!",
-        side: "right",
-        align: "center",
+      // Bottom navigation hint
+      {
+        popover: {
+          title: "📱 NAVIGASI MOBILE",
+          description: "Gunakan menu di pojok kiri atas (☰) untuk akses Clients, Proposals, Invoices, dan Settings.",
+          side: "over",
+          align: "center",
+        },
       },
-    },
-    // Keyboard Shortcuts Tip
-    {
+    ];
+
+    // Final step for all
+    const finalStep: DriveStep = {
       popover: {
         title: "⌨️ TIPS PRO",
-        description: "Gunakan Cmd+K untuk Global Search, Cmd+N untuk New Project, dan Cmd+Shift+I untuk New Invoice. Kerja makin cepat!",
+        description: mobileMode
+          ? "Tap menu ☰ untuk mulai! Explore Clients, buat Proposal, dan kirim Invoice pertama lu!"
+          : "Cmd+K = Global Search, Cmd+N = New Project. Kerja makin cepat!",
         side: "over",
         align: "center",
       },
-    },
-  ];
+    };
+
+    if (mobileMode) {
+      return [...baseSteps, ...mobileSteps, finalStep];
+    } else {
+      return [...baseSteps, ...desktopSteps, finalStep];
+    }
+  };
 
   useEffect(() => {
     // Auto-start on Dashboard mount if not shown this session
@@ -161,6 +184,8 @@ export function OnboardingTour() {
 
     // Small delay to ensure DOM is ready
     const timer = setTimeout(() => {
+      const tourSteps = getTourSteps();
+
       const driverObj = driver({
         showProgress: true,
         animate: true,
