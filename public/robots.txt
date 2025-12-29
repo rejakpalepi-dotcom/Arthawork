@@ -43,4 +43,4 @@ User-agent: Slackbot
 Allow: /
 
 # Sitemap location
-Sitemap: https://arthawork.com/sitemap.xml
+Sitemap: https://arthawork.vercel.app/sitemap.xml
