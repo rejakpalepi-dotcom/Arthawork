@@ -113,30 +113,30 @@ export default function Login() {
       />
       <main className="min-h-screen bg-background flex">
         {/* Left Panel - Branding */}
-        <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border">
-          <header className="flex items-center gap-3">
-            <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
+        <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border overflow-hidden">
+          <header className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-500">
+            <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain animate-pulse" />
             <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
           </header>
-          <section className="space-y-4">
+          <section className="space-y-4 animate-in fade-in slide-in-from-left-8 duration-700 delay-150">
             <h1 className="text-4xl font-bold text-foreground">
               Manage your business
               <br />
-              <span className="gradient-text">with confidence.</span>
+              <span className="gradient-text animate-in fade-in duration-1000 delay-300">with confidence.</span>
             </h1>
-            <p className="text-muted-foreground text-lg max-w-md">
+            <p className="text-muted-foreground text-lg max-w-md animate-in fade-in duration-700 delay-500">
               Streamline invoices, proposals, and client management all in one place.
             </p>
           </section>
-          <footer className="text-muted-foreground text-sm">© 2025 Artha. All rights reserved.</footer>
+          <footer className="text-muted-foreground text-sm animate-in fade-in duration-500 delay-700">© 2025 Artha. All rights reserved.</footer>
         </aside>
 
         {/* Right Panel - Login Form */}
         <section className="flex-1 flex items-center justify-center p-8">
-          <div className="w-full max-w-md space-y-8">
+          <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
             <div className="text-center lg:text-left">
               <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-                <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
+                <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain animate-bounce" />
                 <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
               </div>
               <h2 className="text-2xl font-bold text-foreground">Welcome to Artha</h2>
