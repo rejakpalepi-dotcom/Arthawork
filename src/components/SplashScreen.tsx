@@ -44,32 +44,19 @@ export function SplashScreen({ onComplete, minDuration = 2000 }: SplashScreenPro
                             <motion.div
                                 className="absolute inset-0 rounded-3xl bg-primary/30 blur-2xl"
                                 initial={{ scale: 0.8, opacity: 0 }}
-                                animate={{ scale: 1.2, opacity: 1 }}
+                                animate={{ scale: 1.5, opacity: 1 }}
                                 transition={{ duration: 1, delay: 0.3 }}
                             />
 
-                            {/* Logo container */}
-                            <motion.div
-                                className="relative w-28 h-28 rounded-3xl bg-gradient-to-br from-primary to-[hsl(187,100%,30%)] flex items-center justify-center shadow-2xl"
-                                whileHover={{ scale: 1.05 }}
-                            >
-                                {/* A Letter */}
-                                <motion.svg
-                                    viewBox="0 0 100 100"
-                                    className="w-16 h-16 text-white"
-                                    initial={{ pathLength: 0 }}
-                                    animate={{ pathLength: 1 }}
-                                    transition={{ duration: 1.5, ease: "easeInOut" }}
-                                >
-                                    <motion.path
-                                        d="M50 15 L20 85 L35 85 L42 65 L58 65 L65 85 L80 85 L50 15 Z M50 35 L55 55 L45 55 L50 35 Z"
-                                        fill="currentColor"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ duration: 0.5, delay: 0.3 }}
-                                    />
-                                </motion.svg>
-                            </motion.div>
+                            {/* Logo Image - Using new PWA icon */}
+                            <motion.img
+                                src="/icon-512.png"
+                                alt="Artha"
+                                className="relative w-28 h-28 rounded-3xl shadow-2xl object-cover"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.5, delay: 0.2 }}
+                            />
                         </motion.div>
 
                         {/* App Name */}
