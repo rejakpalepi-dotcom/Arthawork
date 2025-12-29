@@ -28,6 +28,7 @@ import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import FAQ from "./pages/FAQ";
 import Changelog from "./pages/Changelog";
+import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -177,8 +178,8 @@ const App = () => {
                   }
                 />
 
-                {/* Redirect root to dashboard */}
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                {/* Landing Page (public) */}
+                <Route path="/" element={<LandingPage />} />
 
                 {/* 404 */}
                 <Route path="*" element={<NotFound />} />
