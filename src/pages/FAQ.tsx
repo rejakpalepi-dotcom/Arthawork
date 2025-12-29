@@ -217,7 +217,7 @@ export default function FAQ() {
                     <h2 className="text-xl font-semibold text-foreground mb-2">Masih butuh bantuan?</h2>
                     <p className="text-muted-foreground mb-6">Tim support kami siap membantu Anda</p>
                     <div className="flex justify-center gap-4">
-                        <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer">
+                        <a href="https://wa.me/6281285864059" target="_blank" rel="noopener noreferrer">
                             <Button className="gap-2">
                                 <MessageCircle className="w-4 h-4" />
                                 WhatsApp Support

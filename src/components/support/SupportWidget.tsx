@@ -1,4 +1,4 @@
-import { MessageCircle, X, HelpCircle, Sparkles } from "lucide-react";
+import { MessageCircle, X, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -18,86 +18,66 @@ export function SupportWidget({
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
     return (
-        <div className="fixed bottom-6 right-6 z-50">
-            {/* Expanded Widget */}
+        <div className="fixed bottom-4 right-4 z-50">
+            {/* Compact Widget */}
             {isOpen && (
-                <div className="absolute bottom-16 right-0 w-80 rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-200 border border-border/50">
-                    {/* Header with gradient */}
-                    <div className="bg-gradient-to-br from-primary via-primary to-cyan-600 p-5 text-primary-foreground">
-                        <div className="flex items-center gap-3 mb-1">
-                            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                                <Sparkles className="w-5 h-5" />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-lg">Butuh Bantuan?</h3>
-                                <p className="text-sm text-white/80">Tim kami siap membantu!</p>
-                            </div>
-                        </div>
+                <div className="absolute bottom-14 right-0 w-64 rounded-xl shadow-xl overflow-hidden animate-in slide-in-from-bottom-3 fade-in duration-150 bg-card border border-border/50">
+                    {/* Header */}
+                    <div className="bg-secondary/80 backdrop-blur px-4 py-3 border-b border-border/30">
+                        <h3 className="font-semibold text-sm text-foreground">Butuh Bantuan?</h3>
                     </div>
 
                     {/* Options */}
-                    <div className="bg-card p-4 space-y-3">
-                        {/* WhatsApp - Primary CTA */}
+                    <div className="p-2 space-y-1">
+                        {/* WhatsApp */}
                         <a
                             href={whatsappUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg"
+                            className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-secondary/50 transition-colors group"
                         >
-                            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                                <MessageCircle className="w-6 h-6 text-white" />
+                            <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
+                                <MessageCircle className="w-4 h-4 text-green-500" />
                             </div>
-                            <div className="flex-1">
-                                <p className="font-bold text-white text-base">WhatsApp</p>
-                                <p className="text-sm text-white/80">Chat langsung • Respon cepat</p>
+                            <div className="flex-1 min-w-0">
+                                <p className="font-medium text-sm text-foreground">WhatsApp</p>
+                                <p className="text-xs text-muted-foreground truncate">+62 812-8586-4059</p>
                             </div>
-                            <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
                         </a>
 
-                        {/* FAQ - Secondary */}
+                        {/* FAQ */}
                         <Link
                             to="/faq"
                             onClick={() => setIsOpen(false)}
-                            className="flex items-center gap-4 p-4 rounded-xl bg-secondary hover:bg-secondary/80 transition-all duration-300 border border-border/50"
+                            className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-secondary/50 transition-colors group"
                         >
-                            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                                <HelpCircle className="w-6 h-6 text-primary" />
+                            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+                                <HelpCircle className="w-4 h-4 text-primary" />
                             </div>
-                            <div className="flex-1">
-                                <p className="font-semibold text-foreground">Pusat Bantuan</p>
-                                <p className="text-sm text-muted-foreground">Cari jawaban sendiri</p>
+                            <div className="flex-1 min-w-0">
+                                <p className="font-medium text-sm text-foreground">FAQ</p>
+                                <p className="text-xs text-muted-foreground truncate">Cari jawaban</p>
                             </div>
                         </Link>
-                    </div>
-
-                    {/* Footer */}
-                    <div className="bg-secondary/50 px-4 py-3 text-center border-t border-border/30">
-                        <p className="text-xs text-muted-foreground">
-                            Jam operasional: 09.00 - 21.00 WIB
-                        </p>
                     </div>
                 </div>
             )}
 
-            {/* FAB Button */}
+            {/* Compact FAB */}
             <Button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "w-14 h-14 rounded-full shadow-xl transition-all duration-300 hover:scale-110",
+                    "w-11 h-11 rounded-full shadow-lg transition-all duration-200",
                     isOpen
                         ? "bg-secondary hover:bg-secondary/80 text-foreground"
-                        : "bg-gradient-to-br from-primary to-cyan-600 hover:from-primary/90 hover:to-cyan-700"
+                        : "bg-primary hover:bg-primary/90"
                 )}
                 size="icon"
             >
                 {isOpen ? (
-                    <X className="w-6 h-6" />
+                    <X className="w-5 h-5" />
                 ) : (
-                    <>
-                        <MessageCircle className="w-6 h-6 text-white" />
-                        {/* Online indicator */}
-                        <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-background" />
-                    </>
+                    <MessageCircle className="w-5 h-5" />
                 )}
             </Button>
         </div>

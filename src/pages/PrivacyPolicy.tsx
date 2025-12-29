@@ -141,7 +141,7 @@ export default function PrivacyPolicy() {
                         </p>
                         <ul className="list-none text-muted-foreground mt-4 space-y-1">
                             <li>Email: <a href="mailto:privacy@arthawork.com" className="text-primary hover:underline">privacy@arthawork.com</a></li>
-                            <li>WhatsApp: <a href="https://wa.me/6281234567890" className="text-primary hover:underline">+62 812-3456-7890</a></li>
+                            <li>WhatsApp: <a href="https://wa.me/6281285864059" className="text-primary hover:underline">+62 812-8586-4059</a></li>
                         </ul>
                     </section>
                 </div>

@@ -169,7 +169,7 @@ const App = () => (
           </Routes>
 
           {/* Global Support Widget */}
-          <SupportWidget whatsappNumber="6281234567890" />
+          <SupportWidget whatsappNumber="6281285864059" />
         </BrowserRouter>
       </SessionWrapper>
     </TooltipProvider>
