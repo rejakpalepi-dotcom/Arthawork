@@ -323,7 +323,8 @@ export default function Invoices() {
                   return (
                     <tr
                       key={invoice.id}
-                      className="border-b border-border last:border-0 hover:bg-secondary/30 transition-colors animate-fade-in"
+                      onClick={() => navigate(`/invoices/${invoice.id}`)}
+                      className="border-b border-border last:border-0 hover:bg-secondary/30 transition-colors animate-fade-in cursor-pointer"
                       style={{ animationDelay: `${index * 50}ms` }}
                     >
                       <td className="p-4">
@@ -359,7 +360,7 @@ export default function Invoices() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem 
+                            <DropdownMenuItem
                               onClick={() => handleExportPDF(invoice)}
                               disabled={exportingId === invoice.id}
                             >
