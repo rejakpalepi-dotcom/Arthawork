@@ -206,7 +206,7 @@ export default function InvoiceDetail() {
 
         {/* Invoice Preview */}
         <div className="max-w-4xl mx-auto">
-          <div id="invoice-detail-preview" className="bg-white rounded-xl border border-border p-8 text-foreground">
+          <div id="invoice-detail-preview" className="bg-white rounded-xl border border-border p-8" style={{ color: '#1a1a1a' }}>
             {/* Header */}
             <div className="flex justify-between items-start mb-8 pb-6 border-b-2 border-primary">
               <div className="flex items-start gap-4">
@@ -214,37 +214,37 @@ export default function InvoiceDetail() {
                   <img src={settings.logo_url} alt="Logo" className="h-12 w-auto object-contain" />
                 )}
                 <div>
-                  <h2 className="text-xl font-bold text-foreground">{settings?.business_name || "Your Business"}</h2>
-                  {settings?.address && <p className="text-sm text-muted-foreground">{settings.address}</p>}
-                  {settings?.email && <p className="text-sm text-muted-foreground">{settings.email}</p>}
-                  {settings?.phone && <p className="text-sm text-muted-foreground">{settings.phone}</p>}
+                  <h2 className="text-xl font-bold" style={{ color: '#1a1a1a' }}>{settings?.business_name || "Your Business"}</h2>
+                  {settings?.address && <p className="text-sm" style={{ color: '#666666' }}>{settings.address}</p>}
+                  {settings?.email && <p className="text-sm" style={{ color: '#666666' }}>{settings.email}</p>}
+                  {settings?.phone && <p className="text-sm" style={{ color: '#666666' }}>{settings.phone}</p>}
                 </div>
               </div>
               <div className="text-right">
                 <h1 className="text-3xl font-black uppercase text-primary">INVOICE</h1>
-                <p className="text-sm text-muted-foreground mt-1">#{invoice.invoice_number}</p>
+                <p className="text-sm mt-1" style={{ color: '#666666' }}>#{invoice.invoice_number}</p>
               </div>
             </div>
 
             {/* Bill To & Dates */}
             <div className="grid grid-cols-2 gap-8 mb-8">
               <div>
-                <h3 className="text-xs font-semibold uppercase text-muted-foreground mb-2">Bill To</h3>
-                <p className="font-semibold text-foreground">{invoice.client_name}</p>
-                {invoice.client_company && <p className="text-sm text-muted-foreground">{invoice.client_company}</p>}
-                {invoice.client_email && <p className="text-sm text-muted-foreground">{invoice.client_email}</p>}
-                {invoice.client_phone && <p className="text-sm text-muted-foreground">{invoice.client_phone}</p>}
-                {invoice.client_address && <p className="text-sm text-muted-foreground">{invoice.client_address}</p>}
+                <h3 className="text-xs font-semibold uppercase mb-2" style={{ color: '#888888' }}>Bill To</h3>
+                <p className="font-semibold" style={{ color: '#1a1a1a' }}>{invoice.client_name}</p>
+                {invoice.client_company && <p className="text-sm" style={{ color: '#666666' }}>{invoice.client_company}</p>}
+                {invoice.client_email && <p className="text-sm" style={{ color: '#666666' }}>{invoice.client_email}</p>}
+                {invoice.client_phone && <p className="text-sm" style={{ color: '#666666' }}>{invoice.client_phone}</p>}
+                {invoice.client_address && <p className="text-sm" style={{ color: '#666666' }}>{invoice.client_address}</p>}
               </div>
               <div className="text-right">
                 <div className="mb-4">
-                  <h3 className="text-xs font-semibold uppercase text-muted-foreground mb-1">Issue Date</h3>
-                  <p className="text-foreground">{new Date(invoice.issue_date).toLocaleDateString()}</p>
+                  <h3 className="text-xs font-semibold uppercase mb-1" style={{ color: '#888888' }}>Issue Date</h3>
+                  <p style={{ color: '#1a1a1a' }}>{new Date(invoice.issue_date).toLocaleDateString()}</p>
                 </div>
                 {invoice.due_date && (
                   <div>
-                    <h3 className="text-xs font-semibold uppercase text-muted-foreground mb-1">Due Date</h3>
-                    <p className={cn("font-medium", isOverdue ? "text-destructive" : "text-foreground")}>
+                    <h3 className="text-xs font-semibold uppercase mb-1" style={{ color: '#888888' }}>Due Date</h3>
+                    <p className="font-medium" style={{ color: isOverdue ? '#dc2626' : '#1a1a1a' }}>
                       {new Date(invoice.due_date).toLocaleDateString()}
                     </p>
                   </div>
@@ -256,20 +256,20 @@ export default function InvoiceDetail() {
             <div className="mb-8">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-3 text-xs font-semibold uppercase text-muted-foreground">Description</th>
-                    <th className="text-right py-3 text-xs font-semibold uppercase text-muted-foreground">Qty</th>
-                    <th className="text-right py-3 text-xs font-semibold uppercase text-muted-foreground">Unit Price</th>
-                    <th className="text-right py-3 text-xs font-semibold uppercase text-muted-foreground">Total</th>
+                  <tr style={{ borderBottom: '1px solid #e5e5e5' }}>
+                    <th className="text-left py-3 text-xs font-semibold uppercase" style={{ color: '#888888' }}>Description</th>
+                    <th className="text-right py-3 text-xs font-semibold uppercase" style={{ color: '#888888' }}>Qty</th>
+                    <th className="text-right py-3 text-xs font-semibold uppercase" style={{ color: '#888888' }}>Unit Price</th>
+                    <th className="text-right py-3 text-xs font-semibold uppercase" style={{ color: '#888888' }}>Total</th>
                   </tr>
                 </thead>
                 <tbody>
                   {items.map((item) => (
-                    <tr key={item.id} className="border-b border-border/50">
-                      <td className="py-4 text-foreground">{item.description}</td>
-                      <td className="py-4 text-right text-muted-foreground">{item.quantity}</td>
-                      <td className="py-4 text-right text-muted-foreground font-mono">{formatIDR(item.unit_price)}</td>
-                      <td className="py-4 text-right font-semibold font-mono text-foreground">{formatIDR(item.total)}</td>
+                    <tr key={item.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
+                      <td className="py-4" style={{ color: '#1a1a1a' }}>{item.description}</td>
+                      <td className="py-4 text-right" style={{ color: '#666666' }}>{item.quantity}</td>
+                      <td className="py-4 text-right font-mono" style={{ color: '#666666' }}>{formatIDR(item.unit_price)}</td>
+                      <td className="py-4 text-right font-semibold font-mono" style={{ color: '#1a1a1a' }}>{formatIDR(item.total)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -280,17 +280,17 @@ export default function InvoiceDetail() {
             <div className="flex justify-end">
               <div className="w-72">
                 <div className="flex justify-between py-2">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-mono text-foreground">{formatIDR(invoice.subtotal)}</span>
+                  <span style={{ color: '#666666' }}>Subtotal</span>
+                  <span className="font-mono" style={{ color: '#1a1a1a' }}>{formatIDR(invoice.subtotal)}</span>
                 </div>
                 {invoice.tax_rate && invoice.tax_rate > 0 && (
                   <div className="flex justify-between py-2">
-                    <span className="text-muted-foreground">Tax ({invoice.tax_rate}%)</span>
-                    <span className="font-mono text-foreground">{formatIDR(invoice.tax_amount || 0)}</span>
+                    <span style={{ color: '#666666' }}>Tax ({invoice.tax_rate}%)</span>
+                    <span className="font-mono" style={{ color: '#1a1a1a' }}>{formatIDR(invoice.tax_amount || 0)}</span>
                   </div>
                 )}
                 <div className="flex justify-between py-3 border-t-2 border-primary mt-2">
-                  <span className="font-bold text-foreground">Total</span>
+                  <span className="font-bold" style={{ color: '#1a1a1a' }}>Total</span>
                   <span className="text-xl font-bold font-mono text-primary">{formatIDR(invoice.total)}</span>
                 </div>
               </div>
@@ -298,31 +298,31 @@ export default function InvoiceDetail() {
 
             {/* Notes & Payment Info */}
             {(invoice.notes || settings?.bank_name) && (
-              <div className="mt-8 pt-6 border-t border-border">
+              <div className="mt-8 pt-6" style={{ borderTop: '1px solid #e5e5e5' }}>
                 {invoice.notes && (
                   <div className="mb-4">
-                    <h3 className="text-xs font-semibold uppercase text-muted-foreground mb-2">Notes</h3>
-                    <p className="text-sm text-muted-foreground">{invoice.notes}</p>
+                    <h3 className="text-xs font-semibold uppercase mb-2" style={{ color: '#888888' }}>Notes</h3>
+                    <p className="text-sm" style={{ color: '#666666' }}>{invoice.notes}</p>
                   </div>
                 )}
                 {settings?.bank_name && (
-                  <div className="bg-muted/30 rounded-lg p-4">
-                    <h3 className="text-xs font-semibold uppercase text-muted-foreground mb-2">Payment Information</h3>
+                  <div className="rounded-lg p-4" style={{ backgroundColor: '#f5f5f5' }}>
+                    <h3 className="text-xs font-semibold uppercase mb-2" style={{ color: '#888888' }}>Payment Information</h3>
                     <div className="grid grid-cols-3 gap-4 text-sm">
                       <div>
-                        <p className="text-muted-foreground">Bank</p>
-                        <p className="font-medium text-foreground">{settings.bank_name}</p>
+                        <p style={{ color: '#666666' }}>Bank</p>
+                        <p className="font-medium" style={{ color: '#1a1a1a' }}>{settings.bank_name}</p>
                       </div>
                       {settings.account_name && (
                         <div>
-                          <p className="text-muted-foreground">Account Name</p>
-                          <p className="font-medium text-foreground">{settings.account_name}</p>
+                          <p style={{ color: '#666666' }}>Account Name</p>
+                          <p className="font-medium" style={{ color: '#1a1a1a' }}>{settings.account_name}</p>
                         </div>
                       )}
                       {settings.account_number && (
                         <div>
-                          <p className="text-muted-foreground">Account Number</p>
-                          <p className="font-medium font-mono text-foreground">{settings.account_number}</p>
+                          <p style={{ color: '#666666' }}>Account Number</p>
+                          <p className="font-medium font-mono" style={{ color: '#1a1a1a' }}>{settings.account_number}</p>
                         </div>
                       )}
                     </div>
