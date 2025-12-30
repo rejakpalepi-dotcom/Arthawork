@@ -12,6 +12,7 @@ import { invoiceFormSchema, InvoiceFormData } from "@/components/invoice/types";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
+import { useSendInvoiceEmail } from "@/hooks/useSendInvoiceEmail";
 import { cn } from "@/lib/utils";
 
 export default function InvoiceBuilder() {
@@ -22,6 +23,7 @@ export default function InvoiceBuilder() {
   const [previewScale, setPreviewScale] = useState(1);
   const [mobileView, setMobileView] = useState<"form" | "preview">("form");
   const { settings: businessSettings } = useBusinessSettings();
+  const { sendInvoiceEmail, sending: sendingEmail } = useSendInvoiceEmail();
 
   const form = useForm<InvoiceFormData>({
     resolver: zodResolver(invoiceFormSchema),
@@ -70,6 +72,13 @@ export default function InvoiceBuilder() {
         return;
       }
 
+      // Validate client email for sending
+      if (status === "sent" && !data.clientEmail) {
+        toast.error("Client email is required to send invoice");
+        setLoading(false);
+        return;
+      }
+
       // Create invoice
       const { data: invoice, error: invoiceError } = await supabase
         .from("invoices")
@@ -84,7 +93,7 @@ export default function InvoiceBuilder() {
           tax_amount: taxAmount,
           total: total,
           notes: data.notes || null,
-          status: status,
+          status: status === "sent" ? "draft" : status, // Start as draft, update after email
         })
         .select()
         .single();
@@ -109,11 +118,25 @@ export default function InvoiceBuilder() {
         if (itemsError) throw itemsError;
       }
 
+      // Send email if status is "sent"
+      if (status === "sent" && data.clientEmail) {
+        const emailResult = await sendInvoiceEmail({
+          invoiceId: invoice.id,
+          recipientEmail: data.clientEmail,
+          recipientName: data.clientName,
+        });
+
+        if (!emailResult.success) {
+          // Invoice was created but email failed - update to draft
+          toast.warning("Invoice saved as draft - email sending failed");
+        }
+      }
+
       // Invalidate dashboard queries for real-time sync
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
 
-      toast.success(status === "draft" ? "Draft saved!" : "Invoice created successfully!");
+      toast.success(status === "draft" ? "Draft saved!" : "Invoice sent successfully!");
       navigate("/invoices");
     } catch (error: any) {
       console.error("Error creating invoice:", error);
@@ -150,7 +173,7 @@ export default function InvoiceBuilder() {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-2 md:gap-3">
               <Button
                 variant="outline"
@@ -206,8 +229,8 @@ export default function InvoiceBuilder() {
               onClick={() => setMobileView("form")}
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
-                mobileView === "form" 
-                  ? "text-primary border-b-2 border-primary bg-primary/5" 
+                mobileView === "form"
+                  ? "text-primary border-b-2 border-primary bg-primary/5"
                   : "text-muted-foreground"
               )}
             >
@@ -218,8 +241,8 @@ export default function InvoiceBuilder() {
               onClick={() => setMobileView("preview")}
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
-                mobileView === "preview" 
-                  ? "text-primary border-b-2 border-primary bg-primary/5" 
+                mobileView === "preview"
+                  ? "text-primary border-b-2 border-primary bg-primary/5"
                   : "text-muted-foreground"
               )}
             >
@@ -243,10 +266,10 @@ export default function InvoiceBuilder() {
                   Fill in the project scope and billing details below.
                 </p>
               </div>
-              <InvoiceForm 
-                form={form} 
-                onSubmit={onSubmit} 
-                isSubmitting={isSubmitting} 
+              <InvoiceForm
+                form={form}
+                onSubmit={onSubmit}
+                isSubmitting={isSubmitting}
               />
             </div>
 
@@ -280,12 +303,12 @@ export default function InvoiceBuilder() {
                 </div>
               </div>
               <div className="p-4 md:p-6">
-                <div 
+                <div
                   className="transition-transform origin-top"
                   style={{ transform: `scale(${previewScale})` }}
                 >
-                  <InvoicePreview 
-                    data={formData} 
+                  <InvoicePreview
+                    data={formData}
                     subtotal={subtotal}
                     taxAmount={taxAmount}
                     total={total}
