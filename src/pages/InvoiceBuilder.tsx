@@ -72,11 +72,10 @@ export default function InvoiceBuilder() {
         return;
       }
 
-      // Validate client email for sending
+      // Validate client email for sending (optional - just warn if missing)
       if (status === "sent" && !data.clientEmail) {
-        toast.error("Client email is required to send invoice");
-        setLoading(false);
-        return;
+        // Email not required for now - just a warning
+        console.log("Note: Client email not provided, skipping email notification");
       }
 
       // Create invoice
@@ -93,7 +92,7 @@ export default function InvoiceBuilder() {
           tax_amount: taxAmount,
           total: total,
           notes: data.notes || null,
-          status: status === "sent" ? "draft" : status, // Start as draft, update after email
+          status: status, // Save directly with the status
         })
         .select()
         .single();
@@ -118,19 +117,18 @@ export default function InvoiceBuilder() {
         if (itemsError) throw itemsError;
       }
 
-      // Send email if status is "sent"
+      // TODO: Enable email sending when Edge Function is deployed
+      // Email feature temporarily disabled - just save invoice with status
+      // When ready, uncomment the sendInvoiceEmail call below:
+      /*
       if (status === "sent" && data.clientEmail) {
-        const emailResult = await sendInvoiceEmail({
+        await sendInvoiceEmail({
           invoiceId: invoice.id,
           recipientEmail: data.clientEmail,
           recipientName: data.clientName,
         });
-
-        if (!emailResult.success) {
-          // Invoice was created but email failed - update to draft
-          toast.warning("Invoice saved as draft - email sending failed");
-        }
       }
+      */
 
       // Invalidate dashboard queries for real-time sync
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
