@@ -395,7 +395,10 @@ export default function Invoices() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem
-                              onClick={() => handleExportPDF(invoice)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleExportPDF(invoice);
+                              }}
                               disabled={exportingId === invoice.id}
                             >
                               {exportingId === invoice.id ? (
@@ -406,7 +409,10 @@ export default function Invoices() {
                               Download PDF
                             </DropdownMenuItem>
                             {invoice.status !== "paid" && (
-                              <DropdownMenuItem onClick={() => handleMarkAsPaid(invoice.id)}>
+                              <DropdownMenuItem onClick={(e) => {
+                                e.stopPropagation();
+                                handleMarkAsPaid(invoice.id);
+                              }}>
                                 <CreditCard className="w-4 h-4 mr-2" />
                                 Mark as Paid
                               </DropdownMenuItem>
@@ -414,7 +420,10 @@ export default function Invoices() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               className="text-destructive focus:text-destructive"
-                              onClick={() => setDeleteModal({ open: true, invoiceId: invoice.id })}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDeleteModal({ open: true, invoiceId: invoice.id });
+                              }}
                             >
                               <Trash2 className="w-4 h-4 mr-2" />
                               Delete
