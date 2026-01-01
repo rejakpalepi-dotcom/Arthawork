@@ -5,11 +5,11 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Shield, Clock, FileText, Download } from "lucide-react";
 import { toast } from "sonner";
-import { exportAuditLogs, getAuditLogs, clearAuditLogs } from "@/lib/auditLog";
+import { exportAuditLogs, getLocalAuditLogs, clearLocalAuditLogs } from "@/lib/auditLog";
 
 export function SecurityTab() {
-    const handleExportLogs = () => {
-        const logs = exportAuditLogs();
+    const handleExportLogs = async () => {
+        const logs = await exportAuditLogs();
         const blob = new Blob([logs], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -21,11 +21,11 @@ export function SecurityTab() {
     };
 
     const handleClearLogs = () => {
-        clearAuditLogs();
+        clearLocalAuditLogs();
         toast.success("Audit logs cleared");
     };
 
-    const logCount = getAuditLogs().length;
+    const logCount = getLocalAuditLogs().length;
 
     return (
         <div className="lg:col-span-3 space-y-6">

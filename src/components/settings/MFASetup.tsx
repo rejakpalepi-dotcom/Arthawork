@@ -56,8 +56,9 @@ export function MFASetup({ onComplete }: MFASetupProps) {
             setShowVerify(true);
 
             toast.info("Scan the QR code with your authenticator app");
-        } catch (error: any) {
-            toast.error("Failed to set up MFA", { description: error.message });
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Failed to set up MFA";
+            toast.error("Failed to set up MFA", { description: message });
         } finally {
             setLoading(false);
         }
@@ -82,7 +83,7 @@ export function MFASetup({ onComplete }: MFASetupProps) {
             setSecret(null);
             toast.success("Two-Factor Authentication enabled!");
             onComplete?.();
-        } catch (error: any) {
+        } catch (error: unknown) {
             toast.error("Invalid code", { description: "Please check and try again." });
         } finally {
             setLoading(false);
@@ -104,8 +105,9 @@ export function MFASetup({ onComplete }: MFASetupProps) {
             setMfaEnabled(false);
             setFactorId(null);
             toast.success("Two-Factor Authentication disabled");
-        } catch (error: any) {
-            toast.error("Failed to disable MFA", { description: error.message });
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Failed to disable MFA";
+            toast.error("Failed to disable MFA", { description: message });
         } finally {
             setLoading(false);
         }

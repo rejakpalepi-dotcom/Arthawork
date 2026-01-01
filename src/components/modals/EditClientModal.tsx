@@ -69,7 +69,7 @@ export function EditClientModal({ open, onOpenChange, client, onSuccess }: EditC
 
   const onSubmit = async (data: ClientFormData) => {
     if (!client) return;
-    
+
     setLoading(true);
     try {
       const { error } = await supabase
@@ -88,8 +88,9 @@ export function EditClientModal({ open, onOpenChange, client, onSuccess }: EditC
       toast.success("Client updated successfully!");
       onOpenChange(false);
       onSuccess?.();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to update client");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to update client";
+      toast.error(message);
     } finally {
       setLoading(false);
     }

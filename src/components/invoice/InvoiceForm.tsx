@@ -76,16 +76,16 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
     setValue("lineItems", lineItems.filter(item => item.id !== id));
   };
 
-  const updateLineItem = (id: string, field: keyof InvoiceLineItem, value: any) => {
+  const updateLineItem = (id: string, field: keyof InvoiceLineItem, value: unknown) => {
     const updated = lineItems.map(item => {
       if (item.id !== id) return item;
-      
+
       const updatedItem = { ...item, [field]: value };
-      
+
       if (field === "quantity" || field === "unitPrice") {
         updatedItem.total = updatedItem.quantity * updatedItem.unitPrice;
       }
-      
+
       return updatedItem;
     });
     setValue("lineItems", updated);
@@ -129,7 +129,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
           </div>
           <h3 className="text-lg font-semibold text-foreground">Invoice Details</h3>
         </div>
-        
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="invoiceNumber">Invoice Number</Label>
@@ -143,7 +143,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
               <p className="text-xs text-destructive mt-1">{errors.invoiceNumber.message}</p>
             )}
           </div>
-          
+
           <div>
             <Label>Issue Date</Label>
             <Popover>
@@ -181,7 +181,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
           </div>
           <h3 className="text-lg font-semibold text-foreground">Client Information</h3>
         </div>
-        
+
         <div className="space-y-4">
           <div>
             <Label>Select Client</Label>
@@ -198,7 +198,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
               </SelectContent>
             </Select>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="clientName">Client Name</Label>
@@ -212,7 +212,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                 <p className="text-xs text-destructive mt-1">{errors.clientName.message}</p>
               )}
             </div>
-            
+
             <div>
               <Label htmlFor="clientEmail">Client Email</Label>
               <Input
@@ -224,7 +224,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
               />
             </div>
           </div>
-          
+
           <div>
             <Label htmlFor="clientPhone">Phone Number</Label>
             <Input
@@ -234,7 +234,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
               className="mt-1.5"
             />
           </div>
-          
+
           <div>
             <Label htmlFor="clientAddress">Billing Address</Label>
             <Textarea
@@ -262,7 +262,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
             Add Item
           </Button>
         </div>
-        
+
         <div className="space-y-4">
           {lineItems.length === 0 ? (
             <div className="text-center py-8 border-2 border-dashed border-border rounded-xl">
@@ -287,7 +287,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
-                
+
                 {services.length > 0 && (
                   <Select onValueChange={(serviceId) => applyService(item.id, serviceId)}>
                     <SelectTrigger>
@@ -302,7 +302,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                     </SelectContent>
                   </Select>
                 )}
-                
+
                 <div>
                   <Label>Description</Label>
                   <Input
@@ -312,7 +312,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                     className="mt-1.5"
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-3 gap-3">
                   <div>
                     <Label className="text-xs text-muted-foreground">Qty/Hrs</Label>
@@ -344,12 +344,12 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
               </div>
             ))
           )}
-          
+
           {lineItems.length > 0 && (
-            <Button 
-              type="button" 
-              variant="ghost" 
-              onClick={addLineItem} 
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={addLineItem}
               className="w-full border-2 border-dashed border-border text-muted-foreground hover:text-foreground hover:border-primary/50 gap-2"
             >
               <Plus className="w-4 h-4" />

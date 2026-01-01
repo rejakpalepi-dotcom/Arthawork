@@ -51,8 +51,9 @@ export function AccountTab() {
       toast.success("Password updated successfully!");
       setCurrentPassword("");
       setNewPassword("");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to update password");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to update password";
+      toast.error(message);
     } finally {
       setChangingPassword(false);
     }
@@ -77,8 +78,9 @@ export function AccountTab() {
       }
 
       toast.success("Profile updated successfully!");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to update profile");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to update profile";
+      toast.error(message);
     } finally {
       setUpdating(false);
     }

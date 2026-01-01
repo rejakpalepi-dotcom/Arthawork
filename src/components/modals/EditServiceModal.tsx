@@ -71,8 +71,9 @@ export function EditServiceModal({ open, onOpenChange, onSuccess, service }: Edi
       reset();
       onOpenChange(false);
       onSuccess?.();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to update service");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to update service";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
