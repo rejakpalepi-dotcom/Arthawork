@@ -66,7 +66,8 @@ export function useProposals() {
 
     if (data) {
       const mappedProposals = data.map((p) => {
-        const clientName = (p.clients as any)?.name || "Unknown Client";
+        const client = p.clients as { name?: string } | null;
+        const clientName = client?.name || "Unknown Client";
         return {
           id: p.id,
           title: p.title,
@@ -110,7 +111,7 @@ export function useProposals() {
       const currentAccepted = currentMonthProposals.filter(p => p.status === "approved").length;
       const currentTotal = currentMonthProposals.length;
       const currentRate = currentTotal > 0 ? (currentAccepted / currentTotal) * 100 : 0;
-      
+
       const prevAccepted = prevMonthProposals.filter(p => p.status === "approved").length;
       const prevTotal = prevMonthProposals.length;
       const prevRate = prevTotal > 0 ? (prevAccepted / prevTotal) * 100 : 0;

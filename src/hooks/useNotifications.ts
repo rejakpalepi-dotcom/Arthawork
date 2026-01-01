@@ -21,7 +21,7 @@ function loadNotifications(): Notification[] {
         const stored = localStorage.getItem(NOTIFICATIONS_KEY);
         if (stored) {
             const parsed = JSON.parse(stored);
-            return parsed.map((n: any) => ({
+            return parsed.map((n: { timestamp: string } & Omit<Notification, 'timestamp'>) => ({
                 ...n,
                 timestamp: new Date(n.timestamp),
             }));
@@ -115,8 +115,13 @@ export function useNotifications() {
                         filter: `user_id=eq.${user.id}`
                     },
                     (payload) => {
-                        const newData = payload.new as any;
-                        const oldData = payload.old as any;
+                        interface InvoicePayload {
+                            id: string;
+                            invoice_number: string;
+                            status: string;
+                        }
+                        const newData = payload.new as InvoicePayload;
+                        const oldData = payload.old as InvoicePayload;
 
                         if (oldData.status !== 'paid' && newData.status === 'paid') {
                             addNotification({
@@ -143,8 +148,13 @@ export function useNotifications() {
                         filter: `user_id=eq.${user.id}`
                     },
                     (payload) => {
-                        const newData = payload.new as any;
-                        const oldData = payload.old as any;
+                        interface ProposalPayload {
+                            id: string;
+                            title: string;
+                            status: string;
+                        }
+                        const newData = payload.new as ProposalPayload;
+                        const oldData = payload.old as ProposalPayload;
 
                         if (oldData.status !== 'approved' && newData.status === 'approved') {
                             addNotification({
@@ -179,7 +189,11 @@ export function useNotifications() {
                         filter: `user_id=eq.${user.id}`
                     },
                     (payload) => {
-                        const newData = payload.new as any;
+                        interface ClientPayload {
+                            id: string;
+                            name: string;
+                        }
+                        const newData = payload.new as ClientPayload;
                         addNotification({
                             type: "new_client",
                             title: "New Client Added! 👋",

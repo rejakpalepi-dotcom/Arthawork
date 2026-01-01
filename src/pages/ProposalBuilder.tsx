@@ -42,12 +42,12 @@ export interface ProposalData {
   studioName: string;
   tagline: string;
   year: string;
-  
+
   // Page 2 - Intro
   introTitle: string;
   introText: string;
   heroImageUrl: string;
-  
+
   // Page 3 - Experience
   experienceTitle: string;
   experienceSubtitle: string;
@@ -55,14 +55,14 @@ export interface ProposalData {
   countriesCount: string;
   rating: string;
   clientLogos: string[];
-  
+
   // Page 4 - Services
   selectedServices: Service[];
   customServices: CustomService[];
-  
+
   // Page 5 - Timeline
   milestones: Milestone[];
-  
+
   // Page 6 - Investment
   taxRate: number;
   investmentNotes: string;
@@ -82,27 +82,27 @@ const initialProposalData: ProposalData = {
   studioName: "Artha Studio",
   tagline: "Design Fearlessly, Present like a Pro",
   year: new Date().getFullYear().toString(),
-  
+
   introTitle: "Why work with me?",
   introText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   heroImageUrl: "",
-  
+
   experienceTitle: "I've worked with clients near and far, big and small",
   experienceSubtitle: "From local startups to international enterprises, I bring the same level of dedication and design excellence to every partnership.",
   projectCount: "50+",
   countriesCount: "12",
   rating: "5.0",
   clientLogos: ["", "", "", "", "", ""],
-  
+
   selectedServices: [],
   customServices: [],
-  
+
   milestones: [
     { id: crypto.randomUUID(), week: "Week 1", title: "Initial Planning & Discovery", description: "Research, stakeholder interviews, and project kickoff" },
     { id: crypto.randomUUID(), week: "Week 2-3", title: "Design Concepts & Research", description: "Wireframes, moodboards, and initial design explorations" },
     { id: crypto.randomUUID(), week: "Week 4", title: "Refinement & Launch", description: "Final revisions and project delivery" },
   ],
-  
+
   taxRate: 0,
   investmentNotes: "",
 };
@@ -140,7 +140,7 @@ export default function ProposalBuilder() {
 
       if (error) throw error;
       setClients(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("Failed to load clients");
     } finally {
       setIsLoading(false);
@@ -172,7 +172,7 @@ export default function ProposalBuilder() {
   const handleSave = async () => {
     try {
       setIsSaving(true);
-      
+
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) {
         toast.error("Please log in to save proposals");
@@ -196,8 +196,9 @@ export default function ProposalBuilder() {
 
       toast.success("Proposal saved successfully!");
       navigate("/proposals");
-    } catch (error: any) {
-      toast.error("Failed to save proposal: " + error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      toast.error("Failed to save proposal: " + message);
     } finally {
       setIsSaving(false);
     }
@@ -296,8 +297,8 @@ export default function ProposalBuilder() {
             onClick={() => setMobileView("form")}
             className={cn(
               "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
-              mobileView === "form" 
-                ? "text-primary border-b-2 border-primary bg-primary/5" 
+              mobileView === "form"
+                ? "text-primary border-b-2 border-primary bg-primary/5"
                 : "text-muted-foreground"
             )}
           >
@@ -308,8 +309,8 @@ export default function ProposalBuilder() {
             onClick={() => setMobileView("preview")}
             className={cn(
               "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
-              mobileView === "preview" 
-                ? "text-primary border-b-2 border-primary bg-primary/5" 
+              mobileView === "preview"
+                ? "text-primary border-b-2 border-primary bg-primary/5"
                 : "text-muted-foreground"
             )}
           >
@@ -345,9 +346,9 @@ export default function ProposalBuilder() {
               Live Preview
             </div>
             <div className="flex-1 flex items-center justify-center min-h-0">
-              <div 
+              <div
                 className="bg-white rounded-lg shadow-2xl border-2 border-border/50 overflow-hidden w-full"
-                style={{ 
+                style={{
                   aspectRatio: '8.5/11',
                   maxHeight: 'calc(100vh - 20rem)',
                   maxWidth: 'calc((100vh - 20rem) * 8.5 / 11)'

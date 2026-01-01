@@ -60,8 +60,9 @@ export function AddServiceModal({ open, onOpenChange, onSuccess }: AddServiceMod
       reset();
       onOpenChange(false);
       onSuccess?.();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to add service");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to add service";
+      toast.error(message);
     } finally {
       setLoading(false);
     }

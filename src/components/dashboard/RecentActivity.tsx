@@ -52,13 +52,14 @@ export function RecentActivity() {
         .limit(5);
 
       invoices?.forEach((inv) => {
+        const client = inv.clients as { name?: string } | null;
         allActivities.push({
           id: inv.id,
           type: "invoice",
           title: `Invoice ${inv.invoice_number}`,
-          subtitle: `${(inv.clients as any)?.name || "Unknown Client"} - ${formatIDR(Number(inv.total))}`,
+          subtitle: `${client?.name || "Unknown Client"} - ${formatIDR(Number(inv.total))}`,
           timestamp: formatDistanceToNow(new Date(inv.created_at), { addSuffix: true }),
-          status: inv.status as any,
+          status: inv.status as "sent" | "paid" | "approved" | "draft" | "pending",
         });
       });
 
@@ -71,13 +72,14 @@ export function RecentActivity() {
         .limit(5);
 
       proposals?.forEach((prop) => {
+        const client = prop.clients as { name?: string } | null;
         allActivities.push({
           id: prop.id,
           type: "proposal",
           title: prop.title,
-          subtitle: (prop.clients as any)?.name || "Unknown Client",
+          subtitle: client?.name || "Unknown Client",
           timestamp: formatDistanceToNow(new Date(prop.created_at), { addSuffix: true }),
-          status: prop.status as any,
+          status: prop.status as "sent" | "paid" | "approved" | "draft" | "pending",
         });
       });
 

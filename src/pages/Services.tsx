@@ -71,8 +71,9 @@ export default function Services() {
       if (error) throw error;
       toast.success("Service deleted successfully!");
       fetchServices();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to delete service");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to delete service";
+      toast.error(message);
     } finally {
       setDeleting(false);
       setDeleteModal({ open: false, serviceId: null });

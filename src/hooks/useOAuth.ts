@@ -9,10 +9,10 @@ export function useOAuth() {
 
   const signInWithOAuth = async (provider: OAuthProvider) => {
     setOauthLoading(provider);
-    
+
     try {
       const redirectUrl = `${window.location.origin}/dashboard`;
-      
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
@@ -27,9 +27,10 @@ export function useOAuth() {
         setOauthLoading(null);
       }
       // Note: Don't set loading to false on success - redirect will happen
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "An unexpected error occurred";
       toast.error("Sign in failed", {
-        description: err.message || "An unexpected error occurred",
+        description: message,
       });
       setOauthLoading(null);
     }

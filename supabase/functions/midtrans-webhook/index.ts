@@ -5,14 +5,27 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts";
 
-// Allowed origins for CORS
-const ALLOWED_ORIGINS = [
+// ===========================================
+// CORS Configuration (Environment-based)
+// ===========================================
+const PRODUCTION_ORIGINS = [
     "https://arthawork.com",
     "https://www.arthawork.com",
     "https://arthawork.lovable.app",
+];
+
+const DEVELOPMENT_ORIGINS = [
+    ...PRODUCTION_ORIGINS,
     "http://localhost:8080",
     "http://localhost:5173",
+    "http://localhost:3000",
 ];
+
+// Use environment variable to determine if in production
+const IS_PRODUCTION = Deno.env.get("ENVIRONMENT") === "production" ||
+    Deno.env.get("MIDTRANS_IS_PRODUCTION") === "true";
+
+const ALLOWED_ORIGINS = IS_PRODUCTION ? PRODUCTION_ORIGINS : DEVELOPMENT_ORIGINS;
 
 // Midtrans IP whitelist (production)
 const MIDTRANS_IPS = [

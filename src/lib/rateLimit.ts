@@ -90,7 +90,7 @@ export function useRateLimiter(key: string, config: RateLimitConfig = RATE_LIMIT
 /**
  * Decorator for rate-limited async functions
  */
-export function withRateLimit<T extends (...args: any[]) => Promise<any>>(
+export function withRateLimit<T extends (...args: unknown[]) => Promise<unknown>>(
     fn: T,
     key: string,
     config: RateLimitConfig = RATE_LIMITS.API_WRITE

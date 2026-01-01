@@ -69,8 +69,9 @@ export function AddClientModal({ open, onOpenChange, onSuccess }: AddClientModal
       reset();
       onOpenChange(false);
       onSuccess?.();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to add client");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to add client";
+      toast.error(message);
     } finally {
       setLoading(false);
     }

@@ -41,12 +41,13 @@ export function useSendInvoiceEmail() {
             });
 
             return { success: true, emailId: data.emailId };
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Failed to send email";
             console.error("Send invoice email error:", error);
             toast.error("Failed to send invoice", {
-                description: error.message,
+                description: message,
             });
-            return { success: false, error: error.message };
+            return { success: false, error: message };
         } finally {
             setSending(false);
         }

@@ -4,14 +4,27 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// Allowed origins for CORS
-const ALLOWED_ORIGINS = [
+// ===========================================
+// CORS Configuration (Environment-based)
+// ===========================================
+const PRODUCTION_ORIGINS = [
     "https://arthawork.com",
     "https://www.arthawork.com",
     "https://arthawork.lovable.app",
+];
+
+const DEVELOPMENT_ORIGINS = [
+    ...PRODUCTION_ORIGINS,
     "http://localhost:8080",
     "http://localhost:5173",
+    "http://localhost:3000",
 ];
+
+// Use environment variable to determine if in production
+const IS_PRODUCTION = Deno.env.get("ENVIRONMENT") === "production" ||
+    Deno.env.get("MIDTRANS_IS_PRODUCTION") === "true";
+
+const ALLOWED_ORIGINS = IS_PRODUCTION ? PRODUCTION_ORIGINS : DEVELOPMENT_ORIGINS;
 
 function getCorsHeaders(origin: string | null) {
     const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin)
@@ -25,6 +38,62 @@ function getCorsHeaders(origin: string | null) {
     };
 }
 
+// ===========================================
+// Server-Side Rate Limiting
+// ===========================================
+interface RateLimitEntry {
+    count: number;
+    resetTime: number;
+}
+
+// Simple in-memory rate limit store (resets on function cold start)
+// For production, use Redis/Upstash or Supabase table
+const rateLimitStore = new Map<string, RateLimitEntry>();
+
+const RATE_LIMIT_CONFIG = {
+    maxRequests: 10, // 10 requests per window
+    windowMs: 60000, // 1 minute window
+};
+
+function checkRateLimit(userId: string): { allowed: boolean; remaining: number; resetIn: number } {
+    const now = Date.now();
+    const key = `payment:${userId}`;
+    const entry = rateLimitStore.get(key);
+
+    // Clean expired entries
+    if (entry && now > entry.resetTime) {
+        rateLimitStore.delete(key);
+    }
+
+    const current = rateLimitStore.get(key);
+
+    if (!current) {
+        rateLimitStore.set(key, {
+            count: 1,
+            resetTime: now + RATE_LIMIT_CONFIG.windowMs,
+        });
+        return { allowed: true, remaining: RATE_LIMIT_CONFIG.maxRequests - 1, resetIn: RATE_LIMIT_CONFIG.windowMs };
+    }
+
+    if (current.count >= RATE_LIMIT_CONFIG.maxRequests) {
+        return {
+            allowed: false,
+            remaining: 0,
+            resetIn: current.resetTime - now,
+        };
+    }
+
+    current.count++;
+    return {
+        allowed: true,
+        remaining: RATE_LIMIT_CONFIG.maxRequests - current.count,
+        resetIn: current.resetTime - now,
+    };
+}
+
+// ===========================================
+// Request Types
+// ===========================================
 interface TransactionRequest {
     orderId: string;
     amount: number;
@@ -34,6 +103,9 @@ interface TransactionRequest {
     paymentMethod?: string;
 }
 
+// ===========================================
+// Main Handler
+// ===========================================
 serve(async (req) => {
     const origin = req.headers.get("origin");
     const corsHeaders = getCorsHeaders(origin);
@@ -69,6 +141,29 @@ serve(async (req) => {
             throw new Error("Unauthorized");
         }
 
+        // Server-side rate limiting
+        const rateLimit = checkRateLimit(user.id);
+        if (!rateLimit.allowed) {
+            const retryAfter = Math.ceil(rateLimit.resetIn / 1000);
+            return new Response(
+                JSON.stringify({
+                    error: "Rate limit exceeded",
+                    retryAfter: retryAfter,
+                    message: `Too many requests. Please try again in ${retryAfter} seconds.`,
+                }),
+                {
+                    headers: {
+                        ...corsHeaders,
+                        "Content-Type": "application/json",
+                        "Retry-After": String(retryAfter),
+                        "X-RateLimit-Remaining": "0",
+                        "X-RateLimit-Reset": String(Math.ceil(rateLimit.resetIn / 1000)),
+                    },
+                    status: 429,
+                }
+            );
+        }
+
         // Parse request body
         const body: TransactionRequest = await req.json();
         const { orderId, amount, itemName, customerEmail, customerName, paymentMethod } = body;
@@ -77,8 +172,19 @@ serve(async (req) => {
             throw new Error("Missing required fields: orderId, amount, itemName");
         }
 
+        // Validate amount is positive integer
+        if (!Number.isInteger(amount) || amount <= 0) {
+            throw new Error("Amount must be a positive integer");
+        }
+
         // Build Midtrans transaction payload
-        const transactionPayload = {
+        const transactionPayload: {
+            transaction_details: { order_id: string; gross_amount: number };
+            item_details: { id: string; price: number; quantity: number; name: string }[];
+            customer_details: { email: string; first_name: string };
+            callbacks: { finish: string; error: string; pending: string };
+            enabled_payments?: string[];
+        } = {
             transaction_details: {
                 order_id: orderId,
                 gross_amount: amount,
@@ -88,12 +194,12 @@ serve(async (req) => {
                     id: "subscription",
                     price: amount,
                     quantity: 1,
-                    name: itemName,
+                    name: itemName.slice(0, 50), // Midtrans limit
                 },
             ],
             customer_details: {
-                email: customerEmail || user.email,
-                first_name: customerName || "Customer",
+                email: customerEmail || user.email || "",
+                first_name: (customerName || "Customer").slice(0, 20),
             },
             callbacks: {
                 finish: `${origin || "https://arthawork.com"}/dashboard?payment=success`,
@@ -117,7 +223,7 @@ serve(async (req) => {
             };
 
             if (paymentMethods[paymentMethod]) {
-                (transactionPayload as any).enabled_payments = paymentMethods[paymentMethod];
+                transactionPayload.enabled_payments = paymentMethods[paymentMethod];
             }
         }
 
@@ -168,7 +274,11 @@ serve(async (req) => {
                 redirectUrl: midtransData.redirect_url,
             }),
             {
-                headers: { ...corsHeaders, "Content-Type": "application/json" },
+                headers: {
+                    ...corsHeaders,
+                    "Content-Type": "application/json",
+                    "X-RateLimit-Remaining": String(rateLimit.remaining),
+                },
                 status: 200,
             }
         );
@@ -184,3 +294,4 @@ serve(async (req) => {
         );
     }
 });
+

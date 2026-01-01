@@ -19,6 +19,7 @@ import {
 import { exportToPDF } from "@/lib/pdfExport";
 import { format } from "date-fns";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
+import { escapeHtml } from "@/lib/sanitize";
 
 interface Invoice {
   id: string;
@@ -70,22 +71,31 @@ export default function Invoices() {
       .order("created_at", { ascending: false });
 
     if (!error && data) {
-      setInvoices(data.map((inv) => ({
-        id: inv.id,
-        invoice_number: inv.invoice_number,
-        client_name: (inv.clients as any)?.name || null,
-        client_email: (inv.clients as any)?.email || null,
-        client_phone: (inv.clients as any)?.phone || null,
-        client_address: (inv.clients as any)?.address || null,
-        total: Number(inv.total),
-        status: inv.status,
-        due_date: inv.due_date,
-        issue_date: inv.issue_date,
-        subtotal: Number(inv.subtotal),
-        tax_rate: inv.tax_rate,
-        tax_amount: inv.tax_amount ? Number(inv.tax_amount) : null,
-        notes: inv.notes,
-      })));
+      interface ClientData {
+        name?: string;
+        email?: string;
+        phone?: string;
+        address?: string;
+      }
+      setInvoices(data.map((inv) => {
+        const client = inv.clients as ClientData | null;
+        return {
+          id: inv.id,
+          invoice_number: inv.invoice_number,
+          client_name: client?.name || null,
+          client_email: client?.email || null,
+          client_phone: client?.phone || null,
+          client_address: client?.address || null,
+          total: Number(inv.total),
+          status: inv.status,
+          due_date: inv.due_date,
+          issue_date: inv.issue_date,
+          subtotal: Number(inv.subtotal),
+          tax_rate: inv.tax_rate,
+          tax_amount: inv.tax_amount ? Number(inv.tax_amount) : null,
+          notes: inv.notes,
+        };
+      }));
     }
 
     setLoading(false);
@@ -105,8 +115,9 @@ export default function Invoices() {
       if (error) throw error;
       toast.success("Invoice marked as paid!");
       fetchInvoices();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to update invoice");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to update invoice";
+      toast.error(message);
     }
   };
 
@@ -128,8 +139,9 @@ export default function Invoices() {
       if (error) throw error;
       toast.success("Invoice deleted successfully!");
       fetchInvoices();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to delete invoice");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to delete invoice";
+      toast.error(message);
     } finally {
       setDeleting(false);
       setDeleteModal({ open: false, invoiceId: null });
@@ -157,20 +169,36 @@ export default function Invoices() {
       // Create a temporary element for PDF rendering
       const container = document.createElement("div");
       container.id = `invoice-pdf-${invoice.id}`;
+
+      // Sanitize all user-input data to prevent XSS
+      const safeBusinessName = escapeHtml(businessName);
+      const safeBusinessAddress = escapeHtml(businessAddress);
+      const safeBusinessEmail = escapeHtml(businessEmail);
+      const safeLogoUrl = escapeHtml(logoUrl);
+      const safeInvoiceNumber = escapeHtml(invoice.invoice_number);
+      const safeClientName = escapeHtml(invoice.client_name || "Client");
+      const safeClientEmail = escapeHtml(invoice.client_email);
+      const safeClientPhone = escapeHtml(invoice.client_phone);
+      const safeClientAddress = escapeHtml(invoice.client_address);
+      const safeBankName = escapeHtml(bankName);
+      const safeAccountNumber = escapeHtml(accountNumber);
+      const safeAccountName = escapeHtml(accountName);
+      const safeNotes = escapeHtml(invoice.notes);
+
       container.innerHTML = `
         <div style="padding: 40px; font-family: system-ui, -apple-system, sans-serif; background: white; color: #1a1a1a; max-width: 794px;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 40px; border-bottom: 2px solid #00D9FF; padding-bottom: 20px;">
             <div style="display: flex; align-items: flex-start; gap: 16px;">
-              ${logoUrl ? `<img src="${logoUrl}" alt="${businessName}" style="width: 56px; height: 56px; object-fit: contain; border-radius: 8px;" />` : `<div style="width: 56px; height: 56px; background: #00D9FF20; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #00D9FF;">${businessName.charAt(0).toUpperCase()}</div>`}
+              ${logoUrl ? `<img src="${safeLogoUrl}" alt="${safeBusinessName}" style="width: 56px; height: 56px; object-fit: contain; border-radius: 8px;" />` : `<div style="width: 56px; height: 56px; background: #00D9FF20; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #00D9FF;">${safeBusinessName.charAt(0).toUpperCase()}</div>`}
               <div>
-                <h2 style="font-size: 24px; font-weight: bold; color: #1a1a1a; margin: 0;">${businessName}</h2>
-                <p style="color: #666; margin: 8px 0; white-space: pre-line;">${businessAddress}</p>
-                <p style="color: #00D9FF; margin: 4px 0;">${businessEmail}</p>
+                <h2 style="font-size: 24px; font-weight: bold; color: #1a1a1a; margin: 0;">${safeBusinessName}</h2>
+                <p style="color: #666; margin: 8px 0; white-space: pre-line;">${safeBusinessAddress}</p>
+                <p style="color: #00D9FF; margin: 4px 0;">${safeBusinessEmail}</p>
               </div>
             </div>
             <div style="text-align: right;">
               <h1 style="font-size: 32px; font-weight: bold; color: #00D9FF; margin: 0;">INVOICE</h1>
-              <p style="font-family: monospace; font-size: 18px; margin: 8px 0;">#${invoice.invoice_number}</p>
+              <p style="font-family: monospace; font-size: 18px; margin: 8px 0;">#${safeInvoiceNumber}</p>
               <p style="color: #666; margin: 8px 0;">Issued: ${format(new Date(invoice.issue_date), "MMM d, yyyy")}</p>
               ${invoice.due_date ? `<p style="color: #666; margin: 4px 0;">Due: ${format(new Date(invoice.due_date), "MMM d, yyyy")}</p>` : ""}
             </div>
@@ -178,10 +206,10 @@ export default function Invoices() {
           
           <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
             <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Bill To</h3>
-            <p style="font-size: 18px; font-weight: 600; margin: 0;">${invoice.client_name || "Client"}</p>
-            ${invoice.client_email ? `<p style="color: #666; margin: 4px 0;">📧 ${invoice.client_email}</p>` : ""}
-            ${invoice.client_phone ? `<p style="color: #666; margin: 4px 0;">📞 ${invoice.client_phone}</p>` : ""}
-            ${invoice.client_address ? `<p style="color: #666; margin: 4px 0;">📍 ${invoice.client_address}</p>` : ""}
+            <p style="font-size: 18px; font-weight: 600; margin: 0;">${safeClientName}</p>
+            ${invoice.client_email ? `<p style="color: #666; margin: 4px 0;">📧 ${safeClientEmail}</p>` : ""}
+            ${invoice.client_phone ? `<p style="color: #666; margin: 4px 0;">📞 ${safeClientPhone}</p>` : ""}
+            ${invoice.client_address ? `<p style="color: #666; margin: 4px 0;">📍 ${safeClientAddress}</p>` : ""}
           </div>
           
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
@@ -194,10 +222,10 @@ export default function Invoices() {
               </tr>
             </thead>
             <tbody>
-              ${(items || []).map((item: any, i: number) => `
+              ${(items || []).map((item: { description: string; quantity: number; unit_price: number; total: number }, i: number) => `
                 <tr style="border-bottom: 1px solid #eee; background: ${i % 2 === 0 ? "white" : "#fafafa"};">
-                  <td style="padding: 12px;">${item.description}</td>
-                  <td style="padding: 12px; text-align: center;">${item.quantity}</td>
+                  <td style="padding: 12px;">${escapeHtml(item.description)}</td>
+                  <td style="padding: 12px; text-align: center;">${Number(item.quantity)}</td>
                   <td style="padding: 12px; text-align: right; font-family: monospace;">Rp ${Number(item.unit_price).toLocaleString("id-ID")}</td>
                   <td style="padding: 12px; text-align: right; font-family: monospace; font-weight: 600;">Rp ${Number(item.total).toLocaleString("id-ID")}</td>
                 </tr>
@@ -226,9 +254,9 @@ export default function Invoices() {
             <div style="margin-top: 24px; padding: 16px; background: #f5f5f5; border-radius: 8px;">
               <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 12px 0;">Payment Details</h3>
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-                ${bankName ? `<div><p style="color: #666; margin: 0 0 4px 0; font-size: 12px;">Bank</p><p style="margin: 0; font-weight: 500;">${bankName}</p></div>` : ""}
-                ${accountNumber ? `<div><p style="color: #666; margin: 0 0 4px 0; font-size: 12px;">Account</p><p style="margin: 0; font-weight: 500; font-family: monospace;">${accountNumber}</p></div>` : ""}
-                ${accountName ? `<div><p style="color: #666; margin: 0 0 4px 0; font-size: 12px;">Account Name</p><p style="margin: 0; font-weight: 500;">${accountName}</p></div>` : ""}
+                ${bankName ? `<div><p style="color: #666; margin: 0 0 4px 0; font-size: 12px;">Bank</p><p style="margin: 0; font-weight: 500;">${safeBankName}</p></div>` : ""}
+                ${accountNumber ? `<div><p style="color: #666; margin: 0 0 4px 0; font-size: 12px;">Account</p><p style="margin: 0; font-weight: 500; font-family: monospace;">${safeAccountNumber}</p></div>` : ""}
+                ${accountName ? `<div><p style="color: #666; margin: 0 0 4px 0; font-size: 12px;">Account Name</p><p style="margin: 0; font-weight: 500;">${safeAccountName}</p></div>` : ""}
               </div>
             </div>
           ` : ""}
@@ -236,7 +264,7 @@ export default function Invoices() {
           ${invoice.notes ? `
             <div style="margin-top: 24px; padding: 16px; background: #f5f5f5; border-radius: 8px;">
               <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Notes</h3>
-              <p style="color: #666; margin: 0; white-space: pre-line;">${invoice.notes}</p>
+              <p style="color: #666; margin: 0; white-space: pre-line;">${safeNotes}</p>
             </div>
           ` : ""}
           
@@ -250,8 +278,9 @@ export default function Invoices() {
       await exportToPDF(`invoice-pdf-${invoice.id}`, `Invoice-${invoice.invoice_number}.pdf`);
       document.body.removeChild(container);
       toast.success("PDF exported successfully!");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to export PDF");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to export PDF";
+      toast.error(message);
     } finally {
       setExportingId(null);
     }

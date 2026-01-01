@@ -84,7 +84,7 @@ export function useBusinessSettings() {
           stripe_connected: data.stripe_connected || false,
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error fetching settings:", error);
     } finally {
       setLoading(false);
@@ -97,7 +97,7 @@ export function useBusinessSettings() {
 
   const saveSettings = async (updates?: Partial<BusinessSettings>) => {
     // 1. Definisikan cleanUpdates di awal
-    const cleanUpdates = updates && (updates as any).nativeEvent ? undefined : updates;
+    const cleanUpdates = updates && (updates as { nativeEvent?: unknown }).nativeEvent ? undefined : updates;
 
     setSaving(true);
     try {
@@ -133,9 +133,10 @@ export function useBusinessSettings() {
 
       toast.success("Settings saved successfully!");
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Pastikan toast hanya menerima string message agar tidak circular error
-      toast.error(error.message || "Failed to save settings");
+      const message = error instanceof Error ? error.message : "Failed to save settings";
+      toast.error(message);
       return false;
     } finally {
       setSaving(false);
@@ -164,8 +165,9 @@ export function useBusinessSettings() {
       } = supabase.storage.from("logos").getPublicUrl(fileName);
 
       return publicUrl;
-    } catch (error: any) {
-      toast.error(error.message || "Failed to upload logo");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to upload logo";
+      toast.error(message);
       return null;
     }
   };

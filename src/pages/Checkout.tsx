@@ -66,9 +66,10 @@ export default function Checkout() {
                     toast.info("Payment cancelled");
                 },
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Checkout error:", error);
-            toast.error(error.message || "Failed to process payment");
+            const message = error instanceof Error ? error.message : "Failed to process payment";
+            toast.error(message);
         } finally {
             setLoading(false);
         }

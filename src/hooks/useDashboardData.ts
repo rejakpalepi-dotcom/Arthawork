@@ -80,7 +80,15 @@ export function useDashboardData() {
   });
   const [recentInvoices, setRecentInvoices] = useState<Invoice[]>([]);
   const [allInvoices, setAllInvoices] = useState<Invoice[]>([]);
-  const [allProposals, setAllProposals] = useState<any[]>([]);
+  const [allProposals, setAllProposals] = useState<Array<{
+    id: string;
+    title: string;
+    status: string;
+    total: number;
+    valid_until: string | null;
+    created_at: string;
+    clients: { name: string } | null;
+  }>>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState("");
@@ -191,14 +199,14 @@ export function useDashboardData() {
     const paidInvoices = invoices?.filter(inv => inv.status === "paid") || [];
     const pendingInvs = invoices?.filter(inv => inv.status === "pending" || inv.status === "sent") || [];
     const allProposalsList = proposals || [];
-    
+
     // Pipeline Value: SUM of all proposals with status 'sent' (awaiting response)
     const sentProposals = allProposalsList.filter(prop => prop.status === "sent");
     const pipelineValue = sentProposals.reduce((sum, prop) => sum + Number(prop.total || 0), 0);
-    
+
     // Acceptance Rate: approved / (sent + approved + rejected) * 100
     // Only count proposals that have been sent (not drafts)
-    const processedProposals = allProposalsList.filter(prop => 
+    const processedProposals = allProposalsList.filter(prop =>
       prop.status === "sent" || prop.status === "approved" || prop.status === "rejected"
     );
     const acceptedProps = allProposalsList.filter(prop => prop.status === "approved");
@@ -247,16 +255,16 @@ export function useDashboardData() {
 
     // Map ALL proposals to projects format (not just active ones)
     const proposalsForProjects = proposals || [];
-    const mappedProjects: Project[] = proposalsForProjects.slice(0, 5).map((prop: any) => {
+    const mappedProjects: Project[] = proposalsForProjects.slice(0, 5).map((prop) => {
       const clientName = prop.clients?.name || "Unknown Client";
-      const initials = clientName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
-      const deadline = prop.valid_until 
+      const initials = clientName.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
+      const deadline = prop.valid_until
         ? new Date(prop.valid_until).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
         : 'No deadline';
-      
+
       // Map status to new format or keep as is
-      let mappedStatus = prop.status as Project['status'];
-      
+      const mappedStatus = prop.status as Project['status'];
+
       // Simulate progress based on status
       let progress = 0;
       if (mappedStatus === "done" || mappedStatus === "approved") {
@@ -293,7 +301,7 @@ export function useDashboardData() {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const currentMonth = now.getMonth();
     const last6Months = months.slice(Math.max(0, currentMonth - 5), currentMonth + 1);
-    
+
     setRevenueData(last6Months.map(month => ({
       month,
       revenue: revenueByMonth[month] || 0
@@ -338,7 +346,7 @@ export function useDashboardData() {
   const exportReport = useCallback(() => {
     const now = new Date();
     const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    
+
     // Filter current month paid invoices
     const monthlyPaidInvoices = allInvoices.filter(inv => {
       const date = new Date(inv.created_at);
@@ -353,11 +361,11 @@ export function useDashboardData() {
 
     // Generate CSV content
     const csvRows: string[] = [];
-    
+
     // Header
     csvRows.push("Artha Monthly Report - " + now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }));
     csvRows.push("");
-    
+
     // Paid Invoices Section
     csvRows.push("PAID INVOICES");
     csvRows.push("Invoice Number,Amount,Date,Status");
@@ -366,21 +374,21 @@ export function useDashboardData() {
     });
     csvRows.push(`Total Paid,${monthlyPaidInvoices.reduce((sum, inv) => sum + Number(inv.total), 0)},,`);
     csvRows.push("");
-    
+
     // Proposals Section
     csvRows.push("PROPOSALS");
     csvRows.push("Title,Amount,Status,Client");
-    monthlyProposals.forEach((prop: any) => {
+    monthlyProposals.forEach((prop) => {
       csvRows.push(`"${prop.title}",${prop.total},${prop.status},"${prop.clients?.name || 'Unknown'}"`);
     });
     csvRows.push("");
-    
+
     // Summary
     csvRows.push("SUMMARY");
     csvRows.push(`Total Revenue,${monthlyPaidInvoices.reduce((sum, inv) => sum + Number(inv.total), 0)}`);
     csvRows.push(`Total Proposals,${monthlyProposals.length}`);
-    csvRows.push(`Approved Proposals,${monthlyProposals.filter((p: any) => p.status === 'approved').length}`);
-    csvRows.push(`Pending Proposals,${monthlyProposals.filter((p: any) => p.status === 'sent').length}`);
+    csvRows.push(`Approved Proposals,${monthlyProposals.filter((p) => p.status === 'approved').length}`);
+    csvRows.push(`Pending Proposals,${monthlyProposals.filter((p) => p.status === 'sent').length}`);
 
     // Create and download file
     const csvContent = csvRows.join("\n");
@@ -395,17 +403,17 @@ export function useDashboardData() {
     document.body.removeChild(link);
   }, [allInvoices, allProposals]);
 
-  const today = new Date().toLocaleDateString('en-US', { 
-    weekday: 'long', 
-    month: 'short', 
-    day: 'numeric' 
+  const today = new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric'
   });
 
   // Acceptance Rate calculation: Accepted / (Sent + Accepted + Rejected)
   // This calculates from proposals that have been processed (not drafts)
   const processedProposals = stats.sentProposals + stats.acceptedProposals;
-  const acceptanceRate = processedProposals > 0 
-    ? Math.round((stats.acceptedProposals / processedProposals) * 100) 
+  const acceptanceRate = processedProposals > 0
+    ? Math.round((stats.acceptedProposals / processedProposals) * 100)
     : 0;
 
   return {

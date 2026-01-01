@@ -52,22 +52,31 @@ export function useInvoices() {
         }
 
         if (data) {
-            setInvoices(data.map((inv) => ({
-                id: inv.id,
-                invoice_number: inv.invoice_number,
-                client_name: (inv.clients as any)?.name || null,
-                client_email: (inv.clients as any)?.email || null,
-                client_phone: (inv.clients as any)?.phone || null,
-                client_address: (inv.clients as any)?.address || null,
-                total: Number(inv.total),
-                status: inv.status,
-                due_date: inv.due_date,
-                issue_date: inv.issue_date,
-                subtotal: Number(inv.subtotal),
-                tax_rate: inv.tax_rate,
-                tax_amount: inv.tax_amount ? Number(inv.tax_amount) : null,
-                notes: inv.notes,
-            })));
+            interface ClientData {
+                name?: string;
+                email?: string;
+                phone?: string;
+                address?: string;
+            }
+            setInvoices(data.map((inv) => {
+                const client = inv.clients as ClientData | null;
+                return {
+                    id: inv.id,
+                    invoice_number: inv.invoice_number,
+                    client_name: client?.name || null,
+                    client_email: client?.email || null,
+                    client_phone: client?.phone || null,
+                    client_address: client?.address || null,
+                    total: Number(inv.total),
+                    status: inv.status,
+                    due_date: inv.due_date,
+                    issue_date: inv.issue_date,
+                    subtotal: Number(inv.subtotal),
+                    tax_rate: inv.tax_rate,
+                    tax_amount: inv.tax_amount ? Number(inv.tax_amount) : null,
+                    notes: inv.notes,
+                };
+            }));
         }
 
         setLoading(false);
@@ -99,7 +108,14 @@ export function useInvoiceItems(invoiceId: string | null) {
             .eq("invoice_id", invoiceId);
 
         if (data) {
-            setItems(data.map((item: any) => ({
+            interface ItemData {
+                id: string;
+                description: string;
+                quantity: number;
+                unit_price: number;
+                total: number;
+            }
+            setItems(data.map((item: ItemData) => ({
                 id: item.id,
                 description: item.description,
                 quantity: Number(item.quantity),

@@ -136,9 +136,10 @@ export default function InvoiceBuilder() {
 
       toast.success(status === "draft" ? "Draft saved!" : "Invoice sent successfully!");
       navigate("/invoices");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating invoice:", error);
-      toast.error(error.message || "Failed to create invoice");
+      const message = error instanceof Error ? error.message : "Failed to create invoice";
+      toast.error(message);
     } finally {
       setLoading(false);
     }

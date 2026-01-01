@@ -18,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { escapeHtml } from "@/lib/sanitize";
 
 interface Proposal {
   id: string;
@@ -56,7 +57,7 @@ function getTimeAgo(date: string): string {
   const diffMs = now.getTime() - past.getTime();
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  
+
   if (diffHours < 1) return "Just now";
   if (diffHours < 24) return `${diffHours} hours ago`;
   if (diffDays === 1) return "yesterday";
@@ -106,7 +107,8 @@ export default function Proposals() {
 
     if (!error && data) {
       const mappedProposals = data.map((p) => {
-        const clientName = (p.clients as any)?.name || "Unknown Client";
+        const client = p.clients as { name?: string } | null;
+        const clientName = client?.name || "Unknown Client";
         return {
           id: p.id,
           title: p.title,
@@ -150,7 +152,7 @@ export default function Proposals() {
       const currentAccepted = currentMonthProposals.filter(p => p.status === "approved").length;
       const currentTotal = currentMonthProposals.length;
       const currentRate = currentTotal > 0 ? (currentAccepted / currentTotal) * 100 : 0;
-      
+
       const prevAccepted = prevMonthProposals.filter(p => p.status === "approved").length;
       const prevTotal = prevMonthProposals.length;
       const prevRate = prevTotal > 0 ? (prevAccepted / prevTotal) * 100 : 0;
@@ -189,18 +191,19 @@ export default function Proposals() {
         .eq("id", proposalId);
 
       if (error) throw error;
-      
+
       const statusLabels: Record<string, string> = {
         sent: "Sent",
         approved: "Accepted",
         rejected: "Declined",
         draft: "Draft",
       };
-      
+
       toast.success(`Proposal marked as ${statusLabels[newStatus] || newStatus}!`);
       fetchProposals();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to update status");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to update status";
+      toast.error(message);
     }
   };
 
@@ -216,8 +219,9 @@ export default function Proposals() {
       if (error) throw error;
       toast.success("Proposal deleted successfully!");
       fetchProposals();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to delete proposal");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to delete proposal";
+      toast.error(message);
     } finally {
       setDeleting(false);
       setDeleteModal({ open: false, proposalId: null });
@@ -230,6 +234,12 @@ export default function Proposals() {
       // Create a temporary element for PDF rendering
       const container = document.createElement("div");
       container.id = `proposal-pdf-${proposal.id}`;
+
+      // Sanitize all user-input data to prevent XSS
+      const safeClientName = escapeHtml(proposal.client_name);
+      const safeTitle = escapeHtml(proposal.title);
+      const safeDescription = escapeHtml(proposal.description);
+
       container.innerHTML = `
         <div style="padding: 40px; font-family: system-ui, -apple-system, sans-serif; background: white; color: #1a1a1a; max-width: 794px;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 40px; border-bottom: 2px solid #00D9FF; padding-bottom: 20px;">
@@ -245,12 +255,12 @@ export default function Proposals() {
           
           <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
             <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Prepared For</h3>
-            <p style="font-size: 18px; font-weight: 600; margin: 0;">${proposal.client_name}</p>
+            <p style="font-size: 18px; font-weight: 600; margin: 0;">${safeClientName}</p>
           </div>
           
           <div style="margin-bottom: 24px;">
-            <h2 style="font-size: 24px; font-weight: bold; margin: 0 0 16px 0;">${proposal.title}</h2>
-            ${proposal.description ? `<p style="color: #666; line-height: 1.6;">${proposal.description}</p>` : ""}
+            <h2 style="font-size: 24px; font-weight: bold; margin: 0 0 16px 0;">${safeTitle}</h2>
+            ${proposal.description ? `<p style="color: #666; line-height: 1.6;">${safeDescription}</p>` : ""}
           </div>
           
           <div style="display: flex; justify-content: flex-end; margin-top: 40px;">
@@ -270,21 +280,22 @@ export default function Proposals() {
       await exportToPDF(`proposal-pdf-${proposal.id}`, `Proposal-${proposal.title.replace(/[^a-z0-9]/gi, "-")}.pdf`);
       document.body.removeChild(container);
       toast.success("PDF exported successfully!");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to export PDF");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to export PDF";
+      toast.error(message);
     } finally {
       setExportingId(null);
     }
   };
 
   const filteredProposals = proposals.filter(p => {
-    const matchesTab = 
+    const matchesTab =
       activeTab === "All Proposals" ||
       (activeTab === "Drafts" && p.status === "draft") ||
       (activeTab === "Sent" && p.status === "sent") ||
       (activeTab === "Accepted" && p.status === "approved");
-    
-    const matchesSearch = 
+
+    const matchesSearch =
       searchQuery === "" ||
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.client_name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -375,7 +386,7 @@ export default function Proposals() {
               </div>
             )}
           </div>
-          
+
           <div className="glass-card rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 rounded-lg bg-success/10">
@@ -397,7 +408,7 @@ export default function Proposals() {
               </div>
             )}
           </div>
-          
+
           <div className="glass-card rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 rounded-lg bg-warning/10">
@@ -473,15 +484,15 @@ export default function Proposals() {
           </div>
         ) : (
           <div className={cn(
-            viewMode === "grid" 
-              ? "grid grid-cols-1 md:grid-cols-2 gap-6" 
+            viewMode === "grid"
+              ? "grid grid-cols-1 md:grid-cols-2 gap-6"
               : "space-y-4"
           )}>
             {filteredProposals.map((proposal, index) => {
               const status = statusConfig[proposal.status] || statusConfig.draft;
               const StatusIcon = status.icon;
               const isEdited = proposal.updated_at !== proposal.created_at;
-              const timeLabel = isEdited 
+              const timeLabel = isEdited
                 ? `Edited ${getTimeAgo(proposal.updated_at)}`
                 : proposal.status === "sent" || proposal.status === "approved"
                   ? `Sent ${getTimeAgo(proposal.created_at)}`
@@ -514,7 +525,7 @@ export default function Proposals() {
                           <Pencil className="w-4 h-4 mr-2" />
                           Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           onClick={() => handleExportPDF(proposal)}
                           disabled={exportingId === proposal.id}
                         >

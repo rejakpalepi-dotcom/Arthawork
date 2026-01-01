@@ -78,8 +78,9 @@ export default function Clients() {
       if (error) throw error;
       toast.success("Client deleted successfully!");
       fetchClients();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to delete client");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to delete client";
+      toast.error(message);
     } finally {
       setDeleting(false);
       setDeleteModal({ open: false, clientId: null });
@@ -129,8 +130,8 @@ export default function Clients() {
         {/* Search */}
         <div className="relative mb-4 md:mb-6">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input 
-            placeholder="Search clients..." 
+          <Input
+            placeholder="Search clients..."
             className="pl-10 w-full md:max-w-md min-h-[44px]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -188,19 +189,19 @@ export default function Clients() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-                
+
                 {/* Company as primary, client name as PIC */}
                 <h3 className="text-lg font-semibold text-foreground mb-1">
                   {client.company || client.name}
                 </h3>
-                
+
                 {client.company && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                     <User className="w-4 h-4" />
                     <span>PIC: {client.name}</span>
                   </div>
                 )}
-                
+
                 <div className="space-y-1.5 mt-3 pt-3 border-t border-border">
                   {client.email && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">

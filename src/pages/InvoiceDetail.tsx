@@ -86,7 +86,14 @@ export default function InvoiceDetail() {
 
       if (invoiceError) throw invoiceError;
 
-      const clientData = invoiceData.clients as any;
+      interface ClientData {
+        name?: string;
+        email?: string;
+        phone?: string;
+        company?: string;
+        address?: string;
+      }
+      const clientData = invoiceData.clients as ClientData | null;
       setInvoice({
         ...invoiceData,
         client_name: clientData?.name || "Unknown Client",
@@ -103,7 +110,7 @@ export default function InvoiceDetail() {
 
       if (itemsError) throw itemsError;
       setItems(itemsData || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("Failed to load invoice");
       navigate("/invoices");
     } finally {
@@ -135,7 +142,7 @@ export default function InvoiceDetail() {
       if (error) throw error;
       toast.success("Invoice marked as paid!");
       fetchInvoice();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("Failed to update status");
     }
   };

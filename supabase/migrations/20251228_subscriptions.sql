@@ -3,8 +3,8 @@
 -- Created: 2024-12-28
 -- =====================================================
 
--- Enable RLS
-ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret';
+-- NOTE: JWT secret is managed by Supabase automatically
+-- No need to set it manually in migrations
 
 -- =====================================================
 -- 1. SUBSCRIPTIONS TABLE

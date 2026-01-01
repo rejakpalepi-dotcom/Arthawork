@@ -67,8 +67,9 @@ export function ActiveProjects({ projects, loading, onStatusChange }: ActiveProj
 
       toast.success(`Status updated to ${statusConfig[newStatus as keyof typeof statusConfig]?.label || newStatus}`);
       onStatusChange?.();
-    } catch (error: any) {
-      toast.error("Failed to update status: " + error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      toast.error("Failed to update status: " + message);
     } finally {
       setUpdatingId(null);
     }
@@ -93,7 +94,7 @@ export function ActiveProjects({ projects, loading, onStatusChange }: ActiveProj
     <div className="glass-card rounded-2xl p-6 animate-fade-in">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-foreground">Active Projects</h3>
-        <button 
+        <button
           onClick={() => navigate("/proposals")}
           className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
         >
@@ -159,7 +160,7 @@ export function ActiveProjects({ projects, loading, onStatusChange }: ActiveProj
                     <td className="py-4">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <button 
+                          <button
                             className="p-1.5 rounded-lg hover:bg-secondary transition-colors"
                             disabled={isUpdating}
                           >
@@ -167,21 +168,21 @@ export function ActiveProjects({ projects, loading, onStatusChange }: ActiveProj
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             onClick={() => handleStatusChange(project.id, "progressing")}
                             className="gap-2"
                           >
                             <Clock className="w-4 h-4 text-primary" />
                             <span>Progressing</span>
                           </DropdownMenuItem>
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             onClick={() => handleStatusChange(project.id, "done")}
                             className="gap-2"
                           >
                             <Check className="w-4 h-4 text-success" />
                             <span>Done</span>
                           </DropdownMenuItem>
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             onClick={() => handleStatusChange(project.id, "canceled")}
                             className="gap-2"
                           >
@@ -189,7 +190,7 @@ export function ActiveProjects({ projects, loading, onStatusChange }: ActiveProj
                             <span>Canceled</span>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             onClick={() => navigate(`/proposals/${project.id}/edit`)}
                             className="gap-2"
                           >

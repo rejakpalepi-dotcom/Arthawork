@@ -105,8 +105,9 @@ export default function ProjectBuilder() {
       // This can be connected to a projects table when created
       toast.success("Project created successfully!");
       navigate("/dashboard");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to create project");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to create project";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -359,9 +360,9 @@ export default function ProjectBuilder() {
                     <span className={cn(
                       "px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5",
                       watchedValues.status === "completed" ? "bg-success/20 text-success" :
-                      watchedValues.status === "in_progress" ? "bg-primary/20 text-primary" :
-                      watchedValues.status === "review" ? "bg-warning/20 text-warning" :
-                      "bg-muted text-muted-foreground"
+                        watchedValues.status === "in_progress" ? "bg-primary/20 text-primary" :
+                          watchedValues.status === "review" ? "bg-warning/20 text-warning" :
+                            "bg-muted text-muted-foreground"
                     )}>
                       <selectedStatus.icon className="w-3.5 h-3.5" />
                       {selectedStatus.label}

@@ -115,13 +115,24 @@ export async function createSnapToken(
     return data.snapToken;
 }
 
+// Midtrans result type for callbacks
+export interface MidtransResult {
+    order_id: string;
+    transaction_id: string;
+    gross_amount: string;
+    payment_type: string;
+    transaction_status: string;
+    status_code: string;
+    status_message: string;
+}
+
 // Open Midtrans Snap popup
 export async function openSnapPopup(
     snapToken: string,
     callbacks?: {
-        onSuccess?: (result: any) => void;
-        onPending?: (result: any) => void;
-        onError?: (result: any) => void;
+        onSuccess?: (result: MidtransResult) => void;
+        onPending?: (result: MidtransResult) => void;
+        onError?: (result: MidtransResult) => void;
         onClose?: () => void;
     }
 ): Promise<void> {
@@ -146,9 +157,9 @@ declare global {
             pay: (
                 token: string,
                 options: {
-                    onSuccess?: (result: any) => void;
-                    onPending?: (result: any) => void;
-                    onError?: (result: any) => void;
+                    onSuccess?: (result: MidtransResult) => void;
+                    onPending?: (result: MidtransResult) => void;
+                    onError?: (result: MidtransResult) => void;
                     onClose?: () => void;
                 }
             ) => void;

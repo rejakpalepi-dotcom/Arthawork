@@ -80,7 +80,7 @@ export function useSubscription() {
             if (subData) {
                 setSubscription({
                     tier: (subData.tier as SubscriptionTier) || "free",
-                    status: subData.status as any || "active",
+                    status: (subData.status as "active" | "cancelled" | "past_due") || "active",
                     currentPeriodEnd: subData.current_period_end ? new Date(subData.current_period_end) : null,
                     loading: false,
                     isDeveloper: false,

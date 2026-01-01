@@ -41,7 +41,7 @@ export function TodaysFocus() {
 
       if (error) throw error;
       setTodos(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to load todos:", error);
     } finally {
       setLoading(false);
@@ -50,7 +50,7 @@ export function TodaysFocus() {
 
   const addTodo = async () => {
     if (!newTask.trim()) return;
-    
+
     setSaving(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -66,10 +66,10 @@ export function TodaysFocus() {
         .single();
 
       if (error) throw error;
-      
+
       setTodos(prev => [...prev, data]);
       setNewTask("");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("Failed to add task");
     } finally {
       setSaving(false);
@@ -84,11 +84,11 @@ export function TodaysFocus() {
         .eq("id", id);
 
       if (error) throw error;
-      
-      setTodos(prev => prev.map(t => 
+
+      setTodos(prev => prev.map(t =>
         t.id === id ? { ...t, is_completed: !currentStatus } : t
       ));
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("Failed to update task");
     }
   };
@@ -108,13 +108,13 @@ export function TodaysFocus() {
         .eq("id", editingId);
 
       if (error) throw error;
-      
-      setTodos(prev => prev.map(t => 
+
+      setTodos(prev => prev.map(t =>
         t.id === editingId ? { ...t, task_text: editText.trim() } : t
       ));
       setEditingId(null);
       setEditText("");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("Failed to update task");
     }
   };
@@ -127,9 +127,9 @@ export function TodaysFocus() {
         .eq("id", id);
 
       if (error) throw error;
-      
+
       setTodos(prev => prev.filter(t => t.id !== id));
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("Failed to delete task");
     }
   };
@@ -148,7 +148,7 @@ export function TodaysFocus() {
   return (
     <div className="glass-card rounded-2xl p-6 animate-fade-in">
       <h3 className="text-lg font-semibold text-foreground mb-4">Today&apos;s Focus</h3>
-      
+
       {/* Add new task */}
       <div className="flex gap-2 mb-4">
         <Input
@@ -159,9 +159,9 @@ export function TodaysFocus() {
           className="flex-1"
           disabled={saving}
         />
-        <Button 
-          size="icon" 
-          onClick={addTodo} 
+        <Button
+          size="icon"
+          onClick={addTodo}
           disabled={saving || !newTask.trim()}
           className="shrink-0"
         >
@@ -216,18 +216,18 @@ export function TodaysFocus() {
                     {todo.task_text}
                   </span>
                   <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
-                    <Button 
-                      size="icon" 
-                      variant="ghost" 
-                      onClick={() => startEdit(todo)} 
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => startEdit(todo)}
                       className="h-7 w-7"
                     >
                       <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
                     </Button>
-                    <Button 
-                      size="icon" 
-                      variant="ghost" 
-                      onClick={() => deleteTodo(todo.id)} 
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => deleteTodo(todo.id)}
                       className="h-7 w-7 hover:text-destructive"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
