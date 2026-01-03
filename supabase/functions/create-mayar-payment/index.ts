@@ -117,7 +117,7 @@ serve(async (req) => {
         const orderId = `ARTHA-${tier.toUpperCase()}-${Date.now()}-${user.id.slice(0, 8)}`;
 
         // Create payment via Mayar API
-        const mayarResponse = await fetch("https://api.mayar.id/hl/v1/payment", {
+        const mayarResponse = await fetch("https://api.mayar.id/hl/v1/payment/create", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${MAYAR_API_KEY}`,
