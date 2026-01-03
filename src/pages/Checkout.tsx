@@ -52,9 +52,9 @@ export default function Checkout() {
             {/* Header */}
             <div className="border-b border-border">
                 <div className="max-w-3xl mx-auto px-4 py-4">
-                    <Button variant="ghost" onClick={() => navigate("/pricing")} className="gap-2">
+                    <Button variant="ghost" onClick={() => navigate("/dashboard")} className="gap-2">
                         <ArrowLeft className="w-4 h-4" />
-                        Back to Pricing
+                        Back to Dashboard
                     </Button>
                 </div>
             </div>
