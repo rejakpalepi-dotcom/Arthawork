@@ -117,24 +117,37 @@ export default function InvoiceBuilder() {
         if (itemsError) throw itemsError;
       }
 
-      // TODO: Enable email sending when Edge Function is deployed
-      // Email feature temporarily disabled - just save invoice with status
-      // When ready, uncomment the sendInvoiceEmail call below:
-      /*
+      // Send invoice email if client has email address
       if (status === "sent" && data.clientEmail) {
-        await sendInvoiceEmail({
+        const emailResult = await sendInvoiceEmail({
           invoiceId: invoice.id,
           recipientEmail: data.clientEmail,
           recipientName: data.clientName,
         });
+
+        if (emailResult.success) {
+          toast.success("📧 Invoice sent to client!", {
+            description: `Email delivered to ${data.clientEmail}`,
+          });
+        } else {
+          // Email failed but invoice was saved
+          toast.warning("Invoice saved but email failed", {
+            description: emailResult.error || "Could not send email",
+          });
+        }
+      } else if (status === "sent" && !data.clientEmail) {
+        toast.success("✅ Invoice marked as sent", {
+          description: "No client email provided - invoice saved without sending email",
+        });
       }
-      */
 
       // Invalidate dashboard queries for real-time sync
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
 
-      toast.success(status === "draft" ? "Draft saved!" : "Invoice sent successfully!");
+      if (status === "draft") {
+        toast.success("💾 Draft saved!");
+      }
       navigate("/invoices");
     } catch (error: unknown) {
       console.error("Error creating invoice:", error);
