@@ -17,7 +17,7 @@ const changelog: ChangelogItem[] = [
         date: "29 Desember 2024",
         type: "feature",
         title: "Subscription & Payment Integration",
-        description: "Tambahan paket Pro dan Business dengan pembayaran via QRIS, Virtual Account, dan E-Wallet (Midtrans)."
+        description: "Tambahan paket Pro dan Business dengan pembayaran via QRIS, Virtual Account, dan E-Wallet (Mayar)."
     },
     {
         version: "1.3.0",

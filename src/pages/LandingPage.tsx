@@ -272,7 +272,7 @@ export default function LandingPage() {
 
                         {/* Coming Soon Note */}
                         <p className="text-center text-sm text-muted-foreground mt-8">
-                            💳 Pembayaran Pro & Business segera aktif setelah Midtrans approved.
+                            💳 Pembayaran Pro & Business aktif via Mayar (QRIS, VA, E-Wallet).
                         </p>
                     </div>
                 </section>

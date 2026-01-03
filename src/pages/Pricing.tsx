@@ -22,7 +22,7 @@ export default function Pricing() {
             navigate("/dashboard");
             return;
         }
-        // For paid tiers, navigate to checkout with Midtrans
+        // For paid tiers, navigate to checkout with Mayar
         navigate(`/checkout?tier=${tier}`);
     };
 

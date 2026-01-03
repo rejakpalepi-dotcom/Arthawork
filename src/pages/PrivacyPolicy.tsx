@@ -70,7 +70,7 @@ export default function PrivacyPolicy() {
                             Kami TIDAK menjual data pribadi Anda. Kami hanya membagikan data dengan:
                         </p>
                         <ul className="list-disc list-inside text-muted-foreground space-y-2">
-                            <li><strong>Penyedia layanan:</strong> Supabase (database), Midtrans (pembayaran).</li>
+                            <li><strong>Penyedia layanan:</strong> Supabase (database), Mayar (pembayaran).</li>
                             <li><strong>Analytics:</strong> untuk analisis penggunaan agregat (anonim).</li>
                             <li><strong>Otoritas hukum:</strong> jika diwajibkan oleh hukum.</li>
                         </ul>

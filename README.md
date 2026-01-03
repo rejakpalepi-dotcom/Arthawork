@@ -24,8 +24,10 @@ Create `.env` file:
 VITE_SUPABASE_URL=your-supabase-url
 VITE_SUPABASE_ANON_KEY=your-anon-key
 
-# Midtrans (optional)
-VITE_MIDTRANS_CLIENT_KEY=your-client-key
+# Mayar (payment gateway)
+# Set in Supabase Edge Function secrets:
+# MAYAR_API_KEY=your-api-key
+# MAYAR_WEBHOOK_TOKEN=your-webhook-token
 
 # Analytics (optional)
 VITE_SENTRY_DSN=your-sentry-dsn
@@ -52,8 +54,8 @@ src/
 
 supabase/
 ├── functions/      # Edge Functions
-│   ├── create-midtrans-transaction/
-│   └── midtrans-webhook/
+│   ├── create-mayar-payment/
+│   └── mayar-webhook/
 └── migrations/     # Database migrations
 ```
 
@@ -79,7 +81,7 @@ Tables:
 - shadcn/ui
 - @tanstack/react-query
 - Supabase JS
-- Midtrans Snap
+- Mayar Payment Gateway
 
 ## 🔐 Security
 

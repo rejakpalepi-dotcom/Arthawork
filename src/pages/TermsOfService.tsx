@@ -55,7 +55,7 @@ export default function TermsOfService() {
                             <li>Paket berbayar akan ditagih sesuai dengan periode langganan yang dipilih.</li>
                             <li>Semua pembayaran tidak dapat dikembalikan (non-refundable) kecuali dinyatakan lain.</li>
                             <li>Kami berhak mengubah harga dengan pemberitahuan 30 hari sebelumnya.</li>
-                            <li>Pembayaran diproses melalui Midtrans dengan metode QRIS, Virtual Account, dan E-Wallet.</li>
+                            <li>Pembayaran diproses melalui Mayar dengan metode QRIS, Virtual Account, dan E-Wallet.</li>
                         </ul>
                     </section>
 
