@@ -4,8 +4,7 @@ import { ArrowLeft, Shield, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SUBSCRIPTION_TIERS, SubscriptionTier } from "@/lib/subscription";
-import { PaymentMethodSelector } from "@/components/payment/PaymentMethodSelector";
-import { PaymentMethod, openSnapPopup, createSnapToken } from "@/lib/midtrans";
+import { createMayarPayment, redirectToPayment } from "@/lib/mayar";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -15,17 +14,11 @@ export default function Checkout() {
     const tierParam = searchParams.get("tier") as SubscriptionTier | null;
     const tier = tierParam && tierParam !== "free" ? tierParam : "pro";
 
-    const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | null>(null);
     const [loading, setLoading] = useState(false);
 
     const tierConfig = SUBSCRIPTION_TIERS[tier];
 
     const handleCheckout = async () => {
-        if (!selectedPayment) {
-            toast.error("Please select a payment method");
-            return;
-        }
-
         setLoading(true);
         try {
             const { data: { user } } = await supabase.auth.getUser();
@@ -35,42 +28,21 @@ export default function Checkout() {
                 return;
             }
 
-            // Generate order ID
-            const orderId = `ARTHA-${tier.toUpperCase()}-${Date.now()}`;
-
-            // Create Snap token via Edge Function
-            const snapToken = await createSnapToken({
-                orderId,
+            // Create Mayar payment link via Edge Function
+            const { paymentUrl } = await createMayarPayment({
                 amount: tierConfig.price,
-                itemName: `Artha ${tierConfig.displayName} - Monthly`,
+                tier: tier as "pro" | "business",
                 customerEmail: user.email || "",
                 customerName: user.user_metadata?.full_name || "Customer",
-                paymentMethod: selectedPayment,
             });
 
-            // Open Midtrans popup
-            await openSnapPopup(snapToken, {
-                onSuccess: (result) => {
-                    toast.success("Payment successful! 🎉");
-                    // Update subscription status
-                    navigate("/dashboard?upgraded=true");
-                },
-                onPending: (result) => {
-                    toast.info("Payment pending. Please complete your payment.");
-                    navigate("/dashboard?payment=pending");
-                },
-                onError: (result) => {
-                    toast.error("Payment failed. Please try again.");
-                },
-                onClose: () => {
-                    toast.info("Payment cancelled");
-                },
-            });
+            // Redirect to Mayar payment page
+            toast.success("Redirecting to payment...");
+            redirectToPayment(paymentUrl);
         } catch (error: unknown) {
             console.error("Checkout error:", error);
             const message = error instanceof Error ? error.message : "Failed to process payment";
             toast.error(message);
-        } finally {
             setLoading(false);
         }
     };
@@ -93,9 +65,9 @@ export default function Checkout() {
                     You're upgrading to Artha {tierConfig.displayName}
                 </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Order Summary */}
-                    <Card className="md:col-span-1 h-fit">
+                    <Card className="h-fit">
                         <CardHeader>
                             <CardTitle className="text-lg">Order Summary</CardTitle>
                         </CardHeader>
@@ -117,26 +89,29 @@ export default function Checkout() {
                         </CardContent>
                     </Card>
 
-                    {/* Payment Method */}
-                    <Card className="md:col-span-2">
+                    {/* Payment Action */}
+                    <Card>
                         <CardHeader>
-                            <CardTitle className="text-lg">Payment Method</CardTitle>
+                            <CardTitle className="text-lg">Payment</CardTitle>
                             <CardDescription>
-                                Choose your preferred payment method
+                                You'll be redirected to our secure payment page
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <PaymentMethodSelector
-                                selectedMethod={selectedPayment}
-                                onSelect={setSelectedPayment}
-                                disabled={loading}
-                            />
+                            <div className="p-4 bg-secondary/30 rounded-lg text-sm text-muted-foreground">
+                                <p>We accept:</p>
+                                <ul className="mt-2 space-y-1">
+                                    <li>• QRIS (GoPay, ShopeePay, DANA, etc.)</li>
+                                    <li>• Virtual Account (BCA, BNI, BRI, Mandiri)</li>
+                                    <li>• Credit/Debit Card</li>
+                                </ul>
+                            </div>
 
                             <Button
                                 className="w-full"
                                 size="lg"
                                 onClick={handleCheckout}
-                                disabled={!selectedPayment || loading}
+                                disabled={loading}
                             >
                                 {loading ? (
                                     <>
@@ -150,7 +125,7 @@ export default function Checkout() {
 
                             <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
                                 <Shield className="w-4 h-4" />
-                                Secured by Midtrans. Your payment is safe.
+                                Secured by Mayar. Your payment is safe.
                             </div>
                         </CardContent>
                     </Card>
