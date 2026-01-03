@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Lock, AlertTriangle, Loader2 } from "lucide-react";
+import { User, Lock, AlertTriangle, Loader2, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { DeleteConfirmModal } from "@/components/modals/DeleteConfirmModal";
+import { exportAndDownloadUserData } from "@/lib/dataExport";
 
 export function AccountTab() {
   const [fullName, setFullName] = useState("");
@@ -15,6 +16,7 @@ export function AccountTab() {
   const [updating, setUpdating] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -159,6 +161,34 @@ export function AccountTab() {
           >
             {changingPassword && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             Update Password
+          </Button>
+        </div>
+
+        <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+          <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+            <Download className="w-4 h-4" />
+            Export Your Data
+          </h3>
+          <p className="text-sm text-muted-foreground mb-3">
+            Download all your data (invoices, clients, proposals) as a JSON file.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => {
+              setExporting(true);
+              const success = await exportAndDownloadUserData();
+              setExporting(false);
+              if (success) {
+                toast.success("Data exported successfully!");
+              } else {
+                toast.error("Failed to export data");
+              }
+            }}
+            disabled={exporting}
+          >
+            {exporting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+            {exporting ? "Exporting..." : "Export My Data"}
           </Button>
         </div>
 
