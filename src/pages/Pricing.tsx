@@ -46,22 +46,6 @@ export default function Pricing() {
                 <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                     Start free, upgrade when you're ready. All plans include a 14-day free trial.
                 </p>
-
-                {/* Coming Soon Banner */}
-                <div className="mt-8 max-w-xl mx-auto">
-                    <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border border-primary/20 rounded-xl px-6 py-4">
-                        <div className="flex items-center justify-center gap-2 text-primary font-medium">
-                            <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                            </span>
-                            Pembayaran Pro & Business segera hadir!
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-1">
-                            Daftar sekarang dengan paket Free untuk akses awal.
-                        </p>
-                    </div>
-                </div>
             </div>
 
             {/* Pricing Cards */}

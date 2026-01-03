@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          ip_address: unknown
+          new_data: Json | null
+          old_data: Json | null
+          record_id: string | null
+          table_name: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          table_name?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          table_name?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       business_settings: {
         Row: {
           accent_color: string | null
@@ -24,6 +63,7 @@ export type Database = {
           business_name: string | null
           created_at: string
           email: string | null
+          font_family: string | null
           id: string
           logo_url: string | null
           payment_notes: string | null
@@ -32,6 +72,7 @@ export type Database = {
           routing_number: string | null
           stripe_connected: boolean | null
           tagline: string | null
+          tax_rate: number | null
           updated_at: string
           user_id: string
           website: string | null
@@ -45,6 +86,7 @@ export type Database = {
           business_name?: string | null
           created_at?: string
           email?: string | null
+          font_family?: string | null
           id?: string
           logo_url?: string | null
           payment_notes?: string | null
@@ -53,6 +95,7 @@ export type Database = {
           routing_number?: string | null
           stripe_connected?: boolean | null
           tagline?: string | null
+          tax_rate?: number | null
           updated_at?: string
           user_id: string
           website?: string | null
@@ -66,6 +109,7 @@ export type Database = {
           business_name?: string | null
           created_at?: string
           email?: string | null
+          font_family?: string | null
           id?: string
           logo_url?: string | null
           payment_notes?: string | null
@@ -74,6 +118,7 @@ export type Database = {
           routing_number?: string | null
           stripe_connected?: boolean | null
           tagline?: string | null
+          tax_rate?: number | null
           updated_at?: string
           user_id?: string
           website?: string | null
@@ -115,6 +160,44 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      invoice_history: {
+        Row: {
+          change_type: string
+          changed_at: string | null
+          changed_by: string | null
+          data: Json
+          id: string
+          invoice_id: string
+          version: number
+        }
+        Insert: {
+          change_type?: string
+          changed_at?: string | null
+          changed_by?: string | null
+          data: Json
+          id?: string
+          invoice_id: string
+          version: number
+        }
+        Update: {
+          change_type?: string
+          changed_at?: string | null
+          changed_by?: string | null
+          data?: Json
+          id?: string
+          invoice_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_history_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       invoice_items: {
         Row: {
@@ -226,13 +309,65 @@ export type Database = {
           },
         ]
       }
+      payment_history: {
+        Row: {
+          amount: number
+          created_at: string | null
+          currency: string | null
+          id: string
+          metadata: Json | null
+          midtrans_order_id: string
+          midtrans_transaction_id: string | null
+          payment_type: string | null
+          status: string
+          subscription_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          metadata?: Json | null
+          midtrans_order_id: string
+          midtrans_transaction_id?: string | null
+          payment_type?: string | null
+          status?: string
+          subscription_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          metadata?: Json | null
+          midtrans_order_id?: string
+          midtrans_transaction_id?: string | null
+          payment_type?: string | null
+          status?: string
+          subscription_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_history_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           company_name: string | null
           created_at: string
           full_name: string | null
-          has_completed_onboarding: boolean
           id: string
           updated_at: string
         }
@@ -241,7 +376,6 @@ export type Database = {
           company_name?: string | null
           created_at?: string
           full_name?: string | null
-          has_completed_onboarding?: boolean
           id: string
           updated_at?: string
         }
@@ -250,11 +384,60 @@ export type Database = {
           company_name?: string | null
           created_at?: string
           full_name?: string | null
-          has_completed_onboarding?: boolean
           id?: string
           updated_at?: string
         }
         Relationships: []
+      }
+      projects: {
+        Row: {
+          budget: number | null
+          client_id: string | null
+          created_at: string
+          deadline: string | null
+          description: string | null
+          id: string
+          start_date: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          budget?: number | null
+          client_id?: string | null
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          start_date?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          budget?: number | null
+          client_id?: string | null
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          start_date?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       proposals: {
         Row: {
@@ -333,6 +516,51 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          cancelled_at: string | null
+          created_at: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          midtrans_order_id: string | null
+          midtrans_subscription_id: string | null
+          status: string
+          tier: string
+          trial_end: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          midtrans_order_id?: string | null
+          midtrans_subscription_id?: string | null
+          status?: string
+          tier?: string
+          trial_end?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          midtrans_order_id?: string | null
+          midtrans_subscription_id?: string | null
+          status?: string
+          tier?: string
+          trial_end?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       todos: {
         Row: {
           created_at: string
@@ -360,61 +588,42 @@ export type Database = {
         }
         Relationships: []
       }
+      usage_tracking: {
+        Row: {
+          created_at: string | null
+          id: string
+          invoice_count: number | null
+          month_year: string
+          proposal_count: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          invoice_count?: number | null
+          month_year: string
+          proposal_count?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          invoice_count?: number | null
+          month_year?: string
+          proposal_count?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      get_business_payment_info_by_token: {
-        Args: { p_token: string }
-        Returns: {
-          account_name: string
-          account_number: string
-          bank_name: string
-          payment_notes: string
-        }[]
-      }
-      get_guest_invoice_by_token: {
-        Args: { p_token: string }
-        Returns: {
-          client_company: string
-          client_name: string
-          due_date: string
-          id: string
-          invoice_number: string
-          issue_date: string
-          notes: string
-          status: string
-          subtotal: number
-          tax_amount: number
-          tax_rate: number
-          total: number
-        }[]
-      }
-      get_guest_invoice_items: {
-        Args: { p_invoice_id: string; p_token: string }
-        Returns: {
-          description: string
-          id: string
-          quantity: number
-          total: number
-          unit_price: number
-        }[]
-      }
-      get_public_invoice_by_token: {
-        Args: { token: string }
-        Returns: {
-          due_date: string
-          invoice_number: string
-          issue_date: string
-          status: string
-          total: number
-        }[]
-      }
-      invoice_has_payment_token: {
-        Args: { invoice_uuid: string }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
