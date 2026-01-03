@@ -5,43 +5,48 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
 
 const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
 interface InvoiceEmailRequest {
-    invoiceId: string;
-    recipientEmail: string;
-    recipientName: string;
-    paymentLink?: string;
+  invoiceId: string;
+  recipientEmail: string;
+  recipientName: string;
+  paymentLink?: string;
 }
 
 serve(async (req) => {
-    // Handle CORS preflight
-    if (req.method === "OPTIONS") {
-        return new Response("ok", { headers: corsHeaders });
+  // Handle CORS preflight
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  try {
+    const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+    if (!RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not configured");
     }
 
-    try {
-        const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-        if (!RESEND_API_KEY) {
-            throw new Error("RESEND_API_KEY is not configured");
-        }
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-        const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-        const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-        const supabase = createClient(supabaseUrl, supabaseKey);
+    const body = await req.json();
+    console.log("Received request body:", JSON.stringify(body));
 
-        const { invoiceId, recipientEmail, recipientName, paymentLink } = await req.json() as InvoiceEmailRequest;
+    const { invoiceId, recipientEmail, recipientName, paymentLink } = body as InvoiceEmailRequest;
+    console.log("Parsed fields - invoiceId:", invoiceId, "recipientEmail:", recipientEmail);
 
-        if (!invoiceId || !recipientEmail) {
-            throw new Error("Missing required fields: invoiceId and recipientEmail");
-        }
+    if (!invoiceId || !recipientEmail) {
+      console.error("Missing fields - invoiceId:", invoiceId, "recipientEmail:", recipientEmail);
+      throw new Error("Missing required fields: invoiceId and recipientEmail");
+    }
 
-        // Fetch invoice data
-        const { data: invoice, error: invoiceError } = await supabase
-            .from("invoices")
-            .select(`
+    // Fetch invoice data
+    const { data: invoice, error: invoiceError } = await supabase
+      .from("invoices")
+      .select(`
         id,
         invoice_number,
         total,
@@ -50,33 +55,33 @@ serve(async (req) => {
         payment_token,
         user_id
       `)
-            .eq("id", invoiceId)
-            .single();
+      .eq("id", invoiceId)
+      .single();
 
-        if (invoiceError || !invoice) {
-            throw new Error("Invoice not found");
-        }
+    if (invoiceError || !invoice) {
+      throw new Error("Invoice not found");
+    }
 
-        // Fetch business settings
-        const { data: settings } = await supabase
-            .from("business_settings")
-            .select("business_name, email, logo_url, bank_name, account_number, account_name")
-            .eq("user_id", invoice.user_id)
-            .single();
+    // Fetch business settings
+    const { data: settings } = await supabase
+      .from("business_settings")
+      .select("business_name, email, logo_url, bank_name, account_number, account_name")
+      .eq("user_id", invoice.user_id)
+      .single();
 
-        const businessName = settings?.business_name || "Your Business";
-        const businessEmail = settings?.email || "noreply@arthawork.com";
-        const logoUrl = settings?.logo_url || "https://arthawork.vercel.app/icon-512.png";
+    const businessName = settings?.business_name || "Your Business";
+    const businessEmail = settings?.email || "noreply@arthawork.com";
+    const logoUrl = settings?.logo_url || "https://arthawork.vercel.app/icon-512.png";
 
-        // Format currency
-        const formatIDR = (amount: number) =>
-            new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(amount);
+    // Format currency
+    const formatIDR = (amount: number) =>
+      new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(amount);
 
-        // Generate payment link
-        const payLink = paymentLink || `https://arthawork.vercel.app/pay/${invoice.payment_token}`;
+    // Generate payment link
+    const payLink = paymentLink || `https://arthawork.vercel.app/pay/${invoice.payment_token}`;
 
-        // Email HTML template
-        const emailHtml = `
+    // Email HTML template
+    const emailHtml = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -184,67 +189,67 @@ serve(async (req) => {
 </html>
     `;
 
-        // Send email via Resend
-        const resendResponse = await fetch("https://api.resend.com/emails", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${RESEND_API_KEY}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                from: `${businessName} <onboarding@resend.dev>`, // Use verified domain in production
-                to: [recipientEmail],
-                subject: `Invoice #${invoice.invoice_number} from ${businessName}`,
-                html: emailHtml,
-                reply_to: businessEmail,
-            }),
-        });
+    // Send email via Resend
+    const resendResponse = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: `${businessName} <onboarding@resend.dev>`, // Use verified domain in production
+        to: [recipientEmail],
+        subject: `Invoice #${invoice.invoice_number} from ${businessName}`,
+        html: emailHtml,
+        reply_to: businessEmail,
+      }),
+    });
 
-        const resendData = await resendResponse.json();
+    const resendData = await resendResponse.json();
 
-        if (!resendResponse.ok) {
-            console.error("Resend error:", resendData);
-            throw new Error(resendData.message || "Failed to send email");
-        }
-
-        // Update invoice status to 'sent'
-        await supabase
-            .from("invoices")
-            .update({ status: "sent" })
-            .eq("id", invoiceId);
-
-        // Log audit event
-        await supabase.rpc("log_audit_event", {
-            p_action: "invoice_email_sent",
-            p_table_name: "invoices",
-            p_record_id: invoiceId,
-            p_new_data: { recipient: recipientEmail, resend_id: resendData.id },
-        });
-
-        return new Response(
-            JSON.stringify({
-                success: true,
-                message: "Invoice sent successfully",
-                emailId: resendData.id
-            }),
-            {
-                headers: { ...corsHeaders, "Content-Type": "application/json" },
-                status: 200
-            }
-        );
-
-    } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-        console.error("Error:", error);
-        return new Response(
-            JSON.stringify({
-                success: false,
-                error: errorMessage
-            }),
-            {
-                headers: { ...corsHeaders, "Content-Type": "application/json" },
-                status: 400
-            }
-        );
+    if (!resendResponse.ok) {
+      console.error("Resend error:", resendData);
+      throw new Error(resendData.message || "Failed to send email");
     }
+
+    // Update invoice status to 'sent'
+    await supabase
+      .from("invoices")
+      .update({ status: "sent" })
+      .eq("id", invoiceId);
+
+    // Log audit event
+    await supabase.rpc("log_audit_event", {
+      p_action: "invoice_email_sent",
+      p_table_name: "invoices",
+      p_record_id: invoiceId,
+      p_new_data: { recipient: recipientEmail, resend_id: resendData.id },
+    });
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: "Invoice sent successfully",
+        emailId: resendData.id
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200
+      }
+    );
+
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+    console.error("Error:", error);
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: errorMessage
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400
+      }
+    );
+  }
 });
