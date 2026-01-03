@@ -127,7 +127,7 @@ serve(async (req) => {
                 name: `Arthawork ${tier === "pro" ? "Pro" : "Business"} Subscription`,
                 amount: amount,
                 email: customerEmail || user.email,
-                mobile: "",
+                mobile: "0812000000000", // Placeholder - Mayar requires min 10 chars
                 redirectUrl: `${origin || "https://arthawork.vercel.app"}/dashboard?payment=success&order=${orderId}`,
                 description: `Monthly subscription for Arthawork ${tier} plan`,
                 expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
