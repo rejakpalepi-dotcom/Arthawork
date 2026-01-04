@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Plus, Receipt, Clock, CheckCircle, Send, AlertTriangle, MoreHorizontal, Trash2, CreditCard, Inbox, FileDown, Loader2 } from "lucide-react";
+import { Plus, Receipt, Clock, CheckCircle, Send, AlertTriangle, MoreHorizontal, Trash2, CreditCard, Inbox, FileDown, Loader2, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,6 +20,7 @@ import { exportToPDF } from "@/lib/pdfExport";
 import { format } from "date-fns";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { escapeHtml } from "@/lib/sanitize";
+import { sendWhatsApp, getInvoiceReminderMessage } from "@/lib/whatsapp";
 
 interface Invoice {
   id: string;
@@ -415,6 +416,23 @@ export default function Invoices() {
                               }}>
                                 <CreditCard className="w-4 h-4 mr-2" />
                                 Mark as Paid
+                              </DropdownMenuItem>
+                            )}
+                            {invoice.status !== "paid" && invoice.client_phone && (
+                              <DropdownMenuItem onClick={(e) => {
+                                e.stopPropagation();
+                                const message = getInvoiceReminderMessage(
+                                  invoice.client_name || 'Bapak/Ibu',
+                                  invoice.invoice_number,
+                                  invoice.total,
+                                  invoice.due_date ? new Date(invoice.due_date).toLocaleDateString('id-ID') : 'Segera',
+                                  `${window.location.origin}/pay/${invoice.id}`
+                                );
+                                sendWhatsApp(invoice.client_phone!, message);
+                                toast.success('WhatsApp dibuka!');
+                              }}>
+                                <MessageCircle className="w-4 h-4 mr-2" />
+                                Kirim via WhatsApp
                               </DropdownMenuItem>
                             )}
                             <DropdownMenuSeparator />
