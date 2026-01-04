@@ -37,6 +37,7 @@ interface Invoice {
   notes: string | null;
   client_email?: string | null;
   client_address?: string | null;
+  payment_token?: string | null;
 }
 
 const statusConfig = {
@@ -67,7 +68,7 @@ export default function Invoices() {
 
     const { data, error } = await supabase
       .from("invoices")
-      .select("id, invoice_number, total, status, due_date, issue_date, subtotal, tax_rate, tax_amount, notes, clients(name, email, phone, address)")
+      .select("id, invoice_number, payment_token, total, status, due_date, issue_date, subtotal, tax_rate, tax_amount, notes, clients(name, email, phone, address)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -83,6 +84,7 @@ export default function Invoices() {
         return {
           id: inv.id,
           invoice_number: inv.invoice_number,
+          payment_token: inv.payment_token,
           client_name: client?.name || null,
           client_email: client?.email || null,
           client_phone: client?.phone || null,
@@ -418,7 +420,7 @@ export default function Invoices() {
                                 Mark as Paid
                               </DropdownMenuItem>
                             )}
-                            {invoice.status !== "paid" && invoice.client_phone && (
+                            {invoice.status !== "paid" && invoice.client_phone && invoice.payment_token && (
                               <DropdownMenuItem onClick={(e) => {
                                 e.stopPropagation();
                                 const message = getInvoiceReminderMessage(
@@ -426,7 +428,7 @@ export default function Invoices() {
                                   invoice.invoice_number,
                                   invoice.total,
                                   invoice.due_date ? new Date(invoice.due_date).toLocaleDateString('id-ID') : 'Segera',
-                                  `${window.location.origin}/pay/${invoice.id}`
+                                  `${window.location.origin}/pay/${invoice.payment_token}`
                                 );
                                 sendWhatsApp(invoice.client_phone!, message);
                                 toast.success('WhatsApp dibuka!');
