@@ -428,7 +428,8 @@ export default function Invoices() {
                                   invoice.invoice_number,
                                   invoice.total,
                                   invoice.due_date ? new Date(invoice.due_date).toLocaleDateString('id-ID') : 'Segera',
-                                  `${window.location.origin}/pay/${invoice.payment_token}`
+                                  `${window.location.origin}/pay/${invoice.payment_token}`,
+                                  businessSettings?.business_name || undefined
                                 );
                                 sendWhatsApp(invoice.client_phone!, message);
                                 toast.success('WhatsApp dibuka!');

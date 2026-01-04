@@ -98,7 +98,8 @@ export function getInvoiceReminderMessage(
     invoiceNumber: string,
     amount: number,
     dueDate: string,
-    paymentLink?: string
+    paymentLink?: string,
+    businessName?: string
 ): string {
     const formattedAmount = new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -106,23 +107,36 @@ export function getInvoiceReminderMessage(
         minimumFractionDigits: 0,
     }).format(amount);
 
+    const studioName = businessName || 'Tim Kami';
+
     let message = `Halo ${clientName} 👋
 
-Ini adalah pengingat untuk invoice *${invoiceNumber}* dengan total *${formattedAmount}*.
+Semoga harimu menyenangkan! Kami dari *${studioName}* ingin mengirimkan invoice untuk project yang sedang berjalan.
 
-📅 Jatuh tempo: ${dueDate}`;
+━━━━━━━━━━━━━━━━
+📄 *INVOICE ${invoiceNumber}*
+━━━━━━━━━━━━━━━━
+
+💰 *Total:* ${formattedAmount}
+📅 *Jatuh Tempo:* ${dueDate}`;
 
     if (paymentLink) {
         message += `
 
-💳 Link pembayaran:
-${paymentLink}`;
+🔗 *Lihat & Bayar Invoice:*
+${paymentLink}
+
+_Klik link di atas untuk melihat detail invoice dan melakukan pembayaran._`;
     }
 
     message += `
 
-Terima kasih!
-_Dikirim via Artha_`;
+Jangan ragu untuk menghubungi kami jika ada pertanyaan.
+
+Terima kasih atas kerjasamanya! 🙏
+
+Salam hangat,
+*${studioName}*`;
 
     return message;
 }
