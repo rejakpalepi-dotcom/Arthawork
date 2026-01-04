@@ -33,12 +33,62 @@ export function getWhatsAppLink(phone: string, message: string): string {
 }
 
 /**
- * Open WhatsApp with pre-filled message
+ * Open WhatsApp with pre-filled message (deep link fallback)
  */
 export function sendWhatsApp(phone: string, message: string): void {
     const link = getWhatsAppLink(phone, message);
     window.open(link, '_blank');
 }
+
+/**
+ * Send WhatsApp message via official API (Edge Function)
+ * Falls back to deep link if API fails
+ */
+export async function sendWhatsAppAPI(
+    phone: string,
+    message: string,
+    options?: { fallbackToDeepLink?: boolean }
+): Promise<{ success: boolean; messageId?: string; error?: string }> {
+    try {
+        const response = await fetch(
+            `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-whatsapp`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+                },
+                body: JSON.stringify({
+                    to: phone,
+                    type: 'text',
+                    message,
+                }),
+            }
+        );
+
+        const result = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error || 'Failed to send');
+        }
+
+        return { success: true, messageId: result.messageId };
+    } catch (error) {
+        console.error('WhatsApp API error, using fallback:', error);
+
+        // Fallback to deep link if enabled
+        if (options?.fallbackToDeepLink !== false) {
+            sendWhatsApp(phone, message);
+            return { success: true, error: 'Used deep link fallback' };
+        }
+
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error',
+        };
+    }
+}
+
 
 /**
  * Generate invoice reminder message
