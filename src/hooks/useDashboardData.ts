@@ -300,7 +300,13 @@ export function useDashboardData() {
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const currentMonth = now.getMonth();
-    const last6Months = months.slice(Math.max(0, currentMonth - 5), currentMonth + 1);
+
+    // Get last 6 months, wrapping around to previous year if needed
+    const last6Months: string[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const monthIndex = (currentMonth - i + 12) % 12;
+      last6Months.push(months[monthIndex]);
+    }
 
     setRevenueData(last6Months.map(month => ({
       month,

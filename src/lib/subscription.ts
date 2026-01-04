@@ -23,7 +23,7 @@ export interface TierConfig {
 export const SUBSCRIPTION_TIERS: Record<SubscriptionTier, TierConfig> = {
     free: {
         name: "free",
-        displayName: "Free",
+        displayName: "Starter",
         price: 0,
         priceDisplay: "Rp 0",
         features: [
@@ -54,6 +54,7 @@ export const SUBSCRIPTION_TIERS: Record<SubscriptionTier, TierConfig> = {
             "Custom branding (logo + colors)",
             "Payment reminders",
             "No watermark",
+            "Smart Contracts with DP Lock 🔒",
             "Priority email support",
         ],
         limits: {
@@ -72,9 +73,12 @@ export const SUBSCRIPTION_TIERS: Record<SubscriptionTier, TierConfig> = {
         features: [
             "Everything in Pro",
             "5 team members",
-            "Recurring invoices (auto-bill clients)",
+            "Premium Client Portal 🌌",
+            "Pin-point feedback on designs",
+            "Indonesian Tax Engine (PPh 21/23) 🧮",
+            "Annual Tax Summary for SPT",
+            "Recurring invoices (auto-bill)",
             "White-label (100% your brand)",
-            "Client portal",
             "Advanced analytics & reports",
             "Bulk PDF export",
             "Dedicated account manager",
