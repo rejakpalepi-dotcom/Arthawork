@@ -124,26 +124,58 @@ serve(async (req) => {
 
         // If payment successful, upgrade subscription
         if (paymentStatus === "success") {
-            const tier = payment.metadata?.tier || "pro";
-            const now = new Date();
-            const periodEnd = new Date(now);
-            periodEnd.setMonth(periodEnd.getMonth() + 1);
+            const paymentType = payment.metadata?.type;
 
-            await supabase
-                .from("subscriptions")
-                .upsert({
-                    user_id: payment.user_id,
-                    tier: tier,
-                    status: "active",
-                    current_period_start: now.toISOString(),
-                    current_period_end: periodEnd.toISOString(),
-                    midtrans_order_id: payment.midtrans_order_id,
-                    updated_at: now.toISOString(),
-                }, {
-                    onConflict: "user_id",
-                });
+            // Handle contract DP payment
+            if (paymentType === "contract_dp") {
+                const contractId = payment.metadata?.contract_id;
+                if (contractId) {
+                    // Update contract status to paid/active
+                    await supabase
+                        .from("contracts")
+                        .update({
+                            status: "active",
+                            payment_status: "paid",
+                            paid_at: new Date().toISOString(),
+                            updated_at: new Date().toISOString(),
+                        })
+                        .eq("id", contractId);
 
-            console.log(`Subscription upgraded: ${payment.user_id} -> ${tier}`);
+                    // Unlock any linked project
+                    await supabase
+                        .from("projects")
+                        .update({
+                            status: "active",
+                            updated_at: new Date().toISOString(),
+                        })
+                        .eq("contract_id", contractId)
+                        .eq("status", "locked");
+
+                    console.log(`Contract DP paid: ${contractId}`);
+                }
+            } else {
+                // Handle subscription payment (existing logic)
+                const tier = payment.metadata?.tier || "pro";
+                const now = new Date();
+                const periodEnd = new Date(now);
+                periodEnd.setMonth(periodEnd.getMonth() + 1);
+
+                await supabase
+                    .from("subscriptions")
+                    .upsert({
+                        user_id: payment.user_id,
+                        tier: tier,
+                        status: "active",
+                        current_period_start: now.toISOString(),
+                        current_period_end: periodEnd.toISOString(),
+                        midtrans_order_id: payment.midtrans_order_id,
+                        updated_at: now.toISOString(),
+                    }, {
+                        onConflict: "user_id",
+                    });
+
+                console.log(`Subscription upgraded: ${payment.user_id} -> ${tier}`);
+            }
         }
 
         return new Response(

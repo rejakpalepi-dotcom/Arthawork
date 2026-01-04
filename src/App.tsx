@@ -29,6 +29,9 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import FAQ from "./pages/FAQ";
 import Changelog from "./pages/Changelog";
 import LandingPage from "./pages/LandingPage";
+import ContractViewer from "./pages/ContractViewer";
+import ClientPortal from "./pages/ClientPortal";
+import TaxSummary from "./pages/TaxSummary";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -79,6 +82,10 @@ const App = () => {
                     </ProtectedRoute>
                   }
                 />
+
+                {/* Public Contract & Portal Routes */}
+                <Route path="/contract/:token" element={<ContractViewer />} />
+                <Route path="/portal/:token" element={<ClientPortal />} />
 
                 {/* Protected Routes */}
                 <Route
@@ -142,6 +149,14 @@ const App = () => {
                   element={
                     <ProtectedRoute>
                       <Settings />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/tax-summary"
+                  element={
+                    <ProtectedRoute>
+                      <TaxSummary />
                     </ProtectedRoute>
                   }
                 />
