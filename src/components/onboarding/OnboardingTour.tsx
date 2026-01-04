@@ -123,6 +123,33 @@ export function OnboardingTour() {
           align: "center",
         },
       },
+      // NEW: Contracts (Antigravity Update)
+      {
+        popover: {
+          title: "📜 KONTRAK CERDAS (BARU!)",
+          description: "Buat kontrak digital dengan tanda tangan elektronik. Client harus bayar DP dulu sebelum project dimulai - anti ghosting!",
+          side: "over",
+          align: "center",
+        },
+      },
+      // NEW: Client Portal (Antigravity Update)
+      {
+        popover: {
+          title: "🌌 PORTAL KLIEN PREMIUM (BARU!)",
+          description: "Bagikan portal khusus ke klien untuk review desain. Mereka bisa klik langsung di gambar untuk kasih feedback - UI super premium!",
+          side: "over",
+          align: "center",
+        },
+      },
+      // NEW: Tax Calculator (Antigravity Update)
+      {
+        popover: {
+          title: "🧮 KALKULATOR PAJAK (BARU!)",
+          description: "Otomatis hitung PPh 21 dan PPh 23 di invoice. Ada rekapitulasi tahunan untuk bantu isi SPT. Cocok buat klien korporat!",
+          side: "over",
+          align: "center",
+        },
+      },
     ];
 
     // Mobile-only steps (focus on visible elements)
