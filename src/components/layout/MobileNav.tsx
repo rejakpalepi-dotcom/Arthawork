@@ -9,7 +9,10 @@ import {
   Briefcase,
   Settings,
   LogOut,
-  Plus
+  Plus,
+  FileSignature,
+  FolderKanban,
+  Calculator,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -49,7 +52,10 @@ const menuItems = [
   { label: "Clients", icon: Users, path: "/clients" },
   { label: "Services", icon: Briefcase, path: "/services" },
   { label: "Proposals", icon: FileText, path: "/proposals" },
+  { label: "Contracts", icon: FileSignature, path: "/contracts" },
+  { label: "Projects", icon: FolderKanban, path: "/projects" },
   { label: "Invoices", icon: Receipt, path: "/invoices" },
+  { label: "Tax Summary", icon: Calculator, path: "/tax-summary" },
   { label: "Settings", icon: Settings, path: "/settings" },
 ];
 

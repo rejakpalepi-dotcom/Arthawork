@@ -32,6 +32,8 @@ import LandingPage from "./pages/LandingPage";
 import ContractViewer from "./pages/ContractViewer";
 import ClientPortal from "./pages/ClientPortal";
 import TaxSummary from "./pages/TaxSummary";
+import Contracts from "./pages/Contracts";
+import Projects from "./pages/Projects";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -117,6 +119,22 @@ const App = () => {
                   element={
                     <ProtectedRoute>
                       <Proposals />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/contracts"
+                  element={
+                    <ProtectedRoute>
+                      <Contracts />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/projects"
+                  element={
+                    <ProtectedRoute>
+                      <Projects />
                     </ProtectedRoute>
                   }
                 />
