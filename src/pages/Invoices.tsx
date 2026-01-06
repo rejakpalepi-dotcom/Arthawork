@@ -313,13 +313,13 @@ export default function Invoices() {
 
   return (
     <DashboardLayout>
-      <div className="p-8">
-        <div className="flex items-center justify-between mb-8">
+      <div className="p-4 md:p-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Invoices</h1>
-            <p className="text-muted-foreground">Track payments and manage invoices</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">Invoices</h1>
+            <p className="text-sm md:text-base text-muted-foreground">Track payments and manage invoices</p>
           </div>
-          <Button className="gap-2" onClick={() => navigate("/invoices/new")}>
+          <Button className="gap-2 w-full sm:w-auto min-h-[44px]" onClick={() => navigate("/invoices/new")}>
             <Plus className="w-4 h-4" />
             New Invoice
           </Button>
@@ -336,128 +336,237 @@ export default function Invoices() {
             />
           </div>
         ) : (
-          <div className="glass-card rounded-2xl overflow-hidden">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">Invoice</th>
-                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">Client</th>
-                  <th className="text-right p-4 text-sm font-medium text-muted-foreground">Amount</th>
-                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">Due Date</th>
-                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">Status</th>
-                  <th className="text-right p-4 text-sm font-medium text-muted-foreground">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {invoices.map((invoice, index) => {
-                  const status = statusConfig[invoice.status as keyof typeof statusConfig] || statusConfig.draft;
-                  const StatusIcon = status.icon;
-                  return (
-                    <tr
-                      key={invoice.id}
-                      onClick={() => navigate(`/invoices/${invoice.id}`)}
-                      className="border-b border-border last:border-0 hover:bg-secondary/30 transition-colors animate-fade-in cursor-pointer"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <td className="p-4">
-                        <span className="font-mono font-medium text-foreground">{invoice.invoice_number}</span>
-                      </td>
-                      <td className="p-4">
-                        <span className="text-foreground">{invoice.client_name || "—"}</span>
-                      </td>
-                      <td className="p-4 text-right">
-                        <span className="font-mono font-bold text-primary">
+          <>
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-3">
+              {invoices.map((invoice, index) => {
+                const status = statusConfig[invoice.status as keyof typeof statusConfig] || statusConfig.draft;
+                const StatusIcon = status.icon;
+                return (
+                  <div
+                    key={invoice.id}
+                    onClick={() => navigate(`/invoices/${invoice.id}`)}
+                    className="glass-card rounded-xl p-4 card-hover animate-fade-in cursor-pointer"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <span className="font-mono font-medium text-foreground text-sm">{invoice.invoice_number}</span>
+                        <p className="text-foreground font-medium mt-1">{invoice.client_name || "—"}</p>
+                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-10 w-10 min-h-[44px] min-w-[44px] -mr-2 -mt-1"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <MoreHorizontal className="w-5 h-5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleExportPDF(invoice);
+                            }}
+                            disabled={exportingId === invoice.id}
+                          >
+                            {exportingId === invoice.id ? (
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            ) : (
+                              <FileDown className="w-4 h-4 mr-2" />
+                            )}
+                            Download PDF
+                          </DropdownMenuItem>
+                          {invoice.status !== "paid" && (
+                            <DropdownMenuItem onClick={(e) => {
+                              e.stopPropagation();
+                              handleMarkAsPaid(invoice.id);
+                            }}>
+                              <CreditCard className="w-4 h-4 mr-2" />
+                              Mark as Paid
+                            </DropdownMenuItem>
+                          )}
+                          {invoice.status !== "paid" && invoice.client_phone && invoice.payment_token && (
+                            <DropdownMenuItem onClick={(e) => {
+                              e.stopPropagation();
+                              const message = getInvoiceReminderMessage(
+                                invoice.client_name || 'Bapak/Ibu',
+                                invoice.invoice_number,
+                                invoice.total,
+                                invoice.due_date ? new Date(invoice.due_date).toLocaleDateString('id-ID') : 'Segera',
+                                `${window.location.origin}/pay/${invoice.payment_token}`,
+                                businessSettings?.business_name || undefined
+                              );
+                              sendWhatsApp(invoice.client_phone!, message);
+                              toast.success('WhatsApp dibuka!');
+                            }}>
+                              <MessageCircle className="w-4 h-4 mr-2" />
+                              Kirim via WhatsApp
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeleteModal({ open: true, invoiceId: invoice.id });
+                            }}
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="font-mono font-bold text-primary text-lg">
                           {formatIDR(invoice.total)}
                         </span>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <Clock className="w-3.5 h-3.5" />
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                          <Clock className="w-3 h-3" />
                           {invoice.due_date
                             ? new Date(invoice.due_date).toLocaleDateString()
-                            : "—"}
+                            : "No due date"}
                         </div>
-                      </td>
-                      <td className="p-4">
-                        <span className={cn("px-3 py-1.5 rounded-full text-sm font-medium inline-flex items-center gap-1.5", status.color)}>
-                          <StatusIcon className="w-3.5 h-3.5" />
-                          {status.label}
-                        </span>
-                      </td>
-                      <td className="p-4 text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <MoreHorizontal className="w-4 h-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-                            <DropdownMenuItem
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleExportPDF(invoice);
-                              }}
-                              disabled={exportingId === invoice.id}
-                            >
-                              {exportingId === invoice.id ? (
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                              ) : (
-                                <FileDown className="w-4 h-4 mr-2" />
+                      </div>
+                      <span className={cn("px-3 py-1.5 rounded-full text-xs font-medium inline-flex items-center gap-1.5", status.color)}>
+                        <StatusIcon className="w-3 h-3" />
+                        {status.label}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block glass-card rounded-2xl overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Invoice</th>
+                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Client</th>
+                    <th className="text-right p-4 text-sm font-medium text-muted-foreground">Amount</th>
+                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Due Date</th>
+                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Status</th>
+                    <th className="text-right p-4 text-sm font-medium text-muted-foreground">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoices.map((invoice, index) => {
+                    const status = statusConfig[invoice.status as keyof typeof statusConfig] || statusConfig.draft;
+                    const StatusIcon = status.icon;
+                    return (
+                      <tr
+                        key={invoice.id}
+                        onClick={() => navigate(`/invoices/${invoice.id}`)}
+                        className="border-b border-border last:border-0 hover:bg-secondary/30 transition-colors animate-fade-in cursor-pointer"
+                        style={{ animationDelay: `${index * 50}ms` }}
+                      >
+                        <td className="p-4">
+                          <span className="font-mono font-medium text-foreground">{invoice.invoice_number}</span>
+                        </td>
+                        <td className="p-4">
+                          <span className="text-foreground">{invoice.client_name || "—"}</span>
+                        </td>
+                        <td className="p-4 text-right">
+                          <span className="font-mono font-bold text-primary">
+                            {formatIDR(invoice.total)}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <Clock className="w-3.5 h-3.5" />
+                            {invoice.due_date
+                              ? new Date(invoice.due_date).toLocaleDateString()
+                              : "—"}
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <span className={cn("px-3 py-1.5 rounded-full text-sm font-medium inline-flex items-center gap-1.5", status.color)}>
+                            <StatusIcon className="w-3.5 h-3.5" />
+                            {status.label}
+                          </span>
+                        </td>
+                        <td className="p-4 text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <MoreHorizontal className="w-4 h-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+                              <DropdownMenuItem
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleExportPDF(invoice);
+                                }}
+                                disabled={exportingId === invoice.id}
+                              >
+                                {exportingId === invoice.id ? (
+                                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                ) : (
+                                  <FileDown className="w-4 h-4 mr-2" />
+                                )}
+                                Download PDF
+                              </DropdownMenuItem>
+                              {invoice.status !== "paid" && (
+                                <DropdownMenuItem onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleMarkAsPaid(invoice.id);
+                                }}>
+                                  <CreditCard className="w-4 h-4 mr-2" />
+                                  Mark as Paid
+                                </DropdownMenuItem>
                               )}
-                              Download PDF
-                            </DropdownMenuItem>
-                            {invoice.status !== "paid" && (
-                              <DropdownMenuItem onClick={(e) => {
-                                e.stopPropagation();
-                                handleMarkAsPaid(invoice.id);
-                              }}>
-                                <CreditCard className="w-4 h-4 mr-2" />
-                                Mark as Paid
+                              {invoice.status !== "paid" && invoice.client_phone && invoice.payment_token && (
+                                <DropdownMenuItem onClick={(e) => {
+                                  e.stopPropagation();
+                                  const message = getInvoiceReminderMessage(
+                                    invoice.client_name || 'Bapak/Ibu',
+                                    invoice.invoice_number,
+                                    invoice.total,
+                                    invoice.due_date ? new Date(invoice.due_date).toLocaleDateString('id-ID') : 'Segera',
+                                    `${window.location.origin}/pay/${invoice.payment_token}`,
+                                    businessSettings?.business_name || undefined
+                                  );
+                                  sendWhatsApp(invoice.client_phone!, message);
+                                  toast.success('WhatsApp dibuka!');
+                                }}>
+                                  <MessageCircle className="w-4 h-4 mr-2" />
+                                  Kirim via WhatsApp
+                                </DropdownMenuItem>
+                              )}
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDeleteModal({ open: true, invoiceId: invoice.id });
+                                }}
+                              >
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Delete
                               </DropdownMenuItem>
-                            )}
-                            {invoice.status !== "paid" && invoice.client_phone && invoice.payment_token && (
-                              <DropdownMenuItem onClick={(e) => {
-                                e.stopPropagation();
-                                const message = getInvoiceReminderMessage(
-                                  invoice.client_name || 'Bapak/Ibu',
-                                  invoice.invoice_number,
-                                  invoice.total,
-                                  invoice.due_date ? new Date(invoice.due_date).toLocaleDateString('id-ID') : 'Segera',
-                                  `${window.location.origin}/pay/${invoice.payment_token}`,
-                                  businessSettings?.business_name || undefined
-                                );
-                                sendWhatsApp(invoice.client_phone!, message);
-                                toast.success('WhatsApp dibuka!');
-                              }}>
-                                <MessageCircle className="w-4 h-4 mr-2" />
-                                Kirim via WhatsApp
-                              </DropdownMenuItem>
-                            )}
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              className="text-destructive focus:text-destructive"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setDeleteModal({ open: true, invoiceId: invoice.id });
-                              }}
-                            >
-                              <Trash2 className="w-4 h-4 mr-2" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 

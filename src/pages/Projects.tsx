@@ -81,36 +81,34 @@ export default function Projects() {
 
     return (
         <DashboardLayout>
-            <div className="p-8">
+            <div className="p-4 md:p-8">
                 {/* Breadcrumb & Search */}
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <span>Dashboard</span>
                         <span>›</span>
                         <span className="text-foreground">Projects</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                                placeholder="Search..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-9 w-64 bg-secondary border-border"
-                            />
-                        </div>
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                            placeholder="Search..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-9 w-full sm:w-64 bg-secondary border-border min-h-[44px]"
+                        />
                     </div>
                 </div>
 
                 {/* Header */}
-                <div className="flex items-start justify-between mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6 md:mb-8">
                     <div>
-                        <h1 className="text-3xl font-bold text-foreground mb-2">Projects</h1>
-                        <p className="text-muted-foreground">
+                        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">Projects</h1>
+                        <p className="text-sm md:text-base text-muted-foreground">
                             Kelola proyek dan portal klien premium dengan pin-point feedback.
                         </p>
                     </div>
-                    <Button className="gap-2" onClick={handleNewProject}>
+                    <Button className="gap-2 w-full sm:w-auto min-h-[44px]" onClick={handleNewProject}>
                         <Plus className="w-4 h-4" />
                         New Project
                     </Button>
@@ -162,47 +160,35 @@ export default function Projects() {
                     </div>
                 </div>
 
-                {/* Table */}
-                <div className="glass-card rounded-2xl">
+                {/* Projects List */}
+                <>
                     {isLoading ? (
-                        <div className="p-6 space-y-4">
+                        <div className="glass-card rounded-2xl p-6 space-y-4">
                             {[1, 2, 3].map((i) => (
                                 <Skeleton key={i} className="h-16 w-full" />
                             ))}
                         </div>
                     ) : filteredProjects && filteredProjects.length > 0 ? (
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Proyek</TableHead>
-                                    <TableHead>Klien</TableHead>
-                                    <TableHead>Versi</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Deadline</TableHead>
-                                    <TableHead className="w-[60px]"></TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {filteredProjects.map((project) => {
+                        <>
+                            {/* Mobile Card View */}
+                            <div className="md:hidden space-y-3">
+                                {filteredProjects.map((project, index) => {
                                     const status = statusConfig[project.status] || statusConfig.active;
                                     return (
-                                        <TableRow key={project.id}>
-                                            <TableCell className="font-medium">{project.title}</TableCell>
-                                            <TableCell>{project.clients?.name || "-"}</TableCell>
-                                            <TableCell>
-                                                <Badge variant="outline">v{project.current_version}</Badge>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge className={status.color}>{status.label}</Badge>
-                                            </TableCell>
-                                            <TableCell className="text-muted-foreground">
-                                                {project.deadline ? formatDate(project.deadline) : "-"}
-                                            </TableCell>
-                                            <TableCell>
+                                        <div
+                                            key={project.id}
+                                            className="glass-card rounded-xl p-4 card-hover animate-fade-in"
+                                            style={{ animationDelay: `${index * 50}ms` }}
+                                        >
+                                            <div className="flex items-start justify-between mb-3">
+                                                <div className="flex-1 min-w-0">
+                                                    <h3 className="font-medium text-foreground truncate">{project.title}</h3>
+                                                    <p className="text-sm text-muted-foreground mt-0.5">{project.clients?.name || "-"}</p>
+                                                </div>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon">
-                                                            <MoreHorizontal className="h-4 w-4" />
+                                                        <Button variant="ghost" size="icon" className="min-h-[44px] min-w-[44px] -mr-2 -mt-1">
+                                                            <MoreHorizontal className="h-5 w-5" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
@@ -222,22 +208,94 @@ export default function Projects() {
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
-                                            </TableCell>
-                                        </TableRow>
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <Badge variant="outline">v{project.current_version}</Badge>
+                                                    <Badge className={status.color}>{status.label}</Badge>
+                                                </div>
+                                                <span className="text-xs text-muted-foreground">
+                                                    {project.deadline ? formatDate(project.deadline) : "-"}
+                                                </span>
+                                            </div>
+                                        </div>
                                     );
                                 })}
-                            </TableBody>
-                        </Table>
+                            </div>
+
+                            {/* Desktop Table View */}
+                            <div className="hidden md:block glass-card rounded-2xl">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Proyek</TableHead>
+                                            <TableHead>Klien</TableHead>
+                                            <TableHead>Versi</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead>Deadline</TableHead>
+                                            <TableHead className="w-[60px]"></TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {filteredProjects.map((project) => {
+                                            const status = statusConfig[project.status] || statusConfig.active;
+                                            return (
+                                                <TableRow key={project.id}>
+                                                    <TableCell className="font-medium">{project.title}</TableCell>
+                                                    <TableCell>{project.clients?.name || "-"}</TableCell>
+                                                    <TableCell>
+                                                        <Badge variant="outline">v{project.current_version}</Badge>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Badge className={status.color}>{status.label}</Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-muted-foreground">
+                                                        {project.deadline ? formatDate(project.deadline) : "-"}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger asChild>
+                                                                <Button variant="ghost" size="icon">
+                                                                    <MoreHorizontal className="h-4 w-4" />
+                                                                </Button>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent align="end">
+                                                                <DropdownMenuItem
+                                                                    onClick={() => copyPortalLink(project.portal_token)}
+                                                                >
+                                                                    <Copy className="h-4 w-4 mr-2" />
+                                                                    Salin Link Portal
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuItem
+                                                                    onClick={() =>
+                                                                        window.open(`/portal/${project.portal_token}`, "_blank")
+                                                                    }
+                                                                >
+                                                                    <ExternalLink className="h-4 w-4 mr-2" />
+                                                                    Buka Portal
+                                                                </DropdownMenuItem>
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
+                                                    </TableCell>
+                                                </TableRow>
+                                            );
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        </>
                     ) : (
-                        <EmptyState
-                            icon={Inbox}
-                            title="No projects yet"
-                            description="Create your first project to start sharing client portals."
-                            actionLabel="Create Project"
-                            onAction={handleNewProject}
-                        />
+                        <div className="glass-card rounded-2xl">
+                            <EmptyState
+                                icon={Inbox}
+                                title="No projects yet"
+                                description="Create your first project to start sharing client portals."
+                                actionLabel="Create Project"
+                                onAction={handleNewProject}
+                            />
+                        </div>
                     )}
-                </div>
+                </>
             </div>
         </DashboardLayout>
     );
