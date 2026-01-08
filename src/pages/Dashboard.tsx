@@ -62,9 +62,8 @@ export default function Dashboard() {
                 <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">
                   {greeting}, {userName}
                 </h1>
-                <p className="text-sm md:text-base text-muted-foreground flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-primary" aria-hidden="true" />
-                  <span className="hidden sm:inline">{today} •</span> {upcomingDeadlines} deadline{upcomingDeadlines !== 1 ? 's' : ''} coming up
+                <p className="text-sm md:text-base text-muted-foreground">
+                  <span className="hidden sm:inline">{today} · </span>{upcomingDeadlines} deadline{upcomingDeadlines !== 1 ? 's' : ''} coming up
                 </p>
               </>
             )}

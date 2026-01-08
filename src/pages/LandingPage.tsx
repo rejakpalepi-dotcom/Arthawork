@@ -1,56 +1,67 @@
 import { Link } from "react-router-dom";
-import {
-    FileText, Receipt, Users, Zap, Shield, Clock,
-    CheckCircle, ArrowRight, Star, ChevronRight,
-    Smartphone, Globe, TrendingUp
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SEOHead } from "@/components/seo/SEOHead";
+import {
+    InvoiceIcon,
+    ProposalIcon,
+    ClientsIcon,
+    ClockIcon,
+    ShieldIcon,
+    MobileIcon,
+    ArrowRightIcon,
+    CheckIcon,
+} from "@/lib/icons";
 
 const arthaLogo = "/icon-512.png";
 
-// Feature data
+// Feature data with custom icons
 const features = [
     {
-        icon: Receipt,
+        Icon: InvoiceIcon,
         title: "Invoice Professional",
-        description: "Buat invoice menarik dengan berbagai metode pembayaran: QRIS, VA, E-Wallet.",
+        description: "Buat invoice dengan berbagai metode pembayaran: QRIS, VA, E-Wallet.",
     },
     {
-        icon: FileText,
+        Icon: ProposalIcon,
         title: "Proposal Builder",
-        description: "Template proposal yang memenangkan klien dengan track record & timeline.",
+        description: "Template proposal profesional dengan timeline dan milestone.",
     },
     {
-        icon: Users,
+        Icon: ClientsIcon,
         title: "Kelola Klien",
-        description: "Database klien terpusat, auto-sync ke semua dokumen.",
+        description: "Database klien terpusat, tersinkronisasi ke semua dokumen.",
     },
     {
-        icon: Clock,
+        Icon: ClockIcon,
         title: "Hemat Waktu",
-        description: "Dari proposal sampai invoice dalam hitungan menit, bukan jam.",
+        description: "Dari proposal sampai invoice dalam hitungan menit.",
     },
     {
-        icon: Shield,
+        Icon: ShieldIcon,
         title: "Aman & Terenkripsi",
-        description: "Data banking terenkripsi, login dengan 2FA.",
+        description: "Data terenkripsi, login dengan autentikasi dua faktor.",
     },
     {
-        icon: Smartphone,
+        Icon: MobileIcon,
         title: "Mobile Ready",
         description: "Akses dari mana saja via browser atau install sebagai PWA.",
     },
 ];
 
-// Pricing tiers
+// Pricing tiers - synced with subscription.ts
 const pricingTiers = [
     {
         name: "Free",
         price: "Rp 0",
         period: "selamanya",
         description: "Untuk yang baru mulai",
-        features: ["3 invoice/bulan", "5 proposal/bulan", "10 klien", "Ada watermark Artha"],
+        features: [
+            "3 invoice/bulan",
+            "5 proposal/bulan",
+            "10 klien",
+            "Template dasar",
+            "Ada watermark Artha",
+        ],
         cta: "Mulai Gratis",
         popular: false,
     },
@@ -59,7 +70,16 @@ const pricingTiers = [
         price: "Rp 50.000",
         period: "/bulan",
         description: "Untuk freelancer serius",
-        features: ["Unlimited invoice & proposal", "Custom branding", "Tanpa watermark", "Payment reminders"],
+        features: [
+            "Unlimited invoice & proposal",
+            "Unlimited klien",
+            "Template premium",
+            "Custom branding (logo + warna)",
+            "Payment reminders",
+            "Tanpa watermark",
+            "Smart Contracts dengan DP Lock",
+            "Priority email support",
+        ],
         cta: "Pilih Pro",
         popular: true,
     },
@@ -68,7 +88,16 @@ const pricingTiers = [
         price: "Rp 199.000",
         period: "/bulan",
         description: "Untuk agensi & studio",
-        features: ["Semua fitur Pro", "Recurring invoices (auto-bill)", "White-label 100%", "5 anggota tim"],
+        features: [
+            "Semua fitur Pro",
+            "5 anggota tim",
+            "Premium Client Portal",
+            "Indonesian Tax Engine (PPh 21/23)",
+            "Recurring invoices (auto-bill)",
+            "White-label 100%",
+            "Advanced analytics",
+            "Dedicated account manager",
+        ],
         cta: "Pilih Business",
         popular: false,
     },
@@ -92,7 +121,7 @@ export default function LandingPage() {
 
             <div className="min-h-screen bg-background">
                 {/* Navigation */}
-                <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border">
+                <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
                     <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
                         <Link to="/" className="flex items-center gap-2">
                             <img src={arthaLogo} alt="Artha" className="h-8 w-8 rounded-lg" />
@@ -108,9 +137,7 @@ export default function LandingPage() {
                                 <Button variant="ghost" size="sm">Masuk</Button>
                             </Link>
                             <Link to="/signup">
-                                <Button size="sm" className="gap-1">
-                                    Daftar Gratis <ArrowRight className="w-4 h-4" />
-                                </Button>
+                                <Button size="sm">Daftar Gratis</Button>
                             </Link>
                         </div>
                     </div>
@@ -119,17 +146,16 @@ export default function LandingPage() {
                 {/* Hero Section */}
                 <section className="pt-32 pb-20 px-4">
                     <div className="max-w-6xl mx-auto text-center">
-                        {/* Badge */}
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-8">
-                            <Zap className="w-4 h-4" />
-                            #1 Invoice Builder untuk Freelancer Indonesia
+                        {/* Badge - simpler, no icon */}
+                        <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-8">
+                            Invoice Builder untuk Freelancer Indonesia
                         </div>
 
-                        {/* Headline */}
+                        {/* Headline - no gradient, solid color */}
                         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight mb-6">
-                            Invoice & Proposal
+                            Kelola Bisnis Freelance
                             <br />
-                            <span className="gradient-text">dalam Hitungan Menit</span>
+                            <span className="text-primary">dengan Profesional</span>
                         </h1>
 
                         {/* Subheadline */}
@@ -138,26 +164,21 @@ export default function LandingPage() {
                             Terima pembayaran via QRIS, Virtual Account, dan E-Wallet.
                         </p>
 
-                        {/* CTA Buttons */}
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                        {/* Single CTA - no dual buttons, no glow */}
+                        <div className="flex justify-center mb-16">
                             <Link to="/signup">
-                                <Button size="lg" className="gap-2 text-lg px-8 py-6 glow-primary">
-                                    Mulai Gratis <ArrowRight className="w-5 h-5" />
-                                </Button>
-                            </Link>
-                            <Link to="/pricing">
-                                <Button variant="outline" size="lg" className="gap-2 text-lg px-8 py-6">
-                                    Lihat Harga
+                                <Button size="lg" className="gap-2 text-lg px-8 py-6">
+                                    Mulai Gratis <ArrowRightIcon className="w-5 h-5" />
                                 </Button>
                             </Link>
                         </div>
 
-                        {/* Stats */}
-                        <div className="flex flex-wrap justify-center gap-8 md:gap-16">
+                        {/* Stats - cleaner layout */}
+                        <div className="flex flex-wrap justify-center gap-12 md:gap-20">
                             {stats.map((stat) => (
                                 <div key={stat.label} className="text-center">
-                                    <p className="text-3xl md:text-4xl font-bold text-primary">{stat.value}</p>
-                                    <p className="text-muted-foreground">{stat.label}</p>
+                                    <p className="text-3xl md:text-4xl font-bold text-foreground">{stat.value}</p>
+                                    <p className="text-muted-foreground text-sm">{stat.label}</p>
                                 </div>
                             ))}
                         </div>
@@ -165,14 +186,14 @@ export default function LandingPage() {
                 </section>
 
                 {/* Features Section */}
-                <section id="features" className="py-20 px-4 bg-card/50">
+                <section id="features" className="py-20 px-4 bg-card/30">
                     <div className="max-w-6xl mx-auto">
                         <div className="text-center mb-16">
                             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
                                 Semua yang Kamu Butuhkan
                             </h2>
                             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                                Tools lengkap untuk menjalankan bisnis freelance dengan profesional
+                                Tools lengkap untuk menjalankan bisnis freelance
                             </p>
                         </div>
 
@@ -180,13 +201,13 @@ export default function LandingPage() {
                             {features.map((feature) => (
                                 <div
                                     key={feature.title}
-                                    className="glass-card rounded-2xl p-6 card-hover"
+                                    className="bg-card rounded-xl p-6 border border-border card-hover"
                                 >
-                                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                                        <feature.icon className="w-6 h-6 text-primary" />
+                                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                                        <feature.Icon className="w-5 h-5 text-primary" />
                                     </div>
                                     <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
-                                    <p className="text-muted-foreground">{feature.description}</p>
+                                    <p className="text-muted-foreground text-sm">{feature.description}</p>
                                 </div>
                             ))}
                         </div>
@@ -209,8 +230,8 @@ export default function LandingPage() {
                                 { step: "3", title: "Terima Bayaran", desc: "Klien bayar via QRIS/VA, uang masuk otomatis." },
                             ].map((item) => (
                                 <div key={item.step} className="text-center">
-                                    <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center mx-auto mb-6">
-                                        <span className="text-2xl font-bold text-primary">{item.step}</span>
+                                    <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center mx-auto mb-6">
+                                        <span className="text-xl font-bold text-primary">{item.step}</span>
                                     </div>
                                     <h3 className="text-xl font-semibold text-foreground mb-2">{item.title}</h3>
                                     <p className="text-muted-foreground">{item.desc}</p>
@@ -221,7 +242,7 @@ export default function LandingPage() {
                 </section>
 
                 {/* Pricing Section */}
-                <section id="pricing" className="py-20 px-4 bg-card/50">
+                <section id="pricing" className="py-20 px-4 bg-card/30">
                     <div className="max-w-6xl mx-auto">
                         <div className="text-center mb-16">
                             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -236,11 +257,11 @@ export default function LandingPage() {
                             {pricingTiers.map((tier) => (
                                 <div
                                     key={tier.name}
-                                    className={`glass-card rounded-2xl p-6 relative ${tier.popular ? "border-2 border-primary glow-subtle" : ""
+                                    className={`bg-card rounded-xl p-6 border relative ${tier.popular ? "border-primary" : "border-border"
                                         }`}
                                 >
                                     {tier.popular && (
-                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-primary text-primary-foreground text-xs font-semibold rounded-full">
+                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs font-medium rounded-full">
                                             POPULER
                                         </div>
                                     )}
@@ -253,7 +274,7 @@ export default function LandingPage() {
                                     <ul className="space-y-3 mb-6">
                                         {tier.features.map((f) => (
                                             <li key={f} className="flex items-center gap-2 text-sm">
-                                                <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                                                <CheckIcon className="w-4 h-4 text-primary shrink-0" />
                                                 <span className="text-muted-foreground">{f}</span>
                                             </li>
                                         ))}
@@ -270,9 +291,9 @@ export default function LandingPage() {
                             ))}
                         </div>
 
-                        {/* Coming Soon Note */}
+                        {/* Payment note - no emoji */}
                         <p className="text-center text-sm text-muted-foreground mt-8">
-                            💳 Pembayaran Pro & Business aktif via Mayar (QRIS, VA, E-Wallet).
+                            Pembayaran Pro & Business aktif via Mayar (QRIS, VA, E-Wallet).
                         </p>
                     </div>
                 </section>
@@ -287,8 +308,8 @@ export default function LandingPage() {
                             Gabung dengan ratusan freelancer Indonesia yang sudah menggunakan Artha.
                         </p>
                         <Link to="/signup">
-                            <Button size="lg" className="gap-2 text-lg px-10 py-6 glow-primary">
-                                Daftar Gratis Sekarang <ArrowRight className="w-5 h-5" />
+                            <Button size="lg" className="gap-2 text-lg px-10 py-6">
+                                Daftar Gratis Sekarang <ArrowRightIcon className="w-5 h-5" />
                             </Button>
                         </Link>
                     </div>

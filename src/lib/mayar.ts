@@ -64,7 +64,7 @@ export function getPaymentStatusFromUrl(): { status: string | null; orderId: str
  */
 export const SUBSCRIPTION_PRICES = {
     pro: {
-        monthly: 99000,
+        monthly: 50000,
         name: "Pro",
         features: ["Unlimited Invoices", "Unlimited Clients", "PDF Export"],
     },

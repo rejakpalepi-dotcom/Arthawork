@@ -130,7 +130,7 @@ export default function FAQ() {
             </div>
 
             {/* Hero */}
-            <div className="py-12 text-center bg-gradient-to-b from-primary/5 to-transparent">
+            <div className="py-12 text-center bg-card/50">
                 <h1 className="text-4xl font-bold text-foreground mb-4">Pusat Bantuan</h1>
                 <p className="text-muted-foreground max-w-xl mx-auto mb-8">
                     Temukan jawaban untuk pertanyaan yang sering diajukan tentang Artha
