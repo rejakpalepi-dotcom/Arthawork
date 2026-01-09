@@ -39,6 +39,7 @@ export default function InvoiceBuilder() {
       lineItems: [],
       taxRate: 0,
       notes: "",
+      currency: "IDR", // Default currency
     },
   });
 

@@ -802,3 +802,20 @@ export function ChevronRightIcon({ className, strokeWidth = 1.5 }: IconProps) {
         </svg>
     );
 }
+
+// Play Icon (for video)
+export function PlayIcon({ className, strokeWidth = 1.5 }: IconProps) {
+    return (
+        <svg
+            className={cn("w-6 h-6", className)}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <polygon points="5 3 19 12 5 21 5 3" />
+        </svg>
+    );
+}

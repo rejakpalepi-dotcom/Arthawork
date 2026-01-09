@@ -21,7 +21,9 @@ export const invoiceFormSchema = z.object({
   lineItems: z.array(lineItemSchema).min(1, "At least one item is required"),
   taxRate: z.number().min(0).max(100),
   notes: z.string(),
+  currency: z.string().default("IDR"), // Multi-currency support
 });
 
 export type InvoiceFormData = z.infer<typeof invoiceFormSchema>;
 export type InvoiceLineItem = z.infer<typeof lineItemSchema>;
+

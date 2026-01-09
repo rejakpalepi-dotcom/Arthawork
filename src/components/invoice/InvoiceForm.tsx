@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { format } from "date-fns";
-import { CalendarIcon, Plus, Trash2, Receipt, User, ListChecks } from "lucide-react";
+import { CalendarIcon, Plus, Trash2, Receipt, User, ListChecks, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { formatIDR } from "@/lib/currency";
+import { formatCurrency, POPULAR_CURRENCIES, CURRENCY_LIST } from "@/lib/currencies";
 import { InvoiceFormData, InvoiceLineItem } from "./types";
 
 interface Client {
@@ -130,7 +130,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
           <h3 className="text-lg font-semibold text-foreground">Invoice Details</h3>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <Label htmlFor="invoiceNumber">Invoice Number</Label>
             <Input
@@ -169,6 +169,41 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                 />
               </PopoverContent>
             </Popover>
+          </div>
+
+          {/* Currency Selector */}
+          <div>
+            <Label>Currency</Label>
+            <Select
+              value={watch("currency") || "IDR"}
+              onValueChange={(value) => setValue("currency", value)}
+            >
+              <SelectTrigger className="mt-1.5">
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-muted-foreground" />
+                  <SelectValue placeholder="Select currency" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                {/* Popular currencies first */}
+                <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">Popular</div>
+                {POPULAR_CURRENCIES.map(code => {
+                  const currency = CURRENCY_LIST.find(c => c.code === code);
+                  if (!currency) return null;
+                  return (
+                    <SelectItem key={code} value={code}>
+                      {currency.symbol} {currency.code} - {currency.name}
+                    </SelectItem>
+                  );
+                })}
+                <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground border-t mt-1 pt-2">All Currencies</div>
+                {CURRENCY_LIST.filter(c => !POPULAR_CURRENCIES.includes(c.code)).map(currency => (
+                  <SelectItem key={currency.code} value={currency.code}>
+                    {currency.symbol} {currency.code} - {currency.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
@@ -296,7 +331,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                     <SelectContent>
                       {services.map(service => (
                         <SelectItem key={service.id} value={service.id}>
-                          {service.name} - {formatIDR(service.price)}
+                          {service.name} - {formatCurrency(service.price, watch("currency") || "IDR")}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -337,7 +372,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                   <div>
                     <Label className="text-xs text-muted-foreground">Total</Label>
                     <div className="mt-1.5 h-10 px-3 flex items-center rounded-md bg-muted text-foreground font-medium font-mono text-sm">
-                      {formatIDR(item.total)}
+                      {formatCurrency(item.total, watch("currency") || "IDR")}
                     </div>
                   </div>
                 </div>

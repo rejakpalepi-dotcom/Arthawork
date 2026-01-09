@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SEOHead } from "@/components/seo/SEOHead";
+import { useState, useEffect } from "react";
 import {
     InvoiceIcon,
     ProposalIcon,
@@ -10,15 +11,19 @@ import {
     MobileIcon,
     ArrowRightIcon,
     CheckIcon,
+    PlayIcon,
 } from "@/lib/icons";
 
 const arthaLogo = "/icon-512.png";
+
+// Animated words for hero
+const animatedWords = ["Draft It.", "Send It.", "Get Paid."];
 
 // Feature data with custom icons
 const features = [
     {
         Icon: InvoiceIcon,
-        title: "Invoice Professional",
+        title: "Invoice Profesional",
         description: "Buat invoice dengan berbagai metode pembayaran: QRIS, VA, E-Wallet.",
     },
     {
@@ -74,11 +79,11 @@ const pricingTiers = [
             "Unlimited invoice & proposal",
             "Unlimited klien",
             "Template premium",
-            "Custom branding (logo + warna)",
+            "Custom branding",
             "Payment reminders",
             "Tanpa watermark",
-            "Smart Contracts dengan DP Lock",
-            "Priority email support",
+            "Smart Contracts",
+            "Priority support",
         ],
         cta: "Pilih Pro",
         popular: true,
@@ -91,26 +96,82 @@ const pricingTiers = [
         features: [
             "Semua fitur Pro",
             "5 anggota tim",
-            "Premium Client Portal",
-            "Indonesian Tax Engine (PPh 21/23)",
-            "Recurring invoices (auto-bill)",
+            "Client Portal",
+            "Tax Engine (PPh 21/23)",
+            "Recurring invoices",
             "White-label 100%",
-            "Advanced analytics",
-            "Dedicated account manager",
+            "Analytics",
+            "Account manager",
         ],
         cta: "Pilih Business",
         popular: false,
     },
 ];
 
-// Stats
-const stats = [
-    { value: "500+", label: "Invoice Dibuat" },
-    { value: "50+", label: "Freelancer Aktif" },
-    { value: "99.9%", label: "Uptime" },
+// Use cases
+const useCases = [
+    { title: "Freelance Designer", desc: "Invoice desain, proposal project" },
+    { title: "Fotografer", desc: "Quote wedding, invoice event" },
+    { title: "Developer", desc: "Kontrak project, milestone billing" },
+    { title: "Agensi Kreatif", desc: "Team billing, client portal" },
+    { title: "Konsultan", desc: "Retainer invoice, recurring billing" },
+    { title: "Content Creator", desc: "Brand deal, sponsorship invoice" },
 ];
 
+// Stats counter
+const stats = [
+    { value: 500, suffix: "+", label: "Invoice Dibuat" },
+    { value: 50, suffix: "+", label: "Freelancer Aktif" },
+    { value: 99.9, suffix: "%", label: "Uptime" },
+];
+
+// Animated counter hook
+function useCounter(target: number, duration: number = 2000) {
+    const [count, setCount] = useState(0);
+    const [hasAnimated, setHasAnimated] = useState(false);
+
+    useEffect(() => {
+        if (hasAnimated) return;
+
+        const startTime = Date.now();
+        const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+            setCount(Math.floor(target * eased));
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                setHasAnimated(true);
+            }
+        };
+
+        const timer = setTimeout(() => requestAnimationFrame(animate), 500);
+        return () => clearTimeout(timer);
+    }, [target, duration, hasAnimated]);
+
+    return count;
+}
+
 export default function LandingPage() {
+    const [currentWord, setCurrentWord] = useState(0);
+    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+
+    // Animate headline words
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentWord((prev) => (prev + 1) % animatedWords.length);
+        }, 2000);
+        return () => clearInterval(interval);
+    }, []);
+
+    // Stats counters
+    const stat1 = useCounter(stats[0].value);
+    const stat2 = useCounter(stats[1].value);
+    const stat3 = useCounter(stats[2].value);
+    const statValues = [stat1, stat2, stat3];
+
     return (
         <>
             <SEOHead
@@ -143,44 +204,86 @@ export default function LandingPage() {
                     </div>
                 </nav>
 
-                {/* Hero Section */}
-                <section className="pt-32 pb-20 px-4">
+                {/* Hero Section - Isometricon Style */}
+                <section className="pt-32 pb-16 px-4">
                     <div className="max-w-6xl mx-auto text-center">
-                        {/* Badge - simpler, no icon */}
-                        <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-8">
-                            Invoice Builder untuk Freelancer Indonesia
-                        </div>
-
-                        {/* Headline - no gradient, solid color */}
-                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight mb-6">
-                            Kelola Bisnis Freelance
-                            <br />
-                            <span className="text-primary">dengan Profesional</span>
+                        {/* Animated Headline */}
+                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-8">
+                            {animatedWords.map((word, index) => (
+                                <span
+                                    key={word}
+                                    className={`inline-block transition-all duration-500 ${index === currentWord
+                                            ? "text-primary scale-110"
+                                            : "text-foreground"
+                                        }`}
+                                >
+                                    {word}
+                                    {index < animatedWords.length - 1 && <br className="md:hidden" />}
+                                    {index < animatedWords.length - 1 && " "}
+                                </span>
+                            ))}
                         </h1>
 
-                        {/* Subheadline */}
-                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-                            Buat dokumen profesional yang memenangkan klien.
-                            Terima pembayaran via QRIS, Virtual Account, dan E-Wallet.
+                        {/* Tagline */}
+                        <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-12">
+                            Invoice & Proposal Builder untuk Freelancer Indonesia.
+                            Profesional dalam hitungan menit.
                         </p>
 
-                        {/* Single CTA - no dual buttons, no glow */}
-                        <div className="flex justify-center mb-16">
-                            <Link to="/signup">
-                                <Button size="lg" className="gap-2 text-lg px-8 py-6">
-                                    Mulai Gratis <ArrowRightIcon className="w-5 h-5" />
-                                </Button>
-                            </Link>
+                        {/* CTA Button */}
+                        <Link to="/signup">
+                            <Button size="lg" className="gap-2 text-lg px-10 py-7 rounded-xl">
+                                Mulai Gratis <ArrowRightIcon className="w-5 h-5" />
+                            </Button>
+                        </Link>
+                    </div>
+                </section>
+
+                {/* Video Demo Section */}
+                <section className="py-16 px-4">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="text-center mb-10">
+                            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+                                Lihat cara kerja Artha
+                            </h2>
+                            <p className="text-muted-foreground">
+                                Buat invoice profesional dalam 60 detik
+                            </p>
                         </div>
 
-                        {/* Stats - cleaner layout */}
-                        <div className="flex flex-wrap justify-center gap-12 md:gap-20">
-                            {stats.map((stat) => (
-                                <div key={stat.label} className="text-center">
-                                    <p className="text-3xl md:text-4xl font-bold text-foreground">{stat.value}</p>
-                                    <p className="text-muted-foreground text-sm">{stat.label}</p>
+                        {/* Video Container - Placeholder for now */}
+                        <div
+                            className="relative aspect-video bg-card rounded-2xl border border-border overflow-hidden cursor-pointer group"
+                            onClick={() => setIsVideoPlaying(!isVideoPlaying)}
+                        >
+                            {!isVideoPlaying ? (
+                                <>
+                                    {/* Video Thumbnail Placeholder */}
+                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-primary/10 flex items-center justify-center">
+                                        <div className="text-center">
+                                            <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                                                <PlayIcon className="w-8 h-8 text-primary-foreground ml-1" />
+                                            </div>
+                                            <p className="text-muted-foreground text-sm">Klik untuk play demo</p>
+                                        </div>
+                                    </div>
+                                    {/* Decorative UI elements */}
+                                    <div className="absolute top-4 left-4 bg-card/80 backdrop-blur px-3 py-1.5 rounded-lg border border-border">
+                                        <span className="text-xs text-muted-foreground">Demo Video</span>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/90">
+                                    <p className="text-white text-lg">Video coming soon...</p>
+                                    <Button
+                                        variant="ghost"
+                                        className="absolute top-4 right-4 text-white"
+                                        onClick={(e) => { e.stopPropagation(); setIsVideoPlaying(false); }}
+                                    >
+                                        ✕
+                                    </Button>
                                 </div>
-                            ))}
+                            )}
                         </div>
                     </div>
                 </section>
@@ -190,7 +293,7 @@ export default function LandingPage() {
                     <div className="max-w-6xl mx-auto">
                         <div className="text-center mb-16">
                             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                                Semua yang Kamu Butuhkan
+                                Fitur Artha
                             </h2>
                             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                                 Tools lengkap untuk menjalankan bisnis freelance
@@ -201,10 +304,10 @@ export default function LandingPage() {
                             {features.map((feature) => (
                                 <div
                                     key={feature.title}
-                                    className="bg-card rounded-xl p-6 border border-border card-hover"
+                                    className="bg-card rounded-xl p-6 border border-border hover:border-primary/50 transition-colors"
                                 >
-                                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                                        <feature.Icon className="w-5 h-5 text-primary" />
+                                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                                        <feature.Icon className="w-6 h-6 text-primary" />
                                     </div>
                                     <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
                                     <p className="text-muted-foreground text-sm">{feature.description}</p>
@@ -214,27 +317,55 @@ export default function LandingPage() {
                     </div>
                 </section>
 
-                {/* How It Works */}
+                {/* Use Cases Section */}
                 <section className="py-20 px-4">
                     <div className="max-w-6xl mx-auto">
                         <div className="text-center mb-16">
                             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                                Mulai dalam 3 Langkah
+                                Dibuat untuk semua kreator
                             </h2>
+                            <p className="text-xl text-muted-foreground">
+                                Dari freelancer hingga agensi
+                            </p>
                         </div>
 
-                        <div className="grid md:grid-cols-3 gap-8">
-                            {[
-                                { step: "1", title: "Daftar Gratis", desc: "Buat akun dalam 30 detik, tanpa kartu kredit." },
-                                { step: "2", title: "Buat Dokumen", desc: "Pilih template, isi data, kirim ke klien." },
-                                { step: "3", title: "Terima Bayaran", desc: "Klien bayar via QRIS/VA, uang masuk otomatis." },
-                            ].map((item) => (
-                                <div key={item.step} className="text-center">
-                                    <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center mx-auto mb-6">
-                                        <span className="text-xl font-bold text-primary">{item.step}</span>
-                                    </div>
-                                    <h3 className="text-xl font-semibold text-foreground mb-2">{item.title}</h3>
-                                    <p className="text-muted-foreground">{item.desc}</p>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            {useCases.map((useCase) => (
+                                <div
+                                    key={useCase.title}
+                                    className="bg-card/50 rounded-xl p-5 border border-border text-center hover:bg-card transition-colors"
+                                >
+                                    <h3 className="font-semibold text-foreground mb-1">{useCase.title}</h3>
+                                    <p className="text-sm text-muted-foreground">{useCase.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="text-center mt-10">
+                            <Link to="/signup">
+                                <Button variant="outline" className="gap-2">
+                                    Explore semua fitur <ArrowRightIcon className="w-4 h-4" />
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Stats Counter Section */}
+                <section className="py-16 px-4 bg-primary/5 border-y border-primary/10">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="text-center mb-10">
+                            <p className="text-lg text-muted-foreground">
+                                Dipercaya freelancer di seluruh Indonesia
+                            </p>
+                        </div>
+                        <div className="flex flex-wrap justify-center gap-16 md:gap-24">
+                            {stats.map((stat, index) => (
+                                <div key={stat.label} className="text-center">
+                                    <p className="text-4xl md:text-5xl font-bold text-primary">
+                                        {statValues[index]}{stat.suffix}
+                                    </p>
+                                    <p className="text-muted-foreground mt-2">{stat.label}</p>
                                 </div>
                             ))}
                         </div>
@@ -242,7 +373,7 @@ export default function LandingPage() {
                 </section>
 
                 {/* Pricing Section */}
-                <section id="pricing" className="py-20 px-4 bg-card/30">
+                <section id="pricing" className="py-20 px-4">
                     <div className="max-w-6xl mx-auto">
                         <div className="text-center mb-16">
                             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -257,7 +388,7 @@ export default function LandingPage() {
                             {pricingTiers.map((tier) => (
                                 <div
                                     key={tier.name}
-                                    className={`bg-card rounded-xl p-6 border relative ${tier.popular ? "border-primary" : "border-border"
+                                    className={`bg-card rounded-2xl p-6 border relative ${tier.popular ? "border-primary ring-2 ring-primary/20" : "border-border"
                                         }`}
                                 >
                                     {tier.popular && (
@@ -291,24 +422,23 @@ export default function LandingPage() {
                             ))}
                         </div>
 
-                        {/* Payment note - no emoji */}
                         <p className="text-center text-sm text-muted-foreground mt-8">
-                            Pembayaran Pro & Business aktif via Mayar (QRIS, VA, E-Wallet).
+                            Pembayaran via QRIS, Virtual Account, dan E-Wallet.
                         </p>
                     </div>
                 </section>
 
                 {/* Final CTA */}
-                <section className="py-20 px-4">
+                <section className="py-20 px-4 bg-card/30">
                     <div className="max-w-3xl mx-auto text-center">
                         <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-                            Siap Tingkatkan Bisnis Freelance?
+                            Siap untuk mulai?
                         </h2>
                         <p className="text-xl text-muted-foreground mb-10">
-                            Gabung dengan ratusan freelancer Indonesia yang sudah menggunakan Artha.
+                            Gratis selamanya. Upgrade kapan saja.
                         </p>
                         <Link to="/signup">
-                            <Button size="lg" className="gap-2 text-lg px-10 py-6">
+                            <Button size="lg" className="gap-2 text-lg px-10 py-7 rounded-xl">
                                 Daftar Gratis Sekarang <ArrowRightIcon className="w-5 h-5" />
                             </Button>
                         </Link>
@@ -318,18 +448,50 @@ export default function LandingPage() {
                 {/* Footer */}
                 <footer className="border-t border-border py-12 px-4">
                     <div className="max-w-6xl mx-auto">
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                            <div className="flex items-center gap-2">
-                                <img src={arthaLogo} alt="Artha" className="h-8 w-8 rounded-lg" />
-                                <span className="font-bold text-foreground">Artha</span>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                            {/* Brand */}
+                            <div>
+                                <div className="flex items-center gap-2 mb-4">
+                                    <img src={arthaLogo} alt="Artha" className="h-8 w-8 rounded-lg" />
+                                    <span className="font-bold text-foreground">Artha</span>
+                                </div>
+                                <p className="text-sm text-muted-foreground">
+                                    Invoice & Proposal Builder untuk Freelancer Indonesia
+                                </p>
                             </div>
-                            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                                <Link to="/terms" className="hover:text-foreground transition-colors">Syarat & Ketentuan</Link>
-                                <Link to="/privacy" className="hover:text-foreground transition-colors">Kebijakan Privasi</Link>
-                                <Link to="/faq" className="hover:text-foreground transition-colors">FAQ</Link>
+
+                            {/* Product */}
+                            <div>
+                                <h4 className="font-semibold text-foreground mb-4">Product</h4>
+                                <ul className="space-y-2 text-sm">
+                                    <li><a href="#features" className="text-muted-foreground hover:text-foreground">Fitur</a></li>
+                                    <li><a href="#pricing" className="text-muted-foreground hover:text-foreground">Harga</a></li>
+                                    <li><Link to="/faq" className="text-muted-foreground hover:text-foreground">FAQ</Link></li>
+                                </ul>
                             </div>
+
+                            {/* Company */}
+                            <div>
+                                <h4 className="font-semibold text-foreground mb-4">Company</h4>
+                                <ul className="space-y-2 text-sm">
+                                    <li><Link to="/terms" className="text-muted-foreground hover:text-foreground">Syarat & Ketentuan</Link></li>
+                                    <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground">Kebijakan Privasi</Link></li>
+                                </ul>
+                            </div>
+
+                            {/* Newsletter */}
+                            <div>
+                                <h4 className="font-semibold text-foreground mb-4">Stay Updated</h4>
+                                <p className="text-sm text-muted-foreground mb-3">
+                                    Dapatkan tips freelance & update fitur terbaru
+                                </p>
+                                {/* Placeholder - can add email input later */}
+                            </div>
+                        </div>
+
+                        <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
                             <p className="text-sm text-muted-foreground">
-                                © 2025 Artha. All rights reserved.
+                                © 2026 Artha. All rights reserved.
                             </p>
                         </div>
                     </div>

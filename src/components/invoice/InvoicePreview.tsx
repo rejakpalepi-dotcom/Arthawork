@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { formatIDR } from "@/lib/currency";
+import { formatCurrency, getCurrency } from "@/lib/currencies";
 import { InvoiceFormData } from "./types";
 import { cn } from "@/lib/utils";
 import { BusinessSettings } from "@/hooks/useBusinessSettings";
@@ -53,9 +53,12 @@ export function InvoicePreview({ data, subtotal, taxAmount, total, businessSetti
             <p className="text-sm text-muted-foreground mt-2">
               Issued: {data.issueDate ? format(data.issueDate, "MMM d, yyyy") : "Not set"}
             </p>
-            <div className="mt-2">
+            <div className="flex items-center gap-2 mt-2">
               <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-warning/20 text-warning">
                 Draft
+              </span>
+              <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-primary/20 text-primary">
+                {getCurrency(data.currency || "IDR").code}
               </span>
             </div>
           </div>
@@ -125,10 +128,10 @@ export function InvoicePreview({ data, subtotal, taxAmount, total, businessSetti
                     </td>
                     <td className="p-3 text-sm text-foreground text-center">{item.quantity}</td>
                     <td className="p-3 text-sm text-foreground text-right font-mono">
-                      {formatIDR(item.unitPrice)}
+                      {formatCurrency(item.unitPrice, data.currency || "IDR")}
                     </td>
                     <td className="p-3 text-sm text-foreground text-right font-mono font-medium">
-                      {formatIDR(item.total)}
+                      {formatCurrency(item.total, data.currency || "IDR")}
                     </td>
                   </tr>
                 ))
@@ -139,18 +142,18 @@ export function InvoicePreview({ data, subtotal, taxAmount, total, businessSetti
 
         {/* Totals */}
         <div className="flex justify-end">
-          <div className="w-56 space-y-2">
+          <div className="w-64 space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Subtotal</span>
-              <span className="font-mono text-foreground">{formatIDR(subtotal)}</span>
+              <span className="font-mono text-foreground">{formatCurrency(subtotal, data.currency || "IDR")}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Tax ({data.taxRate}%)</span>
-              <span className="font-mono text-foreground">{formatIDR(taxAmount)}</span>
+              <span className="font-mono text-foreground">{formatCurrency(taxAmount, data.currency || "IDR")}</span>
             </div>
             <div className="flex justify-between pt-3 border-t border-border">
               <span className="font-semibold text-foreground">Total Due</span>
-              <span className="text-lg font-bold font-mono gradient-text">{formatIDR(total)}</span>
+              <span className="text-lg font-bold font-mono text-primary">{formatCurrency(total, data.currency || "IDR")}</span>
             </div>
           </div>
         </div>
