@@ -156,7 +156,6 @@ function useCounter(target: number, duration: number = 2000) {
 
 export default function LandingPage() {
     const [currentWord, setCurrentWord] = useState(0);
-    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
     // Animate headline words
     useEffect(() => {
@@ -249,39 +248,17 @@ export default function LandingPage() {
                             </p>
                         </div>
 
-                        {/* Video Container - Placeholder for now */}
-                        <div
-                            className="relative aspect-video bg-card rounded-2xl border border-border overflow-hidden cursor-pointer group"
-                            onClick={() => setIsVideoPlaying(!isVideoPlaying)}
-                        >
-                            {!isVideoPlaying ? (
-                                <>
-                                    {/* Video Thumbnail Placeholder */}
-                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-primary/10 flex items-center justify-center">
-                                        <div className="text-center">
-                                            <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                                                <PlayIcon className="w-8 h-8 text-primary-foreground ml-1" />
-                                            </div>
-                                            <p className="text-muted-foreground text-sm">Klik untuk play demo</p>
-                                        </div>
-                                    </div>
-                                    {/* Decorative UI elements */}
-                                    <div className="absolute top-4 left-4 bg-card/80 backdrop-blur px-3 py-1.5 rounded-lg border border-border">
-                                        <span className="text-xs text-muted-foreground">Demo Video</span>
-                                    </div>
-                                </>
-                            ) : (
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/90">
-                                    <p className="text-white text-lg">Video coming soon...</p>
-                                    <Button
-                                        variant="ghost"
-                                        className="absolute top-4 right-4 text-white"
-                                        onClick={(e) => { e.stopPropagation(); setIsVideoPlaying(false); }}
-                                    >
-                                        ✕
-                                    </Button>
-                                </div>
-                            )}
+                        {/* Video Container */}
+                        <div className="relative aspect-video bg-card rounded-2xl border border-border overflow-hidden shadow-xl">
+                            <video
+                                className="w-full h-full object-cover"
+                                controls
+                                poster=""
+                                preload="metadata"
+                            >
+                                <source src="/videos/Videoyards-Recording-exported.mp4" type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
                         </div>
                     </div>
                 </section>
