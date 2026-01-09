@@ -16,8 +16,8 @@ import {
 
 const arthaLogo = "/icon-512.png";
 
-// Animated words for hero
-const animatedWords = ["Draft It.", "Send It.", "Get Paid."];
+// Animated words for hero - ALL CAPS with proper spacing
+const animatedWords = ["DRAFT IT.", "SEND IT.", "GET PAID."];
 
 // Feature data with custom icons
 const features = [
@@ -212,14 +212,12 @@ export default function LandingPage() {
                             {animatedWords.map((word, index) => (
                                 <span
                                     key={word}
-                                    className={`inline-block transition-all duration-500 ${index === currentWord
-                                            ? "text-primary scale-110"
-                                            : "text-foreground"
+                                    className={`inline-block transition-all duration-500 mr-3 md:mr-6 ${index === currentWord
+                                        ? "text-primary scale-105"
+                                        : "text-foreground"
                                         }`}
                                 >
                                     {word}
-                                    {index < animatedWords.length - 1 && <br className="md:hidden" />}
-                                    {index < animatedWords.length - 1 && " "}
                                 </span>
                             ))}
                         </h1>
