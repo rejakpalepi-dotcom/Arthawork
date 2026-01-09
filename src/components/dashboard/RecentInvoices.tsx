@@ -4,6 +4,12 @@ import { cn } from "@/lib/utils";
 import { formatIDR } from "@/lib/currency";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Invoice {
   id: string;
@@ -49,9 +55,21 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
     <div className="glass-card rounded-2xl p-6 animate-fade-in">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-foreground">Recent Invoices</h3>
-        <button className="p-1.5 hover:bg-secondary rounded-lg transition-colors">
-          <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="p-1.5 hover:bg-secondary rounded-lg transition-colors">
+              <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => navigate("/invoices")}>
+              View All Invoices
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/invoices/new")}>
+              Create New Invoice
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {invoices.length === 0 ? (
@@ -69,8 +87,8 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
             const StatusIcon = status.icon;
 
             return (
-              <div 
-                key={invoice.id} 
+              <div
+                key={invoice.id}
                 className="p-4 rounded-xl bg-secondary/30 border border-border/50 hover:border-border transition-colors"
               >
                 <div className="flex items-start gap-4">
@@ -84,9 +102,9 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
                           Invoice #{invoice.invoice_number}
                         </h4>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          {invoice.status === "paid" 
+                          {invoice.status === "paid"
                             ? `Paid on ${invoice.paid_date ? new Date(invoice.paid_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'N/A'}`
-                            : invoice.due_date 
+                            : invoice.due_date
                               ? `Due ${new Date(invoice.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}${isOverdue ? ' (Overdue)' : ''}`
                               : 'No due date'
                           }
@@ -100,9 +118,9 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
                       </span>
                     </div>
                     <div className="flex items-center gap-2 mt-3">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         className="h-8 text-xs"
                         onClick={() => navigate(`/invoices/${invoice.id}`)}
                       >

@@ -76,28 +76,41 @@
       "@type": "SoftwareApplication",
       "name": "Artha",
       "applicationCategory": "BusinessApplication",
-      "operatingSystem": "Web, Android, iOS",
-      "description": "Professional proposal and invoice builder for creative freelancers. Manage clients, create stunning proposals, and automate invoicing.",
+      "operatingSystem": "Web",
+      "description": "Platform invoice dan proposal profesional untuk freelancer Indonesia. Kelola klien, buat invoice menarik, dan terima pembayaran via QRIS, VA, E-Wallet.",
       "url": "https://arthawork.vercel.app",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD",
-        "priceValidUntil": "2026-12-31"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "1250"
-      },
+      "inLanguage": "id",
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Free",
+          "price": "0",
+          "priceCurrency": "IDR",
+          "priceValidUntil": "2026-12-31"
+        },
+        {
+          "@type": "Offer",
+          "name": "Pro",
+          "price": "50000",
+          "priceCurrency": "IDR",
+          "priceValidUntil": "2026-12-31"
+        },
+        {
+          "@type": "Offer",
+          "name": "Business",
+          "price": "199000",
+          "priceCurrency": "IDR",
+          "priceValidUntil": "2026-12-31"
+        }
+      ],
       "featureList": [
-        "Professional Proposal Builder",
-        "Automated Invoice Generation",
+        "Invoice Profesional dengan QRIS/VA/E-Wallet",
+        "Proposal Builder dengan Template Premium",
         "Client Management",
-        "Online Payments via Stripe",
-        "Business Analytics Dashboard",
-        "Mobile-First Design",
-        "Offline Access via PWA"
+        "Smart Contracts dengan DP Lock",
+        "Tax Summary (PPh 21/23)",
+        "Custom Branding",
+        "Mobile-First PWA"
       ],
       "screenshot": "https://arthawork.vercel.app/og-preview.jpg",
       "author": {
@@ -107,6 +120,10 @@
       }
     }
     </script>
+
+  <!-- Hreflang for Indonesian market -->
+  <link rel="alternate" hreflang="id" href="https://arthawork.vercel.app/" />
+  <link rel="alternate" hreflang="x-default" href="https://arthawork.vercel.app/" />
 
   <!-- PWA & Mobile -->
   <meta name="theme-color" content="#1a1a1a" />
