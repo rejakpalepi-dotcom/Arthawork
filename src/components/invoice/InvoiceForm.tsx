@@ -151,15 +151,17 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                 <Button
                   variant="outline"
                   className={cn(
-                    "w-full justify-start text-left font-normal mt-1.5",
+                    "w-full justify-start text-left font-normal mt-1.5 truncate",
                     !watch("issueDate") && "text-muted-foreground"
                   )}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {watch("issueDate") ? format(watch("issueDate"), "PPP") : "Select date"}
+                  <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+                  <span className="truncate">
+                    {watch("issueDate") ? format(watch("issueDate"), "MMM d, yyyy") : "Select date"}
+                  </span>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="w-auto p-0" align="start" side="bottom" avoidCollisions>
                 <Calendar
                   mode="single"
                   selected={watch("issueDate")}
@@ -413,15 +415,17 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                 <Button
                   variant="outline"
                   className={cn(
-                    "w-full justify-start text-left font-normal mt-1.5",
+                    "w-full justify-start text-left font-normal mt-1.5 truncate",
                     !watch("dueDate") && "text-muted-foreground"
                   )}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {watch("dueDate") ? format(watch("dueDate"), "PPP") : "Select due date"}
+                  <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+                  <span className="truncate">
+                    {watch("dueDate") ? format(watch("dueDate"), "MMM d, yyyy") : "Select due date"}
+                  </span>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="w-auto p-0" align="end" side="top" avoidCollisions>
                 <Calendar
                   mode="single"
                   selected={watch("dueDate") || undefined}

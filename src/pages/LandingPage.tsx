@@ -204,16 +204,16 @@ export default function LandingPage() {
                     </div>
                 </nav>
 
-                {/* Hero Section - Isometricon Style */}
-                <section className="pt-32 pb-16 px-4">
-                    <div className="max-w-6xl mx-auto text-center">
-                        {/* Animated Headline */}
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-8">
+                {/* Hero Section */}
+                <section className="pt-24 md:pt-28 pb-8 md:pb-12 px-4">
+                    <div className="max-w-5xl mx-auto text-center">
+                        {/* Animated Headline - wider container */}
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 md:mb-6">
                             {animatedWords.map((word, index) => (
                                 <span
                                     key={word}
-                                    className={`inline-block transition-all duration-500 mr-3 md:mr-6 ${index === currentWord
-                                        ? "text-primary scale-105"
+                                    className={`inline-block transition-colors duration-500 mr-1 sm:mr-2 md:mr-3 ${index === currentWord
+                                        ? "text-primary"
                                         : "text-foreground"
                                         }`}
                                 >
@@ -222,29 +222,29 @@ export default function LandingPage() {
                             ))}
                         </h1>
 
-                        {/* Tagline */}
-                        <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-12">
+                        {/* Tagline - improved contrast */}
+                        <p className="text-base md:text-lg text-foreground/70 max-w-lg mx-auto mb-6 md:mb-8">
                             Invoice & Proposal Builder untuk Freelancer Indonesia.
                             Profesional dalam hitungan menit.
                         </p>
 
                         {/* CTA Button */}
                         <Link to="/signup">
-                            <Button size="lg" className="gap-2 text-lg px-10 py-7 rounded-xl">
-                                Mulai Gratis <ArrowRightIcon className="w-5 h-5" />
+                            <Button size="lg" className="gap-2 px-6 md:px-8 py-5 md:py-6">
+                                Mulai Gratis <ArrowRightIcon className="w-4 h-4" />
                             </Button>
                         </Link>
                     </div>
                 </section>
 
                 {/* Video Demo Section */}
-                <section className="py-16 px-4">
-                    <div className="max-w-4xl mx-auto">
-                        <div className="text-center mb-10">
-                            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+                <section className="py-12 px-4">
+                    <div className="max-w-3xl mx-auto">
+                        <div className="text-center mb-8">
+                            <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-2">
                                 Lihat cara kerja Artha
                             </h2>
-                            <p className="text-muted-foreground">
+                            <p className="text-sm text-muted-foreground">
                                 Buat invoice profesional dalam 60 detik
                             </p>
                         </div>
@@ -287,13 +287,13 @@ export default function LandingPage() {
                 </section>
 
                 {/* Features Section */}
-                <section id="features" className="py-20 px-4 bg-card/30">
+                <section id="features" className="py-12 md:py-20 px-4 bg-card/30">
                     <div className="max-w-6xl mx-auto">
-                        <div className="text-center mb-16">
-                            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                        <div className="text-center mb-8 md:mb-12">
+                            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
                                 Fitur Artha
                             </h2>
-                            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                            <p className="text-base md:text-lg text-foreground/70 max-w-2xl mx-auto">
                                 Tools lengkap untuk menjalankan bisnis freelance
                             </p>
                         </div>
@@ -316,10 +316,10 @@ export default function LandingPage() {
                 </section>
 
                 {/* Use Cases Section */}
-                <section className="py-20 px-4">
+                <section className="py-12 md:py-20 px-4">
                     <div className="max-w-6xl mx-auto">
-                        <div className="text-center mb-16">
-                            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                        <div className="text-center mb-8 md:mb-12">
+                            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
                                 Dibuat untuk semua kreator
                             </h2>
                             <p className="text-xl text-muted-foreground">
@@ -371,10 +371,10 @@ export default function LandingPage() {
                 </section>
 
                 {/* Pricing Section */}
-                <section id="pricing" className="py-20 px-4">
+                <section id="pricing" className="py-12 md:py-20 px-4">
                     <div className="max-w-6xl mx-auto">
-                        <div className="text-center mb-16">
-                            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                        <div className="text-center mb-8 md:mb-12">
+                            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
                                 Harga Transparan
                             </h2>
                             <p className="text-xl text-muted-foreground">
@@ -427,17 +427,17 @@ export default function LandingPage() {
                 </section>
 
                 {/* Final CTA */}
-                <section className="py-20 px-4 bg-card/30">
-                    <div className="max-w-3xl mx-auto text-center">
-                        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+                <section className="py-16 px-4 bg-card/30">
+                    <div className="max-w-2xl mx-auto text-center">
+                        <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-4">
                             Siap untuk mulai?
                         </h2>
-                        <p className="text-xl text-muted-foreground mb-10">
+                        <p className="text-muted-foreground mb-8">
                             Gratis selamanya. Upgrade kapan saja.
                         </p>
                         <Link to="/signup">
-                            <Button size="lg" className="gap-2 text-lg px-10 py-7 rounded-xl">
-                                Daftar Gratis Sekarang <ArrowRightIcon className="w-5 h-5" />
+                            <Button size="lg" className="gap-2 px-8 py-6">
+                                Daftar Gratis Sekarang <ArrowRightIcon className="w-4 h-4" />
                             </Button>
                         </Link>
                     </div>
