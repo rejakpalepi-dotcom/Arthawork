@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { format } from "date-fns";
-import { CalendarIcon, Plus, Trash2, Receipt, User, ListChecks, Globe } from "lucide-react";
+import { CalendarIcon, Plus, Trash2, Receipt, User, ListChecks } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -179,10 +179,7 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
               onValueChange={(value) => setValue("currency", value)}
             >
               <SelectTrigger className="mt-1.5">
-                <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-muted-foreground" />
-                  <SelectValue placeholder="Select currency" />
-                </div>
+                <SelectValue placeholder="Select currency" />
               </SelectTrigger>
               <SelectContent>
                 {/* Popular currencies first */}
@@ -192,14 +189,16 @@ export function InvoiceForm({ form, onSubmit, isSubmitting }: InvoiceFormProps) 
                   if (!currency) return null;
                   return (
                     <SelectItem key={code} value={code}>
-                      {currency.symbol} {currency.code} - {currency.name}
+                      <span className="font-mono">{currency.code}</span>
+                      <span className="text-muted-foreground ml-2">({currency.name})</span>
                     </SelectItem>
                   );
                 })}
                 <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground border-t mt-1 pt-2">All Currencies</div>
                 {CURRENCY_LIST.filter(c => !POPULAR_CURRENCIES.includes(c.code)).map(currency => (
                   <SelectItem key={currency.code} value={currency.code}>
-                    {currency.symbol} {currency.code} - {currency.name}
+                    <span className="font-mono">{currency.code}</span>
+                    <span className="text-muted-foreground ml-2">({currency.name})</span>
                   </SelectItem>
                 ))}
               </SelectContent>
