@@ -146,4 +146,16 @@ export default defineConfig(({ mode }) => ({
   esbuild: {
     drop: mode === "production" ? ["console", "debugger"] : [],
   },
+  build: {
+    chunkSizeWarningLimit: 1000, // 1MB warning limit
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          ui: ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-popover"],
+          supabase: ["@supabase/supabase-js"],
+        },
+      },
+    },
+  },
 }));
