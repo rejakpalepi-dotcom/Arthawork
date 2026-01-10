@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useOAuth } from "@/hooks/useOAuth";
 import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
+import { checkRateLimit, RATE_LIMITS, clearRateLimit } from "@/lib/rateLimit";
 
 const arthaLogo = "/icon-512.png";
 
@@ -26,6 +27,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  // Honeypot field for anti-bot protection
+  const [honeypot, setHoneypot] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
   const { oauthLoading, signInWithOAuth } = useOAuth();
@@ -60,6 +63,25 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Anti-bot: Check honeypot field
+    if (honeypot) {
+      console.warn("Bot detected: honeypot field filled");
+      return; // Silently reject bot submissions
+    }
+
+    // Rate limiting check
+    const rateCheck = checkRateLimit("login", RATE_LIMITS.AUTH);
+    if (rateCheck.limited) {
+      const seconds = Math.ceil(rateCheck.resetIn / 1000);
+      toast({
+        title: "Too Many Attempts",
+        description: `Please wait ${seconds} seconds before trying again.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     // Configure session persistence based on rememberMe
@@ -89,6 +111,8 @@ export default function Login() {
           ? "You have been logged in. Your session will be remembered."
           : "You have been logged in for this session only.",
       });
+      // Clear rate limit on successful login
+      clearRateLimit("login");
       navigate("/dashboard", { replace: true });
     }
 
@@ -216,6 +240,18 @@ export default function Login() {
                   Forgot password?
                 </Link>
               </div>
+
+              {/* Honeypot field - hidden from users, catches bots */}
+              <input
+                type="text"
+                name="website"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                style={{ position: 'absolute', left: '-9999px', visibility: 'hidden' }}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+              />
 
               <Button type="submit" className="w-full" disabled={loading} aria-label="Sign in to your Artha account">
                 {loading ? "Signing in..." : "Sign In"}

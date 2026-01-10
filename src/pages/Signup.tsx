@@ -10,6 +10,7 @@ import { useOAuth } from "@/hooks/useOAuth";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { SEOHead } from "@/components/seo/SEOHead";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 const arthaLogo = "/icon-512.png";
 
 // Common password patterns to block (simplified entropy check)
@@ -41,6 +42,8 @@ export default function Signup() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  // Honeypot field for anti-bot protection (should remain empty)
+  const [honeypot, setHoneypot] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
   const { oauthLoading, signInWithOAuth } = useOAuth();
@@ -90,6 +93,24 @@ export default function Signup() {
       toast({
         title: "Terms Required",
         description: "Please agree to the Terms of Service and Privacy Policy.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Anti-bot: Check honeypot field
+    if (honeypot) {
+      console.warn("Bot detected: honeypot field filled");
+      return; // Silently reject bot submissions
+    }
+
+    // Rate limiting check
+    const rateCheck = checkRateLimit("signup", RATE_LIMITS.AUTH);
+    if (rateCheck.limited) {
+      const seconds = Math.ceil(rateCheck.resetIn / 1000);
+      toast({
+        title: "Too Many Attempts",
+        description: `Please wait ${seconds} seconds before trying again.`,
         variant: "destructive",
       });
       return;
@@ -262,6 +283,18 @@ export default function Signup() {
                   <Link to="/privacy" className="text-primary hover:underline">Kebijakan Privasi</Link>.
                 </Label>
               </div>
+
+              {/* Honeypot field - hidden from users, catches bots */}
+              <input
+                type="text"
+                name="website"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                style={{ position: 'absolute', left: '-9999px', visibility: 'hidden' }}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+              />
 
               <Button type="submit" className="w-full gap-2" disabled={loading}>
                 {loading ? "Membuat Akun..." : "Daftar dengan Email"}
