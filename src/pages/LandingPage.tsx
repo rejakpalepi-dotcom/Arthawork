@@ -252,9 +252,11 @@ export default function LandingPage() {
                         <div className="relative aspect-video bg-card rounded-2xl border border-border overflow-hidden shadow-xl">
                             <video
                                 className="w-full h-full object-cover"
-                                controls
-                                poster=""
-                                preload="metadata"
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                preload="auto"
                             >
                                 <source src="/videos/Videoyards-Recording-exported.mp4" type="video/mp4" />
                                 Your browser does not support the video tag.
