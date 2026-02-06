@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { useState, useEffect } from "react";
+import { motion, useInView, useAnimation, Variants } from "framer-motion";
+import { useRef } from "react";
 import {
     InvoiceIcon,
     ProposalIcon,
@@ -13,6 +15,88 @@ import {
     CheckIcon,
     PlayIcon,
 } from "@/lib/icons";
+
+// Animation variants
+const fadeInUp: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.6, ease: "easeOut" }
+    }
+};
+
+const fadeIn: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: { duration: 0.5 }
+    }
+};
+
+const staggerContainer: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.2
+        }
+    }
+};
+
+const scaleIn: Variants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        transition: { duration: 0.5, ease: "easeOut" }
+    }
+};
+
+const slideInLeft: Variants = {
+    hidden: { opacity: 0, x: -50 },
+    visible: {
+        opacity: 1,
+        x: 0,
+        transition: { duration: 0.6, ease: "easeOut" }
+    }
+};
+
+const slideInRight: Variants = {
+    hidden: { opacity: 0, x: 50 },
+    visible: {
+        opacity: 1,
+        x: 0,
+        transition: { duration: 0.6, ease: "easeOut" }
+    }
+};
+
+// Reusable animated section wrapper
+function AnimatedSection({
+    children,
+    className = "",
+    variants = fadeInUp
+}: {
+    children: React.ReactNode;
+    className?: string;
+    variants?: Variants;
+}) {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+    return (
+        <motion.div
+            ref={ref}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            variants={variants}
+            className={className}
+        >
+            {children}
+        </motion.div>
+    );
+}
 
 const arthaLogo = "/icon-512.png";
 
@@ -205,35 +289,54 @@ export default function LandingPage() {
 
                 {/* Hero Section */}
                 <section className="pt-24 md:pt-28 pb-8 md:pb-12 px-4">
-                    <div className="max-w-5xl mx-auto text-center">
+                    <motion.div
+                        className="max-w-5xl mx-auto text-center"
+                        initial="hidden"
+                        animate="visible"
+                        variants={staggerContainer}
+                    >
                         {/* Animated Headline - wider container */}
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 md:mb-6">
+                        <motion.h1
+                            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 md:mb-6"
+                            variants={fadeInUp}
+                        >
                             {animatedWords.map((word, index) => (
-                                <span
+                                <motion.span
                                     key={word}
                                     className={`inline-block transition-colors duration-500 mr-1 sm:mr-2 md:mr-3 ${index === currentWord
                                         ? "text-primary"
                                         : "text-foreground"
                                         }`}
+                                    whileHover={{ scale: 1.05 }}
                                 >
                                     {word}
-                                </span>
+                                </motion.span>
                             ))}
-                        </h1>
+                        </motion.h1>
 
                         {/* Tagline - improved contrast */}
-                        <p className="text-base md:text-lg text-foreground/70 max-w-lg mx-auto mb-6 md:mb-8">
+                        <motion.p
+                            className="text-base md:text-lg text-foreground/70 max-w-lg mx-auto mb-6 md:mb-8"
+                            variants={fadeInUp}
+                        >
                             Invoice & Proposal Builder untuk Freelancer Indonesia.
                             Profesional dalam hitungan menit.
-                        </p>
+                        </motion.p>
 
                         {/* CTA Button */}
-                        <Link to="/signup">
-                            <Button size="lg" className="gap-2 px-6 md:px-8 py-5 md:py-6">
-                                Mulai Gratis <ArrowRightIcon className="w-4 h-4" />
-                            </Button>
-                        </Link>
-                    </div>
+                        <motion.div variants={fadeInUp}>
+                            <Link to="/signup">
+                                <motion.div
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    <Button size="lg" className="gap-2 px-6 md:px-8 py-5 md:py-6">
+                                        Mulai Gratis <ArrowRightIcon className="w-4 h-4" />
+                                    </Button>
+                                </motion.div>
+                            </Link>
+                        </motion.div>
+                    </motion.div>
                 </section>
 
                 {/* Video Demo Section */}
@@ -249,129 +352,184 @@ export default function LandingPage() {
                         </div>
 
                         {/* Video Container */}
-                        <div className="relative aspect-video bg-card rounded-2xl border border-border overflow-hidden shadow-xl">
-                            <video
-                                className="w-full h-full object-cover"
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
-                                preload="auto"
-                            >
-                                <source src="/videos/new video thumbnails.mp4" type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
+                        <AnimatedSection variants={scaleIn}>
+                            <div className="relative aspect-video bg-card rounded-2xl border border-border overflow-hidden shadow-xl">
+                                <video
+                                    className="w-full h-full object-cover"
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                    preload="auto"
+                                >
+                                    <source src="/videos/new video thumbnails.mp4" type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </AnimatedSection>
                     </div>
                 </section>
 
                 {/* Features Section */}
                 <section id="features" className="py-12 md:py-20 px-4 bg-card/30">
                     <div className="max-w-6xl mx-auto">
-                        <div className="text-center mb-8 md:mb-12">
+                        <AnimatedSection className="text-center mb-8 md:mb-12">
                             <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
                                 Fitur Artha
                             </h2>
                             <p className="text-base md:text-lg text-foreground/70 max-w-2xl mx-auto">
                                 Tools lengkap untuk menjalankan bisnis freelance
                             </p>
-                        </div>
+                        </AnimatedSection>
 
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {features.map((feature) => (
-                                <div
+                        <motion.div
+                            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, margin: "-100px" }}
+                            variants={staggerContainer}
+                        >
+                            {features.map((feature, index) => (
+                                <motion.div
                                     key={feature.title}
                                     className="bg-card rounded-xl p-6 border border-border hover:border-primary/50 transition-colors"
+                                    variants={fadeInUp}
+                                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
                                 >
-                                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                                    <motion.div
+                                        className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4"
+                                        whileHover={{ scale: 1.1, rotate: 5 }}
+                                    >
                                         <feature.Icon className="w-6 h-6 text-primary" />
-                                    </div>
+                                    </motion.div>
                                     <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
                                     <p className="text-muted-foreground text-sm">{feature.description}</p>
-                                </div>
+                                </motion.div>
                             ))}
-                        </div>
+                        </motion.div>
                     </div>
                 </section>
 
                 {/* Use Cases Section */}
                 <section className="py-12 md:py-20 px-4">
                     <div className="max-w-6xl mx-auto">
-                        <div className="text-center mb-8 md:mb-12">
+                        <AnimatedSection className="text-center mb-8 md:mb-12">
                             <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
                                 Dibuat untuk semua kreator
                             </h2>
                             <p className="text-xl text-muted-foreground">
                                 Dari freelancer hingga agensi
                             </p>
-                        </div>
+                        </AnimatedSection>
 
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <motion.div
+                            className="grid grid-cols-2 md:grid-cols-3 gap-4"
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, margin: "-50px" }}
+                            variants={staggerContainer}
+                        >
                             {useCases.map((useCase) => (
-                                <div
+                                <motion.div
                                     key={useCase.title}
                                     className="bg-card/50 rounded-xl p-5 border border-border text-center hover:bg-card transition-colors"
+                                    variants={fadeInUp}
+                                    whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
                                 >
                                     <h3 className="font-semibold text-foreground mb-1">{useCase.title}</h3>
                                     <p className="text-sm text-muted-foreground">{useCase.desc}</p>
-                                </div>
+                                </motion.div>
                             ))}
-                        </div>
+                        </motion.div>
 
-                        <div className="text-center mt-10">
+                        <AnimatedSection className="text-center mt-10">
                             <Link to="/signup">
-                                <Button variant="outline" className="gap-2">
-                                    Explore semua fitur <ArrowRightIcon className="w-4 h-4" />
-                                </Button>
+                                <motion.div
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    <Button variant="outline" className="gap-2">
+                                        Explore semua fitur <ArrowRightIcon className="w-4 h-4" />
+                                    </Button>
+                                </motion.div>
                             </Link>
-                        </div>
+                        </AnimatedSection>
                     </div>
                 </section>
 
                 {/* Stats Counter Section */}
                 <section className="py-16 px-4 bg-primary/5 border-y border-primary/10">
                     <div className="max-w-4xl mx-auto">
-                        <div className="text-center mb-10">
+                        <AnimatedSection className="text-center mb-10">
                             <p className="text-lg text-muted-foreground">
                                 Dipercaya freelancer di seluruh Indonesia
                             </p>
-                        </div>
-                        <div className="flex flex-wrap justify-center gap-16 md:gap-24">
+                        </AnimatedSection>
+                        <motion.div
+                            className="flex flex-wrap justify-center gap-16 md:gap-24"
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            variants={staggerContainer}
+                        >
                             {stats.map((stat, index) => (
-                                <div key={stat.label} className="text-center">
-                                    <p className="text-4xl md:text-5xl font-bold text-primary">
+                                <motion.div
+                                    key={stat.label}
+                                    className="text-center"
+                                    variants={scaleIn}
+                                >
+                                    <motion.p
+                                        className="text-4xl md:text-5xl font-bold text-primary"
+                                        initial={{ scale: 0.5 }}
+                                        whileInView={{ scale: 1 }}
+                                        viewport={{ once: true }}
+                                        transition={{ type: "spring", stiffness: 200, delay: index * 0.1 }}
+                                    >
                                         {statValues[index]}{stat.suffix}
-                                    </p>
+                                    </motion.p>
                                     <p className="text-muted-foreground mt-2">{stat.label}</p>
-                                </div>
+                                </motion.div>
                             ))}
-                        </div>
+                        </motion.div>
                     </div>
                 </section>
 
                 {/* Pricing Section */}
                 <section id="pricing" className="py-12 md:py-20 px-4">
                     <div className="max-w-6xl mx-auto">
-                        <div className="text-center mb-8 md:mb-12">
+                        <AnimatedSection className="text-center mb-8 md:mb-12">
                             <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
                                 Harga Transparan
                             </h2>
                             <p className="text-xl text-muted-foreground">
                                 Mulai gratis, upgrade kapan saja
                             </p>
-                        </div>
+                        </AnimatedSection>
 
-                        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                            {pricingTiers.map((tier) => (
-                                <div
+                        <motion.div
+                            className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto"
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, margin: "-100px" }}
+                            variants={staggerContainer}
+                        >
+                            {pricingTiers.map((tier, index) => (
+                                <motion.div
                                     key={tier.name}
                                     className={`bg-card rounded-2xl p-6 border relative ${tier.popular ? "border-primary ring-2 ring-primary/20" : "border-border"
                                         }`}
+                                    variants={fadeInUp}
+                                    whileHover={{ y: -8, transition: { duration: 0.3 } }}
                                 >
                                     {tier.popular && (
-                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs font-medium rounded-full">
+                                        <motion.div
+                                            className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs font-medium rounded-full"
+                                            initial={{ scale: 0 }}
+                                            animate={{ scale: 1 }}
+                                            transition={{ type: "spring", delay: 0.5 }}
+                                        >
                                             POPULER
-                                        </div>
+                                        </motion.div>
                                     )}
                                     <h3 className="text-xl font-bold text-foreground mb-2">{tier.name}</h3>
                                     <p className="text-muted-foreground text-sm mb-4">{tier.description}</p>
@@ -388,38 +546,68 @@ export default function LandingPage() {
                                         ))}
                                     </ul>
                                     <Link to={tier.name === "Free" ? "/signup" : "/pricing"}>
-                                        <Button
-                                            className="w-full"
-                                            variant={tier.popular ? "default" : "outline"}
+                                        <motion.div
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
                                         >
-                                            {tier.cta}
-                                        </Button>
+                                            <Button
+                                                className="w-full"
+                                                variant={tier.popular ? "default" : "outline"}
+                                            >
+                                                {tier.cta}
+                                            </Button>
+                                        </motion.div>
                                     </Link>
-                                </div>
+                                </motion.div>
                             ))}
-                        </div>
+                        </motion.div>
 
-                        <p className="text-center text-sm text-muted-foreground mt-8">
-                            Pembayaran via QRIS, Virtual Account, dan E-Wallet.
-                        </p>
+                        <AnimatedSection className="text-center mt-8">
+                            <p className="text-sm text-muted-foreground">
+                                Pembayaran via QRIS, Virtual Account, dan E-Wallet.
+                            </p>
+                        </AnimatedSection>
                     </div>
                 </section>
 
                 {/* Final CTA */}
                 <section className="py-16 px-4 bg-card/30">
-                    <div className="max-w-2xl mx-auto text-center">
-                        <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-4">
+                    <AnimatedSection className="max-w-2xl mx-auto text-center">
+                        <motion.h2
+                            className="text-2xl md:text-3xl font-semibold text-foreground mb-4"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                        >
                             Siap untuk mulai?
-                        </h2>
-                        <p className="text-muted-foreground mb-8">
+                        </motion.h2>
+                        <motion.p
+                            className="text-muted-foreground mb-8"
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.2 }}
+                        >
                             Gratis selamanya. Upgrade kapan saja.
-                        </p>
-                        <Link to="/signup">
-                            <Button size="lg" className="gap-2 px-8 py-6">
-                                Daftar Gratis Sekarang <ArrowRightIcon className="w-4 h-4" />
-                            </Button>
-                        </Link>
-                    </div>
+                        </motion.p>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            <Link to="/signup">
+                                <motion.div
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    <Button size="lg" className="gap-2 px-8 py-6">
+                                        Daftar Gratis Sekarang <ArrowRightIcon className="w-4 h-4" />
+                                    </Button>
+                                </motion.div>
+                            </Link>
+                        </motion.div>
+                    </AnimatedSection>
                 </section>
 
                 {/* Footer */}

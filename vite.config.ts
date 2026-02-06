@@ -151,9 +151,30 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks: {
+          // Core React bundle
           vendor: ["react", "react-dom", "react-router-dom"],
-          ui: ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-popover"],
+          // Radix UI components (shared across app)
+          ui: [
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-dropdown-menu",
+            "@radix-ui/react-popover",
+            "@radix-ui/react-tooltip",
+            "@radix-ui/react-toast",
+            "@radix-ui/react-select",
+            "@radix-ui/react-tabs",
+          ],
+          // Supabase client
           supabase: ["@supabase/supabase-js"],
+          // Charts and visualization (heavy, lazy-loaded)
+          charts: ["recharts"],
+          // Animation library
+          motion: ["framer-motion"],
+          // Date utilities
+          dates: ["date-fns"],
+          // Form handling
+          forms: ["react-hook-form", "@hookform/resolvers", "zod"],
+          // React Query (data fetching)
+          query: ["@tanstack/react-query"],
         },
       },
     },

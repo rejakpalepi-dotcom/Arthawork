@@ -37,21 +37,17 @@ serve(async (req) => {
             throw new Error("Missing required environment variables");
         }
 
-        // Verify webhook signature (lenient - log but don't block for testing)
+        // Verify webhook signature
         const signature = req.headers.get("x-mayar-signature") || req.headers.get("x-webhook-token");
-        if (signature && signature !== MAYAR_WEBHOOK_TOKEN) {
-            console.warn("Signature mismatch - received:", signature?.substring(0, 20) + "...");
-        }
 
-        // For testing/demo, we'll accept requests even without signature
-        // In production, uncomment this block:
-        // if (!signature || signature !== MAYAR_WEBHOOK_TOKEN) {
-        //     console.error("Invalid webhook signature");
-        //     return new Response(
-        //         JSON.stringify({ error: "Invalid signature" }),
-        //         { headers: corsHeaders, status: 403 }
-        //     );
-        // }
+        // SECURITY: Validate webhook signature to prevent forged requests
+        if (!signature || signature !== MAYAR_WEBHOOK_TOKEN) {
+            console.error("Invalid webhook signature");
+            return new Response(
+                JSON.stringify({ error: "Invalid signature" }),
+                { headers: corsHeaders, status: 403 }
+            );
+        }
 
         // Parse webhook payload
         const payload: MayarWebhookPayload = await req.json();
