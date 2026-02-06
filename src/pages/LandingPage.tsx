@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { useState, useEffect } from "react";
-import { motion, useInView, useAnimation, Variants } from "framer-motion";
+import { motion, useInView, useAnimation, Variants, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import {
     InvoiceIcon,
@@ -16,13 +16,23 @@ import {
     PlayIcon,
 } from "@/lib/icons";
 
-// Animation variants
+// ===== PACETION-STYLE ANIMATION VARIANTS =====
+
+// Smooth fade up with blur (like Pacetion's sections)
 const fadeInUp: Variants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: {
+        opacity: 0,
+        y: 40,
+        filter: "blur(10px)"
+    },
     visible: {
         opacity: 1,
         y: 0,
-        transition: { duration: 0.6, ease: "easeOut" }
+        filter: "blur(0px)",
+        transition: {
+            duration: 0.8,
+            ease: [0.25, 0.4, 0.25, 1] // smooth cubic bezier
+        }
     }
 };
 
@@ -30,45 +40,130 @@ const fadeIn: Variants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
-        transition: { duration: 0.5 }
+        transition: { duration: 0.6 }
     }
 };
 
+// Stagger container with more dramatic timing
 const staggerContainer: Variants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.1,
+            staggerChildren: 0.15,
+            delayChildren: 0.1
+        }
+    }
+};
+
+// Scale in with spring physics (for cards and images)
+const scaleIn: Variants = {
+    hidden: {
+        opacity: 0,
+        scale: 0.85,
+        y: 20
+    },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        transition: {
+            type: "spring",
+            stiffness: 100,
+            damping: 15,
+            duration: 0.7
+        }
+    }
+};
+
+// Slide in from sides with blur
+const slideInLeft: Variants = {
+    hidden: {
+        opacity: 0,
+        x: -60,
+        filter: "blur(8px)"
+    },
+    visible: {
+        opacity: 1,
+        x: 0,
+        filter: "blur(0px)",
+        transition: { duration: 0.7, ease: [0.25, 0.4, 0.25, 1] }
+    }
+};
+
+const slideInRight: Variants = {
+    hidden: {
+        opacity: 0,
+        x: 60,
+        filter: "blur(8px)"
+    },
+    visible: {
+        opacity: 1,
+        x: 0,
+        filter: "blur(0px)",
+        transition: { duration: 0.7, ease: [0.25, 0.4, 0.25, 1] }
+    }
+};
+
+// Floating animation for cards (Pacetion-style floating UI elements)
+const floatingCard: Variants = {
+    initial: { y: 0 },
+    animate: {
+        y: [-10, 10, -10],
+        transition: {
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut"
+        }
+    }
+};
+
+// Text character reveal animation
+const textRevealContainer: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.03,
             delayChildren: 0.2
         }
     }
 };
 
-const scaleIn: Variants = {
-    hidden: { opacity: 0, scale: 0.9 },
+const textRevealChar: Variants = {
+    hidden: {
+        opacity: 0,
+        y: 20,
+        rotateX: -90
+    },
     visible: {
         opacity: 1,
-        scale: 1,
-        transition: { duration: 0.5, ease: "easeOut" }
+        y: 0,
+        rotateX: 0,
+        transition: {
+            type: "spring",
+            stiffness: 150,
+            damping: 15
+        }
     }
 };
 
-const slideInLeft: Variants = {
-    hidden: { opacity: 0, x: -50 },
-    visible: {
-        opacity: 1,
-        x: 0,
-        transition: { duration: 0.6, ease: "easeOut" }
-    }
-};
-
-const slideInRight: Variants = {
-    hidden: { opacity: 0, x: 50 },
-    visible: {
-        opacity: 1,
-        x: 0,
-        transition: { duration: 0.6, ease: "easeOut" }
+// Glow pulse animation for accent elements
+const glowPulse: Variants = {
+    initial: {
+        boxShadow: "0 0 20px rgba(var(--primary), 0.3)"
+    },
+    animate: {
+        boxShadow: [
+            "0 0 20px rgba(var(--primary), 0.3)",
+            "0 0 40px rgba(var(--primary), 0.5)",
+            "0 0 20px rgba(var(--primary), 0.3)"
+        ],
+        transition: {
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+        }
     }
 };
 
@@ -92,6 +187,63 @@ function AnimatedSection({
             animate={isInView ? "visible" : "hidden"}
             variants={variants}
             className={className}
+        >
+            {children}
+        </motion.div>
+    );
+}
+
+// Text reveal component for hero headlines
+function AnimatedText({ text, className = "" }: { text: string; className?: string }) {
+    return (
+        <motion.span
+            className={className}
+            variants={textRevealContainer}
+            initial="hidden"
+            animate="visible"
+        >
+            {text.split("").map((char, index) => (
+                <motion.span
+                    key={index}
+                    variants={textRevealChar}
+                    style={{ display: "inline-block" }}
+                >
+                    {char === " " ? "\u00A0" : char}
+                </motion.span>
+            ))}
+        </motion.span>
+    );
+}
+
+// Floating preview card component (Pacetion-style)
+function FloatingCard({
+    children,
+    delay = 0,
+    className = ""
+}: {
+    children: React.ReactNode;
+    delay?: number;
+    className?: string;
+}) {
+    return (
+        <motion.div
+            className={className}
+            initial={{ opacity: 0, y: 30, scale: 0.9 }}
+            animate={{
+                opacity: 1,
+                y: [0, -15, 0],
+                scale: 1
+            }}
+            transition={{
+                opacity: { duration: 0.5, delay },
+                scale: { duration: 0.5, delay },
+                y: {
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: delay + 0.5
+                }
+            }}
         >
             {children}
         </motion.div>
@@ -324,7 +476,7 @@ export default function LandingPage() {
                         </motion.p>
 
                         {/* CTA Button */}
-                        <motion.div variants={fadeInUp}>
+                        <motion.div variants={fadeInUp} className="mb-12 md:mb-16">
                             <Link to="/signup">
                                 <motion.div
                                     whileHover={{ scale: 1.05 }}
@@ -336,6 +488,52 @@ export default function LandingPage() {
                                 </motion.div>
                             </Link>
                         </motion.div>
+
+                        {/* Floating Preview Cards - Pacetion Style */}
+                        <div className="relative h-32 md:h-48 w-full max-w-4xl mx-auto">
+                            {/* Floating Invoice Card - Left */}
+                            <FloatingCard
+                                delay={0.3}
+                                className="absolute left-0 top-0 md:left-8"
+                            >
+                                <div className="bg-card/90 backdrop-blur-md rounded-xl p-3 md:p-4 border border-border/50 shadow-lg">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                        <span className="text-xs text-muted-foreground">Invoice Dikirim</span>
+                                    </div>
+                                    <p className="font-semibold text-sm md:text-base text-foreground">Rp 2.500.000</p>
+                                    <p className="text-xs text-muted-foreground">Client: PT Maju Jaya</p>
+                                </div>
+                            </FloatingCard>
+
+                            {/* Floating Status Card - Center */}
+                            <FloatingCard
+                                delay={0.5}
+                                className="absolute left-1/2 -translate-x-1/2 top-4 md:top-8"
+                            >
+                                <div className="bg-primary/10 backdrop-blur-md rounded-xl p-3 md:p-4 border border-primary/20 shadow-lg">
+                                    <div className="flex items-center gap-2">
+                                        <CheckIcon className="w-4 h-4 text-primary" />
+                                        <span className="text-sm font-medium text-primary">Pembayaran Diterima!</span>
+                                    </div>
+                                </div>
+                            </FloatingCard>
+
+                            {/* Floating Proposal Card - Right */}
+                            <FloatingCard
+                                delay={0.7}
+                                className="absolute right-0 top-0 md:right-8"
+                            >
+                                <div className="bg-card/90 backdrop-blur-md rounded-xl p-3 md:p-4 border border-border/50 shadow-lg">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                                        <span className="text-xs text-muted-foreground">Proposal Baru</span>
+                                    </div>
+                                    <p className="font-semibold text-sm md:text-base text-foreground">Website Redesign</p>
+                                    <p className="text-xs text-muted-foreground">Rp 15.000.000</p>
+                                </div>
+                            </FloatingCard>
+                        </div>
                     </motion.div>
                 </section>
 
