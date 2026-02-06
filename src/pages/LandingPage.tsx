@@ -14,6 +14,10 @@ import {
     ArrowRightIcon,
     CheckIcon,
     PlayIcon,
+    MessageIcon,
+    MailIcon,
+    FileIcon,
+    LinkIcon,
 } from "@/lib/icons";
 
 // ===== PACETION-STYLE ANIMATION VARIANTS =====
@@ -407,12 +411,12 @@ const testimonials = [
     },
 ];
 
-// Export/Share methods
+// Export/Share methods with proper icons
 const exportMethods = [
-    { name: "WhatsApp", icon: "💬", desc: "Kirim langsung ke chat" },
-    { name: "Email", icon: "📧", desc: "Otomatis dengan template" },
-    { name: "PDF", icon: "📄", desc: "Download berkualitas tinggi" },
-    { name: "Link", icon: "🔗", desc: "Share via link unik" },
+    { name: "WhatsApp", Icon: MessageIcon, desc: "Kirim langsung ke chat" },
+    { name: "Email", Icon: MailIcon, desc: "Otomatis dengan template" },
+    { name: "PDF", Icon: FileIcon, desc: "Download berkualitas tinggi" },
+    { name: "Link", Icon: LinkIcon, desc: "Share via link unik" },
 ];
 
 // Animated counter hook
@@ -818,11 +822,11 @@ export default function LandingPage() {
                                     }}
                                 >
                                     <motion.div
-                                        className="text-4xl mb-3"
+                                        className="flex justify-center mb-3"
                                         whileHover={{ scale: 1.2, rotate: 10 }}
                                         transition={{ type: "spring", stiffness: 300 }}
                                     >
-                                        {method.icon}
+                                        <method.Icon className="w-10 h-10 text-primary" />
                                     </motion.div>
                                     <h3 className="font-semibold text-foreground mb-1">{method.name}</h3>
                                     <p className="text-sm text-muted-foreground">{method.desc}</p>
