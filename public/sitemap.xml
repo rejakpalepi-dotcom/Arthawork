@@ -54,5 +54,13 @@
     <priority>0.3</priority>
   </url>
   
+  <!-- FAQ Section (anchor, but crawlable via main page) -->
+  <url>
+    <loc>https://arthawork.vercel.app/#faq</loc>
+    <lastmod>2026-02-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
   <!-- Note: /pay/:token, /dashboard, /invoices, etc. are private and excluded -->
 </urlset>

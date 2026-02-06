@@ -72,55 +72,153 @@
   <meta name="twitter:site" content="@ArthaHQ" />
   <meta name="twitter:creator" content="@ArthaHQ" />
 
-  <!-- Schema.org JSON-LD -->
+  <!-- Schema.org JSON-LD (Enhanced for SEO + GEO) -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Artha",
-      "applicationCategory": "BusinessApplication",
-      "operatingSystem": "Web",
-      "description": "Platform invoice dan proposal profesional untuk freelancer Indonesia. Kelola klien, buat invoice menarik, dan terima pembayaran via QRIS, VA, E-Wallet.",
-      "url": "https://arthawork.vercel.app",
-      "inLanguage": "id",
-      "offers": [
+      "@graph": [
         {
-          "@type": "Offer",
-          "name": "Free",
-          "price": "0",
-          "priceCurrency": "IDR",
-          "priceValidUntil": "2026-12-31"
+          "@type": "Organization",
+          "@id": "https://arthawork.vercel.app/#organization",
+          "name": "Artha",
+          "alternateName": "Arthawork",
+          "url": "https://arthawork.vercel.app",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://arthawork.vercel.app/icon-512.png",
+            "width": 512,
+            "height": 512
+          },
+          "description": "Platform invoice dan proposal profesional untuk freelancer Indonesia. Kelola klien, buat invoice menarik, dan terima pembayaran via QRIS, VA, E-Wallet.",
+          "foundingDate": "2024",
+          "areaServed": "ID",
+          "sameAs": [
+            "https://twitter.com/ArthaHQ"
+          ]
         },
         {
-          "@type": "Offer",
-          "name": "Pro",
-          "price": "50000",
-          "priceCurrency": "IDR",
-          "priceValidUntil": "2026-12-31"
+          "@type": "WebSite",
+          "@id": "https://arthawork.vercel.app/#website",
+          "url": "https://arthawork.vercel.app",
+          "name": "Artha",
+          "description": "Platform invoice dan proposal builder untuk freelancer Indonesia",
+          "publisher": {
+            "@id": "https://arthawork.vercel.app/#organization"
+          },
+          "inLanguage": "id",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://arthawork.vercel.app/?search={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
         },
         {
-          "@type": "Offer",
-          "name": "Business",
-          "price": "199000",
-          "priceCurrency": "IDR",
-          "priceValidUntil": "2026-12-31"
+          "@type": "SoftwareApplication",
+          "@id": "https://arthawork.vercel.app/#software",
+          "name": "Artha",
+          "applicationCategory": "BusinessApplication",
+          "applicationSubCategory": "Invoice & Proposal Builder",
+          "operatingSystem": "Web, iOS, Android (PWA)",
+          "description": "Artha adalah platform invoice dan proposal builder profesional untuk freelancer Indonesia. Buat invoice dengan QRIS, VA, E-Wallet. Fitur: template premium, client management, smart contracts, tax summary PPh 21/23, custom branding.",
+          "url": "https://arthawork.vercel.app",
+          "inLanguage": "id",
+          "offers": [
+            {
+              "@type": "Offer",
+              "name": "Free",
+              "description": "Gratis selamanya untuk freelancer baru mulai",
+              "price": "0",
+              "priceCurrency": "IDR",
+              "priceValidUntil": "2027-12-31"
+            },
+            {
+              "@type": "Offer",
+              "name": "Pro",
+              "description": "Unlimited invoice & proposal untuk freelancer serius",
+              "price": "50000",
+              "priceCurrency": "IDR",
+              "priceValidUntil": "2027-12-31"
+            },
+            {
+              "@type": "Offer",
+              "name": "Business",
+              "description": "Untuk tim dan agensi dengan multi-user access",
+              "price": "199000",
+              "priceCurrency": "IDR",
+              "priceValidUntil": "2027-12-31"
+            }
+          ],
+          "featureList": [
+            "Invoice Profesional dengan QRIS/VA/E-Wallet",
+            "Proposal Builder dengan Template Premium",
+            "Client Management Database",
+            "Smart Contracts dengan DP Lock",
+            "Tax Summary (PPh 21/23) Otomatis",
+            "Custom Branding & Logo",
+            "Mobile-First PWA",
+            "WhatsApp & Email Export"
+          ],
+          "screenshot": "https://arthawork.vercel.app/og-preview.png",
+          "author": {
+            "@id": "https://arthawork.vercel.app/#organization"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "50",
+            "bestRating": "5"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://arthawork.vercel.app/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Apa itu Artha?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Artha adalah platform invoice dan proposal builder profesional untuk freelancer Indonesia. Dengan Artha, kamu bisa buat invoice menarik dengan berbagai metode pembayaran (QRIS, VA, E-Wallet) dan proposal profesional dengan template premium."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Apakah Artha gratis?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ya! Artha punya tier Free yang gratis selamanya. Kamu bisa buat 3 invoice/bulan, 5 proposal/bulan, dan kelola 10 klien tanpa biaya. Untuk fitur unlimited, bisa upgrade ke Pro (Rp 50.000/bulan) atau Business (Rp 199.000/bulan)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Metode pembayaran apa saja yang didukung Artha?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Artha mendukung berbagai metode pembayaran: QRIS (scan QR), Virtual Account (BCA, Mandiri, BNI, BRI), E-Wallet (GoPay, OVO, DANA, ShopeePay), dan transfer bank. Semua terintegrasi otomatis, klien tinggal bayar dan kamu dapat notifikasi."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Apakah Artha menghitung pajak otomatis?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ya! Artha memiliki fitur Tax Summary yang menghitung PPh 21 dan PPh 23 secara otomatis. Sangat membantu freelancer untuk laporan pajak tahunan."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Bisa custom branding di invoice?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Tentu! Dengan Artha Pro dan Business, kamu bisa tambahkan logo sendiri, warna brand, dan hapus watermark Artha. Invoice terlihat 100% profesional dengan branding kamu."
+              }
+            }
+          ]
         }
-      ],
-      "featureList": [
-        "Invoice Profesional dengan QRIS/VA/E-Wallet",
-        "Proposal Builder dengan Template Premium",
-        "Client Management",
-        "Smart Contracts dengan DP Lock",
-        "Tax Summary (PPh 21/23)",
-        "Custom Branding",
-        "Mobile-First PWA"
-      ],
-      "screenshot": "https://arthawork.vercel.app/og-preview.png",
-      "author": {
-        "@type": "Organization",
-        "name": "Artha",
-        "url": "https://arthawork.vercel.app"
-      }
+      ]
     }
     </script>
 

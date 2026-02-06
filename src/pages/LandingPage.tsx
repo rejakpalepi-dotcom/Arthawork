@@ -18,6 +18,7 @@ import {
     MailIcon,
     FileIcon,
     LinkIcon,
+    ChevronDownIcon,
 } from "@/lib/icons";
 
 // ===== PACETION-STYLE ANIMATION VARIANTS =====
@@ -484,7 +485,7 @@ export default function LandingPage() {
                         <div className="hidden md:flex items-center gap-6">
                             <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Fitur</a>
                             <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">Harga</a>
-                            <Link to="/faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</Link>
+                            <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
                         </div>
                         <div className="flex items-center gap-3">
                             <Link to="/login">
@@ -998,6 +999,73 @@ export default function LandingPage() {
                                 Pembayaran via QRIS, Virtual Account, dan E-Wallet.
                             </p>
                         </AnimatedSection>
+                    </div>
+                </section>
+
+                {/* FAQ Section (GEO Optimized) */}
+                <section id="faq" className="py-16 px-4">
+                    <div className="max-w-3xl mx-auto">
+                        <AnimatedSection className="text-center mb-12">
+                            <p className="text-sm text-primary font-medium mb-2 uppercase tracking-wide">
+                                FAQ
+                            </p>
+                            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
+                                Pertanyaan yang Sering Ditanyakan
+                            </h2>
+                            <p className="text-muted-foreground">
+                                Jawaban untuk pertanyaan umum tentang Artha
+                            </p>
+                        </AnimatedSection>
+
+                        <motion.div
+                            className="space-y-4"
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            variants={staggerContainer}
+                        >
+                            {[
+                                {
+                                    q: "Apa itu Artha?",
+                                    a: "Artha adalah platform invoice dan proposal builder profesional untuk freelancer Indonesia. Dengan Artha, kamu bisa buat invoice menarik dengan berbagai metode pembayaran (QRIS, VA, E-Wallet) dan proposal profesional dengan template premium."
+                                },
+                                {
+                                    q: "Apakah Artha gratis?",
+                                    a: "Ya! Artha punya tier Free yang gratis selamanya. Kamu bisa buat 3 invoice/bulan, 5 proposal/bulan, dan kelola 10 klien tanpa biaya. Untuk fitur unlimited, bisa upgrade ke Pro (Rp 50.000/bulan) atau Business (Rp 199.000/bulan)."
+                                },
+                                {
+                                    q: "Metode pembayaran apa saja yang didukung?",
+                                    a: "Artha mendukung berbagai metode pembayaran: QRIS (scan QR), Virtual Account (BCA, Mandiri, BNI, BRI), E-Wallet (GoPay, OVO, DANA, ShopeePay), dan transfer bank. Semua terintegrasi otomatis, klien tinggal bayar dan kamu dapat notifikasi."
+                                },
+                                {
+                                    q: "Apakah Artha menghitung pajak otomatis?",
+                                    a: "Ya! Artha memiliki fitur Tax Summary yang menghitung PPh 21 dan PPh 23 secara otomatis. Sangat membantu freelancer untuk laporan pajak tahunan."
+                                },
+                                {
+                                    q: "Bisa custom branding di invoice?",
+                                    a: "Tentu! Dengan Artha Pro dan Business, kamu bisa tambahkan logo sendiri, warna brand, dan hapus watermark Artha. Invoice terlihat 100% profesional dengan branding kamu."
+                                }
+                            ].map((faq, index) => (
+                                <motion.details
+                                    key={index}
+                                    className="bg-card rounded-xl border border-border group"
+                                    variants={fadeInUp}
+                                >
+                                    <summary className="p-5 cursor-pointer list-none flex justify-between items-center">
+                                        <h3 className="font-medium text-foreground pr-4">{faq.q}</h3>
+                                        <ChevronDownIcon className="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" />
+                                    </summary>
+                                    <div className="px-5 pb-5 text-muted-foreground text-sm leading-relaxed">
+                                        {faq.a}
+                                    </div>
+                                </motion.details>
+                            ))}
+                        </motion.div>
+
+                        {/* Last Updated for GEO */}
+                        <p className="text-center text-xs text-muted-foreground mt-8">
+                            Terakhir diperbarui: Februari 2026
+                        </p>
                     </div>
                 </section>
 

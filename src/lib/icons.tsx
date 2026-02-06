@@ -855,4 +855,3 @@ export function FileIcon({ className, strokeWidth = 1.5 }: IconProps) {
         </svg>
     );
 }
-
