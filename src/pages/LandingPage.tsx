@@ -832,63 +832,92 @@ export default function LandingPage() {
                     </div>
                 </section>
 
-                {/* Testimonial Carousel Section */}
+                {/* Testimonial Section - Pacetion Style */}
                 <section className="py-16 px-4 bg-card/30 overflow-hidden">
                     <div className="max-w-6xl mx-auto">
-                        <AnimatedSection className="text-center mb-12">
-                            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
-                                Dipercaya Freelancer Indonesia
-                            </h2>
-                            <p className="text-lg text-muted-foreground">
-                                Apa kata mereka tentang Artha
-                            </p>
-                        </AnimatedSection>
+                        <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-start">
+                            {/* Left Side - Title & Stats */}
+                            <AnimatedSection className="md:sticky md:top-32">
+                                <p className="text-sm text-primary font-medium mb-2 uppercase tracking-wide">
+                                    TESTIMONIALS
+                                </p>
+                                <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
+                                    Dipercaya Freelancer Indonesia
+                                </h2>
+                                <p className="text-muted-foreground mb-8">
+                                    Lihat apa kata mereka tentang Artha
+                                </p>
 
-                        {/* Infinite Scroll Container */}
-                        <div className="relative">
-                            {/* Gradient Fade Left */}
-                            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-                            {/* Gradient Fade Right */}
-                            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+                                {/* Mini Stats */}
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div>
+                                        <p className="text-3xl md:text-4xl font-bold text-foreground">500+</p>
+                                        <p className="text-sm text-muted-foreground">Invoice Dibuat</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-3xl md:text-4xl font-bold text-foreground">50+</p>
+                                        <p className="text-sm text-muted-foreground">Freelancer Aktif</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-3xl md:text-4xl font-bold text-foreground">99.9%</p>
+                                        <p className="text-sm text-muted-foreground">Uptime</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-3xl md:text-4xl font-bold text-foreground">4.9/5</p>
+                                        <p className="text-sm text-muted-foreground">User Rating</p>
+                                    </div>
+                                </div>
+                            </AnimatedSection>
 
-                            {/* Scrolling Track */}
-                            <motion.div
-                                className="flex gap-6"
-                                animate={{ x: [0, -1200] }}
-                                transition={{
-                                    x: {
-                                        duration: 30,
-                                        repeat: Infinity,
-                                        ease: "linear"
-                                    }
-                                }}
-                            >
-                                {/* Double the testimonials for seamless loop */}
-                                {[...testimonials, ...testimonials].map((testimonial, index) => (
-                                    <motion.div
-                                        key={`${testimonial.name}-${index}`}
-                                        className="flex-shrink-0 w-80 bg-card rounded-2xl p-6 border border-border"
-                                        whileHover={{ scale: 1.02 }}
-                                    >
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold">
-                                                {testimonial.avatar}
+                            {/* Right Side - Scrolling Testimonials */}
+                            <div className="relative h-[400px] md:h-[500px] overflow-hidden">
+                                {/* Gradient Fade Top */}
+                                <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-background/80 to-transparent z-10 pointer-events-none" />
+                                {/* Gradient Fade Bottom */}
+                                <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background/80 to-transparent z-10 pointer-events-none" />
+
+                                {/* Scrolling Column */}
+                                <div
+                                    className="space-y-4"
+                                    style={{
+                                        animation: 'scrollUp 20s linear infinite'
+                                    }}
+                                >
+                                    {/* Triple for seamless loop */}
+                                    {[...testimonials, ...testimonials, ...testimonials].map((testimonial, index) => (
+                                        <motion.div
+                                            key={`${testimonial.name}-${index}`}
+                                            className="bg-card rounded-xl p-5 border border-border"
+                                            whileHover={{ scale: 1.02, x: -4 }}
+                                            transition={{ type: "spring", stiffness: 300 }}
+                                        >
+                                            <p className="text-foreground text-sm mb-4">"{testimonial.quote}"</p>
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold text-sm">
+                                                    {testimonial.avatar}
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-foreground text-sm">{testimonial.name}</p>
+                                                    <p className="text-xs text-muted-foreground">{testimonial.role}</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p className="font-semibold text-foreground">{testimonial.name}</p>
-                                                <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                                            </div>
-                                        </div>
-                                        <p className="text-muted-foreground text-sm mb-3">"{testimonial.quote}"</p>
-                                        <div className="flex gap-1">
-                                            {[...Array(testimonial.rating)].map((_, i) => (
-                                                <span key={i} className="text-yellow-500">★</span>
-                                            ))}
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </motion.div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
+
+                        {/* CSS Keyframes for vertical scroll */}
+                        <style>{`
+                            @keyframes scrollUp {
+                                0% {
+                                    transform: translateY(0);
+                                }
+                                100% {
+                                    transform: translateY(calc(-136px * 6 - 96px));
+                                }
+                            }
+                        `}</style>
                     </div>
                 </section>
 
