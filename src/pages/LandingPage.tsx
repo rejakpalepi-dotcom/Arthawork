@@ -476,7 +476,7 @@ export default function LandingPage() {
                         </motion.p>
 
                         {/* CTA Button */}
-                        <motion.div variants={fadeInUp} className="mb-12 md:mb-16">
+                        <motion.div variants={fadeInUp}>
                             <Link to="/signup">
                                 <motion.div
                                     whileHover={{ scale: 1.05 }}
@@ -488,58 +488,12 @@ export default function LandingPage() {
                                 </motion.div>
                             </Link>
                         </motion.div>
-
-                        {/* Floating Preview Cards - Pacetion Style */}
-                        <div className="relative h-32 md:h-48 w-full max-w-4xl mx-auto">
-                            {/* Floating Invoice Card - Left */}
-                            <FloatingCard
-                                delay={0.3}
-                                className="absolute left-0 top-0 md:left-8"
-                            >
-                                <div className="bg-card/90 backdrop-blur-md rounded-xl p-3 md:p-4 border border-border/50 shadow-lg">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                                        <span className="text-xs text-muted-foreground">Invoice Dikirim</span>
-                                    </div>
-                                    <p className="font-semibold text-sm md:text-base text-foreground">Rp 2.500.000</p>
-                                    <p className="text-xs text-muted-foreground">Client: PT Maju Jaya</p>
-                                </div>
-                            </FloatingCard>
-
-                            {/* Floating Status Card - Center */}
-                            <FloatingCard
-                                delay={0.5}
-                                className="absolute left-1/2 -translate-x-1/2 top-4 md:top-8"
-                            >
-                                <div className="bg-primary/10 backdrop-blur-md rounded-xl p-3 md:p-4 border border-primary/20 shadow-lg">
-                                    <div className="flex items-center gap-2">
-                                        <CheckIcon className="w-4 h-4 text-primary" />
-                                        <span className="text-sm font-medium text-primary">Pembayaran Diterima!</span>
-                                    </div>
-                                </div>
-                            </FloatingCard>
-
-                            {/* Floating Proposal Card - Right */}
-                            <FloatingCard
-                                delay={0.7}
-                                className="absolute right-0 top-0 md:right-8"
-                            >
-                                <div className="bg-card/90 backdrop-blur-md rounded-xl p-3 md:p-4 border border-border/50 shadow-lg">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                                        <span className="text-xs text-muted-foreground">Proposal Baru</span>
-                                    </div>
-                                    <p className="font-semibold text-sm md:text-base text-foreground">Website Redesign</p>
-                                    <p className="text-xs text-muted-foreground">Rp 15.000.000</p>
-                                </div>
-                            </FloatingCard>
-                        </div>
                     </motion.div>
                 </section>
 
                 {/* Video Demo Section */}
                 <section className="py-12 px-4">
-                    <div className="max-w-3xl mx-auto">
+                    <div className="max-w-5xl mx-auto relative">
                         <div className="text-center mb-8">
                             <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-2">
                                 Lihat cara kerja Artha
@@ -549,22 +503,68 @@ export default function LandingPage() {
                             </p>
                         </div>
 
-                        {/* Video Container */}
-                        <AnimatedSection variants={scaleIn}>
-                            <div className="relative aspect-video bg-card rounded-2xl border border-border overflow-hidden shadow-xl">
-                                <video
-                                    className="w-full h-full object-cover"
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                    preload="auto"
-                                >
-                                    <source src="/videos/new video thumbnails.mp4" type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </AnimatedSection>
+                        {/* Video Container with Floating Cards */}
+                        <div className="relative">
+                            {/* Floating Invoice Card - Left */}
+                            <FloatingCard
+                                delay={0.3}
+                                className="absolute -left-4 lg:-left-20 top-1/4 z-10 hidden md:block"
+                            >
+                                <div className="bg-card/95 backdrop-blur-md rounded-xl p-4 border border-border/50 shadow-2xl">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                        <span className="text-xs text-muted-foreground">Invoice Dikirim</span>
+                                    </div>
+                                    <p className="font-semibold text-foreground">Rp 2.500.000</p>
+                                    <p className="text-xs text-muted-foreground">Client: PT Maju Jaya</p>
+                                </div>
+                            </FloatingCard>
+
+                            {/* Floating Status Card - Top Right */}
+                            <FloatingCard
+                                delay={0.5}
+                                className="absolute -right-4 lg:-right-16 top-8 z-10 hidden md:block"
+                            >
+                                <div className="bg-primary/10 backdrop-blur-md rounded-xl p-3 border border-primary/20 shadow-2xl">
+                                    <div className="flex items-center gap-2">
+                                        <CheckIcon className="w-4 h-4 text-primary" />
+                                        <span className="text-sm font-medium text-primary">Pembayaran Diterima!</span>
+                                    </div>
+                                </div>
+                            </FloatingCard>
+
+                            {/* Floating Proposal Card - Bottom Right */}
+                            <FloatingCard
+                                delay={0.7}
+                                className="absolute -right-4 lg:-right-20 bottom-1/4 z-10 hidden md:block"
+                            >
+                                <div className="bg-card/95 backdrop-blur-md rounded-xl p-4 border border-border/50 shadow-2xl">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                                        <span className="text-xs text-muted-foreground">Proposal Baru</span>
+                                    </div>
+                                    <p className="font-semibold text-foreground">Website Redesign</p>
+                                    <p className="text-xs text-muted-foreground">Rp 15.000.000</p>
+                                </div>
+                            </FloatingCard>
+
+                            {/* Video */}
+                            <AnimatedSection variants={scaleIn}>
+                                <div className="relative aspect-video bg-card rounded-2xl border border-border overflow-hidden shadow-xl">
+                                    <video
+                                        className="w-full h-full object-cover"
+                                        autoPlay
+                                        loop
+                                        muted
+                                        playsInline
+                                        preload="auto"
+                                    >
+                                        <source src="/videos/new video thumbnails.mp4" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </AnimatedSection>
+                        </div>
                     </div>
                 </section>
 
