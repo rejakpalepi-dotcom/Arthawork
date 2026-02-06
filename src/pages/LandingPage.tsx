@@ -361,6 +361,60 @@ const stats = [
     { value: 99.9, suffix: "%", label: "Uptime" },
 ];
 
+// Testimonials data
+const testimonials = [
+    {
+        name: "Andi Pratama",
+        role: "Freelance Designer",
+        avatar: "AP",
+        quote: "Invoice saya jadi lebih profesional. Client langsung bayar tanpa tanya-tanya lagi!",
+        rating: 5,
+    },
+    {
+        name: "Sari Dewi",
+        role: "Fotografer Wedding",
+        avatar: "SD",
+        quote: "Proposal wedding jadi lebih mudah dibuat. Hemat waktu banget!",
+        rating: 5,
+    },
+    {
+        name: "Budi Santoso",
+        role: "Web Developer",
+        avatar: "BS",
+        quote: "Milestone billing jadi gampang. Tracking pembayaran jelas.",
+        rating: 5,
+    },
+    {
+        name: "Maya Putri",
+        role: "Content Creator",
+        avatar: "MP",
+        quote: "Brand deal invoice nya profesional. Sponsor jadi lebih trust.",
+        rating: 5,
+    },
+    {
+        name: "Rizky Fauzan",
+        role: "Video Editor",
+        avatar: "RF",
+        quote: "Sebelumnya pakai Excel, sekarang 10x lebih cepat!",
+        rating: 5,
+    },
+    {
+        name: "Dian Kusuma",
+        role: "UI/UX Designer",
+        avatar: "DK",
+        quote: "Client portal nya keren, client bisa langsung approve proposal.",
+        rating: 5,
+    },
+];
+
+// Export/Share methods
+const exportMethods = [
+    { name: "WhatsApp", icon: "💬", desc: "Kirim langsung ke chat" },
+    { name: "Email", icon: "📧", desc: "Otomatis dengan template" },
+    { name: "PDF", icon: "📄", desc: "Download berkualitas tinggi" },
+    { name: "Link", icon: "🔗", desc: "Share via link unik" },
+];
+
 // Animated counter hook
 function useCounter(target: number, duration: number = 2000) {
     const [count, setCount] = useState(0);
@@ -440,7 +494,47 @@ export default function LandingPage() {
                 </nav>
 
                 {/* Hero Section */}
-                <section className="pt-24 md:pt-28 pb-8 md:pb-12 px-4">
+                <section className="pt-24 md:pt-28 pb-8 md:pb-12 px-4 relative overflow-hidden">
+                    {/* Gradient Orbs Background */}
+                    <motion.div
+                        className="absolute top-20 -left-40 w-80 h-80 bg-primary/20 rounded-full blur-[100px] pointer-events-none"
+                        animate={{
+                            scale: [1, 1.2, 1],
+                            opacity: [0.3, 0.5, 0.3]
+                        }}
+                        transition={{
+                            duration: 8,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
+                    />
+                    <motion.div
+                        className="absolute top-40 -right-40 w-96 h-96 bg-purple-500/15 rounded-full blur-[120px] pointer-events-none"
+                        animate={{
+                            scale: [1.2, 1, 1.2],
+                            opacity: [0.2, 0.4, 0.2]
+                        }}
+                        transition={{
+                            duration: 10,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: 1
+                        }}
+                    />
+                    <motion.div
+                        className="absolute -bottom-20 left-1/3 w-72 h-72 bg-cyan-500/10 rounded-full blur-[80px] pointer-events-none"
+                        animate={{
+                            scale: [1, 1.3, 1],
+                            x: [-20, 20, -20]
+                        }}
+                        transition={{
+                            duration: 12,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: 2
+                        }}
+                    />
+
                     <motion.div
                         className="max-w-5xl mx-auto text-center"
                         initial="hidden"
@@ -692,6 +786,112 @@ export default function LandingPage() {
                     </div>
                 </section>
 
+                {/* Export/Share Showcase Section */}
+                <section className="py-16 px-4">
+                    <div className="max-w-4xl mx-auto">
+                        <AnimatedSection className="text-center mb-12">
+                            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
+                                Kirim Invoice ke Mana Saja
+                            </h2>
+                            <p className="text-lg text-muted-foreground">
+                                Satu klik, langsung sampai ke client
+                            </p>
+                        </AnimatedSection>
+
+                        <motion.div
+                            className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            variants={staggerContainer}
+                        >
+                            {exportMethods.map((method, index) => (
+                                <motion.div
+                                    key={method.name}
+                                    className="bg-card rounded-2xl p-6 border border-border text-center group cursor-pointer"
+                                    variants={fadeInUp}
+                                    whileHover={{
+                                        y: -8,
+                                        scale: 1.02,
+                                        boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+                                        transition: { duration: 0.3 }
+                                    }}
+                                >
+                                    <motion.div
+                                        className="text-4xl mb-3"
+                                        whileHover={{ scale: 1.2, rotate: 10 }}
+                                        transition={{ type: "spring", stiffness: 300 }}
+                                    >
+                                        {method.icon}
+                                    </motion.div>
+                                    <h3 className="font-semibold text-foreground mb-1">{method.name}</h3>
+                                    <p className="text-sm text-muted-foreground">{method.desc}</p>
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* Testimonial Carousel Section */}
+                <section className="py-16 px-4 bg-card/30 overflow-hidden">
+                    <div className="max-w-6xl mx-auto">
+                        <AnimatedSection className="text-center mb-12">
+                            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
+                                Dipercaya Freelancer Indonesia
+                            </h2>
+                            <p className="text-lg text-muted-foreground">
+                                Apa kata mereka tentang Artha
+                            </p>
+                        </AnimatedSection>
+
+                        {/* Infinite Scroll Container */}
+                        <div className="relative">
+                            {/* Gradient Fade Left */}
+                            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+                            {/* Gradient Fade Right */}
+                            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+
+                            {/* Scrolling Track */}
+                            <motion.div
+                                className="flex gap-6"
+                                animate={{ x: [0, -1200] }}
+                                transition={{
+                                    x: {
+                                        duration: 30,
+                                        repeat: Infinity,
+                                        ease: "linear"
+                                    }
+                                }}
+                            >
+                                {/* Double the testimonials for seamless loop */}
+                                {[...testimonials, ...testimonials].map((testimonial, index) => (
+                                    <motion.div
+                                        key={`${testimonial.name}-${index}`}
+                                        className="flex-shrink-0 w-80 bg-card rounded-2xl p-6 border border-border"
+                                        whileHover={{ scale: 1.02 }}
+                                    >
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold">
+                                                {testimonial.avatar}
+                                            </div>
+                                            <div>
+                                                <p className="font-semibold text-foreground">{testimonial.name}</p>
+                                                <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                                            </div>
+                                        </div>
+                                        <p className="text-muted-foreground text-sm mb-3">"{testimonial.quote}"</p>
+                                        <div className="flex gap-1">
+                                            {[...Array(testimonial.rating)].map((_, i) => (
+                                                <span key={i} className="text-yellow-500">★</span>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </motion.div>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Pricing Section */}
                 <section id="pricing" className="py-12 md:py-20 px-4">
                     <div className="max-w-6xl mx-auto">
@@ -769,8 +969,15 @@ export default function LandingPage() {
                 </section>
 
                 {/* Final CTA */}
-                <section className="py-16 px-4 bg-card/30">
-                    <AnimatedSection className="max-w-2xl mx-auto text-center">
+                <section className="py-16 px-4 bg-card/30 relative overflow-hidden">
+                    {/* Gradient Mesh */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
+                    <motion.div
+                        className="absolute top-10 right-10 w-40 h-40 bg-primary/10 rounded-full blur-[60px] pointer-events-none"
+                        animate={{ scale: [1, 1.3, 1] }}
+                        transition={{ duration: 6, repeat: Infinity }}
+                    />
+                    <AnimatedSection className="max-w-2xl mx-auto text-center relative z-10">
                         <motion.h2
                             className="text-2xl md:text-3xl font-semibold text-foreground mb-4"
                             initial={{ opacity: 0, y: 20 }}
