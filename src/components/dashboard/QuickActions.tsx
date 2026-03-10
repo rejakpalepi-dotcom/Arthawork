@@ -1,6 +1,5 @@
 import { FilePlus, FileText, Users, FolderOpen, FileDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useDashboardData } from "@/hooks/useDashboardData";
 import { toast } from "sonner";
 
 const actions = [
@@ -10,9 +9,12 @@ const actions = [
   { label: "New Project", icon: FolderOpen, path: "/projects/new", color: "text-warning" },
 ];
 
-export function QuickActions() {
+interface QuickActionsProps {
+  onExportReport: () => void;
+}
+
+export function QuickActions({ onExportReport }: QuickActionsProps) {
   const navigate = useNavigate();
-  const { exportReport } = useDashboardData();
 
   const handleAction = (action: typeof actions[0]) => {
     if (action.path) {
@@ -24,7 +26,7 @@ export function QuickActions() {
   };
 
   const handleExport = () => {
-    exportReport();
+    onExportReport();
     toast.success("Report exported", {
       description: "Your monthly report has been downloaded as a CSV file.",
     });
@@ -58,4 +60,3 @@ export function QuickActions() {
     </div>
   );
 }
-

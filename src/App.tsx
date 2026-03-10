@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "next-themes";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useSessionPersistence } from "@/hooks/useSessionPersistence";
 import { SupportWidget } from "@/components/support/SupportWidget";
@@ -76,173 +77,168 @@ const App = () => {
     <>
       {showSplash && <SplashScreen onComplete={handleSplashComplete} minDuration={2500} />}
       <ErrorBoundary>
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <SessionWrapper>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <Suspense fallback={<PageLoader />}>
-                  <Routes>
-                    {/* Public Routes */}
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<Signup />} />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/pay/:token" element={<GuestPayment />} />
-                    <Route path="/pricing" element={<Pricing />} />
-                    <Route path="/terms" element={<TermsOfService />} />
-                    <Route path="/privacy" element={<PrivacyPolicy />} />
-                    <Route path="/faq" element={<FAQ />} />
-                    <Route path="/changelog" element={<Changelog />} />
-                    <Route
-                      path="/checkout"
-                      element={
-                        <ProtectedRoute>
-                          <Checkout />
-                        </ProtectedRoute>
-                      }
-                    />
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <QueryClientProvider client={queryClient}>
+            <TooltipProvider>
+              <SessionWrapper>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <Suspense fallback={<PageLoader />}>
+                    <Routes>
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/signup" element={<Signup />} />
+                      <Route path="/forgot-password" element={<ForgotPassword />} />
+                      <Route path="/pay/:token" element={<GuestPayment />} />
+                      <Route path="/pricing" element={<Pricing />} />
+                      <Route path="/terms" element={<TermsOfService />} />
+                      <Route path="/privacy" element={<PrivacyPolicy />} />
+                      <Route path="/faq" element={<FAQ />} />
+                      <Route path="/changelog" element={<Changelog />} />
+                      <Route
+                        path="/checkout"
+                        element={
+                          <ProtectedRoute>
+                            <Checkout />
+                          </ProtectedRoute>
+                        }
+                      />
 
-                    {/* Public Contract & Portal Routes */}
-                    <Route path="/contract/:token" element={<ContractViewer />} />
-                    <Route path="/portal/:token" element={<ClientPortal />} />
+                      <Route path="/contract/:token" element={<ContractViewer />} />
+                      <Route path="/portal/:token" element={<ClientPortal />} />
 
-                    {/* Protected Routes */}
-                    <Route
-                      path="/dashboard"
-                      element={
-                        <ProtectedRoute>
-                          <Dashboard />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/clients"
-                      element={
-                        <ProtectedRoute>
-                          <Clients />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/services"
-                      element={
-                        <ProtectedRoute>
-                          <Services />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/proposals"
-                      element={
-                        <ProtectedRoute>
-                          <Proposals />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/contracts"
-                      element={
-                        <ProtectedRoute>
-                          <Contracts />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/projects"
-                      element={
-                        <ProtectedRoute>
-                          <Projects />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/invoices"
-                      element={
-                        <ProtectedRoute>
-                          <Invoices />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/invoices/new"
-                      element={
-                        <ProtectedRoute>
-                          <InvoiceBuilder />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/invoices/:id"
-                      element={
-                        <ProtectedRoute>
-                          <InvoiceDetail />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/settings"
-                      element={
-                        <ProtectedRoute>
-                          <Settings />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/tax-summary"
-                      element={
-                        <ProtectedRoute>
-                          <TaxSummary />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/projects/new"
-                      element={
-                        <ProtectedRoute>
-                          <ProjectBuilder />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/proposals/new"
-                      element={
-                        <ProtectedRoute>
-                          <ProposalBuilder />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/proposals/:id"
-                      element={
-                        <ProtectedRoute>
-                          <Proposals />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/proposals/:id/edit"
-                      element={
-                        <ProtectedRoute>
-                          <ProposalBuilder />
-                        </ProtectedRoute>
-                      }
-                    />
+                      <Route
+                        path="/dashboard"
+                        element={
+                          <ProtectedRoute>
+                            <Dashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/clients"
+                        element={
+                          <ProtectedRoute>
+                            <Clients />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/services"
+                        element={
+                          <ProtectedRoute>
+                            <Services />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/proposals"
+                        element={
+                          <ProtectedRoute>
+                            <Proposals />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/contracts"
+                        element={
+                          <ProtectedRoute>
+                            <Contracts />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/projects"
+                        element={
+                          <ProtectedRoute>
+                            <Projects />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/invoices"
+                        element={
+                          <ProtectedRoute>
+                            <Invoices />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/invoices/new"
+                        element={
+                          <ProtectedRoute>
+                            <InvoiceBuilder />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/invoices/:id"
+                        element={
+                          <ProtectedRoute>
+                            <InvoiceDetail />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/settings"
+                        element={
+                          <ProtectedRoute>
+                            <Settings />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/tax-summary"
+                        element={
+                          <ProtectedRoute>
+                            <TaxSummary />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/projects/new"
+                        element={
+                          <ProtectedRoute>
+                            <ProjectBuilder />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/proposals/new"
+                        element={
+                          <ProtectedRoute>
+                            <ProposalBuilder />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/proposals/:id"
+                        element={
+                          <ProtectedRoute>
+                            <Proposals />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/proposals/:id/edit"
+                        element={
+                          <ProtectedRoute>
+                            <ProposalBuilder />
+                          </ProtectedRoute>
+                        }
+                      />
 
-                    {/* Landing Page (public) */}
-                    <Route path="/" element={<LandingPage />} />
+                      <Route path="/" element={<LandingPage />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </Suspense>
 
-                    {/* 404 */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Suspense>
-
-                {/* Global Support Widget */}
-                <SupportWidget whatsappNumber="6281285864059" />
-              </BrowserRouter>
-            </SessionWrapper>
-          </TooltipProvider>
-        </QueryClientProvider>
+                  <SupportWidget whatsappNumber="6281285864059" />
+                </BrowserRouter>
+              </SessionWrapper>
+            </TooltipProvider>
+          </QueryClientProvider>
+        </ThemeProvider>
       </ErrorBoundary>
     </>
   );

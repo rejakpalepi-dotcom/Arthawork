@@ -107,6 +107,8 @@ export function ActiveProjects({ projects, loading, onStatusChange }: ActiveProj
           icon={Folder}
           title="No active projects"
           description="Projects will appear here when you create proposals."
+          actionLabel="Create Proposal"
+          onAction={() => navigate("/proposals/new")}
         />
       ) : (
         <div className="overflow-x-auto">

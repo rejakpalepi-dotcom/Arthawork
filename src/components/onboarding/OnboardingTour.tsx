@@ -133,12 +133,12 @@ export function OnboardingTour() {
           align: "center",
         },
       },
-      // NEW: Client Portal (Antigravity Update)
+      // Projects
       {
         element: 'aside nav a[href="/projects"]',
         popover: {
-          title: "🌌 PORTAL KLIEN PREMIUM (BARU!)",
-          description: "Bagikan portal khusus ke klien untuk review desain. Mereka bisa klik langsung di gambar untuk kasih feedback - UI super premium!",
+          title: "📁 MANAJEMEN PROJECT",
+          description: "Pantau status project, deadline, dan progres kerja di satu tempat.",
           side: "right",
           align: "center",
         },

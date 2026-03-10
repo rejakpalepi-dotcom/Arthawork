@@ -13,11 +13,14 @@ import {
   FileSignature,
   FolderKanban,
   Calculator,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const arthaLogo = "/icon-512.png";
 import { useState } from "react";
+import { useTheme } from "next-themes";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -53,6 +56,8 @@ export function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { setTheme, resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   const handleLogout = async () => {
     // Clear all session-related storage
@@ -152,6 +157,17 @@ export function Sidebar() {
             </NavLink>
           );
         })}
+        <button
+          className={cn(
+            "sidebar-item sidebar-item-inactive w-full",
+            collapsed && "justify-center px-2"
+          )}
+          onClick={() => setTheme(isDark ? "light" : "dark")}
+          aria-label="Toggle theme"
+        >
+          {isDark ? <Sun className="w-5 h-5 shrink-0" /> : <Moon className="w-5 h-5 shrink-0" />}
+          {!collapsed && <span>{isDark ? "Mode Terang" : "Mode Gelap"}</span>}
+        </button>
         <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
           <AlertDialogTrigger asChild>
             <button

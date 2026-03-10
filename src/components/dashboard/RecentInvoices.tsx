@@ -77,6 +77,8 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
           icon={Receipt}
           title="No invoices yet"
           description="Your invoices will appear here."
+          actionLabel="Create Invoice"
+          onAction={() => navigate("/invoices/new")}
         />
       ) : (
         <div className="space-y-3">
@@ -126,11 +128,6 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
                       >
                         View details
                       </Button>
-                      {isOverdue && (
-                        <Button variant="outline" size="sm" className="h-8 text-xs text-primary border-primary/30 hover:bg-primary/10">
-                          Send Reminder
-                        </Button>
-                      )}
                     </div>
                   </div>
                 </div>
