@@ -9,6 +9,8 @@ import { ArrowLeft, Download, Mail, CheckCircle, Clock, AlertTriangle, Loader2 }
 import { Button } from "@/components/ui/button";
 import { exportToPDF } from "@/lib/pdfExport";
 import { cn } from "@/lib/utils";
+import { resolveInvoiceStatus, getInvoiceStatusUI, formatDueDate } from "@/lib/documentStatus";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 
 interface InvoiceItem {
   id: string;
@@ -36,12 +38,7 @@ interface Invoice {
   client_address: string | null;
 }
 
-const statusConfig = {
-  draft: { label: "Draft", icon: Clock, color: "text-muted-foreground", bgColor: "bg-muted" },
-  sent: { label: "Sent", icon: Clock, color: "text-warning", bgColor: "bg-warning/10" },
-  paid: { label: "Paid", icon: CheckCircle, color: "text-success", bgColor: "bg-success/10" },
-  overdue: { label: "Overdue", icon: AlertTriangle, color: "text-destructive", bgColor: "bg-destructive/10" },
-};
+
 
 export default function InvoiceDetail() {
   const { id } = useParams<{ id: string }>();
@@ -136,7 +133,7 @@ export default function InvoiceDetail() {
     try {
       const { error } = await supabase
         .from("invoices")
-        .update({ status: "paid" })
+        .update({ status: "paid", paid_at: new Date().toISOString() })
         .eq("id", invoice.id);
 
       if (error) throw error;
@@ -170,10 +167,9 @@ export default function InvoiceDetail() {
     );
   }
 
-  const isOverdue = invoice.status !== "paid" && invoice.due_date && new Date(invoice.due_date) < new Date();
-  const statusKey = isOverdue ? "overdue" : invoice.status;
-  const status = statusConfig[statusKey as keyof typeof statusConfig] || statusConfig.draft;
-  const StatusIcon = status.icon;
+  const resolvedStatus = resolveInvoiceStatus({ status: invoice.status, due_date: invoice.due_date });
+  const isOverdue = resolvedStatus === 'overdue';
+  const statusUI = getInvoiceStatusUI(resolvedStatus);
 
   return (
     <DashboardLayout>
@@ -187,10 +183,7 @@ export default function InvoiceDetail() {
             <div>
               <div className="flex items-center gap-3">
                 <h1 className="text-2xl font-bold text-foreground">Invoice #{invoice.invoice_number}</h1>
-                <span className={cn("inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium", status.bgColor, status.color)}>
-                  <StatusIcon className="w-3.5 h-3.5" />
-                  {status.label}
-                </span>
+                <StatusBadge type="invoice" status={resolvedStatus} />
               </div>
               <p className="text-muted-foreground text-sm mt-1">
                 Issued on {new Date(invoice.issue_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}

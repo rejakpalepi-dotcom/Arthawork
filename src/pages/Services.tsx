@@ -3,6 +3,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Plus, Pencil, Trash2, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { AddServiceModal } from "@/components/modals/AddServiceModal";
 import { EditServiceModal } from "@/components/modals/EditServiceModal";
@@ -84,12 +85,10 @@ export default function Services() {
     return (
       <DashboardLayout>
         <div className="p-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Services</h1>
-              <p className="text-muted-foreground">Define your service offerings and pricing</p>
-            </div>
-          </div>
+          <PageHeader
+            title="Services"
+            description="Define your service offerings and pricing"
+          />
           <div className="glass-card rounded-2xl p-8">
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
@@ -105,16 +104,16 @@ export default function Services() {
   return (
     <DashboardLayout>
       <div className="p-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Services</h1>
-            <p className="text-muted-foreground">Define your service offerings and pricing</p>
-          </div>
-          <Button className="gap-2" onClick={() => setShowAddModal(true)}>
-            <Plus className="w-4 h-4" />
-            Add Service
-          </Button>
-        </div>
+        <PageHeader
+          title="Services"
+          description="Define your service offerings and pricing"
+          actions={
+            <Button className="gap-2" onClick={() => setShowAddModal(true)}>
+              <Plus className="w-4 h-4" />
+              Add Service
+            </Button>
+          }
+        />
 
         {services.length === 0 ? (
           <div className="glass-card rounded-2xl">

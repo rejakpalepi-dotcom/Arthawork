@@ -6,6 +6,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { useContracts } from "@/hooks/useContracts";
 import { ContractStatusBadge } from "@/components/contract/StatusBadge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -80,37 +81,16 @@ export default function Contracts() {
     return (
         <DashboardLayout>
             <div className="p-4 md:p-8">
-                {/* Breadcrumb & Search */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span>Dashboard</span>
-                        <span>›</span>
-                        <span className="text-foreground">Contracts</span>
-                    </div>
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input
-                            placeholder="Search..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-9 w-full sm:w-64 bg-secondary border-border min-h-[44px]"
-                        />
-                    </div>
-                </div>
-
-                {/* Header */}
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6 md:mb-8">
-                    <div>
-                        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">Contracts</h1>
-                        <p className="text-sm md:text-base text-muted-foreground">
-                            Kelola kontrak dengan sistem DP Lock anti-ghosting.
-                        </p>
-                    </div>
-                    <Button className="gap-2 w-full sm:w-auto min-h-[44px]" onClick={handleNewContract}>
-                        <Plus className="w-4 h-4" />
-                        New Contract
-                    </Button>
-                </div>
+                <PageHeader
+                    title="Contracts"
+                    description="Kelola kontrak dengan sistem DP Lock anti-ghosting."
+                    actions={
+                        <Button className="gap-2 w-full sm:w-auto min-h-[44px]" onClick={handleNewContract}>
+                            <Plus className="w-4 h-4" />
+                            New Contract
+                        </Button>
+                    }
+                />
 
                 {/* Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

@@ -9,6 +9,7 @@ import { AddClientModal } from "@/components/modals/AddClientModal";
 import { EditClientModal } from "@/components/modals/EditClientModal";
 import { DeleteConfirmModal } from "@/components/modals/DeleteConfirmModal";
 import { toast } from "sonner";
+import { PageHeader } from "@/components/layout/PageHeader";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -97,12 +98,10 @@ export default function Clients() {
     return (
       <DashboardLayout>
         <div className="p-4 md:p-8">
-          <div className="flex items-center justify-between mb-6 md:mb-8">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">Clients</h1>
-              <p className="text-sm md:text-base text-muted-foreground">Manage your client relationships</p>
-            </div>
-          </div>
+          <PageHeader
+            title="Clients"
+            description="Manage your client relationships"
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {[1, 2, 3].map((i) => (
               <div key={i} className="h-40 bg-muted/50 rounded-2xl animate-pulse" />
@@ -116,16 +115,16 @@ export default function Clients() {
   return (
     <DashboardLayout>
       <div className="p-4 md:p-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-8">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">Clients</h1>
-            <p className="text-sm md:text-base text-muted-foreground">Manage your client relationships</p>
-          </div>
-          <Button className="gap-2 w-full sm:w-auto min-h-[44px]" onClick={() => setShowAddModal(true)}>
-            <Plus className="w-4 h-4" />
-            Add Client
-          </Button>
-        </div>
+        <PageHeader
+          title="Clients"
+          description="Manage your client relationships"
+          actions={
+            <Button className="gap-2 w-full sm:w-auto min-h-[44px]" onClick={() => setShowAddModal(true)}>
+              <Plus className="w-4 h-4" />
+              Add Client
+            </Button>
+          }
+        />
 
         {/* Search */}
         <div className="relative mb-4 md:mb-6">

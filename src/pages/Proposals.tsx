@@ -19,7 +19,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { escapeHtml } from "@/lib/sanitize";
-import { getProposalStatus, formatTimestamp } from "@/lib/documentStatus";
+import { resolveProposalStatus, formatTimestamp } from "@/lib/documentStatus";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 interface Proposal {
   id: string;
@@ -34,6 +36,7 @@ interface Proposal {
   sent_at?: string | null;
   viewed_at?: string | null;
   approved_at?: string | null;
+  valid_until?: string | null;
 }
 
 interface ProposalStats {
@@ -86,7 +89,7 @@ export default function Proposals() {
 
     const { data, error } = await supabase
       .from("proposals")
-      .select("id, title, description, total, status, created_at, updated_at, sent_at, viewed_at, approved_at, clients(name)")
+      .select("id, title, description, total, status, created_at, updated_at, sent_at, viewed_at, approved_at, valid_until, clients(name)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -108,6 +111,7 @@ export default function Proposals() {
           sent_at: (row.sent_at as string) || null,
           viewed_at: (row.viewed_at as string) || null,
           approved_at: (row.approved_at as string) || null,
+          valid_until: (row.valid_until as string) || null,
         };
       });
 
@@ -309,12 +313,10 @@ export default function Proposals() {
     return (
       <DashboardLayout>
         <div className="p-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Proposals</h1>
-              <p className="text-muted-foreground">Manage your active bids, draft contracts, and archival records.</p>
-            </div>
-          </div>
+          <PageHeader
+            title="Proposals"
+            description="Manage your active bids, draft contracts, and archival records."
+          />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {[1, 2, 3].map((i) => (
               <div key={i} className="h-24 bg-muted/50 rounded-2xl animate-pulse" />
@@ -333,37 +335,16 @@ export default function Proposals() {
   return (
     <DashboardLayout>
       <div className="p-8">
-        {/* Breadcrumb & Search */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>Dashboard</span>
-            <span>›</span>
-            <span className="text-foreground">Proposals</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 w-64 bg-secondary border-border"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Header */}
-        <div className="flex items-start justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Proposals</h1>
-            <p className="text-muted-foreground">Manage your active bids, draft contracts, and archival records.</p>
-          </div>
-          <Button className="gap-2" onClick={handleNewProposal}>
-            <Plus className="w-4 h-4" />
-            New Proposal
-          </Button>
-        </div>
+        <PageHeader
+          title="Proposals"
+          description="Manage your active bids, draft contracts, and archival records."
+          actions={
+            <Button className="gap-2" onClick={handleNewProposal}>
+              <Plus className="w-4 h-4" />
+              New Proposal
+            </Button>
+          }
+        />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -491,7 +472,7 @@ export default function Proposals() {
               : "space-y-4"
           )}>
             {filteredProposals.map((proposal, index) => {
-              const status = getProposalStatus(proposal.status);
+              const resolvedStatus = resolveProposalStatus({ status: proposal.status, valid_until: proposal.valid_until || null });
               const isEdited = proposal.updated_at !== proposal.created_at;
               const timeLabel = isEdited
                 ? `Edited ${getTimeAgo(proposal.updated_at)}`
@@ -578,14 +559,7 @@ export default function Proposals() {
                       <p className="text-xs text-muted-foreground mb-1">Value</p>
                       <p className="text-lg font-bold text-foreground font-mono">{formatIDR(proposal.total)}</p>
                     </div>
-                    <span className={cn(
-                      "px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5",
-                      status.bgClass,
-                      status.textClass
-                    )}>
-                      <span className={cn("w-1.5 h-1.5 rounded-full", status.dotClass)} />
-                      {status.labelId}
-                    </span>
+                    <StatusBadge type="proposal" status={resolvedStatus} />
                   </div>
                 </div>
               );

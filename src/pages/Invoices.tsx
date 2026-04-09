@@ -21,7 +21,9 @@ import { format } from "date-fns";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { escapeHtml } from "@/lib/sanitize";
 import { sendWhatsApp, getInvoiceReminderMessage } from "@/lib/whatsapp";
-import { getInvoiceStatus, formatDueDate, formatTimestamp } from "@/lib/documentStatus";
+import { resolveInvoiceStatus, getInvoiceStatusUI, formatDueDate, formatTimestamp } from "@/lib/documentStatus";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 interface Invoice {
   id: string;
@@ -296,12 +298,10 @@ export default function Invoices() {
     return (
       <DashboardLayout>
         <div className="p-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Invoices</h1>
-              <p className="text-muted-foreground">Track payments and manage invoices</p>
-            </div>
-          </div>
+          <PageHeader
+            title="Invoices"
+            description="Track payments and manage invoices"
+          />
           <div className="glass-card rounded-2xl p-8">
             <div className="space-y-4">
               {[1, 2, 3, 4].map((i) => (
@@ -317,16 +317,16 @@ export default function Invoices() {
   return (
     <DashboardLayout>
       <div className="p-4 md:p-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-8">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">Invoices</h1>
-            <p className="text-sm md:text-base text-muted-foreground">Track payments and manage invoices</p>
-          </div>
-          <Button className="gap-2 w-full sm:w-auto min-h-[44px]" onClick={() => navigate("/invoices/new")}>
-            <Plus className="w-4 h-4" />
-            New Invoice
-          </Button>
-        </div>
+        <PageHeader
+          title="Invoices"
+          description="Track payments and manage invoices"
+          actions={
+            <Button className="gap-2 w-full sm:w-auto min-h-[44px]" onClick={() => navigate("/invoices/new")}>
+              <Plus className="w-4 h-4" />
+              New Invoice
+            </Button>
+          }
+        />
 
         {invoices.length === 0 ? (
           <div className="glass-card rounded-2xl">
@@ -343,7 +343,7 @@ export default function Invoices() {
             {/* Mobile Card View */}
             <div className="md:hidden space-y-3">
               {invoices.map((invoice, index) => {
-                const status = getInvoiceStatus(invoice.status);
+                const resolvedStatus = resolveInvoiceStatus({ status: invoice.status, due_date: invoice.due_date });
                 const dueDateInfo = formatDueDate(invoice.due_date);
                 return (
                   <div
@@ -439,14 +439,7 @@ export default function Invoices() {
                           </span>
                         </div>
                       </div>
-                      <span className={cn(
-                        "px-3 py-1.5 rounded-full text-xs font-medium inline-flex items-center gap-1.5",
-                        status.bgClass,
-                        status.textClass
-                      )}>
-                        <span className={cn("w-1.5 h-1.5 rounded-full", status.dotClass)} />
-                        {status.labelId}
-                      </span>
+                      <StatusBadge type="invoice" status={resolvedStatus} />
                     </div>
                   </div>
                 );
@@ -468,7 +461,7 @@ export default function Invoices() {
                 </thead>
                 <tbody>
                   {invoices.map((invoice, index) => {
-                    const status = getInvoiceStatus(invoice.status);
+                    const resolvedStatus = resolveInvoiceStatus({ status: invoice.status, due_date: invoice.due_date });
                     const dueDateInfo = formatDueDate(invoice.due_date);
                     return (
                       <tr
@@ -500,14 +493,7 @@ export default function Invoices() {
                           </div>
                         </td>
                         <td className="p-4">
-                          <span className={cn(
-                            "px-3 py-1.5 rounded-full text-sm font-medium inline-flex items-center gap-1.5",
-                            status.bgClass,
-                            status.textClass
-                          )}>
-                            <span className={cn("w-1.5 h-1.5 rounded-full", status.dotClass)} />
-                            {status.labelId}
-                          </span>
+                          <StatusBadge type="invoice" status={resolvedStatus} />
                         </td>
                         <td className="p-4 text-right">
                           <DropdownMenu>

@@ -1,13 +1,16 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { BuilderContextBar } from "@/components/layout/BuilderContextBar";
 import { ProposalEditor } from "@/components/proposal/ProposalEditor";
 import { ProposalPreview } from "@/components/proposal/ProposalPreview";
+import { SaveStatusIndicator } from "@/components/ui/SaveStatusIndicator";
 import { exportProposalToPDF } from "@/lib/proposalPdfExport";
-import { Layout, FileText, Briefcase, Gem, Calendar, CreditCard, Loader2, Download, Eye, FileEdit } from "lucide-react";
+import { useAutosave } from "@/hooks/useAutosave";
+import { Layout, FileText, Briefcase, Gem, Calendar, CreditCard, Download, Eye, FileEdit } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface Service {
@@ -118,15 +121,17 @@ const pages = [
 
 export default function ProposalBuilder() {
   const navigate = useNavigate();
+  const { id: editId } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
   const [proposalData, setProposalData] = useState<ProposalData>(initialProposalData);
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [mobileView, setMobileView] = useState<"form" | "preview">("form");
+  const [draftId, setDraftId] = useState<string | null>(editId ?? null);
 
+  // ---------- Load clients ----------
   useEffect(() => {
     fetchClients();
   }, []);
@@ -142,10 +147,57 @@ export default function ProposalBuilder() {
       setClients(data || []);
     } catch (error: unknown) {
       toast.error("Failed to load clients");
-    } finally {
-      setIsLoading(false);
     }
   };
+
+  // ---------- Load existing draft ----------
+  useEffect(() => {
+    const loadDraft = async () => {
+      if (!editId) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const { data: proposal, error } = await supabase
+          .from("proposals")
+          .select("*")
+          .eq("id", editId)
+          .single();
+
+        if (error || !proposal) {
+          toast.error("Proposal not found");
+          navigate("/proposals");
+          return;
+        }
+
+        // Try to restore from JSONB first
+        const jsonData = (proposal as Record<string, unknown>).proposal_data as Record<string, unknown> | null;
+
+        if (jsonData) {
+          // Full editor state available
+          setProposalData(jsonData as unknown as ProposalData);
+        } else {
+          // Fallback: reconstruct from normalized fields
+          setProposalData((prev) => ({
+            ...prev,
+            projectTitle: proposal.title || prev.projectTitle,
+            clientId: proposal.client_id || null,
+            tagline: proposal.description || prev.tagline,
+          }));
+        }
+      } catch (err) {
+        console.error("Error loading proposal draft:", err);
+        toast.error("Failed to load proposal");
+        navigate("/proposals");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDraft();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editId]);
 
   const updateProposalData = (updates: Partial<ProposalData>) => {
     setProposalData((prev) => ({ ...prev, ...updates }));
@@ -162,105 +214,155 @@ export default function ProposalBuilder() {
     }
   };
 
-  const calculateTotal = () => {
+  const calculateTotal = useCallback(() => {
     const allServices = [...proposalData.selectedServices, ...(proposalData.customServices || [])];
     const subtotal = allServices.reduce((sum, s) => sum + s.price, 0);
     const taxAmount = subtotal * (proposalData.taxRate / 100);
     return subtotal + taxAmount;
-  };
+  }, [proposalData.selectedServices, proposalData.customServices, proposalData.taxRate]);
 
-  const handleSave = async () => {
-    try {
-      setIsSaving(true);
-
+  // ---------- Autosave handler ----------
+  const handleAutosave = useCallback(
+    async (data: ProposalData) => {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError || !user) {
-        toast.error("Please log in to save proposals");
-        return;
+      if (userError || !user) throw new Error("Not authenticated");
+
+      const allServices = [...data.selectedServices, ...(data.customServices || [])];
+      const subtotal = allServices.reduce((sum, s) => sum + s.price, 0);
+      const taxAmount = subtotal * (data.taxRate / 100);
+      const total = subtotal + taxAmount;
+
+      const proposalPayload = {
+        user_id: user.id,
+        client_id: data.clientId || null,
+        title: data.projectTitle,
+        description: data.tagline,
+        total,
+        status: "draft",
+        proposal_data: data as unknown as Record<string, unknown>,
+      };
+
+      if (draftId) {
+        // UPDATE existing
+        const { error } = await supabase
+          .from("proposals")
+          .update(proposalPayload)
+          .eq("id", draftId);
+
+        if (error) throw new Error(error.message);
+      } else {
+        // INSERT new
+        const { data: newProposal, error } = await supabase
+          .from("proposals")
+          .insert(proposalPayload)
+          .select()
+          .single();
+
+        if (error) throw new Error(error.message);
+
+        setDraftId(newProposal.id);
+        // Redirect to edit URL so further saves are updates
+        navigate(`/proposals/${newProposal.id}/edit`, { replace: true });
       }
 
-      const { error } = await supabase.from("proposals").insert({
-        user_id: user.id,
-        client_id: proposalData.clientId,
-        title: proposalData.projectTitle,
-        description: proposalData.tagline,
-        total: calculateTotal(),
-        status: "draft",
-      });
+      // Invalidate queries
+      queryClient.invalidateQueries({ queryKey: ["proposals"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+    [draftId, navigate, queryClient]
+  );
 
-      if (error) throw error;
+  // Autosave integration
+  const autosave = useAutosave({
+    data: proposalData,
+    onSave: handleAutosave,
+    enabled: !isLoading,
+    debounceMs: 2000,
+  });
 
-      // Invalidate dashboard queries for real-time sync
-      queryClient.invalidateQueries({ queryKey: ['proposals'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-
-      toast.success("Proposal saved successfully!");
-      navigate("/proposals");
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      toast.error("Failed to save proposal: " + message);
-    } finally {
-      setIsSaving(false);
+  // After loading a draft, mark the autosave as clean
+  useEffect(() => {
+    if (!isLoading && editId) {
+      const timer = setTimeout(() => autosave.markClean(), 100);
+      return () => clearTimeout(timer);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, editId]);
+
+  // ---------- Back navigation with unsaved changes guard ----------
+  const handleBack = () => {
+    if (autosave.isDirty || autosave.status === "unsaved" || autosave.status === "saving") {
+      const confirmed = window.confirm(
+        "You have unsaved changes. Are you sure you want to leave?"
+      );
+      if (!confirmed) return;
+    }
+    navigate("/proposals");
   };
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-full min-h-[60vh]">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <span className="text-sm text-muted-foreground">
+              {editId ? "Loading proposal..." : "Loading..."}
+            </span>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
       <div className="h-[calc(100vh-2rem)] flex flex-col font-sans">
-        {/* Global Loading Overlay */}
-        {(isLoading || isSaving) && (
-          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
-            <div className="flex flex-col items-center gap-3">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <span className="text-sm text-muted-foreground">
-                {isSaving ? "Saving proposal..." : "Loading..."}
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 md:mb-4 px-4 md:px-0">
-          <div>
-            <h1 className="text-xl md:text-2xl font-bold text-foreground">Proposal Builder</h1>
-            <p className="text-muted-foreground text-xs md:text-sm">Create a stunning proposal for your client</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate("/proposals")}
-              className="px-3 md:px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[40px]"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={isSaving || isExporting}
-              className="px-3 md:px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50 min-h-[40px]"
-            >
-              {isSaving ? "Saving..." : "Save Draft"}
-            </button>
-            <button
-              onClick={async () => {
-                setIsExporting(true);
-                try {
-                  const fileName = `${proposalData.projectTitle.replace(/\s+/g, "-").toLowerCase()}-proposal.pdf`;
-                  await exportProposalToPDF(proposalData, fileName);
-                  toast.success("Proposal exported successfully!");
-                } catch (error) {
-                  console.error("Export error:", error);
-                  toast.error("Failed to export proposal");
-                } finally {
-                  setIsExporting(false);
-                }
-              }}
-              disabled={isExporting}
-              className="hidden sm:flex px-3 md:px-4 py-2 text-sm bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors items-center gap-2 font-medium disabled:opacity-50 min-h-[40px]"
-            >
-              <Download className="h-4 w-4" />
-              {isExporting ? "Exporting..." : "Export PDF"}
-            </button>
-          </div>
-        </div>
+        <BuilderContextBar
+          breadcrumbs={[
+            { label: "Dokumen" },
+            { label: "Proposals", href: "/proposals" },
+            { label: editId ? "Edit Proposal" : "New Proposal" },
+          ]}
+          backTo="/proposals"
+          onBack={handleBack}
+          documentTitle={proposalData.projectTitle || undefined}
+          clientName={proposalData.clientName || undefined}
+          documentType="proposal"
+          status="draft"
+          autosave={autosave}
+          actions={
+            <>
+              <button
+                onClick={() => autosave.save()}
+                disabled={autosave.status === "saving" || isExporting}
+                className="px-3 md:px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50 min-h-[40px]"
+              >
+                {autosave.status === "saving" ? "Saving..." : "Save Draft"}
+              </button>
+              <button
+                onClick={async () => {
+                  setIsExporting(true);
+                  try {
+                    const fileName = `${proposalData.projectTitle.replace(/\s+/g, "-").toLowerCase()}-proposal.pdf`;
+                    await exportProposalToPDF(proposalData, fileName);
+                    toast.success("Proposal exported successfully!");
+                  } catch (error) {
+                    console.error("Export error:", error);
+                    toast.error("Failed to export proposal");
+                  } finally {
+                    setIsExporting(false);
+                  }
+                }}
+                disabled={isExporting}
+                className="hidden sm:flex px-3 md:px-4 py-2 text-sm bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors items-center gap-2 font-medium disabled:opacity-50 min-h-[40px]"
+              >
+                <Download className="h-4 w-4" />
+                {isExporting ? "Exporting..." : "Export PDF"}
+              </button>
+            </>
+          }
+        />
 
         {/* Professional Tab Navigation with Lucide Icons */}
         <div className="overflow-x-auto mb-3 md:mb-4 px-4 md:px-0 -mx-4 md:mx-0">

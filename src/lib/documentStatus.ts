@@ -1,26 +1,49 @@
 /**
  * Document Status System
- * 
- * Canonical status definitions with real behavior, transitions, and timestamps.
- * Every status must have a visual indicator, allowed transitions, and a purpose.
+ *
+ * Three concerns, separated:
+ *   1. StatusUIConfig  — badge colors, labels, dot classes (pure presentation)
+ *   2. StatusLifecycle — transitions, terminal flags, timestamp fields (business rules)
+ *   3. Resolver fns   — single source of truth for display status (derived logic)
+ *
+ * ## Status classification
+ *
+ * INVOICE (stored in DB: draft | sent | paid | cancelled)
+ *   - overdue is DERIVED: due_date < now && status === 'sent'
+ *   - viewed  is REMOVED: no tracking mechanism exists yet
+ *
+ * PROPOSAL (stored in DB: draft | sent | approved | rejected)
+ *   - expired      is DERIVED: valid_until < now && status === 'sent'
+ *   - viewed       is REMOVED: no tracking mechanism exists yet
+ *   - needs_review is REMOVED: no workflow triggers it
  */
 
-// ===== INVOICE STATUS =====
+// ===== TYPE DEFINITIONS =====
 
-export type InvoiceStatus = 'draft' | 'sent' | 'viewed' | 'overdue' | 'paid' | 'cancelled';
+/** Statuses that can be stored in the invoices.status column */
+export type InvoiceStoredStatus = 'draft' | 'sent' | 'paid' | 'cancelled';
 
-export interface StatusConfig {
+/** All statuses that can appear in the UI (stored + derived) */
+export type InvoiceDisplayStatus = InvoiceStoredStatus | 'overdue';
+
+/** Statuses that can be stored in the proposals.status column */
+export type ProposalStoredStatus = 'draft' | 'sent' | 'approved' | 'rejected';
+
+/** All statuses that can appear in the UI (stored + derived) */
+export type ProposalDisplayStatus = ProposalStoredStatus | 'expired';
+
+// ===== UI CONFIG =====
+
+export interface StatusUIConfig {
   label: string;
   labelId: string; // Bahasa Indonesia label
   color: 'warning' | 'primary' | 'info' | 'destructive' | 'success' | 'muted';
   bgClass: string;
   textClass: string;
   dotClass: string;
-  allowedTransitions: string[];
-  timestampField: string | null;
 }
 
-export const INVOICE_STATUSES: Record<InvoiceStatus, StatusConfig> = {
+export const INVOICE_STATUS_UI: Record<InvoiceDisplayStatus, StatusUIConfig> = {
   draft: {
     label: 'Draft',
     labelId: 'Draf',
@@ -28,8 +51,6 @@ export const INVOICE_STATUSES: Record<InvoiceStatus, StatusConfig> = {
     bgClass: 'bg-muted/50',
     textClass: 'text-muted-foreground',
     dotClass: 'bg-muted-foreground',
-    allowedTransitions: ['sent', 'cancelled'],
-    timestampField: null,
   },
   sent: {
     label: 'Sent',
@@ -38,18 +59,6 @@ export const INVOICE_STATUSES: Record<InvoiceStatus, StatusConfig> = {
     bgClass: 'bg-primary/10',
     textClass: 'text-primary',
     dotClass: 'bg-primary',
-    allowedTransitions: ['viewed', 'paid', 'overdue', 'cancelled'],
-    timestampField: 'sent_at',
-  },
-  viewed: {
-    label: 'Viewed',
-    labelId: 'Dilihat',
-    color: 'info',
-    bgClass: 'bg-blue-500/10',
-    textClass: 'text-blue-600 dark:text-blue-400',
-    dotClass: 'bg-blue-500',
-    allowedTransitions: ['paid', 'overdue', 'cancelled'],
-    timestampField: 'viewed_at',
   },
   overdue: {
     label: 'Overdue',
@@ -58,8 +67,6 @@ export const INVOICE_STATUSES: Record<InvoiceStatus, StatusConfig> = {
     bgClass: 'bg-destructive/10',
     textClass: 'text-destructive',
     dotClass: 'bg-destructive',
-    allowedTransitions: ['paid', 'cancelled'],
-    timestampField: null, // Derived from due_date
   },
   paid: {
     label: 'Paid',
@@ -68,8 +75,6 @@ export const INVOICE_STATUSES: Record<InvoiceStatus, StatusConfig> = {
     bgClass: 'bg-success/10',
     textClass: 'text-success',
     dotClass: 'bg-success',
-    allowedTransitions: [], // Terminal state
-    timestampField: 'paid_at',
   },
   cancelled: {
     label: 'Cancelled',
@@ -78,16 +83,10 @@ export const INVOICE_STATUSES: Record<InvoiceStatus, StatusConfig> = {
     bgClass: 'bg-muted/30',
     textClass: 'text-muted-foreground line-through',
     dotClass: 'bg-muted-foreground/50',
-    allowedTransitions: [], // Terminal state
-    timestampField: null,
   },
 };
 
-// ===== PROPOSAL STATUS =====
-
-export type ProposalStatus = 'draft' | 'needs_review' | 'sent' | 'viewed' | 'approved' | 'rejected' | 'expired';
-
-export const PROPOSAL_STATUSES: Record<ProposalStatus, StatusConfig> = {
+export const PROPOSAL_STATUS_UI: Record<ProposalDisplayStatus, StatusUIConfig> = {
   draft: {
     label: 'Draft',
     labelId: 'Draf',
@@ -95,18 +94,6 @@ export const PROPOSAL_STATUSES: Record<ProposalStatus, StatusConfig> = {
     bgClass: 'bg-muted/50',
     textClass: 'text-muted-foreground',
     dotClass: 'bg-muted-foreground',
-    allowedTransitions: ['needs_review', 'sent'],
-    timestampField: null,
-  },
-  needs_review: {
-    label: 'Needs Review',
-    labelId: 'Perlu Review',
-    color: 'warning',
-    bgClass: 'bg-warning/10',
-    textClass: 'text-warning',
-    dotClass: 'bg-warning',
-    allowedTransitions: ['sent', 'draft'],
-    timestampField: null,
   },
   sent: {
     label: 'Sent',
@@ -115,38 +102,6 @@ export const PROPOSAL_STATUSES: Record<ProposalStatus, StatusConfig> = {
     bgClass: 'bg-primary/10',
     textClass: 'text-primary',
     dotClass: 'bg-primary',
-    allowedTransitions: ['viewed', 'approved', 'rejected', 'expired'],
-    timestampField: 'sent_at',
-  },
-  viewed: {
-    label: 'Viewed',
-    labelId: 'Dilihat',
-    color: 'info',
-    bgClass: 'bg-blue-500/10',
-    textClass: 'text-blue-600 dark:text-blue-400',
-    dotClass: 'bg-blue-500',
-    allowedTransitions: ['approved', 'rejected', 'expired'],
-    timestampField: 'viewed_at',
-  },
-  approved: {
-    label: 'Approved',
-    labelId: 'Disetujui',
-    color: 'success',
-    bgClass: 'bg-success/10',
-    textClass: 'text-success',
-    dotClass: 'bg-success',
-    allowedTransitions: [], // Terminal state
-    timestampField: 'approved_at',
-  },
-  rejected: {
-    label: 'Rejected',
-    labelId: 'Ditolak',
-    color: 'destructive',
-    bgClass: 'bg-destructive/10',
-    textClass: 'text-destructive',
-    dotClass: 'bg-destructive',
-    allowedTransitions: ['draft'], // Can revise
-    timestampField: null,
   },
   expired: {
     label: 'Expired',
@@ -155,38 +110,177 @@ export const PROPOSAL_STATUSES: Record<ProposalStatus, StatusConfig> = {
     bgClass: 'bg-muted/30',
     textClass: 'text-muted-foreground',
     dotClass: 'bg-muted-foreground/50',
-    allowedTransitions: ['draft'], // Can revise
-    timestampField: 'expires_at',
+  },
+  approved: {
+    label: 'Approved',
+    labelId: 'Disetujui',
+    color: 'success',
+    bgClass: 'bg-success/10',
+    textClass: 'text-success',
+    dotClass: 'bg-success',
+  },
+  rejected: {
+    label: 'Rejected',
+    labelId: 'Ditolak',
+    color: 'destructive',
+    bgClass: 'bg-destructive/10',
+    textClass: 'text-destructive',
+    dotClass: 'bg-destructive',
   },
 };
 
-// ===== HELPERS =====
+// ===== LIFECYCLE RULES =====
 
-export function getInvoiceStatus(status: string): StatusConfig {
-  return INVOICE_STATUSES[status as InvoiceStatus] || INVOICE_STATUSES.draft;
+export interface StatusLifecycle {
+  allowedTransitions: string[];
+  isTerminal: boolean;
+  timestampField: string | null;
 }
 
-export function getProposalStatus(status: string): StatusConfig {
-  return PROPOSAL_STATUSES[status as ProposalStatus] || PROPOSAL_STATUSES.draft;
-}
+export const INVOICE_LIFECYCLE: Record<InvoiceStoredStatus, StatusLifecycle> = {
+  draft: {
+    allowedTransitions: ['sent', 'cancelled'],
+    isTerminal: false,
+    timestampField: null,
+  },
+  sent: {
+    allowedTransitions: ['paid', 'cancelled'],
+    isTerminal: false,
+    timestampField: 'sent_at',
+  },
+  paid: {
+    allowedTransitions: [],
+    isTerminal: true,
+    timestampField: 'paid_at',
+  },
+  cancelled: {
+    allowedTransitions: [],
+    isTerminal: true,
+    timestampField: null,
+  },
+};
 
-export function canTransition(
-  currentStatus: string,
-  targetStatus: string,
-  statusMap: Record<string, StatusConfig>
-): boolean {
-  const current = statusMap[currentStatus];
-  if (!current) return false;
-  return current.allowedTransitions.includes(targetStatus);
+export const PROPOSAL_LIFECYCLE: Record<ProposalStoredStatus, StatusLifecycle> = {
+  draft: {
+    allowedTransitions: ['sent'],
+    isTerminal: false,
+    timestampField: null,
+  },
+  sent: {
+    allowedTransitions: ['approved', 'rejected'],
+    isTerminal: false,
+    timestampField: 'sent_at',
+  },
+  approved: {
+    allowedTransitions: [],
+    isTerminal: true,
+    timestampField: 'approved_at',
+  },
+  rejected: {
+    allowedTransitions: ['draft'],
+    isTerminal: false,
+    timestampField: null,
+  },
+};
+
+// ===== RESOLVER FUNCTIONS =====
+// Single source of truth for display status. All consumers must use these.
+
+/**
+ * Resolve the display status for an invoice row.
+ * Derives 'overdue' from due_date + stored status.
+ */
+export function resolveInvoiceStatus(row: {
+  status: string;
+  due_date: string | null;
+}): InvoiceDisplayStatus {
+  const stored = row.status as InvoiceStoredStatus;
+
+  // Derive overdue: unpaid + past due date
+  if (stored === 'sent' && row.due_date) {
+    const dueDate = new Date(row.due_date);
+    const now = new Date();
+    if (dueDate < now) {
+      return 'overdue';
+    }
+  }
+
+  // Validate stored status, fallback to draft
+  if (stored in INVOICE_STATUS_UI) {
+    return stored as InvoiceDisplayStatus;
+  }
+  return 'draft';
 }
 
 /**
- * Format timestamp for display
- * Returns relative time (e.g., "2 hours ago") or date string
+ * Resolve the display status for a proposal row.
+ * Derives 'expired' from valid_until + stored status.
+ */
+export function resolveProposalStatus(row: {
+  status: string;
+  valid_until: string | null;
+}): ProposalDisplayStatus {
+  const stored = row.status as ProposalStoredStatus;
+
+  // Derive expired: sent + past valid_until
+  if (stored === 'sent' && row.valid_until) {
+    const expiresAt = new Date(row.valid_until);
+    const now = new Date();
+    if (expiresAt < now) {
+      return 'expired';
+    }
+  }
+
+  // Validate stored status, fallback to draft
+  if (stored in PROPOSAL_STATUS_UI) {
+    return stored as ProposalDisplayStatus;
+  }
+  return 'draft';
+}
+
+// ===== UI HELPERS =====
+
+/** Get UI config for an invoice display status */
+export function getInvoiceStatusUI(status: InvoiceDisplayStatus): StatusUIConfig {
+  return INVOICE_STATUS_UI[status] || INVOICE_STATUS_UI.draft;
+}
+
+/** Get UI config for a proposal display status */
+export function getProposalStatusUI(status: ProposalDisplayStatus): StatusUIConfig {
+  return PROPOSAL_STATUS_UI[status] || PROPOSAL_STATUS_UI.draft;
+}
+
+// ===== TRANSITION GUARDS =====
+
+/** Check if a manual transition is allowed for an invoice */
+export function canTransitionInvoice(
+  from: InvoiceStoredStatus,
+  to: InvoiceStoredStatus,
+): boolean {
+  const lifecycle = INVOICE_LIFECYCLE[from];
+  if (!lifecycle) return false;
+  return lifecycle.allowedTransitions.includes(to);
+}
+
+/** Check if a manual transition is allowed for a proposal */
+export function canTransitionProposal(
+  from: ProposalStoredStatus,
+  to: ProposalStoredStatus,
+): boolean {
+  const lifecycle = PROPOSAL_LIFECYCLE[from];
+  if (!lifecycle) return false;
+  return lifecycle.allowedTransitions.includes(to);
+}
+
+// ===== TIMESTAMP FORMATTING =====
+
+/**
+ * Format timestamp for display.
+ * Returns relative time (e.g., "2 hours ago") or date string.
  */
 export function formatTimestamp(dateStr: string | null): string {
   if (!dateStr) return '—';
-  
+
   const date = new Date(dateStr);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
@@ -198,7 +292,7 @@ export function formatTimestamp(dateStr: string | null): string {
   if (diffMins < 60) return `${diffMins} menit lalu`;
   if (diffHours < 24) return `${diffHours} jam lalu`;
   if (diffDays < 7) return `${diffDays} hari lalu`;
-  
+
   return date.toLocaleDateString('id-ID', {
     day: 'numeric',
     month: 'short',
@@ -207,7 +301,7 @@ export function formatTimestamp(dateStr: string | null): string {
 }
 
 /**
- * Format due date relative to now
+ * Format due date relative to now.
  */
 export function formatDueDate(dueDateStr: string | null): {
   text: string;
@@ -215,7 +309,7 @@ export function formatDueDate(dueDateStr: string | null): {
   isUrgent: boolean;
 } {
   if (!dueDateStr) return { text: 'Tanpa tenggat', isOverdue: false, isUrgent: false };
-  
+
   const dueDate = new Date(dueDateStr);
   const now = new Date();
   const diffMs = dueDate.getTime() - now.getTime();
@@ -237,10 +331,29 @@ export function formatDueDate(dueDateStr: string | null): {
   if (diffDays <= 7) {
     return { text: `${diffDays} hari lagi`, isOverdue: false, isUrgent: false };
   }
-  
+
   return {
     text: dueDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
     isOverdue: false,
     isUrgent: false,
   };
 }
+
+// ===== BACKWARD COMPATIBILITY =====
+// These aliases exist so files that haven't been updated yet don't break.
+// They will be removed once all consumers are migrated.
+
+/** @deprecated Use resolveInvoiceStatus() + getInvoiceStatusUI() instead */
+export function getInvoiceStatus(status: string): StatusUIConfig {
+  return INVOICE_STATUS_UI[status as InvoiceDisplayStatus] || INVOICE_STATUS_UI.draft;
+}
+
+/** @deprecated Use resolveProposalStatus() + getProposalStatusUI() instead */
+export function getProposalStatus(status: string): StatusUIConfig {
+  return PROPOSAL_STATUS_UI[status as ProposalDisplayStatus] || PROPOSAL_STATUS_UI.draft;
+}
+
+// Re-export old types for gradual migration
+export type InvoiceStatus = InvoiceDisplayStatus;
+export type ProposalStatus = ProposalDisplayStatus;
+export type StatusConfig = StatusUIConfig;

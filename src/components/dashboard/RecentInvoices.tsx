@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 import { formatIDR } from "@/lib/currency";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
+import { resolveInvoiceStatus, getInvoiceStatusUI } from "@/lib/documentStatus";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,13 +27,7 @@ interface RecentInvoicesProps {
   loading?: boolean;
 }
 
-const statusConfig = {
-  overdue: { icon: AlertTriangle, bgColor: "bg-destructive/10", iconColor: "text-destructive" },
-  pending: { icon: Clock, bgColor: "bg-warning/10", iconColor: "text-warning" },
-  sent: { icon: Clock, bgColor: "bg-warning/10", iconColor: "text-warning" },
-  paid: { icon: CheckCircle, bgColor: "bg-success/10", iconColor: "text-success" },
-  draft: { icon: Clock, bgColor: "bg-muted", iconColor: "text-muted-foreground" },
-};
+
 
 export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
   const navigate = useNavigate();
@@ -83,10 +79,9 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
       ) : (
         <div className="space-y-3">
           {invoices.map((invoice) => {
-            const isOverdue = invoice.status !== "paid" && invoice.due_date && new Date(invoice.due_date) < new Date();
-            const statusKey = isOverdue ? "overdue" : invoice.status;
-            const status = statusConfig[statusKey as keyof typeof statusConfig] || statusConfig.draft;
-            const StatusIcon = status.icon;
+            const resolvedStatus = resolveInvoiceStatus({ status: invoice.status, due_date: invoice.due_date });
+            const isOverdue = resolvedStatus === 'overdue';
+            const statusUI = getInvoiceStatusUI(resolvedStatus);
 
             return (
               <div
@@ -94,8 +89,10 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
                 className="p-4 rounded-xl bg-secondary/30 border border-border/50 hover:border-border transition-colors"
               >
                 <div className="flex items-start gap-4">
-                  <div className={cn("p-2.5 rounded-lg shrink-0", status.bgColor)}>
-                    <StatusIcon className={cn("w-4 h-4", status.iconColor)} />
+                  <div className={cn("p-2.5 rounded-lg shrink-0", statusUI.bgClass)}>
+                    {isOverdue ? <AlertTriangle className={cn("w-4 h-4", statusUI.textClass)} /> 
+                      : resolvedStatus === 'paid' ? <CheckCircle className={cn("w-4 h-4", statusUI.textClass)} />
+                      : <Clock className={cn("w-4 h-4", statusUI.textClass)} />}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2 mb-1">

@@ -14,6 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatIDR } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 import { SEOHead } from "@/components/seo/SEOHead";
+import { resolveInvoiceStatus, getInvoiceStatusUI } from "@/lib/documentStatus";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 
 interface InvoiceItem {
   id: string;
@@ -46,13 +48,7 @@ interface BusinessPaymentInfo {
   payment_notes: string | null;
 }
 
-const statusConfig = {
-  draft: { label: "Draft", color: "text-muted-foreground", bg: "bg-muted" },
-  pending: { label: "Pending", color: "text-warning", bg: "bg-warning/20" },
-  sent: { label: "Awaiting Payment", color: "text-warning", bg: "bg-warning/20" },
-  paid: { label: "Paid", color: "text-success", bg: "bg-success/20" },
-  overdue: { label: "Overdue", color: "text-destructive", bg: "bg-destructive/20" },
-};
+
 
 const serviceIcons: Record<number, typeof Search> = {
   0: Search,
@@ -160,9 +156,9 @@ export default function GuestPayment() {
     );
   }
 
-  const isOverdue = invoice.status !== "paid" && invoice.due_date && new Date(invoice.due_date) < new Date();
-  const statusKey = isOverdue ? "overdue" : invoice.status;
-  const status = statusConfig[statusKey as keyof typeof statusConfig] || statusConfig.pending;
+  const resolvedStatus = resolveInvoiceStatus({ status: invoice.status, due_date: invoice.due_date });
+  const isOverdue = resolvedStatus === 'overdue';
+  const statusUI = getInvoiceStatusUI(resolvedStatus);
 
   return (
     <>
@@ -261,9 +257,7 @@ export default function GuestPayment() {
                 <div>
                   <p className="text-muted-foreground">Invoice ID</p>
                   <p className="font-medium text-foreground font-mono">#{invoice.invoice_number}</p>
-                  <span className={cn("px-2 py-0.5 rounded text-xs font-medium", status.bg, status.color)}>
-                    {status.label}
-                  </span>
+                  <StatusBadge type="invoice" status={resolvedStatus} size="sm" />
                 </div>
               </div>
             </div>

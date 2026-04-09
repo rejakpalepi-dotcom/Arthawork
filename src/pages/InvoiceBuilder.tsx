@@ -1,27 +1,56 @@
-import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, CheckCircle, Save, Send, ZoomIn, ZoomOut, Zap, Eye, FileEdit } from "lucide-react";
+import { Save, Send, ZoomIn, ZoomOut, Eye, FileEdit } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { BuilderContextBar } from "@/components/layout/BuilderContextBar";
 import { Button } from "@/components/ui/button";
 import { InvoiceForm } from "@/components/invoice/InvoiceForm";
 import { InvoicePreview } from "@/components/invoice/InvoicePreview";
+import { SaveStatusIndicator } from "@/components/ui/SaveStatusIndicator";
 import { invoiceFormSchema, InvoiceFormData } from "@/components/invoice/types";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { useSendInvoiceEmail } from "@/hooks/useSendInvoiceEmail";
+import { useAutosave } from "@/hooks/useAutosave";
 import { cn } from "@/lib/utils";
+
+/**
+ * Serialize InvoiceFormData for JSON storage.
+ * Converts Date objects to ISO strings so they survive JSON round-trip.
+ */
+function serializeInvoiceData(data: InvoiceFormData): Record<string, unknown> {
+  return {
+    ...data,
+    issueDate: data.issueDate?.toISOString() ?? null,
+    dueDate: data.dueDate?.toISOString() ?? null,
+  };
+}
+
+/**
+ * Deserialize InvoiceFormData from JSON storage.
+ * Converts ISO strings back to Date objects.
+ */
+function deserializeInvoiceData(raw: Record<string, unknown>): Partial<InvoiceFormData> {
+  return {
+    ...raw,
+    issueDate: raw.issueDate ? new Date(raw.issueDate as string) : new Date(),
+    dueDate: raw.dueDate ? new Date(raw.dueDate as string) : null,
+  } as Partial<InvoiceFormData>;
+}
 
 export default function InvoiceBuilder() {
   const navigate = useNavigate();
+  const { id: editId } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [previewScale, setPreviewScale] = useState(1);
   const [mobileView, setMobileView] = useState<"form" | "preview">("form");
+  const [isLoading, setIsLoading] = useState(!!editId);
+  const [draftId, setDraftId] = useState<string | null>(editId ?? null);
   const { settings: businessSettings } = useBusinessSettings();
   const { sendInvoiceEmail, sending: sendingEmail } = useSendInvoiceEmail();
 
@@ -39,7 +68,7 @@ export default function InvoiceBuilder() {
       lineItems: [],
       taxRate: 0,
       notes: "",
-      currency: "IDR", // Default currency
+      currency: "IDR",
     },
   });
 
@@ -53,75 +82,205 @@ export default function InvoiceBuilder() {
     return { subtotal, taxAmount, total };
   }, [formData.lineItems, formData.taxRate]);
 
-  const handleSave = async (status: "draft" | "sent") => {
+  // ---------- Draft loading ----------
+  useEffect(() => {
+    if (!editId) return;
+
+    const loadDraft = async () => {
+      try {
+        const { data: invoice, error } = await supabase
+          .from("invoices")
+          .select("*, invoice_items(*)")
+          .eq("id", editId)
+          .single();
+
+        if (error || !invoice) {
+          toast.error("Invoice not found");
+          navigate("/invoices");
+          return;
+        }
+
+        // Try to restore from JSONB first
+        const jsonData = (invoice as Record<string, unknown>).invoice_data as Record<string, unknown> | null;
+
+        if (jsonData) {
+          const restored = deserializeInvoiceData(jsonData);
+          form.reset(restored as InvoiceFormData);
+        } else {
+          // Fallback: reconstruct from normalized fields + items
+          const client = (invoice as Record<string, unknown>).clients as Record<string, string> | null;
+          form.reset({
+            invoiceNumber: invoice.invoice_number,
+            clientId: invoice.client_id || null,
+            clientName: client?.name || "",
+            clientEmail: client?.email || "",
+            clientPhone: client?.phone || "",
+            clientAddress: client?.address || "",
+            issueDate: invoice.issue_date ? new Date(invoice.issue_date) : new Date(),
+            dueDate: invoice.due_date ? new Date(invoice.due_date) : null,
+            taxRate: Number(invoice.tax_rate) || 0,
+            notes: invoice.notes || "",
+            currency: "IDR",
+            lineItems: ((invoice as Record<string, unknown>).invoice_items as Array<Record<string, unknown>> || []).map(
+              (item) => ({
+                id: item.id as string,
+                description: item.description as string,
+                quantity: Number(item.quantity),
+                unitPrice: Number(item.unit_price),
+                total: Number(item.total),
+                serviceId: (item.service_id as string) || null,
+              })
+            ),
+          });
+        }
+      } catch (err) {
+        console.error("Error loading invoice draft:", err);
+        toast.error("Failed to load invoice");
+        navigate("/invoices");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDraft();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editId]);
+
+  // ---------- Autosave handler ----------
+  const handleAutosave = useCallback(
+    async (data: InvoiceFormData) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const currentSubtotal = data.lineItems.reduce((sum, item) => sum + item.total, 0);
+      const currentTaxAmount = currentSubtotal * (data.taxRate / 100);
+      const currentTotal = currentSubtotal + currentTaxAmount;
+
+      const invoicePayload = {
+        user_id: user.id,
+        invoice_number: data.invoiceNumber || `INV-${Date.now()}`,
+        client_id: data.clientId || null,
+        issue_date: data.issueDate.toISOString().split("T")[0],
+        due_date: data.dueDate ? data.dueDate.toISOString().split("T")[0] : null,
+        subtotal: currentSubtotal,
+        tax_rate: data.taxRate,
+        tax_amount: currentTaxAmount,
+        total: currentTotal,
+        notes: data.notes || null,
+        status: "draft",
+        invoice_data: serializeInvoiceData(data),
+      };
+
+      if (draftId) {
+        // UPDATE existing
+        const { error } = await supabase
+          .from("invoices")
+          .update(invoicePayload)
+          .eq("id", draftId);
+
+        if (error) throw new Error(error.message);
+
+        // Sync line items: delete & re-insert
+        const validItems = data.lineItems.filter((item) => item.description.trim() !== "");
+        await supabase.from("invoice_items").delete().eq("invoice_id", draftId);
+
+        if (validItems.length > 0) {
+          const itemRows = validItems.map((item) => ({
+            invoice_id: draftId,
+            service_id: item.serviceId || null,
+            description: item.description,
+            quantity: item.quantity,
+            unit_price: item.unitPrice,
+            total: item.total,
+          }));
+          const { error: itemsError } = await supabase
+            .from("invoice_items")
+            .insert(itemRows);
+          if (itemsError) throw new Error(itemsError.message);
+        }
+      } else {
+        // INSERT new
+        const { data: newInvoice, error } = await supabase
+          .from("invoices")
+          .insert(invoicePayload)
+          .select()
+          .single();
+
+        if (error) throw new Error(error.message);
+
+        setDraftId(newInvoice.id);
+
+        // Insert line items
+        const validItems = data.lineItems.filter((item) => item.description.trim() !== "");
+        if (validItems.length > 0) {
+          const itemRows = validItems.map((item) => ({
+            invoice_id: newInvoice.id,
+            service_id: item.serviceId || null,
+            description: item.description,
+            quantity: item.quantity,
+            unit_price: item.unitPrice,
+            total: item.total,
+          }));
+          await supabase.from("invoice_items").insert(itemRows);
+        }
+
+        // Redirect to edit URL so further saves are updates
+        navigate(`/invoices/${newInvoice.id}/edit`, { replace: true });
+      }
+
+      // Invalidate queries
+      queryClient.invalidateQueries({ queryKey: ["invoices"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+    [draftId, navigate, queryClient]
+  );
+
+  // Autosave integration
+  const autosave = useAutosave({
+    data: formData,
+    onSave: handleAutosave,
+    enabled: !isLoading,
+    debounceMs: 2000,
+  });
+
+  // After loading a draft, mark the autosave as clean
+  useEffect(() => {
+    if (!isLoading && editId) {
+      // Small delay to let form.reset propagate
+      const timer = setTimeout(() => autosave.markClean(), 100);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, editId]);
+
+  // ---------- Send invoice ----------
+  const handleSend = async () => {
     const data = form.getValues();
-    const setLoading = status === "draft" ? setIsSaving : setIsSubmitting;
-    setLoading(true);
+    setIsSubmitting(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("You must be logged in to create an invoice");
+      // Save first to make sure everything is persisted
+      await handleAutosave(data);
+
+      const currentId = draftId;
+      if (!currentId) {
+        toast.error("Please save the invoice first");
+        setIsSubmitting(false);
         return;
       }
 
-      // Validate line items
-      const validItems = data.lineItems.filter(item => item.description.trim() !== "");
-      if (validItems.length === 0 && status === "sent") {
-        toast.error("Please add at least one item with a description");
-        setLoading(false);
-        return;
-      }
-
-      // Validate client email for sending (optional - just warn if missing)
-      if (status === "sent" && !data.clientEmail) {
-        // Email not required for now - just a warning
-        console.log("Note: Client email not provided, skipping email notification");
-      }
-
-      // Create invoice
-      const { data: invoice, error: invoiceError } = await supabase
+      // Update status to sent
+      const { error: statusError } = await supabase
         .from("invoices")
-        .insert({
-          user_id: user.id,
-          invoice_number: data.invoiceNumber || `INV-${Date.now()}`,
-          client_id: data.clientId || null,
-          issue_date: data.issueDate.toISOString().split("T")[0],
-          due_date: data.dueDate ? data.dueDate.toISOString().split("T")[0] : null,
-          subtotal: subtotal,
-          tax_rate: data.taxRate,
-          tax_amount: taxAmount,
-          total: total,
-          notes: data.notes || null,
-          status: status, // Save directly with the status
-        })
-        .select()
-        .single();
+        .update({ status: "sent", sent_at: new Date().toISOString() })
+        .eq("id", currentId);
 
-      if (invoiceError) throw invoiceError;
+      if (statusError) throw new Error(statusError.message);
 
-      // Create invoice items
-      if (validItems.length > 0) {
-        const invoiceItems = validItems.map(item => ({
-          invoice_id: invoice.id,
-          service_id: item.serviceId || null,
-          description: item.description,
-          quantity: item.quantity,
-          unit_price: item.unitPrice,
-          total: item.total,
-        }));
-
-        const { error: itemsError } = await supabase
-          .from("invoice_items")
-          .insert(invoiceItems);
-
-        if (itemsError) throw itemsError;
-      }
-
-      // Send invoice email if client has email address
-      if (status === "sent" && data.clientEmail) {
+      // Send email if client has email
+      if (data.clientEmail) {
         const emailResult = await sendInvoiceEmail({
-          invoiceId: invoice.id,
+          invoiceId: currentId,
           recipientEmail: data.clientEmail,
           recipientName: data.clientName,
         });
@@ -131,75 +290,91 @@ export default function InvoiceBuilder() {
             description: `Email delivered to ${data.clientEmail}`,
           });
         } else {
-          // Email failed but invoice was saved
           toast.warning("Invoice saved but email failed", {
             description: emailResult.error || "Could not send email",
           });
         }
-      } else if (status === "sent" && !data.clientEmail) {
+      } else {
         toast.success("✅ Invoice marked as sent", {
-          description: "No client email provided - invoice saved without sending email",
+          description: "No client email provided — invoice saved without sending email",
         });
       }
 
-      // Invalidate dashboard queries for real-time sync
-      queryClient.invalidateQueries({ queryKey: ['invoices'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-
-      if (status === "draft") {
-        toast.success("💾 Draft saved!");
-      }
+      queryClient.invalidateQueries({ queryKey: ["invoices"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       navigate("/invoices");
     } catch (error: unknown) {
-      console.error("Error creating invoice:", error);
-      const message = error instanceof Error ? error.message : "Failed to create invoice";
+      console.error("Error sending invoice:", error);
+      const message = error instanceof Error ? error.message : "Failed to send invoice";
       toast.error(message);
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
-  const onSubmit = async (data: InvoiceFormData) => {
-    await handleSave("sent");
+  // ---------- Back navigation with unsaved changes guard ----------
+  const handleBack = () => {
+    if (autosave.isDirty || autosave.status === "unsaved" || autosave.status === "saving") {
+      const confirmed = window.confirm(
+        "You have unsaved changes. Are you sure you want to leave?"
+      );
+      if (!confirmed) return;
+    }
+    navigate(-1);
   };
+
+  const onSubmit = async () => {
+    await handleSend();
+  };
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-full">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <span className="text-sm text-muted-foreground">Loading invoice...</span>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
       <div className="flex flex-col h-full">
-        {/* Top Header Bar */}
-        <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-          <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4">
-            <div className="flex items-center gap-2 md:gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="h-9 w-9 md:h-10 md:w-10">
-                <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
-              </Button>
-              <div className="flex items-center gap-2 md:gap-3">
-                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary flex items-center justify-center">
-                  <Zap className="w-4 h-4 md:w-6 md:h-6 text-primary-foreground" />
-                </div>
-                <div className="hidden sm:block">
-                  <h1 className="text-base md:text-lg font-semibold text-foreground">Invoice Builder</h1>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <CheckCircle className="w-3.5 h-3.5 text-success" />
-                    All changes saved
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 md:gap-3">
+        {/* Builder Context Bar */}
+        <BuilderContextBar
+          breadcrumbs={[
+            { label: "Dokumen" },
+            { label: "Invoices", href: "/invoices" },
+            { label: editId ? "Edit Invoice" : "New Invoice" },
+          ]}
+          backTo="/invoices"
+          onBack={handleBack}
+          documentTitle={formData.invoiceNumber || undefined}
+          clientName={formData.clientName || undefined}
+          documentType="invoice"
+          status="draft"
+          autosave={autosave}
+          actions={
+            <>
               <Button
                 variant="outline"
-                onClick={() => handleSave("draft")}
-                disabled={isSaving}
+                onClick={() => autosave.save()}
+                disabled={autosave.status === "saving"}
                 className="gap-2 text-xs md:text-sm min-h-[40px] md:min-h-[44px] px-3 md:px-4"
               >
                 <Save className="w-4 h-4" />
-                <span className="hidden sm:inline">{isSaving ? "Saving..." : "Save Draft"}</span>
-                <span className="sm:hidden">{isSaving ? "..." : "Save"}</span>
+                <span className="hidden sm:inline">
+                  {autosave.status === "saving" ? "Saving..." : "Save Draft"}
+                </span>
+                <span className="sm:hidden">
+                  {autosave.status === "saving" ? "..." : "Save"}
+                </span>
               </Button>
               <Button
-                onClick={() => handleSave("sent")}
+                onClick={handleSend}
                 disabled={isSubmitting}
                 className="gap-2 text-xs md:text-sm min-h-[40px] md:min-h-[44px] px-3 md:px-4"
               >
@@ -207,34 +382,9 @@ export default function InvoiceBuilder() {
                 <span className="hidden sm:inline">{isSubmitting ? "Sending..." : "Send Invoice"}</span>
                 <span className="sm:hidden">{isSubmitting ? "..." : "Send"}</span>
               </Button>
-            </div>
-          </div>
-
-          {/* Step Indicator - Hidden on mobile */}
-          <div className="hidden md:block px-6 pb-4">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-success text-success-foreground text-xs font-medium flex items-center justify-center">
-                  1
-                </span>
-                <span className="text-sm text-muted-foreground">Project Details</span>
-              </div>
-              <div className="h-px w-8 bg-border" />
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-medium flex items-center justify-center">
-                  2
-                </span>
-                <span className="text-sm text-foreground font-medium">Build Invoice</span>
-              </div>
-              <div className="h-px w-8 bg-border" />
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-muted text-muted-foreground text-xs font-medium flex items-center justify-center">
-                  3
-                </span>
-                <span className="text-sm text-muted-foreground">Review & Send</span>
-              </div>
-            </div>
-          </div>
+            </>
+          }
+        />
 
           {/* Mobile View Toggle */}
           <div className="flex lg:hidden border-t border-border">
@@ -263,7 +413,6 @@ export default function InvoiceBuilder() {
               Preview
             </button>
           </div>
-        </div>
 
         {/* Main Content */}
         <div className="flex-1 overflow-hidden">

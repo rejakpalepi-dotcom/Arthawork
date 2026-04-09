@@ -253,10 +253,13 @@ export type Database = {
           created_at: string
           due_date: string | null
           id: string
+          invoice_data: Json | null
           invoice_number: string
           issue_date: string
           notes: string | null
+          paid_at: string | null
           payment_token: string | null
+          sent_at: string | null
           status: string
           subtotal: number
           tax_amount: number | null
@@ -264,16 +267,20 @@ export type Database = {
           total: number
           updated_at: string
           user_id: string
+          viewed_at: string | null
         }
         Insert: {
           client_id?: string | null
           created_at?: string
           due_date?: string | null
           id?: string
+          invoice_data?: Json | null
           invoice_number: string
           issue_date?: string
           notes?: string | null
+          paid_at?: string | null
           payment_token?: string | null
+          sent_at?: string | null
           status?: string
           subtotal?: number
           tax_amount?: number | null
@@ -281,16 +288,20 @@ export type Database = {
           total?: number
           updated_at?: string
           user_id: string
+          viewed_at?: string | null
         }
         Update: {
           client_id?: string | null
           created_at?: string
           due_date?: string | null
           id?: string
+          invoice_data?: Json | null
           invoice_number?: string
           issue_date?: string
           notes?: string | null
+          paid_at?: string | null
           payment_token?: string | null
+          sent_at?: string | null
           status?: string
           subtotal?: number
           tax_amount?: number | null
@@ -298,6 +309,7 @@ export type Database = {
           total?: number
           updated_at?: string
           user_id?: string
+          viewed_at?: string | null
         }
         Relationships: [
           {
@@ -441,40 +453,55 @@ export type Database = {
       }
       proposals: {
         Row: {
+          approved_at: string | null
           client_id: string | null
           created_at: string
           description: string | null
+          expires_at: string | null
           id: string
+          proposal_data: Json | null
+          sent_at: string | null
           status: string
           title: string
           total: number
           updated_at: string
           user_id: string
           valid_until: string | null
+          viewed_at: string | null
         }
         Insert: {
+          approved_at?: string | null
           client_id?: string | null
           created_at?: string
           description?: string | null
+          expires_at?: string | null
           id?: string
+          proposal_data?: Json | null
+          sent_at?: string | null
           status?: string
           title: string
           total?: number
           updated_at?: string
           user_id: string
           valid_until?: string | null
+          viewed_at?: string | null
         }
         Update: {
+          approved_at?: string | null
           client_id?: string | null
           created_at?: string
           description?: string | null
+          expires_at?: string | null
           id?: string
+          proposal_data?: Json | null
+          sent_at?: string | null
           status?: string
           title?: string
           total?: number
           updated_at?: string
           user_id?: string
           valid_until?: string | null
+          viewed_at?: string | null
         }
         Relationships: [
           {

@@ -167,6 +167,14 @@ const App = () => {
                         }
                       />
                       <Route
+                        path="/invoices/:id/edit"
+                        element={
+                          <ProtectedRoute>
+                            <InvoiceBuilder />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
                         path="/settings"
                         element={
                           <ProtectedRoute>
