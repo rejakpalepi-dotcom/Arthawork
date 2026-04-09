@@ -16,6 +16,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
+        heading: ["Space Grotesk", "system-ui", "sans-serif"],
+        serif: ["Source Serif 4", "Georgia", "serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       colors: {
@@ -43,6 +45,10 @@ export default {
         warning: {
           DEFAULT: "hsl(var(--warning))",
           foreground: "hsl(var(--warning-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",

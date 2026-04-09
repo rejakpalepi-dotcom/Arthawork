@@ -514,7 +514,7 @@ export default function LandingPage() {
                         }}
                     />
                     <motion.div
-                        className="absolute top-40 -right-40 w-96 h-96 bg-purple-500/15 rounded-full blur-[120px] pointer-events-none"
+                        className="absolute top-40 -right-40 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none"
                         animate={{
                             scale: [1.2, 1, 1.2],
                             opacity: [0.2, 0.4, 0.2]
@@ -548,7 +548,7 @@ export default function LandingPage() {
                     >
                         {/* Animated Headline - wider container */}
                         <motion.h1
-                            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 md:mb-6"
+                            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-heading tracking-tight mb-4 md:mb-6"
                             variants={fadeInUp}
                         >
                             {animatedWords.map((word, index) => (
@@ -966,7 +966,7 @@ export default function LandingPage() {
                                     <h3 className="text-xl font-bold text-foreground mb-2">{tier.name}</h3>
                                     <p className="text-muted-foreground text-sm mb-4">{tier.description}</p>
                                     <div className="mb-6">
-                                        <span className="text-3xl font-bold text-foreground">{tier.price}</span>
+                                        <span className="text-3xl font-bold font-mono text-foreground">{tier.price}</span>
                                         <span className="text-muted-foreground">{tier.period}</span>
                                     </div>
                                     <ul className="space-y-3 mb-6">
@@ -1072,7 +1072,7 @@ export default function LandingPage() {
                 {/* Final CTA */}
                 <section className="py-16 px-4 bg-card/30 relative overflow-hidden">
                     {/* Gradient Mesh */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-cyan-500/5 pointer-events-none" />
                     <motion.div
                         className="absolute top-10 right-10 w-40 h-40 bg-primary/10 rounded-full blur-[60px] pointer-events-none"
                         animate={{ scale: [1, 1.3, 1] }}

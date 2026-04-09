@@ -35,14 +35,29 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-const navItems = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-  { label: "Clients", icon: Users, path: "/clients" },
-  { label: "Services", icon: Briefcase, path: "/services" },
-  { label: "Proposals", icon: FileText, path: "/proposals" },
-  { label: "Contracts", icon: FileSignature, path: "/contracts" },
-  { label: "Projects", icon: FolderKanban, path: "/projects" },
-  { label: "Invoices", icon: Receipt, path: "/invoices" },
+const navGroups = [
+  {
+    label: null, // No label for primary items
+    items: [
+      { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+    ],
+  },
+  {
+    label: "Dokumen",
+    items: [
+      { label: "Invoices", icon: Receipt, path: "/invoices" },
+      { label: "Proposals", icon: FileText, path: "/proposals" },
+      { label: "Contracts", icon: FileSignature, path: "/contracts" },
+    ],
+  },
+  {
+    label: "Kelola",
+    items: [
+      { label: "Clients", icon: Users, path: "/clients" },
+      { label: "Services", icon: Briefcase, path: "/services" },
+      { label: "Projects", icon: FolderKanban, path: "/projects" },
+    ],
+  },
 ];
 
 const bottomItems = [
@@ -89,7 +104,7 @@ export function Sidebar() {
             className="h-8 w-8 shrink-0 object-contain"
           />
           {!collapsed && (
-            <span className="font-bold text-foreground whitespace-nowrap tracking-tight">Artha</span>
+            <span className="font-bold font-heading text-foreground whitespace-nowrap tracking-tight">Artha</span>
           )}
         </div>
         <button
@@ -119,23 +134,35 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={cn(
-                "sidebar-item",
-                isActive ? "sidebar-item-active" : "sidebar-item-inactive",
-                collapsed && "justify-center px-2"
-              )}
-            >
-              <item.icon className="w-5 h-5 shrink-0" />
-              {!collapsed && <span>{item.label}</span>}
-            </NavLink>
-          );
-        })}
+        {navGroups.map((group, groupIndex) => (
+          <div key={groupIndex} className={groupIndex > 0 ? "mt-4" : ""}>
+            {group.label && !collapsed && (
+              <p className="px-3 mb-1.5 text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-wider">
+                {group.label}
+              </p>
+            )}
+            {groupIndex > 0 && collapsed && (
+              <div className="mx-2 mb-2 border-t border-sidebar-border" />
+            )}
+            {group.items.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  className={cn(
+                    "sidebar-item",
+                    isActive ? "sidebar-item-active" : "sidebar-item-inactive",
+                    collapsed && "justify-center px-2"
+                  )}
+                >
+                  <item.icon className="w-5 h-5 shrink-0" />
+                  {!collapsed && <span>{item.label}</span>}
+                </NavLink>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
       {/* Bottom Section */}

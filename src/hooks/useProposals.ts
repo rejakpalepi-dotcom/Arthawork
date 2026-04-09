@@ -11,6 +11,10 @@ export interface Proposal {
   status: string;
   created_at: string;
   updated_at: string;
+  sent_at: string | null;
+  viewed_at: string | null;
+  approved_at: string | null;
+  expires_at: string | null;
 }
 
 export interface ProposalStats {
@@ -54,7 +58,7 @@ export function useProposals() {
 
     const { data, error: fetchError } = await supabase
       .from("proposals")
-      .select("id, title, description, total, status, created_at, updated_at, clients(name)")
+      .select("id, title, description, total, status, created_at, updated_at, sent_at, viewed_at, approved_at, expires_at, clients(name)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -68,6 +72,7 @@ export function useProposals() {
       const mappedProposals = data.map((p) => {
         const client = p.clients as { name?: string } | null;
         const clientName = client?.name || "Unknown Client";
+        const row = p as Record<string, unknown>;
         return {
           id: p.id,
           title: p.title,
@@ -78,6 +83,10 @@ export function useProposals() {
           status: p.status,
           created_at: p.created_at,
           updated_at: p.updated_at,
+          sent_at: (row.sent_at as string) || null,
+          viewed_at: (row.viewed_at as string) || null,
+          approved_at: (row.approved_at as string) || null,
+          expires_at: (row.expires_at as string) || null,
         };
       });
 
@@ -145,9 +154,25 @@ export function useProposals() {
 
 export function useProposalMutations() {
   const updateStatus = useCallback(async (proposalId: string, newStatus: string) => {
+    // Set the appropriate timestamp based on the new status
+    const timestampFields: Record<string, string> = {};
+    const now = new Date().toISOString();
+
+    switch (newStatus) {
+      case 'sent':
+        timestampFields.sent_at = now;
+        break;
+      case 'viewed':
+        timestampFields.viewed_at = now;
+        break;
+      case 'approved':
+        timestampFields.approved_at = now;
+        break;
+    }
+
     const { error } = await supabase
       .from("proposals")
-      .update({ status: newStatus })
+      .update({ status: newStatus, ...timestampFields })
       .eq("id", proposalId);
 
     if (error) throw new Error(error.message);

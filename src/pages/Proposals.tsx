@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { escapeHtml } from "@/lib/sanitize";
+import { getProposalStatus, formatTimestamp } from "@/lib/documentStatus";
 
 interface Proposal {
   id: string;
@@ -30,6 +31,9 @@ interface Proposal {
   status: string;
   created_at: string;
   updated_at: string;
+  sent_at?: string | null;
+  viewed_at?: string | null;
+  approved_at?: string | null;
 }
 
 interface ProposalStats {
@@ -41,29 +45,10 @@ interface ProposalStats {
   newThisWeek: number;
 }
 
-const statusConfig: Record<string, { label: string; icon: typeof FileText; color: string; bgColor: string }> = {
-  draft: { label: "Draft", icon: FileText, color: "text-muted-foreground", bgColor: "bg-muted" },
-  sent: { label: "Sent", icon: Send, color: "text-primary", bgColor: "bg-primary/20" },
-  approved: { label: "Accepted", icon: CheckCircle, color: "text-success", bgColor: "bg-success/20" },
-  rejected: { label: "Rejected", icon: AlertCircle, color: "text-destructive", bgColor: "bg-destructive/20" },
-  overdue: { label: "Overdue", icon: AlertCircle, color: "text-warning", bgColor: "bg-warning/20" },
-};
-
 const tabs = ["All Proposals", "Drafts", "Sent", "Accepted"];
 
 function getTimeAgo(date: string): string {
-  const now = new Date();
-  const past = new Date(date);
-  const diffMs = now.getTime() - past.getTime();
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffHours < 1) return "Just now";
-  if (diffHours < 24) return `${diffHours} hours ago`;
-  if (diffDays === 1) return "yesterday";
-  if (diffDays < 7) return `${diffDays} days ago`;
-  if (diffDays < 14) return "1 week ago";
-  return `${Math.floor(diffDays / 7)} weeks ago`;
+  return formatTimestamp(date);
 }
 
 function getInitials(name: string): string {
@@ -101,7 +86,7 @@ export default function Proposals() {
 
     const { data, error } = await supabase
       .from("proposals")
-      .select("id, title, description, total, status, created_at, updated_at, clients(name)")
+      .select("id, title, description, total, status, created_at, updated_at, sent_at, viewed_at, approved_at, clients(name)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -109,6 +94,7 @@ export default function Proposals() {
       const mappedProposals = data.map((p) => {
         const client = p.clients as { name?: string } | null;
         const clientName = client?.name || "Unknown Client";
+        const row = p as Record<string, unknown>;
         return {
           id: p.id,
           title: p.title,
@@ -119,6 +105,9 @@ export default function Proposals() {
           status: p.status,
           created_at: p.created_at,
           updated_at: p.updated_at,
+          sent_at: (row.sent_at as string) || null,
+          viewed_at: (row.viewed_at as string) || null,
+          approved_at: (row.approved_at as string) || null,
         };
       });
 
@@ -185,9 +174,22 @@ export default function Proposals() {
 
   const handleStatusUpdate = async (proposalId: string, newStatus: string) => {
     try {
+      // Set the appropriate timestamp based on the new status
+      const timestampFields: Record<string, string> = {};
+      const now = new Date().toISOString();
+
+      switch (newStatus) {
+        case 'sent':
+          timestampFields.sent_at = now;
+          break;
+        case 'approved':
+          timestampFields.approved_at = now;
+          break;
+      }
+
       const { error } = await supabase
         .from("proposals")
-        .update({ status: newStatus })
+        .update({ status: newStatus, ...timestampFields })
         .eq("id", proposalId);
 
       if (error) throw error;
@@ -489,8 +491,7 @@ export default function Proposals() {
               : "space-y-4"
           )}>
             {filteredProposals.map((proposal, index) => {
-              const status = statusConfig[proposal.status] || statusConfig.draft;
-              const StatusIcon = status.icon;
+              const status = getProposalStatus(proposal.status);
               const isEdited = proposal.updated_at !== proposal.created_at;
               const timeLabel = isEdited
                 ? `Edited ${getTimeAgo(proposal.updated_at)}`
@@ -579,11 +580,11 @@ export default function Proposals() {
                     </div>
                     <span className={cn(
                       "px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5",
-                      status.bgColor,
-                      status.color
+                      status.bgClass,
+                      status.textClass
                     )}>
-                      <StatusIcon className="w-3.5 h-3.5" />
-                      {status.label}
+                      <span className={cn("w-1.5 h-1.5 rounded-full", status.dotClass)} />
+                      {status.labelId}
                     </span>
                   </div>
                 </div>

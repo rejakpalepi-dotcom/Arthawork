@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,7 +8,6 @@ import { ThemeProvider } from "next-themes";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useSessionPersistence } from "@/hooks/useSessionPersistence";
 import { SupportWidget } from "@/components/support/SupportWidget";
-import { SplashScreen } from "@/components/SplashScreen";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Loader2 } from "lucide-react";
 
@@ -62,20 +61,8 @@ function SessionWrapper({ children }: { children: React.ReactNode }) {
 }
 
 const App = () => {
-  const [showSplash, setShowSplash] = useState(() => {
-    // Only show splash on first visit in this session
-    const hasSeenSplash = sessionStorage.getItem("artha_splash_shown");
-    return !hasSeenSplash;
-  });
-
-  const handleSplashComplete = () => {
-    sessionStorage.setItem("artha_splash_shown", "true");
-    setShowSplash(false);
-  };
-
   return (
     <>
-      {showSplash && <SplashScreen onComplete={handleSplashComplete} minDuration={2500} />}
       <ErrorBoundary>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <QueryClientProvider client={queryClient}>

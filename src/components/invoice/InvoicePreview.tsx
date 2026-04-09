@@ -4,6 +4,7 @@ import { formatCurrency, getCurrency } from "@/lib/currencies";
 import { InvoiceFormData } from "./types";
 import { cn } from "@/lib/utils";
 import { BusinessSettings } from "@/hooks/useBusinessSettings";
+import { getInvoiceStatus, formatDueDate } from "@/lib/documentStatus";
 
 interface InvoicePreviewProps {
   data: InvoiceFormData;
@@ -11,9 +12,10 @@ interface InvoicePreviewProps {
   taxAmount: number;
   total: number;
   businessSettings?: BusinessSettings;
+  currentStatus?: string;
 }
 
-export function InvoicePreview({ data, subtotal, taxAmount, total, businessSettings }: InvoicePreviewProps) {
+export function InvoicePreview({ data, subtotal, taxAmount, total, businessSettings, currentStatus = 'draft' }: InvoicePreviewProps) {
   const businessName = businessSettings?.business_name || "Your Business Name";
   const businessAddress = businessSettings?.address || "Your Business Address";
   const businessEmail = businessSettings?.email || "Your Business Email";
@@ -21,6 +23,9 @@ export function InvoicePreview({ data, subtotal, taxAmount, total, businessSetti
   const bankName = businessSettings?.bank_name || "Your Bank";
   const accountNumber = businessSettings?.account_number || "XXXX XXXX XXX";
   const accountName = businessSettings?.account_name || "Account Name";
+
+  const statusConfig = getInvoiceStatus(currentStatus);
+  const dueDateInfo = formatDueDate(data.dueDate ? data.dueDate.toISOString() : null);
 
   return (
     <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-xl">
@@ -53,9 +58,22 @@ export function InvoicePreview({ data, subtotal, taxAmount, total, businessSetti
             <p className="text-sm text-muted-foreground mt-2">
               Issued: {data.issueDate ? format(data.issueDate, "MMM d, yyyy") : "Not set"}
             </p>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-warning/20 text-warning">
-                Draft
+            {dueDateInfo.text && (
+              <p className={cn(
+                "text-xs mt-1",
+                dueDateInfo.isOverdue ? "text-destructive font-medium" : dueDateInfo.isUrgent ? "text-warning font-medium" : "text-muted-foreground"
+              )}>
+                Due: {dueDateInfo.text}
+              </p>
+            )}
+            <div className="flex items-center gap-2 mt-2 justify-end">
+              <span className={cn(
+                "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium",
+                statusConfig.bgClass,
+                statusConfig.textClass
+              )}>
+                <span className={cn("w-1.5 h-1.5 rounded-full", statusConfig.dotClass)} />
+                {statusConfig.labelId}
               </span>
               <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-primary/20 text-primary">
                 {getCurrency(data.currency || "IDR").code}

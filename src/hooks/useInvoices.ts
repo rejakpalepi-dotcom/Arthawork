@@ -16,6 +16,11 @@ export interface Invoice {
     tax_rate: number | null;
     tax_amount: number | null;
     notes: string | null;
+    updated_at: string | null;
+    sent_at: string | null;
+    viewed_at: string | null;
+    paid_at: string | null;
+    created_at: string;
 }
 
 export interface InvoiceItem {
@@ -41,7 +46,7 @@ export function useInvoices() {
 
         const { data, error: fetchError } = await supabase
             .from("invoices")
-            .select("id, invoice_number, total, status, due_date, issue_date, subtotal, tax_rate, tax_amount, notes, clients(name, email, phone, address)")
+            .select("id, invoice_number, total, status, due_date, issue_date, subtotal, tax_rate, tax_amount, notes, created_at, updated_at, sent_at, viewed_at, paid_at, clients(name, email, phone, address)")
             .eq("user_id", user.id)
             .order("created_at", { ascending: false });
 
@@ -75,6 +80,11 @@ export function useInvoices() {
                     tax_rate: inv.tax_rate,
                     tax_amount: inv.tax_amount ? Number(inv.tax_amount) : null,
                     notes: inv.notes,
+                    created_at: inv.created_at,
+                    updated_at: (inv as Record<string, unknown>).updated_at as string | null,
+                    sent_at: (inv as Record<string, unknown>).sent_at as string | null,
+                    viewed_at: (inv as Record<string, unknown>).viewed_at as string | null,
+                    paid_at: (inv as Record<string, unknown>).paid_at as string | null,
                 };
             }));
         }
@@ -137,16 +147,32 @@ export function useInvoiceMutations() {
     const markAsPaid = useCallback(async (invoiceId: string) => {
         const { error } = await supabase
             .from("invoices")
-            .update({ status: "paid" })
+            .update({ status: "paid", paid_at: new Date().toISOString() })
             .eq("id", invoiceId);
 
         if (error) throw new Error(error.message);
     }, []);
 
     const updateStatus = useCallback(async (invoiceId: string, status: string) => {
+        // Set the appropriate timestamp based on the new status
+        const timestampFields: Record<string, string> = {};
+        const now = new Date().toISOString();
+
+        switch (status) {
+            case 'sent':
+                timestampFields.sent_at = now;
+                break;
+            case 'viewed':
+                timestampFields.viewed_at = now;
+                break;
+            case 'paid':
+                timestampFields.paid_at = now;
+                break;
+        }
+
         const { error } = await supabase
             .from("invoices")
-            .update({ status })
+            .update({ status, ...timestampFields })
             .eq("id", invoiceId);
 
         if (error) throw new Error(error.message);

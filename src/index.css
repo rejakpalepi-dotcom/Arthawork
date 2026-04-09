@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -22,10 +22,12 @@
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --success: 142 72% 38%;
+    --success: 152 69% 31%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 10%;
+    --info: 210 100% 50%;
+    --info-foreground: 0 0% 100%;
     --border: 214 18% 90%;
     --input: 214 18% 90%;
     --ring: 187 100% 38%;
@@ -62,10 +64,12 @@
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --success: 142 76% 36%;
+    --success: 152 76% 36%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 10%;
+    --info: 210 100% 56%;
+    --info-foreground: 0 0% 100%;
     --border: 0 0% 18%;
     --input: 0 0% 18%;
     --ring: 187 100% 38%;
@@ -106,7 +110,7 @@
   h4,
   h5,
   h6 {
-    @apply font-semibold tracking-tight;
+    @apply font-heading font-semibold tracking-tight;
   }
 }
 

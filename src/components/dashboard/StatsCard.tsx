@@ -60,7 +60,7 @@ export function StatsCard({
             {title}
           </p>
           <p className={cn(
-            "text-xl md:text-3xl font-bold truncate",
+            "text-xl md:text-3xl font-bold font-mono truncate",
             isHighlight ? "text-primary-foreground" : "text-foreground"
           )}>
             {value}

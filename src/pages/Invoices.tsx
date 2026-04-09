@@ -21,6 +21,7 @@ import { format } from "date-fns";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { escapeHtml } from "@/lib/sanitize";
 import { sendWhatsApp, getInvoiceReminderMessage } from "@/lib/whatsapp";
+import { getInvoiceStatus, formatDueDate, formatTimestamp } from "@/lib/documentStatus";
 
 interface Invoice {
   id: string;
@@ -38,14 +39,11 @@ interface Invoice {
   client_email?: string | null;
   client_address?: string | null;
   payment_token?: string | null;
+  created_at?: string;
+  updated_at?: string | null;
+  sent_at?: string | null;
+  paid_at?: string | null;
 }
-
-const statusConfig = {
-  draft: { label: "Draft", icon: Receipt, color: "bg-muted text-muted-foreground" },
-  sent: { label: "Sent", icon: Send, color: "bg-warning/20 text-warning" },
-  paid: { label: "Paid", icon: CheckCircle, color: "bg-success/20 text-success" },
-  overdue: { label: "Overdue", icon: AlertTriangle, color: "bg-destructive/20 text-destructive" },
-};
 
 export default function Invoices() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -68,7 +66,7 @@ export default function Invoices() {
 
     const { data, error } = await supabase
       .from("invoices")
-      .select("id, invoice_number, payment_token, total, status, due_date, issue_date, subtotal, tax_rate, tax_amount, notes, clients(name, email, phone, address)")
+      .select("id, invoice_number, payment_token, total, status, due_date, issue_date, subtotal, tax_rate, tax_amount, notes, created_at, updated_at, sent_at, paid_at, clients(name, email, phone, address)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -81,6 +79,7 @@ export default function Invoices() {
       }
       setInvoices(data.map((inv) => {
         const client = inv.clients as ClientData | null;
+        const row = inv as Record<string, unknown>;
         return {
           id: inv.id,
           invoice_number: inv.invoice_number,
@@ -97,6 +96,10 @@ export default function Invoices() {
           tax_rate: inv.tax_rate,
           tax_amount: inv.tax_amount ? Number(inv.tax_amount) : null,
           notes: inv.notes,
+          created_at: inv.created_at,
+          updated_at: (row.updated_at as string) || null,
+          sent_at: (row.sent_at as string) || null,
+          paid_at: (row.paid_at as string) || null,
         };
       }));
     }
@@ -112,7 +115,7 @@ export default function Invoices() {
     try {
       const { error } = await supabase
         .from("invoices")
-        .update({ status: "paid" })
+        .update({ status: "paid", paid_at: new Date().toISOString() })
         .eq("id", invoiceId);
 
       if (error) throw error;
@@ -340,8 +343,8 @@ export default function Invoices() {
             {/* Mobile Card View */}
             <div className="md:hidden space-y-3">
               {invoices.map((invoice, index) => {
-                const status = statusConfig[invoice.status as keyof typeof statusConfig] || statusConfig.draft;
-                const StatusIcon = status.icon;
+                const status = getInvoiceStatus(invoice.status);
+                const dueDateInfo = formatDueDate(invoice.due_date);
                 return (
                   <div
                     key={invoice.id}
@@ -428,14 +431,21 @@ export default function Invoices() {
                         </span>
                         <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
                           <Clock className="w-3 h-3" />
-                          {invoice.due_date
-                            ? new Date(invoice.due_date).toLocaleDateString()
-                            : "No due date"}
+                          <span className={cn(
+                            dueDateInfo.isOverdue && "text-destructive font-medium",
+                            dueDateInfo.isUrgent && !dueDateInfo.isOverdue && "text-warning font-medium"
+                          )}>
+                            {dueDateInfo.text}
+                          </span>
                         </div>
                       </div>
-                      <span className={cn("px-3 py-1.5 rounded-full text-xs font-medium inline-flex items-center gap-1.5", status.color)}>
-                        <StatusIcon className="w-3 h-3" />
-                        {status.label}
+                      <span className={cn(
+                        "px-3 py-1.5 rounded-full text-xs font-medium inline-flex items-center gap-1.5",
+                        status.bgClass,
+                        status.textClass
+                      )}>
+                        <span className={cn("w-1.5 h-1.5 rounded-full", status.dotClass)} />
+                        {status.labelId}
                       </span>
                     </div>
                   </div>
@@ -458,8 +468,8 @@ export default function Invoices() {
                 </thead>
                 <tbody>
                   {invoices.map((invoice, index) => {
-                    const status = statusConfig[invoice.status as keyof typeof statusConfig] || statusConfig.draft;
-                    const StatusIcon = status.icon;
+                    const status = getInvoiceStatus(invoice.status);
+                    const dueDateInfo = formatDueDate(invoice.due_date);
                     return (
                       <tr
                         key={invoice.id}
@@ -479,17 +489,24 @@ export default function Invoices() {
                           </span>
                         </td>
                         <td className="p-4">
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <Clock className="w-3.5 h-3.5" />
-                            {invoice.due_date
-                              ? new Date(invoice.due_date).toLocaleDateString()
-                              : "—"}
+                          <div className="flex items-center gap-1 text-sm">
+                            <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                            <span className={cn(
+                              "text-sm",
+                              dueDateInfo.isOverdue ? "text-destructive font-medium" : dueDateInfo.isUrgent ? "text-warning font-medium" : "text-muted-foreground"
+                            )}>
+                              {dueDateInfo.text}
+                            </span>
                           </div>
                         </td>
                         <td className="p-4">
-                          <span className={cn("px-3 py-1.5 rounded-full text-sm font-medium inline-flex items-center gap-1.5", status.color)}>
-                            <StatusIcon className="w-3.5 h-3.5" />
-                            {status.label}
+                          <span className={cn(
+                            "px-3 py-1.5 rounded-full text-sm font-medium inline-flex items-center gap-1.5",
+                            status.bgClass,
+                            status.textClass
+                          )}>
+                            <span className={cn("w-1.5 h-1.5 rounded-full", status.dotClass)} />
+                            {status.labelId}
                           </span>
                         </td>
                         <td className="p-4 text-right">
