@@ -1,6 +1,7 @@
 import type { ProposalData } from "@/pages/ProposalBuilder";
 import { formatIDR } from "@/lib/currency";
 import { cn } from "@/lib/utils";
+import { getProposalPageMode } from "@/lib/proposalPageMode";
 
 interface ProposalPreviewProps {
   currentPage: number;
@@ -426,18 +427,18 @@ function InvestmentPreview({ data, forExport }: PageProps) {
   const total = subtotal + taxAmount;
 
   return (
-    <PageShell dark forExport={forExport} pageNum={6} printElement="investment-page">
+    <PageShell forExport={forExport} pageNum={6} printElement="investment-page">
       <div className="flex-1 px-10 pt-10 pb-4 overflow-y-auto">
         <h2
-          className="text-xl font-serif font-semibold text-white mb-1 leading-tight"
-          style={forExport ? { fontFamily: FONT_SERIF_EXPORT, color: "#ffffff" } : undefined}
+          className="text-xl font-serif font-semibold text-gray-900 mb-1 leading-tight"
+          style={forExport ? { fontFamily: FONT_SERIF_EXPORT, color: "#1a1a1a" } : undefined}
           data-print-heading="editorial"
         >
           Investment
         </h2>
         <p
-          className="text-[13px] text-gray-400 mb-8"
-          style={forExport ? { color: "#9ca3af" } : undefined}
+          className="text-[13px] text-gray-500 mb-8"
+          style={forExport ? { color: "#6b7280" } : undefined}
         >
           Scope and pricing breakdown
         </p>
@@ -448,7 +449,7 @@ function InvestmentPreview({ data, forExport }: PageProps) {
           data-print-page-break="avoid"
         >
           <thead>
-            <tr className="border-b border-white/10" style={forExport ? { borderColor: "rgba(255,255,255,0.1)" } : undefined}>
+            <tr className="border-b border-gray-200" style={forExport ? { borderColor: "#e5e7eb" } : undefined}>
               <th
                 className="text-left pb-2 text-[10px] font-medium text-gray-500"
                 style={forExport ? { color: "#6b7280" } : undefined}
@@ -473,12 +474,12 @@ function InvestmentPreview({ data, forExport }: PageProps) {
             {allServices.map((service) => (
               <tr
                 key={service.id}
-                className="border-b border-white/5"
-                style={forExport ? { borderColor: "rgba(255,255,255,0.05)" } : undefined}
+                className="border-b border-gray-100"
+                style={forExport ? { borderColor: "#f3f4f6" } : undefined}
               >
                 <td
-                  className="py-3 text-sm font-medium text-white"
-                  style={forExport ? { color: "#ffffff" } : undefined}
+                  className="py-3 text-sm font-medium text-gray-900"
+                  style={forExport ? { color: "#1a1a1a" } : undefined}
                 >
                   {service.name || "Untitled"}
                 </td>
@@ -489,8 +490,8 @@ function InvestmentPreview({ data, forExport }: PageProps) {
                   {service.unit || "—"}
                 </td>
                 <td
-                  className="py-3 text-sm text-right text-white/90 font-numeric"
-                  style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "rgba(255,255,255,0.9)" } : undefined}
+                  className="py-3 text-sm text-right text-gray-900 font-numeric"
+                  style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "#1a1a1a" } : undefined}
                   data-print-numeric
                 >
                   {formatIDR(service.price)}
@@ -507,8 +508,8 @@ function InvestmentPreview({ data, forExport }: PageProps) {
               <div className="flex justify-between">
                 <span className="text-gray-500" style={forExport ? { color: "#6b7280" } : undefined}>Subtotal</span>
                 <span
-                  className="text-white/90 font-numeric"
-                  style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "rgba(255,255,255,0.9)" } : undefined}
+                  className="text-gray-900 font-numeric"
+                  style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "#1a1a1a" } : undefined}
                   data-print-numeric
                 >
                   {formatIDR(subtotal)}
@@ -517,8 +518,8 @@ function InvestmentPreview({ data, forExport }: PageProps) {
               <div className="flex justify-between">
                 <span className="text-gray-500" style={forExport ? { color: "#6b7280" } : undefined}>Tax ({data.taxRate}%)</span>
                 <span
-                  className="text-white/90 font-numeric"
-                  style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "rgba(255,255,255,0.9)" } : undefined}
+                  className="text-gray-900 font-numeric"
+                  style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "#1a1a1a" } : undefined}
                   data-print-numeric
                 >
                   {formatIDR(taxAmount)}
@@ -528,18 +529,18 @@ function InvestmentPreview({ data, forExport }: PageProps) {
           )}
 
           <div
-            className="flex justify-between items-baseline pt-3 border-t border-white/20"
-            style={forExport ? { borderColor: "rgba(255,255,255,0.2)" } : undefined}
+            className="flex justify-between items-baseline pt-3 border-t border-gray-300"
+            style={forExport ? { borderColor: "#d1d5db" } : undefined}
           >
             <span
-              className="text-sm font-semibold text-white"
-              style={forExport ? { color: "#ffffff" } : undefined}
+              className="text-sm font-semibold text-gray-900"
+              style={forExport ? { color: "#1a1a1a" } : undefined}
             >
               Total Investment
             </span>
             <span
-              className="text-xl font-numeric font-semibold text-white"
-              style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "#ffffff" } : undefined}
+              className="text-xl font-numeric font-semibold text-gray-900"
+              style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "#1a1a1a" } : undefined}
               data-print-numeric
             >
               {formatIDR(total)}
@@ -551,8 +552,8 @@ function InvestmentPreview({ data, forExport }: PageProps) {
       {/* CTA strip */}
       <div className="px-10 pb-8">
         <div
-          className="border border-white/10 px-6 py-4 flex items-center justify-between"
-          style={forExport ? { borderColor: "rgba(255,255,255,0.1)" } : undefined}
+          className="border border-gray-200 px-6 py-4 flex items-center justify-between"
+          style={forExport ? { borderColor: "#e5e7eb" } : undefined}
         >
           <div>
             <div
@@ -562,16 +563,16 @@ function InvestmentPreview({ data, forExport }: PageProps) {
               Ready to begin?
             </div>
             <div
-              className="text-base font-numeric font-semibold text-white"
-              style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "#ffffff" } : undefined}
+              className="text-base font-numeric font-semibold text-gray-900"
+              style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "#1a1a1a" } : undefined}
               data-print-numeric
             >
               {formatIDR(total)}
             </div>
           </div>
           <div
-            className="text-sm font-medium text-white/80"
-            style={forExport ? { color: "rgba(255,255,255,0.8)" } : undefined}
+            className="text-sm font-medium text-gray-700"
+            style={forExport ? { color: "#374151" } : undefined}
           >
             Let's start →
           </div>

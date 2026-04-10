@@ -16,9 +16,9 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Poppins", "system-ui", "sans-serif"],
-        heading: ["Space Grotesk", "system-ui", "sans-serif"],
+        heading: ["Poppins", "system-ui", "sans-serif"],
         serif: ["Source Serif 4", "Georgia", "serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        mono: ["ui-monospace", "SFMono-Regular", "monospace"],
         numeric: ["IBM Plex Sans", "Inter", "system-ui", "sans-serif"],
       },
       colors: {

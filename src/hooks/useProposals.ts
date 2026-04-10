@@ -1,5 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  transitionProposalStatus,
+  PROPOSAL_TIMESTAMP_FIELDS,
+  type ProposalStoredStatus,
+  type ProposalEvent,
+} from "@/lib/statusMachine";
 
 export interface Proposal {
   id: string;
@@ -152,22 +158,41 @@ export function useProposals() {
 
 export function useProposalMutations() {
   const updateStatus = useCallback(async (proposalId: string, newStatus: string) => {
-    // Set the appropriate timestamp based on the new status
-    const timestampFields: Record<string, string> = {};
-    const now = new Date().toISOString();
+    // Map legacy string status to typed event
+    const EVENT_MAP: Record<string, ProposalEvent> = {
+      sent: "SEND",
+      approved: "APPROVE",
+      rejected: "REJECT",
+      draft: "REVISE",
+    };
 
-    switch (newStatus) {
-      case 'sent':
-        timestampFields.sent_at = now;
-        break;
-      case 'approved':
-        timestampFields.approved_at = now;
-        break;
+    const event = EVENT_MAP[newStatus];
+    if (!event) throw new Error(`Unknown target status: ${newStatus}`);
+
+    // Get current status to validate transition
+    const { data: current } = await supabase
+      .from("proposals")
+      .select("status")
+      .eq("id", proposalId)
+      .single();
+
+    const currentStatus = (current?.status || "draft") as ProposalStoredStatus;
+    const nextStatus = transitionProposalStatus(currentStatus, event);
+
+    if (!nextStatus) {
+      throw new Error(`Invalid transition: ${currentStatus} → ${newStatus}`);
+    }
+
+    // Build timestamp fields from the machine
+    const timestampField = PROPOSAL_TIMESTAMP_FIELDS[event];
+    const timestampFields: Record<string, string> = {};
+    if (timestampField) {
+      timestampFields[timestampField] = new Date().toISOString();
     }
 
     const { error } = await supabase
       .from("proposals")
-      .update({ status: newStatus, ...timestampFields })
+      .update({ status: nextStatus, ...timestampFields })
       .eq("id", proposalId);
 
     if (error) throw new Error(error.message);

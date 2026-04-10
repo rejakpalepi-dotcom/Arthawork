@@ -1,5 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import {
+    transitionInvoiceStatus,
+    INVOICE_TIMESTAMP_FIELDS,
+    type InvoiceStoredStatus,
+    type InvoiceEvent,
+} from "@/lib/statusMachine";
 
 export interface Invoice {
     id: string;
@@ -152,22 +158,40 @@ export function useInvoiceMutations() {
     }, []);
 
     const updateStatus = useCallback(async (invoiceId: string, status: string) => {
-        // Set the appropriate timestamp based on the new status
-        const timestampFields: Record<string, string> = {};
-        const now = new Date().toISOString();
+        // Map legacy string status to typed event
+        const EVENT_MAP: Record<string, InvoiceEvent> = {
+            sent: "SEND",
+            paid: "MARK_PAID",
+            cancelled: "CANCEL",
+        };
 
-        switch (status) {
-            case 'sent':
-                timestampFields.sent_at = now;
-                break;
-            case 'paid':
-                timestampFields.paid_at = now;
-                break;
+        const event = EVENT_MAP[status];
+        if (!event) throw new Error(`Unknown target status: ${status}`);
+
+        // Get current status to validate transition
+        const { data: current } = await supabase
+            .from("invoices")
+            .select("status")
+            .eq("id", invoiceId)
+            .single();
+
+        const currentStatus = (current?.status || "draft") as InvoiceStoredStatus;
+        const nextStatus = transitionInvoiceStatus(currentStatus, event);
+
+        if (!nextStatus) {
+            throw new Error(`Invalid transition: ${currentStatus} → ${status}`);
+        }
+
+        // Build timestamp fields from the machine
+        const timestampField = INVOICE_TIMESTAMP_FIELDS[event];
+        const timestampFields: Record<string, string> = {};
+        if (timestampField) {
+            timestampFields[timestampField] = new Date().toISOString();
         }
 
         const { error } = await supabase
             .from("invoices")
-            .update({ status, ...timestampFields })
+            .update({ status: nextStatus, ...timestampFields })
             .eq("id", invoiceId);
 
         if (error) throw new Error(error.message);

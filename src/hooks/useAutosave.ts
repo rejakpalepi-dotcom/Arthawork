@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { transitionAutosave, type AutosaveMachineState } from "@/lib/autosaveMachine";
 
-export type AutosaveStatus = "idle" | "unsaved" | "saving" | "saved" | "error";
+export type AutosaveStatus = AutosaveMachineState;
 
 export interface AutosaveState {
   status: AutosaveStatus;
@@ -71,19 +72,22 @@ export function useAutosave<T>(options: AutosaveOptions<T>): AutosaveState {
     }
 
     savingRef.current = true;
-    setStatus("saving");
+    const nextSaving = transitionAutosave(status, "SAVE_START");
+    if (nextSaving) setStatus(nextSaving);
     setError(null);
 
     try {
       await onSaveRef.current(currentData);
       lastSavedDataRef.current = currentData;
       setLastSavedAt(new Date());
-      setStatus("saved");
+      const nextSaved = transitionAutosave("saving", "SAVE_SUCCESS");
+      if (nextSaved) setStatus(nextSaved);
       setError(null);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Save failed";
       setError(message);
-      setStatus("error");
+      const nextError = transitionAutosave("saving", "SAVE_FAILURE");
+      if (nextError) setStatus(nextError);
     } finally {
       savingRef.current = false;
 
@@ -110,16 +114,18 @@ export function useAutosave<T>(options: AutosaveOptions<T>): AutosaveState {
   // Retry after error
   const retry = useCallback(async () => {
     setError(null);
-    setStatus("unsaved");
+    const next = transitionAutosave("error", "RETRY");
+    if (next) setStatus(next);
     await executeSave();
   }, [executeSave]);
 
   // Mark current data as clean (e.g. after loading from server)
   const markClean = useCallback(() => {
     lastSavedDataRef.current = dataRef.current;
-    setStatus("saved");
+    const next = transitionAutosave(status, "RESET");
+    setStatus(next || "idle");
     setError(null);
-  }, []);
+  }, [status]);
 
   // Debounced autosave on data changes
   useEffect(() => {
@@ -138,7 +144,8 @@ export function useAutosave<T>(options: AutosaveOptions<T>): AutosaveState {
 
     // Mark as dirty
     if (status !== "saving" && status !== "error") {
-      setStatus("unsaved");
+      const next = transitionAutosave(status, "EDIT");
+      if (next) setStatus(next);
     }
 
     // Debounce
