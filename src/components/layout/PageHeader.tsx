@@ -80,7 +80,7 @@ export function PageHeader({
       {/* Title + Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">
+          <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-1 md:mb-2">
             {title}
           </h1>
           {description && (

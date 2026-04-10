@@ -1,189 +1,325 @@
 import type { ProposalData } from "@/pages/ProposalBuilder";
 import { formatIDR } from "@/lib/currency";
+import { cn } from "@/lib/utils";
 
 interface ProposalPreviewProps {
   currentPage: number;
   data: ProposalData;
+  /** When true, forces print-safe styles for PDF export */
+  forExport?: boolean;
 }
 
-export function ProposalPreview({ currentPage, data }: ProposalPreviewProps) {
-  if (currentPage === 1) return <CoverPreview data={data} />;
-  if (currentPage === 2) return <IntroPreview data={data} />;
-  if (currentPage === 3) return <ExperiencePreview data={data} />;
-  if (currentPage === 4) return <ServicesPreview data={data} />;
-  if (currentPage === 5) return <TimelinePreview data={data} />;
-  if (currentPage === 6) return <InvestmentPreview data={data} />;
+export function ProposalPreview({ currentPage, data, forExport = false }: ProposalPreviewProps) {
+  if (currentPage === 1) return <CoverPreview data={data} forExport={forExport} />;
+  if (currentPage === 2) return <IntroPreview data={data} forExport={forExport} />;
+  if (currentPage === 3) return <ExperiencePreview data={data} forExport={forExport} />;
+  if (currentPage === 4) return <ServicesPreview data={data} forExport={forExport} />;
+  if (currentPage === 5) return <TimelinePreview data={data} forExport={forExport} />;
+  if (currentPage === 6) return <InvestmentPreview data={data} forExport={forExport} />;
   return null;
 }
 
-function CoverPreview({ data }: { data: ProposalData }) {
-  const titleWords = data.projectTitle.split(" ");
-  const firstLine = titleWords.slice(0, 2).join(" ");
-  const secondLine = titleWords.slice(2).join(" ");
-  return (
-    <div className="h-full bg-[#1a1a1a] text-white flex flex-col relative overflow-hidden font-sans">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-[#00ACC1]/10 rounded-full blur-[100px] transform translate-x-1/3 -translate-y-1/3" />
-        <div className="absolute bottom-0 left-0 w-60 h-60 bg-[#00ACC1]/8 rounded-full blur-[80px] transform -translate-x-1/3 translate-y-1/3" />
-      </div>
+// ─── Export font families ────────────────────────────────
+const FONT_SERIF_EXPORT = "'Source Serif 4', Georgia, serif";
+const FONT_SANS_EXPORT  = "'Poppins', system-ui, sans-serif";
+const FONT_NUMERIC_EXPORT = "'IBM Plex Sans', 'Poppins', system-ui, sans-serif";
 
-      <div className="relative z-10 flex items-center justify-between px-6 pt-6 pb-4">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-[10px] tracking-[0.15em] uppercase text-white/90">{data.studioName}</span>
+interface PageProps {
+  data: ProposalData;
+  forExport?: boolean;
+}
+
+// ─── Shared page shell ───────────────────────────────────
+function PageShell({
+  children,
+  dark = false,
+  forExport = false,
+  pageNum,
+  totalPages = 6,
+  printElement,
+  className,
+}: {
+  children: React.ReactNode;
+  dark?: boolean;
+  forExport?: boolean;
+  pageNum?: number;
+  totalPages?: number;
+  printElement: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "h-full flex flex-col font-sans",
+        dark ? "bg-[#1a1a1a] text-white" : "bg-white text-gray-900",
+        forExport && "print-document",
+        className
+      )}
+      style={forExport ? {
+        width: "794px",
+        height: "1123px",
+        background: dark ? "#1a1a1a" : "#ffffff",
+        color: dark ? "#ffffff" : "#1a1a1a",
+      } : undefined}
+      data-print-element={printElement}
+      data-print-page-break="after"
+    >
+      {children}
+      {pageNum && (
+        <div
+          className={cn(
+            "px-10 py-3 text-[10px]",
+            dark ? "text-gray-600" : "text-gray-400"
+          )}
+          style={forExport ? { color: dark ? "#4b5563" : "#9ca3af" } : undefined}
+        >
+          {pageNum} / {totalPages}
         </div>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+//  Page 1 — Cover
+// ═══════════════════════════════════════════════════════════
+
+function CoverPreview({ data, forExport }: PageProps) {
+  return (
+    <PageShell dark forExport={forExport} printElement="cover-page">
+      {/* Top bar */}
+      <div className="px-10 pt-10 flex items-start justify-between">
+        <span
+          className="text-[11px] font-medium tracking-wide text-white/80"
+          style={forExport ? { color: "rgba(255,255,255,0.8)", fontFamily: FONT_SANS_EXPORT } : undefined}
+        >
+          {data.studioName}
+        </span>
         {data.clientCompany && (
           <div className="text-right">
-            <div className="text-[8px] text-gray-500 uppercase tracking-wide">Prepared for</div>
-            <div className="text-[10px] font-medium text-white">{data.clientCompany}</div>
+            <div
+              className="text-[10px] text-gray-500"
+              style={forExport ? { color: "#6b7280" } : undefined}
+            >
+              Prepared for
+            </div>
+            <div
+              className="text-[11px] font-medium text-white/90 mt-0.5"
+              style={forExport ? { color: "rgba(255,255,255,0.9)" } : undefined}
+            >
+              {data.clientCompany}
+            </div>
           </div>
         )}
       </div>
 
-      <div className="flex-1 flex flex-col justify-center px-6 pt-4 relative z-10">
-        <div className="space-y-4">
-          <div className="space-y-3">
-            <div className="text-[#00ACC1] text-[9px] font-extrabold tracking-[0.2em] uppercase">Project Proposal</div>
-            {/* STYLING FIX: Uppercase + font-black */}
-            <h1 className="text-[26px] font-black leading-[1.15] tracking-tight uppercase">
-              {firstLine}
-              {secondLine && (
-                <>
-                  <br />
-                  <span className="text-[#00ACC1]">{secondLine}</span>
-                </>
-              )}
-            </h1>
+      {/* Title block — vertically centered */}
+      <div className="flex-1 flex flex-col justify-center px-10">
+        <div className="space-y-5">
+          <div
+            className="text-[10px] font-medium tracking-[0.15em] text-[#00ACC1]"
+            style={forExport ? { color: "#00ACC1", fontFamily: FONT_SANS_EXPORT } : undefined}
+          >
+            Project Proposal
           </div>
-          <p className="text-gray-400 text-[11px] max-w-[240px] leading-relaxed font-normal">{data.tagline}</p>
+          <h1
+            className="text-[32px] font-serif font-semibold leading-[1.2] tracking-tight text-white"
+            style={forExport ? { fontFamily: FONT_SERIF_EXPORT, color: "#ffffff" } : undefined}
+            data-print-heading="editorial"
+          >
+            {data.projectTitle}
+          </h1>
+          <p
+            className="text-gray-400 text-sm max-w-[300px] leading-relaxed"
+            style={forExport ? { color: "#9ca3af" } : undefined}
+          >
+            {data.tagline}
+          </p>
         </div>
       </div>
 
-      <div className="relative z-10 px-6 pb-6 flex items-end justify-between">
-        <div className="text-[9px] text-gray-500 space-y-0.5 font-normal">
-          {data.clientName && <div>For: {data.clientName}</div>}
+      {/* Bottom bar */}
+      <div className="px-10 pb-10 flex items-end justify-between">
+        <div className="text-[10px] text-gray-500 space-y-0.5" style={forExport ? { color: "#6b7280" } : undefined}>
+          {data.clientName && <div>{data.clientName}</div>}
           <div>{data.year}</div>
         </div>
       </div>
-      <div className="absolute bottom-14 right-5 w-24 h-24 border border-white/10 rounded-full pointer-events-none" />
-      <div className="absolute bottom-10 right-8 w-16 h-16 border border-[#00ACC1]/30 rounded-full pointer-events-none" />
-    </div>
+    </PageShell>
   );
 }
 
-function IntroPreview({ data }: { data: ProposalData }) {
+// ═══════════════════════════════════════════════════════════
+//  Page 2 — Overview (was "Intro")
+// ═══════════════════════════════════════════════════════════
+
+function IntroPreview({ data, forExport }: PageProps) {
   return (
-    <div className="h-full bg-white flex flex-col font-sans">
-      <div className="flex items-center justify-between px-6 pt-5 pb-3">
-        <div className="flex items-center gap-2"></div>
-        {data.clientCompany && <span className="text-[10px] text-gray-400">{data.clientCompany}</span>}
-      </div>
-
-      <div className="flex-1 px-6 pb-4 flex flex-col min-h-0">
-        <div className="bg-gradient-to-br from-[#00ACC1]/15 to-[#00ACC1]/5 rounded-lg h-32 flex items-center justify-center mb-4 flex-shrink-0">
-          {data.heroImageUrl ? (
-            <img src={data.heroImageUrl} alt="Hero" className="w-full h-full object-cover rounded-lg" />
-          ) : (
-            <div className="text-center text-gray-400">
-              <span className="text-3xl text-gray-300">🌐</span>
-              <p className="text-[10px] mt-1 font-medium">Place Image Here</p>
-            </div>
-          )}
-        </div>
-
-        <div className="flex-1 min-h-0 overflow-hidden">
-          <div className="text-[8px] text-[#00ACC1] font-semibold tracking-[0.15em] uppercase mb-1.5">
-            Value Proposition
+    <PageShell forExport={forExport} pageNum={2} printElement="intro-page">
+      <div className="flex-1 px-10 pt-10 pb-4 flex flex-col min-h-0">
+        {/* Hero Image */}
+        {data.heroImageUrl ? (
+          <div className="h-36 mb-6 flex-shrink-0 overflow-hidden">
+            <img src={data.heroImageUrl} alt="Hero" className="w-full h-full object-cover" />
           </div>
-          {/* STYLING FIX: Uppercase */}
-          <h2 className="text-lg font-black text-[#1a1a1a] mb-3 leading-tight uppercase">{data.introTitle}</h2>
-          <div className="text-[11px] text-gray-600 leading-[1.6] space-y-2 overflow-y-auto font-normal">
+        ) : (
+          <div className="h-36 mb-6 flex-shrink-0 bg-gray-50 border border-gray-100 flex items-center justify-center">
+            <span className="text-sm text-gray-300">Hero Image</span>
+          </div>
+        )}
+
+        {/* Section title */}
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <h2
+            className="text-xl font-serif font-semibold text-gray-900 mb-4 leading-tight"
+            style={forExport ? { fontFamily: FONT_SERIF_EXPORT, color: "#111827" } : undefined}
+            data-print-heading="editorial"
+          >
+            {data.introTitle}
+          </h2>
+          <div className="text-[13px] text-gray-600 leading-[1.75] space-y-3">
             {data.introText.split("\n\n").map((paragraph, i) => (
-              <p key={i}>{paragraph}</p>
+              <p key={i} style={forExport ? { color: "#4b5563" } : undefined}>
+                {paragraph}
+              </p>
             ))}
           </div>
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }
 
-function ExperiencePreview({ data }: { data: ProposalData }) {
+// ═══════════════════════════════════════════════════════════
+//  Page 3 — Experience / Credentials
+// ═══════════════════════════════════════════════════════════
+
+function ExperiencePreview({ data, forExport }: PageProps) {
   return (
-    <div className="h-full bg-white flex flex-col font-sans">
-      <div className="flex-1 flex flex-col justify-center px-6 min-h-0">
-        {/* STYLING FIX: Uppercase + font-black (Fixed 'bold' invalid class) */}
-        <h2 className="text-xl font-black text-[#1a1a1a] mb-2 leading-tight uppercase tracking-tight">
+    <PageShell forExport={forExport} pageNum={3} printElement="experience-page">
+      <div className="flex-1 px-10 pt-10 flex flex-col justify-center min-h-0">
+        <h2
+          className="text-xl font-serif font-semibold text-gray-900 mb-2 leading-tight"
+          style={forExport ? { fontFamily: FONT_SERIF_EXPORT, color: "#111827" } : undefined}
+          data-print-heading="editorial"
+        >
           {data.experienceTitle}
         </h2>
-        <p className="text-[11px] text-gray-500 mb-5 max-w-xs leading-relaxed font-normal">{data.experienceSubtitle}</p>
+        <p
+          className="text-[13px] text-gray-500 mb-8 max-w-sm leading-relaxed"
+          style={forExport ? { color: "#6b7280" } : undefined}
+        >
+          {data.experienceSubtitle}
+        </p>
 
-        <div className="flex gap-6 mb-5">
-          <div>
-            <div className="text-xl font-black text-[#1a1a1a]">{data.projectCount}</div>
-            <div className="text-[8px] text-gray-400 uppercase tracking-wider mt-0.5 font-medium">Projects</div>
-          </div>
-          <div>
-            <div className="text-xl font-black text-[#1a1a1a]">{data.countriesCount}</div>
-            <div className="text-[8px] text-gray-400 uppercase tracking-wider mt-0.5 font-medium">Countries</div>
-          </div>
-          <div>
-            <div className="text-xl font-black text-[#1a1a1a]">{data.rating}</div>
-            <div className="text-[8px] text-gray-400 uppercase tracking-wider mt-0.5 font-medium">Rating</div>
-          </div>
+        {/* Stats row */}
+        <div className="flex gap-10 mb-8">
+          {[
+            { value: data.projectCount, label: "Projects" },
+            { value: data.countriesCount, label: "Countries" },
+            { value: data.rating, label: "Rating" },
+          ].map((stat) => (
+            <div key={stat.label}>
+              <div
+                className="text-2xl font-numeric font-semibold text-gray-900"
+                style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "#111827" } : undefined}
+                data-print-numeric
+              >
+                {stat.value}
+              </div>
+              <div
+                className="text-[10px] text-gray-400 mt-0.5 font-medium"
+                style={forExport ? { color: "#9ca3af" } : undefined}
+              >
+                {stat.label}
+              </div>
+            </div>
+          ))}
         </div>
 
-        <div className="grid grid-cols-3 gap-2">
+        {/* Client logos grid */}
+        <div className="grid grid-cols-3 gap-3 max-w-xs">
           {[0, 1, 2, 3, 4, 5].map((i) => {
             const logoUrl = data.clientLogos?.[i];
             return (
               <div
                 key={i}
-                className="aspect-square bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100 overflow-hidden"
+                className="aspect-square bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden"
               >
                 {logoUrl ? (
-                  <img src={logoUrl} alt={`Client ${i + 1}`} className="w-full h-full object-contain p-1" />
+                  <img src={logoUrl} alt={`Client ${i + 1}`} className="w-full h-full object-contain p-2" />
                 ) : (
-                  <span className="text-gray-200 text-xl">🏢</span>
+                  <span className="text-gray-200 text-lg">◻</span>
                 )}
               </div>
             );
           })}
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }
 
-function ServicesPreview({ data }: { data: ProposalData }) {
+// ═══════════════════════════════════════════════════════════
+//  Page 4 — Scope of Work (was "Services")
+// ═══════════════════════════════════════════════════════════
+
+function ServicesPreview({ data, forExport }: PageProps) {
   const allServices = [...data.selectedServices, ...(data.customServices || [])];
   return (
-    <div className="h-full bg-white flex flex-col font-sans">
-      <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-gray-100">
-        <span className="text-[8px] text-[#00ACC1] font-semibold uppercase tracking-wider">Services</span>
-      </div>
+    <PageShell forExport={forExport} pageNum={4} printElement="services-page">
+      <div className="flex-1 px-10 pt-10 pb-4 overflow-y-auto">
+        <h2
+          className="text-xl font-serif font-semibold text-gray-900 mb-1 leading-tight"
+          style={forExport ? { fontFamily: FONT_SERIF_EXPORT, color: "#111827" } : undefined}
+          data-print-heading="editorial"
+        >
+          Scope of Work
+        </h2>
+        <p
+          className="text-[13px] text-gray-500 mb-6"
+          style={forExport ? { color: "#6b7280" } : undefined}
+        >
+          What we bring to the table
+        </p>
 
-      <div className="flex-1 px-6 py-4 overflow-y-auto">
-        {/* STYLING FIX: Uppercase */}
-        <h2 className="text-lg font-black text-[#1a1a1a] mb-1 uppercase tracking-tight">Our Services</h2>
-        <p className="text-[10px] text-gray-500 mb-4 font-normal">What we bring to the table</p>
-
-        <div className="space-y-2">
+        <div className="space-y-0">
           {allServices.map((service, index) => (
-            <div key={service.id} className="p-3 rounded-lg bg-gray-50 border border-gray-100">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex items-start gap-2">
-                  <div className="w-5 h-5 rounded bg-[#00ACC1]/10 text-[#00ACC1] flex items-center justify-center text-[9px] font-bold flex-shrink-0 mt-0.5">
-                    {index + 1}
+            <div
+              key={service.id}
+              className="py-4 border-b border-gray-100 last:border-b-0"
+              style={forExport ? { borderColor: "#f3f4f6" } : undefined}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-baseline gap-3">
+                    <span
+                      className="text-[10px] font-numeric font-medium text-gray-400 tabular-nums"
+                      style={forExport ? { color: "#9ca3af", fontFamily: FONT_NUMERIC_EXPORT } : undefined}
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <h3
+                      className="text-sm font-semibold text-gray-900"
+                      style={forExport ? { color: "#111827" } : undefined}
+                    >
+                      {service.name || "Untitled Service"}
+                    </h3>
                   </div>
-                  <div>
-                    <h3 className="text-[11px] font-semibold text-[#1a1a1a]">{service.name || "Untitled Service"}</h3>
-                    {/* FIXED: Closing tags and strings below */}
-                    {service.description && (
-                      <p className="text-[9px] text-gray-500 mt-0.5 line-clamp-2 font-normal">{service.description}</p>
-                    )}
-                  </div>
+                  {service.description && (
+                    <p
+                      className="text-[12px] text-gray-500 mt-1 ml-[30px] leading-relaxed"
+                      style={forExport ? { color: "#6b7280" } : undefined}
+                    >
+                      {service.description}
+                    </p>
+                  )}
                 </div>
-                <span className="text-[10px] font-semibold text-[#00ACC1] whitespace-nowrap">
+                <span
+                  className="text-sm font-numeric font-medium text-gray-900 whitespace-nowrap"
+                  style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "#111827" } : undefined}
+                  data-print-numeric
+                >
                   {formatIDR(service.price)}
                 </span>
               </div>
@@ -191,116 +327,256 @@ function ServicesPreview({ data }: { data: ProposalData }) {
           ))}
         </div>
       </div>
-      <div className="px-6 py-3 border-t border-gray-100 text-[8px] text-gray-400 font-normal">Page 4 of 6</div>
-    </div>
+    </PageShell>
   );
 }
 
-function TimelinePreview({ data }: { data: ProposalData }) {
+// ═══════════════════════════════════════════════════════════
+//  Page 5 — Timeline
+// ═══════════════════════════════════════════════════════════
+
+function TimelinePreview({ data, forExport }: PageProps) {
   return (
-    <div className="h-full bg-white flex flex-col font-sans">
-      <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-gray-100">
-        <span className="text-[8px] text-[#00ACC1] font-semibold uppercase tracking-wider">Timeline</span>
-      </div>
+    <PageShell forExport={forExport} pageNum={5} printElement="timeline-page">
+      <div className="flex-1 px-10 pt-10 pb-4 overflow-y-auto">
+        <h2
+          className="text-xl font-serif font-semibold text-gray-900 mb-1 leading-tight"
+          style={forExport ? { fontFamily: FONT_SERIF_EXPORT, color: "#111827" } : undefined}
+          data-print-heading="editorial"
+        >
+          Timeline
+        </h2>
+        <p
+          className="text-[13px] text-gray-500 mb-8"
+          style={forExport ? { color: "#6b7280" } : undefined}
+        >
+          How we get from here to there
+        </p>
 
-      <div className="flex-1 px-6 py-4 overflow-y-auto">
-        {/* STYLING FIX: Uppercase */}
-        <h2 className="text-lg font-black text-[#1a1a1a] mb-1 uppercase tracking-tight">Project Timeline</h2>
-        <p className="text-[10px] text-gray-500 mb-5 font-normal">Our roadmap to success</p>
-
-        <div className="relative">
-          <div className="absolute left-[11px] top-3 bottom-3 w-0.5 bg-gray-200" />
-          <div className="space-y-4">
-            {data.milestones.map((milestone, index) => (
-              <div key={milestone.id} className="flex gap-3 relative">
+        <div className="space-y-0">
+          {data.milestones.map((milestone, index) => (
+            <div
+              key={milestone.id}
+              className="flex gap-5 pb-6 last:pb-0"
+            >
+              {/* Left gutter — phase indicator */}
+              <div className="flex flex-col items-center w-6 shrink-0">
                 <div
-                  className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 z-10 ${index === 0 ? "bg-[#00ACC1] text-white" : "bg-gray-100 text-gray-400"}`}
-                >
-                  <span className="text-[9px] font-bold">{index + 1}</span>
-                </div>
-                <div className="flex-1 pb-2">
-                  <div className="text-[9px] text-[#00ACC1] font-semibold uppercase tracking-wider mb-0.5">
-                    {milestone.week}
-                  </div>
-                  <h3 className="text-[11px] font-semibold text-[#1a1a1a]">{milestone.title || "Untitled Phase"}</h3>
-                  {milestone.description && (
-                    <p className="text-[9px] text-gray-500 mt-0.5 leading-relaxed font-normal">
-                      {milestone.description}
-                    </p>
+                  className={cn(
+                    "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-numeric font-medium shrink-0",
+                    index === 0
+                      ? "bg-gray-900 text-white"
+                      : "bg-gray-100 text-gray-500"
                   )}
+                  style={forExport ? {
+                    backgroundColor: index === 0 ? "#111827" : "#f3f4f6",
+                    color: index === 0 ? "#ffffff" : "#6b7280",
+                    fontFamily: FONT_NUMERIC_EXPORT,
+                  } : undefined}
+                >
+                  {index + 1}
                 </div>
+                {index < data.milestones.length - 1 && (
+                  <div
+                    className="w-px flex-1 bg-gray-200 mt-1"
+                    style={forExport ? { backgroundColor: "#e5e7eb" } : undefined}
+                  />
+                )}
               </div>
-            ))}
-          </div>
+
+              {/* Content */}
+              <div className="flex-1 pb-2">
+                <div
+                  className="text-[10px] font-medium text-gray-400 mb-0.5"
+                  style={forExport ? { color: "#9ca3af" } : undefined}
+                >
+                  {milestone.week}
+                </div>
+                <h3
+                  className="text-sm font-semibold text-gray-900 mb-1"
+                  style={forExport ? { color: "#111827" } : undefined}
+                >
+                  {milestone.title || "Untitled Phase"}
+                </h3>
+                {milestone.description && (
+                  <p
+                    className="text-[12px] text-gray-500 leading-relaxed"
+                    style={forExport ? { color: "#6b7280" } : undefined}
+                  >
+                    {milestone.description}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }
 
-function InvestmentPreview({ data }: { data: ProposalData }) {
-  // Include both selected services AND custom services for reactive preview
+// ═══════════════════════════════════════════════════════════
+//  Page 6 — Investment
+// ═══════════════════════════════════════════════════════════
+
+function InvestmentPreview({ data, forExport }: PageProps) {
   const allServices = [...data.selectedServices, ...(data.customServices || [])];
   const subtotal = allServices.reduce((sum, s) => sum + s.price, 0);
   const taxAmount = subtotal * (data.taxRate / 100);
   const total = subtotal + taxAmount;
-  
+
   return (
-    <div className="h-full bg-[#1a1a1a] text-white flex flex-col font-sans">
-      <div className="flex items-center justify-between px-6 pt-5 pb-3">
-        <div className="flex items-center gap-2"></div>
-        <span className="text-[8px] text-[#00ACC1] font-semibold uppercase tracking-wider">Investment</span>
+    <PageShell dark forExport={forExport} pageNum={6} printElement="investment-page">
+      <div className="flex-1 px-10 pt-10 pb-4 overflow-y-auto">
+        <h2
+          className="text-xl font-serif font-semibold text-white mb-1 leading-tight"
+          style={forExport ? { fontFamily: FONT_SERIF_EXPORT, color: "#ffffff" } : undefined}
+          data-print-heading="editorial"
+        >
+          Investment
+        </h2>
+        <p
+          className="text-[13px] text-gray-400 mb-8"
+          style={forExport ? { color: "#9ca3af" } : undefined}
+        >
+          Scope and pricing breakdown
+        </p>
+
+        {/* Line items table */}
+        <table
+          className="w-full mb-6 border-collapse"
+          data-print-page-break="avoid"
+        >
+          <thead>
+            <tr className="border-b border-white/10" style={forExport ? { borderColor: "rgba(255,255,255,0.1)" } : undefined}>
+              <th
+                className="text-left pb-2 text-[10px] font-medium text-gray-500"
+                style={forExport ? { color: "#6b7280" } : undefined}
+              >
+                Service
+              </th>
+              <th
+                className="text-center pb-2 text-[10px] font-medium text-gray-500 w-20"
+                style={forExport ? { color: "#6b7280" } : undefined}
+              >
+                Unit
+              </th>
+              <th
+                className="text-right pb-2 text-[10px] font-medium text-gray-500 w-28"
+                style={forExport ? { color: "#6b7280" } : undefined}
+              >
+                Amount
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {allServices.map((service) => (
+              <tr
+                key={service.id}
+                className="border-b border-white/5"
+                style={forExport ? { borderColor: "rgba(255,255,255,0.05)" } : undefined}
+              >
+                <td
+                  className="py-3 text-sm font-medium text-white"
+                  style={forExport ? { color: "#ffffff" } : undefined}
+                >
+                  {service.name || "Untitled"}
+                </td>
+                <td
+                  className="py-3 text-sm text-center text-gray-500"
+                  style={forExport ? { color: "#6b7280" } : undefined}
+                >
+                  {service.unit || "—"}
+                </td>
+                <td
+                  className="py-3 text-sm text-right text-white/90 font-numeric"
+                  style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "rgba(255,255,255,0.9)" } : undefined}
+                  data-print-numeric
+                >
+                  {formatIDR(service.price)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Totals */}
+        <div className="max-w-xs ml-auto" data-print-page-break="avoid">
+          {data.taxRate > 0 && (
+            <div className="space-y-1.5 mb-3 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500" style={forExport ? { color: "#6b7280" } : undefined}>Subtotal</span>
+                <span
+                  className="text-white/90 font-numeric"
+                  style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "rgba(255,255,255,0.9)" } : undefined}
+                  data-print-numeric
+                >
+                  {formatIDR(subtotal)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500" style={forExport ? { color: "#6b7280" } : undefined}>Tax ({data.taxRate}%)</span>
+                <span
+                  className="text-white/90 font-numeric"
+                  style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "rgba(255,255,255,0.9)" } : undefined}
+                  data-print-numeric
+                >
+                  {formatIDR(taxAmount)}
+                </span>
+              </div>
+            </div>
+          )}
+
+          <div
+            className="flex justify-between items-baseline pt-3 border-t border-white/20"
+            style={forExport ? { borderColor: "rgba(255,255,255,0.2)" } : undefined}
+          >
+            <span
+              className="text-sm font-semibold text-white"
+              style={forExport ? { color: "#ffffff" } : undefined}
+            >
+              Total Investment
+            </span>
+            <span
+              className="text-xl font-numeric font-semibold text-white"
+              style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "#ffffff" } : undefined}
+              data-print-numeric
+            >
+              {formatIDR(total)}
+            </span>
+          </div>
+        </div>
       </div>
 
-      <div className="flex-1 px-6 py-4 overflow-y-auto">
-        <h2 className="text-lg font-black text-white mb-1 uppercase tracking-tight">Project Investment</h2>
-        <p className="text-[10px] text-gray-400 mb-4 font-normal">Scope of work and pricing</p>
-
-        <div className="rounded-lg border border-white/10 overflow-hidden mb-4">
-          <div className="bg-white/5 px-3 py-2 grid grid-cols-3 text-[8px] font-semibold text-gray-400 uppercase tracking-wider">
-            <span>Service</span>
-            <span className="text-center">Unit</span>
-            <span className="text-right">Amount</span>
-          </div>
-          {allServices.map((service) => (
-            <div key={service.id} className="px-3 py-2.5 border-t border-white/5 grid grid-cols-3 text-[10px]">
-              <span className="text-white font-medium">{service.name || "Untitled"}</span>
-              <span className="text-center text-gray-400 font-normal">{service.unit || "—"}</span>
-              <span className="text-right text-white font-normal">{formatIDR(service.price)}</span>
-            </div>
-          ))}
-        </div>
-
-        {data.taxRate > 0 && (
-          <div className="space-y-1 mb-2 text-[10px]">
-            <div className="flex justify-between">
-              <span className="text-gray-400">Subtotal</span>
-              <span className="text-white">{formatIDR(subtotal)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">Tax ({data.taxRate}%)</span>
-              <span className="text-white">{formatIDR(taxAmount)}</span>
-            </div>
-          </div>
-        )}
-
-        <div className="space-y-2 mb-4">
-          <div className="flex justify-between text-sm font-black pt-2 border-t border-white/10">
-            <span className="text-white uppercase">Total Investment</span>
-            <span className="text-[#00ACC1]">{formatIDR(total)}</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="px-6 pb-5">
-        <div className="bg-[#00ACC1] rounded-lg px-4 py-3 flex items-center justify-between">
+      {/* CTA strip */}
+      <div className="px-10 pb-8">
+        <div
+          className="border border-white/10 px-6 py-4 flex items-center justify-between"
+          style={forExport ? { borderColor: "rgba(255,255,255,0.1)" } : undefined}
+        >
           <div>
-            <div className="text-[8px] text-white/70 uppercase tracking-wider font-medium">Project Total</div>
-            <div className="text-base font-black text-white">{formatIDR(total)}</div>
+            <div
+              className="text-[10px] text-gray-500 mb-0.5"
+              style={forExport ? { color: "#6b7280" } : undefined}
+            >
+              Ready to begin?
+            </div>
+            <div
+              className="text-base font-numeric font-semibold text-white"
+              style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: "#ffffff" } : undefined}
+              data-print-numeric
+            >
+              {formatIDR(total)}
+            </div>
           </div>
-          <div className="flex items-center gap-1 text-white text-[10px] font-semibold uppercase">Start Project →</div>
+          <div
+            className="text-sm font-medium text-white/80"
+            style={forExport ? { color: "rgba(255,255,255,0.8)" } : undefined}
+          >
+            Let's start →
+          </div>
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }

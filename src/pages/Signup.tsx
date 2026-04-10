@@ -169,7 +169,7 @@ export default function Signup() {
           </header>
 
           <section className="space-y-6">
-            <h1 className="text-4xl font-bold text-foreground">
+            <h1 className="text-4xl font-semibold text-foreground">
               Buat Invoice & Proposal{" "}
               <span className="gradient-text">Profesional.</span>
             </h1>
@@ -206,7 +206,7 @@ export default function Signup() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-foreground">Buat Akun</h2>
+              <h2 className="text-2xl font-semibold text-foreground">Buat Akun</h2>
               <p className="text-muted-foreground mt-2">Daftar gratis dan mulai kelola bisnis</p>
             </div>
 

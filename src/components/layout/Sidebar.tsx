@@ -104,7 +104,7 @@ export function Sidebar() {
             className="h-8 w-8 shrink-0 object-contain"
           />
           {!collapsed && (
-            <span className="font-bold font-heading text-foreground whitespace-nowrap tracking-tight">Artha</span>
+            <span className="font-semibold font-heading text-foreground whitespace-nowrap tracking-tight">Artha</span>
           )}
         </div>
         <button

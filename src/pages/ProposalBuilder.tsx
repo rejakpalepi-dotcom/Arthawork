@@ -175,10 +175,20 @@ export default function ProposalBuilder() {
         const jsonData = (proposal as Record<string, unknown>).proposal_data as Record<string, unknown> | null;
 
         if (jsonData) {
-          // Full editor state available
-          setProposalData(jsonData as unknown as ProposalData);
+          // Full editor state available — merge with defaults to fill any
+          // fields that may have been added after this document was saved.
+          const restored = jsonData as unknown as Partial<ProposalData>;
+          setProposalData((prev) => ({
+            ...prev,           // initialProposalData defaults
+            ...restored,       // saved data overrides
+            // Ensure arrays are always arrays, even for old docs saved before these fields existed
+            selectedServices: Array.isArray(restored.selectedServices) ? restored.selectedServices : prev.selectedServices,
+            customServices: Array.isArray(restored.customServices) ? restored.customServices : prev.customServices,
+            milestones: Array.isArray(restored.milestones) ? restored.milestones : prev.milestones,
+            clientLogos: Array.isArray(restored.clientLogos) ? restored.clientLogos : prev.clientLogos,
+          }));
         } else {
-          // Fallback: reconstruct from normalized fields
+          // Fallback: reconstruct from normalized fields (pre-JSONB documents)
           setProposalData((prev) => ({
             ...prev,
             projectTitle: proposal.title || prev.projectTitle,
@@ -345,8 +355,21 @@ export default function ProposalBuilder() {
                   setIsExporting(true);
                   try {
                     const fileName = `${proposalData.projectTitle.replace(/\s+/g, "-").toLowerCase()}-proposal.pdf`;
-                    await exportProposalToPDF(proposalData, fileName);
-                    toast.success("Proposal exported successfully!");
+                    const result = await exportProposalToPDF(proposalData, fileName);
+                    if (result.success) {
+                      toast.success("Proposal exported successfully!");
+                    } else {
+                      toast.error(result.error || "Failed to export proposal", {
+                        action: {
+                          label: "Retry",
+                          onClick: () => {
+                            // Re-trigger export
+                            const retryBtn = document.querySelector('[data-export-pdf]') as HTMLButtonElement;
+                            retryBtn?.click();
+                          },
+                        },
+                      });
+                    }
                   } catch (error) {
                     console.error("Export error:", error);
                     toast.error("Failed to export proposal");
@@ -355,6 +378,7 @@ export default function ProposalBuilder() {
                   }
                 }}
                 disabled={isExporting}
+                data-export-pdf
                 className="hidden sm:flex px-3 md:px-4 py-2 text-sm bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors items-center gap-2 font-medium disabled:opacity-50 min-h-[40px]"
               >
                 <Download className="h-4 w-4" />

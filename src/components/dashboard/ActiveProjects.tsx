@@ -46,7 +46,7 @@ const statusConfig = {
 const avatarColors = [
   "bg-amber-600",
   "bg-emerald-600",
-  "bg-violet-600",
+  "bg-primary",
   "bg-rose-600",
   "bg-sky-600",
 ];

@@ -59,7 +59,7 @@ export default function ForgotPassword() {
             <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
           </header>
           <section className="space-y-4">
-            <h1 className="text-4xl font-bold text-foreground">
+            <h1 className="text-4xl font-semibold text-foreground">
               Forgot your password?
               <br />
               <span className="gradient-text">No worries.</span>
@@ -79,7 +79,7 @@ export default function ForgotPassword() {
                 <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
                 <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
               </div>
-              <h2 className="text-2xl font-bold text-foreground">Reset Password</h2>
+              <h2 className="text-2xl font-semibold text-foreground">Reset Password</h2>
               <p className="text-muted-foreground mt-2">Enter your email to receive a reset link</p>
             </div>
 

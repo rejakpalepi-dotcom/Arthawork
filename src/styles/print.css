@@ -1,0 +1,217 @@
+/**
+ * Print & Export Stylesheet
+ * 
+ * Two contexts:
+ * 1. @media print — browser print dialog
+ * 2. .print-document — export engine isolation (forces light theme regardless of app theme)
+ *
+ * Key principles:
+ * - All colors are explicit hex, never HSL variables (which depend on theme)
+ * - Font sizes use pt for print fidelity
+ * - Page breaks are controlled via data attributes
+ * - Shadows, glows, and blur effects are stripped
+ */
+
+/* ──────────────────────────────────────────────
+   Theme-isolated document container
+   Apply to any element to force light-mode rendering
+   ────────────────────────────────────────────── */
+
+.print-document {
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+  /* Kill all ambient effects */
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Dark mode protection — document surfaces MUST stay light */
+.dark .print-document {
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+  background-image: none !important;
+}
+
+.dark .print-document * {
+  color: inherit;
+}
+
+.print-document * {
+  /* Reset any dark theme text overrides */
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Force all text in print documents to be dark */
+.print-document .text-foreground,
+.print-document .text-card-foreground {
+  color: #1a1a1a !important;
+}
+
+.print-document .text-muted-foreground {
+  color: #666666 !important;
+}
+
+.print-document .bg-card,
+.print-document .bg-background {
+  background-color: #ffffff !important;
+}
+
+.print-document .bg-secondary,
+.print-document .bg-secondary\/20,
+.print-document .bg-secondary\/30,
+.print-document .bg-secondary\/50 {
+  background-color: #f5f5f5 !important;
+}
+
+.print-document .border-border {
+  border-color: #e5e5e5 !important;
+}
+
+/* Gradient text → solid color in print */
+.print-document .gradient-text {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  -webkit-text-fill-color: #00ACC1 !important;
+  color: #00ACC1 !important;
+}
+
+/* Primary color references */
+.print-document .text-primary {
+  color: #00ACC1 !important;
+}
+
+.print-document .bg-primary\/20,
+.print-document .bg-primary\/10,
+.print-document .bg-primary\/5 {
+  background-color: rgba(0, 172, 193, 0.1) !important;
+}
+
+.print-document .border-primary {
+  border-color: #00ACC1 !important;
+}
+
+/* Status badges in print */
+.print-document .text-destructive {
+  color: #dc2626 !important;
+}
+
+.print-document .text-emerald-500,
+.print-document .text-emerald-600 {
+  color: #059669 !important;
+}
+
+.print-document .text-amber-500,
+.print-document .text-amber-400 {
+  color: #d97706 !important;
+}
+
+/* ──────────────────────────────────────────────
+   Numeric font for exported documents
+   ────────────────────────────────────────────── */
+
+.print-document .font-mono,
+.print-document [data-print-numeric] {
+  font-family: 'IBM Plex Sans', 'Poppins', system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* ──────────────────────────────────────────────
+   Serif headings for proposal exports
+   ────────────────────────────────────────────── */
+
+.print-document [data-print-heading="editorial"] {
+  font-family: 'Source Serif 4', Georgia, serif !important;
+}
+
+/* ──────────────────────────────────────────────
+   Page break control
+   ────────────────────────────────────────────── */
+
+[data-print-page-break="avoid"] {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+[data-print-page-break="before"] {
+  page-break-before: always;
+  break-before: page;
+}
+
+[data-print-page-break="after"] {
+  page-break-after: always;
+  break-after: page;
+}
+
+/* ──────────────────────────────────────────────
+   Print-specific element visibility
+   ────────────────────────────────────────────── */
+
+[data-print-hide] {
+  display: none !important;
+}
+
+/* ──────────────────────────────────────────────
+   @media print — browser print dialog
+   ────────────────────────────────────────────── */
+
+@media print {
+  /* Hide app chrome */
+  nav,
+  aside,
+  header,
+  footer,
+  .sidebar,
+  .no-print,
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    background-image: none !important;
+    color: #1a1a1a !important;
+    font-size: 10pt !important;
+    line-height: 1.5 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Page setup */
+  @page {
+    size: A4 portrait;
+    margin: 15mm 12mm;
+  }
+
+  /* Tables should not break across pages */
+  table, thead, tbody, tr {
+    page-break-inside: avoid;
+  }
+
+  /* Keep totals and payment details together */
+  [data-print-element="totals"],
+  [data-print-element="payment"],
+  [data-print-element="footer"] {
+    page-break-inside: avoid;
+  }
+
+  /* Remove decorative elements */
+  .shadow-xl,
+  .shadow-lg,
+  .shadow-2xl {
+    box-shadow: none !important;
+  }
+
+  .backdrop-blur-xl,
+  .backdrop-blur-sm {
+    backdrop-filter: none !important;
+  }
+
+  /* Ensure links show URLs */
+  a[href]:after {
+    content: none;
+  }
+}

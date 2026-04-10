@@ -408,7 +408,7 @@ export default function GuestPayment() {
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-foreground">Amount</span>
-                          <span className="font-bold text-primary font-mono">{formatIDR(invoice.total)}</span>
+                          <span className="font-semibold text-primary font-numeric">{formatIDR(invoice.total)}</span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-foreground">Reference</span>

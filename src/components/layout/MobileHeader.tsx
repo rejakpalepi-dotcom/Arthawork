@@ -36,7 +36,7 @@ export function MobileHeader({ title }: MobileHeaderProps) {
               </span>
             </div>
           ) : (
-            <span className="font-bold text-foreground text-lg truncate">
+            <span className="font-semibold text-foreground text-lg truncate">
               {pageTitle}
             </span>
           )}

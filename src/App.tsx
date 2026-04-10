@@ -10,6 +10,8 @@ import { useSessionPersistence } from "@/hooks/useSessionPersistence";
 import { SupportWidget } from "@/components/support/SupportWidget";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Loader2 } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect } from "react";
 
 // Static imports for critical path (auth pages)
 import Login from "./pages/Login";
@@ -60,11 +62,23 @@ function SessionWrapper({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+/**
+ * Forces light theme for public/unauthenticated routes.
+ * Dark mode is only available inside the authenticated dashboard shell.
+ */
+function ForcedLightWrapper({ children }: { children: React.ReactNode }) {
+  const { setTheme } = useTheme();
+  useEffect(() => {
+    setTheme("light");
+  }, [setTheme]);
+  return <>{children}</>;
+}
+
 const App = () => {
   return (
     <>
       <ErrorBoundary>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light">
           <QueryClientProvider client={queryClient}>
             <TooltipProvider>
               <SessionWrapper>
@@ -73,15 +87,15 @@ const App = () => {
                 <BrowserRouter>
                   <Suspense fallback={<PageLoader />}>
                     <Routes>
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/signup" element={<Signup />} />
-                      <Route path="/forgot-password" element={<ForgotPassword />} />
-                      <Route path="/pay/:token" element={<GuestPayment />} />
-                      <Route path="/pricing" element={<Pricing />} />
-                      <Route path="/terms" element={<TermsOfService />} />
-                      <Route path="/privacy" element={<PrivacyPolicy />} />
-                      <Route path="/faq" element={<FAQ />} />
-                      <Route path="/changelog" element={<Changelog />} />
+                      <Route path="/login" element={<ForcedLightWrapper><Login /></ForcedLightWrapper>} />
+                      <Route path="/signup" element={<ForcedLightWrapper><Signup /></ForcedLightWrapper>} />
+                      <Route path="/forgot-password" element={<ForcedLightWrapper><ForgotPassword /></ForcedLightWrapper>} />
+                      <Route path="/pay/:token" element={<ForcedLightWrapper><GuestPayment /></ForcedLightWrapper>} />
+                      <Route path="/pricing" element={<ForcedLightWrapper><Pricing /></ForcedLightWrapper>} />
+                      <Route path="/terms" element={<ForcedLightWrapper><TermsOfService /></ForcedLightWrapper>} />
+                      <Route path="/privacy" element={<ForcedLightWrapper><PrivacyPolicy /></ForcedLightWrapper>} />
+                      <Route path="/faq" element={<ForcedLightWrapper><FAQ /></ForcedLightWrapper>} />
+                      <Route path="/changelog" element={<ForcedLightWrapper><Changelog /></ForcedLightWrapper>} />
                       <Route
                         path="/checkout"
                         element={
@@ -91,8 +105,8 @@ const App = () => {
                         }
                       />
 
-                      <Route path="/contract/:token" element={<ContractViewer />} />
-                      <Route path="/portal/:token" element={<ClientPortal />} />
+                      <Route path="/contract/:token" element={<ForcedLightWrapper><ContractViewer /></ForcedLightWrapper>} />
+                      <Route path="/portal/:token" element={<ForcedLightWrapper><ClientPortal /></ForcedLightWrapper>} />
 
                       <Route
                         path="/dashboard"
@@ -223,7 +237,7 @@ const App = () => {
                         }
                       />
 
-                      <Route path="/" element={<LandingPage />} />
+                      <Route path="/" element={<ForcedLightWrapper><LandingPage /></ForcedLightWrapper>} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>

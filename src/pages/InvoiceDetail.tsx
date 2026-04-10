@@ -119,8 +119,17 @@ export default function InvoiceDetail() {
     if (!invoice) return;
     setExporting(true);
     try {
-      await exportToPDF("invoice-detail-preview", `Invoice-${invoice.invoice_number}.pdf`);
-      toast.success("PDF exported successfully!");
+      const result = await exportToPDF("invoice-detail-preview", `Invoice-${invoice.invoice_number}.pdf`);
+      if (result.success) {
+        toast.success("PDF exported successfully!");
+      } else {
+        toast.error(result.error || "Failed to export PDF", {
+          action: {
+            label: "Retry",
+            onClick: handleExportPDF,
+          },
+        });
+      }
     } catch (error) {
       toast.error("Failed to export PDF");
     } finally {
@@ -182,7 +191,7 @@ export default function InvoiceDetail() {
             </Button>
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-bold text-foreground">Invoice #{invoice.invoice_number}</h1>
+                <h1 className="text-2xl font-semibold text-foreground">Invoice #{invoice.invoice_number}</h1>
                 <StatusBadge type="invoice" status={resolvedStatus} />
               </div>
               <p className="text-muted-foreground text-sm mt-1">
@@ -206,130 +215,147 @@ export default function InvoiceDetail() {
 
         {/* Invoice Preview */}
         <div className="max-w-4xl mx-auto">
-          <div id="invoice-detail-preview" className="bg-white rounded-xl border border-border p-8" style={{ color: '#1a1a1a' }}>
+          <div id="invoice-detail-preview" className="print-document bg-white border border-gray-200" style={{ color: '#1a1a1a' }}>
             {/* Header */}
-            <div className="flex justify-between items-start mb-8 pb-6 border-b-2 border-primary">
-              <div className="flex items-start gap-4">
-                {settings?.logo_url && (
-                  <img src={settings.logo_url} alt="Logo" className="h-12 w-auto object-contain" />
-                )}
-                <div>
-                  <h2 className="text-xl font-bold" style={{ color: '#1a1a1a' }}>{settings?.business_name || "Your Business"}</h2>
-                  {settings?.address && <p className="text-sm" style={{ color: '#666666' }}>{settings.address}</p>}
-                  {settings?.email && <p className="text-sm" style={{ color: '#666666' }}>{settings.email}</p>}
-                  {settings?.phone && <p className="text-sm" style={{ color: '#666666' }}>{settings.phone}</p>}
+            <div className="px-8 pt-8 pb-6" data-print-element="header">
+              <div className="flex justify-between items-start">
+                <div className="flex items-start gap-4">
+                  {settings?.logo_url && (
+                    <img src={settings.logo_url} alt="Logo" className="h-12 w-auto object-contain shrink-0" />
+                  )}
+                  <div>
+                    <h2 className="text-base font-semibold" style={{ color: '#111827' }}>{settings?.business_name || "Your Business"}</h2>
+                    {settings?.address && <p className="text-xs mt-0.5 leading-relaxed" style={{ color: '#6b7280' }}>{settings.address}</p>}
+                    {settings?.email && <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>{settings.email}</p>}
+                    {settings?.phone && <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>{settings.phone}</p>}
+                  </div>
                 </div>
-              </div>
-              <div className="text-right">
-                <h1 className="text-3xl font-black uppercase text-primary">INVOICE</h1>
-                <p className="text-sm mt-1" style={{ color: '#666666' }}>#{invoice.invoice_number}</p>
+                <div className="text-right">
+                  <h1 className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: '#9ca3af' }}>Invoice</h1>
+                  <p className="text-lg font-semibold font-numeric mt-0.5 tracking-tight" style={{ color: '#111827' }}>#{invoice.invoice_number}</p>
+                </div>
               </div>
             </div>
 
-            {/* Bill To & Dates */}
-            <div className="grid grid-cols-2 gap-8 mb-8">
-              <div>
-                <h3 className="text-xs font-semibold uppercase mb-2" style={{ color: '#888888' }}>Bill To</h3>
-                <p className="font-semibold" style={{ color: '#1a1a1a' }}>{invoice.client_name}</p>
-                {invoice.client_company && <p className="text-sm" style={{ color: '#666666' }}>{invoice.client_company}</p>}
-                {invoice.client_email && <p className="text-sm" style={{ color: '#666666' }}>{invoice.client_email}</p>}
-                {invoice.client_phone && <p className="text-sm" style={{ color: '#666666' }}>{invoice.client_phone}</p>}
-                {invoice.client_address && <p className="text-sm" style={{ color: '#666666' }}>{invoice.client_address}</p>}
-              </div>
-              <div className="text-right">
-                <div className="mb-4">
-                  <h3 className="text-xs font-semibold uppercase mb-1" style={{ color: '#888888' }}>Issue Date</h3>
-                  <p style={{ color: '#1a1a1a' }}>{new Date(invoice.issue_date).toLocaleDateString()}</p>
+            {/* Meta Strip */}
+            <div className="px-8 py-4 border-y" style={{ backgroundColor: '#f9fafb', borderColor: '#e5e7eb' }} data-print-element="meta">
+              <div className="flex items-center gap-8">
+                <div>
+                  <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: '#9ca3af' }}>Issue Date</p>
+                  <p className="text-sm font-medium mt-0.5" style={{ color: '#1f2937' }}>
+                    {new Date(invoice.issue_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </p>
                 </div>
                 {invoice.due_date && (
                   <div>
-                    <h3 className="text-xs font-semibold uppercase mb-1" style={{ color: '#888888' }}>Due Date</h3>
-                    <p className="font-medium" style={{ color: isOverdue ? '#dc2626' : '#1a1a1a' }}>
-                      {new Date(invoice.due_date).toLocaleDateString()}
+                    <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: '#9ca3af' }}>Due Date</p>
+                    <p className="text-sm font-medium mt-0.5" style={{ color: isOverdue ? '#dc2626' : '#1f2937' }}>
+                      {new Date(invoice.due_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </p>
                   </div>
                 )}
+                <div>
+                  <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: '#9ca3af' }}>Currency</p>
+                  <p className="text-sm font-medium font-numeric mt-0.5" style={{ color: '#1f2937' }}>IDR</p>
+                </div>
               </div>
             </div>
 
-            {/* Line Items */}
-            <div className="mb-8">
-              <table className="w-full">
-                <thead>
-                  <tr style={{ borderBottom: '1px solid #e5e5e5' }}>
-                    <th className="text-left py-3 text-xs font-semibold uppercase" style={{ color: '#888888' }}>Description</th>
-                    <th className="text-right py-3 text-xs font-semibold uppercase" style={{ color: '#888888' }}>Qty</th>
-                    <th className="text-right py-3 text-xs font-semibold uppercase" style={{ color: '#888888' }}>Unit Price</th>
-                    <th className="text-right py-3 text-xs font-semibold uppercase" style={{ color: '#888888' }}>Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.map((item) => (
-                    <tr key={item.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                      <td className="py-4" style={{ color: '#1a1a1a' }}>{item.description}</td>
-                      <td className="py-4 text-right" style={{ color: '#666666' }}>{item.quantity}</td>
-                      <td className="py-4 text-right font-mono" style={{ color: '#666666' }}>{formatIDR(item.unit_price)}</td>
-                      <td className="py-4 text-right font-semibold font-mono" style={{ color: '#1a1a1a' }}>{formatIDR(item.total)}</td>
+            <div className="px-8 py-6">
+              {/* Bill To */}
+              <div className="mb-6" data-print-element="bill-to">
+                <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: '#9ca3af' }}>Bill To</p>
+                <p className="text-sm font-semibold" style={{ color: '#111827' }}>{invoice.client_name}</p>
+                {invoice.client_company && <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>{invoice.client_company}</p>}
+                {invoice.client_email && <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>{invoice.client_email}</p>}
+                {invoice.client_phone && <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>{invoice.client_phone}</p>}
+                {invoice.client_address && <p className="text-xs mt-0.5 leading-relaxed" style={{ color: '#6b7280' }}>{invoice.client_address}</p>}
+              </div>
+
+              {/* Line Items */}
+              <div className="mb-6" data-print-element="line-items" data-print-page-break="avoid">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid #111827' }}>
+                      <th className="text-left pb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#6b7280' }}>Description</th>
+                      <th className="text-right pb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#6b7280' }}>Qty</th>
+                      <th className="text-right pb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#6b7280' }}>Unit Price</th>
+                      <th className="text-right pb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#6b7280' }}>Total</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Totals */}
-            <div className="flex justify-end">
-              <div className="w-72">
-                <div className="flex justify-between py-2">
-                  <span style={{ color: '#666666' }}>Subtotal</span>
-                  <span className="font-mono" style={{ color: '#1a1a1a' }}>{formatIDR(invoice.subtotal)}</span>
-                </div>
-                {invoice.tax_rate && invoice.tax_rate > 0 && (
-                  <div className="flex justify-between py-2">
-                    <span style={{ color: '#666666' }}>Tax ({invoice.tax_rate}%)</span>
-                    <span className="font-mono" style={{ color: '#1a1a1a' }}>{formatIDR(invoice.tax_amount || 0)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between py-3 border-t-2 border-primary mt-2">
-                  <span className="font-bold" style={{ color: '#1a1a1a' }}>Total</span>
-                  <span className="text-xl font-bold font-mono text-primary">{formatIDR(invoice.total)}</span>
-                </div>
+                  </thead>
+                  <tbody>
+                    {items.map((item) => (
+                      <tr key={item.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                        <td className="py-3 pr-4 text-sm" style={{ color: '#1f2937' }}>{item.description}</td>
+                        <td className="py-3 text-sm text-right font-numeric" style={{ color: '#374151' }}>{item.quantity}</td>
+                        <td className="py-3 text-sm text-right font-numeric" style={{ color: '#374151' }}>{formatIDR(item.unit_price)}</td>
+                        <td className="py-3 text-sm text-right font-numeric font-medium" style={{ color: '#111827' }}>{formatIDR(item.total)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            </div>
 
-            {/* Notes & Payment Info */}
-            {(invoice.notes || settings?.bank_name) && (
-              <div className="mt-8 pt-6" style={{ borderTop: '1px solid #e5e5e5' }}>
-                {invoice.notes && (
-                  <div className="mb-4">
-                    <h3 className="text-xs font-semibold uppercase mb-2" style={{ color: '#888888' }}>Notes</h3>
-                    <p className="text-sm" style={{ color: '#666666' }}>{invoice.notes}</p>
+              {/* Totals */}
+              <div className="flex justify-end" data-print-element="totals" data-print-page-break="avoid">
+                <div className="w-64">
+                  <div className="flex justify-between py-1.5 text-sm">
+                    <span style={{ color: '#6b7280' }}>Subtotal</span>
+                    <span className="font-numeric" style={{ color: '#1f2937' }}>{formatIDR(invoice.subtotal)}</span>
                   </div>
-                )}
-                {settings?.bank_name && (
-                  <div className="rounded-lg p-4" style={{ backgroundColor: '#f5f5f5' }}>
-                    <h3 className="text-xs font-semibold uppercase mb-2" style={{ color: '#888888' }}>Payment Information</h3>
-                    <div className="grid grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <p style={{ color: '#666666' }}>Bank</p>
-                        <p className="font-medium" style={{ color: '#1a1a1a' }}>{settings.bank_name}</p>
-                      </div>
-                      {settings.account_name && (
-                        <div>
-                          <p style={{ color: '#666666' }}>Account Name</p>
-                          <p className="font-medium" style={{ color: '#1a1a1a' }}>{settings.account_name}</p>
-                        </div>
-                      )}
-                      {settings.account_number && (
-                        <div>
-                          <p style={{ color: '#666666' }}>Account Number</p>
-                          <p className="font-medium font-mono" style={{ color: '#1a1a1a' }}>{settings.account_number}</p>
-                        </div>
-                      )}
+                  {invoice.tax_rate && invoice.tax_rate > 0 && (
+                    <div className="flex justify-between py-1.5 text-sm">
+                      <span style={{ color: '#6b7280' }}>Tax ({invoice.tax_rate}%)</span>
+                      <span className="font-numeric" style={{ color: '#1f2937' }}>{formatIDR(invoice.tax_amount || 0)}</span>
                     </div>
+                  )}
+                  <div className="flex justify-between pt-3 mt-2" style={{ borderTop: '2px solid #111827' }}>
+                    <span className="text-sm font-semibold" style={{ color: '#111827' }}>Total</span>
+                    <span className="text-lg font-semibold font-numeric" style={{ color: '#111827' }}>{formatIDR(invoice.total)}</span>
                   </div>
-                )}
+                </div>
               </div>
-            )}
+
+              {/* Notes & Payment Info */}
+              {(invoice.notes || settings?.bank_name) && (
+                <div className="mt-8 pt-6" style={{ borderTop: '1px solid #e5e7eb' }} data-print-element="payment" data-print-page-break="avoid">
+                  {invoice.notes && (
+                    <div className="mb-4">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#9ca3af' }}>Notes</p>
+                      <p className="text-xs leading-relaxed" style={{ color: '#6b7280' }}>{invoice.notes}</p>
+                    </div>
+                  )}
+                  {settings?.bank_name && (
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-wider mb-3" style={{ color: '#9ca3af' }}>Payment Details</p>
+                      <div className="grid grid-cols-3 gap-x-6 gap-y-2">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wider" style={{ color: '#9ca3af' }}>Bank</p>
+                          <p className="text-sm font-medium mt-0.5" style={{ color: '#1f2937' }}>{settings.bank_name}</p>
+                        </div>
+                        {settings.account_name && (
+                          <div>
+                            <p className="text-[10px] uppercase tracking-wider" style={{ color: '#9ca3af' }}>Account Name</p>
+                            <p className="text-sm font-medium mt-0.5" style={{ color: '#1f2937' }}>{settings.account_name}</p>
+                          </div>
+                        )}
+                        {settings.account_number && (
+                          <div>
+                            <p className="text-[10px] uppercase tracking-wider" style={{ color: '#9ca3af' }}>Account Number</p>
+                            <p className="text-sm font-medium font-numeric mt-0.5" style={{ color: '#1f2937' }}>{settings.account_number}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="px-8 py-4 border-t" style={{ backgroundColor: '#f9fafb', borderColor: '#e5e7eb' }} data-print-element="footer">
+              <p className="text-xs text-center" style={{ color: '#9ca3af' }}>Thank you for your business</p>
+            </div>
           </div>
         </div>
       </div>

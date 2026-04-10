@@ -12,7 +12,6 @@ export interface Proposal {
   created_at: string;
   updated_at: string;
   sent_at: string | null;
-  viewed_at: string | null;
   approved_at: string | null;
   expires_at: string | null;
 }
@@ -58,7 +57,7 @@ export function useProposals() {
 
     const { data, error: fetchError } = await supabase
       .from("proposals")
-      .select("id, title, description, total, status, created_at, updated_at, sent_at, viewed_at, approved_at, expires_at, clients(name)")
+      .select("id, title, description, total, status, created_at, updated_at, sent_at, approved_at, expires_at, clients(name)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -84,7 +83,6 @@ export function useProposals() {
           created_at: p.created_at,
           updated_at: p.updated_at,
           sent_at: (row.sent_at as string) || null,
-          viewed_at: (row.viewed_at as string) || null,
           approved_at: (row.approved_at as string) || null,
           expires_at: (row.expires_at as string) || null,
         };
@@ -161,9 +159,6 @@ export function useProposalMutations() {
     switch (newStatus) {
       case 'sent':
         timestampFields.sent_at = now;
-        break;
-      case 'viewed':
-        timestampFields.viewed_at = now;
         break;
       case 'approved':
         timestampFields.approved_at = now;

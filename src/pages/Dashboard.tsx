@@ -57,7 +57,7 @@ export default function Dashboard() {
               </>
             ) : (
               <>
-                <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">
+                <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-1 md:mb-2">
                   {greeting}, {userName}
                 </h1>
                 <p className="text-sm md:text-base text-muted-foreground">

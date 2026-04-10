@@ -101,7 +101,7 @@ export default function Contracts() {
                             </div>
                             <span className="text-sm text-muted-foreground">Total Kontrak</span>
                         </div>
-                        <p className="text-2xl font-bold text-foreground">{contracts?.length || 0}</p>
+                        <p className="text-2xl font-semibold text-foreground">{contracts?.length || 0}</p>
                     </div>
                     <div className="glass-card rounded-2xl p-6">
                         <div className="flex items-center gap-3 mb-3">
@@ -110,7 +110,7 @@ export default function Contracts() {
                             </div>
                             <span className="text-sm text-muted-foreground">Menunggu Tanda Tangan</span>
                         </div>
-                        <p className="text-2xl font-bold text-amber-500">
+                        <p className="text-2xl font-semibold text-amber-500">
                             {contracts?.filter((c) => c.status === "sent").length || 0}
                         </p>
                     </div>
@@ -121,7 +121,7 @@ export default function Contracts() {
                             </div>
                             <span className="text-sm text-muted-foreground">DP Diterima</span>
                         </div>
-                        <p className="text-2xl font-bold text-green-500">
+                        <p className="text-2xl font-semibold text-green-500">
                             {contracts?.filter((c) => c.payment_status === "paid").length || 0}
                         </p>
                     </div>
@@ -132,7 +132,7 @@ export default function Contracts() {
                             </div>
                             <span className="text-sm text-muted-foreground">Total Nilai</span>
                         </div>
-                        <p className="text-xl font-bold text-foreground">
+                        <p className="text-xl font-semibold text-foreground">
                             {formatCurrency(
                                 contracts?.reduce((sum, c) => sum + (c.total_amount || 0), 0) || 0
                             )}
@@ -188,7 +188,7 @@ export default function Contracts() {
                                             </DropdownMenu>
                                         </div>
                                         <div className="flex items-center justify-between mb-2">
-                                            <span className="font-mono font-bold text-primary">
+                                            <span className="font-numeric font-semibold text-primary">
                                                 {formatCurrency(contract.total_amount)}
                                             </span>
                                             <Badge

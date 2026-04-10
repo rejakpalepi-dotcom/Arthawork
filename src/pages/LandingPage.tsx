@@ -480,7 +480,7 @@ export default function LandingPage() {
                     <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
                         <Link to="/" className="flex items-center gap-2">
                             <img src={arthaLogo} alt="Artha" className="h-8 w-8 rounded-lg" />
-                            <span className="font-bold text-xl text-foreground">Artha</span>
+                            <span className="font-semibold text-xl text-foreground">Artha</span>
                         </Link>
                         <div className="hidden md:flex items-center gap-6">
                             <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Fitur</a>
@@ -776,7 +776,7 @@ export default function LandingPage() {
                                     variants={scaleIn}
                                 >
                                     <motion.p
-                                        className="text-4xl md:text-5xl font-bold text-primary"
+                                        className="text-4xl md:text-5xl font-semibold font-numeric text-primary"
                                         initial={{ scale: 0.5 }}
                                         whileInView={{ scale: 1 }}
                                         viewport={{ once: true }}
@@ -856,19 +856,19 @@ export default function LandingPage() {
                                 {/* Mini Stats */}
                                 <div className="grid grid-cols-2 gap-6">
                                     <div>
-                                        <p className="text-3xl md:text-4xl font-bold text-foreground">500+</p>
+                                        <p className="text-3xl md:text-4xl font-semibold font-numeric text-foreground">500+</p>
                                         <p className="text-sm text-muted-foreground">Invoice Dibuat</p>
                                     </div>
                                     <div>
-                                        <p className="text-3xl md:text-4xl font-bold text-foreground">50+</p>
+                                        <p className="text-3xl md:text-4xl font-semibold font-numeric text-foreground">50+</p>
                                         <p className="text-sm text-muted-foreground">Freelancer Aktif</p>
                                     </div>
                                     <div>
-                                        <p className="text-3xl md:text-4xl font-bold text-foreground">99.9%</p>
+                                        <p className="text-3xl md:text-4xl font-semibold font-numeric text-foreground">99.9%</p>
                                         <p className="text-sm text-muted-foreground">Uptime</p>
                                     </div>
                                     <div>
-                                        <p className="text-3xl md:text-4xl font-bold text-foreground">4.9/5</p>
+                                        <p className="text-3xl md:text-4xl font-semibold font-numeric text-foreground">4.9/5</p>
                                         <p className="text-sm text-muted-foreground">User Rating</p>
                                     </div>
                                 </div>
@@ -963,10 +963,10 @@ export default function LandingPage() {
                                             POPULER
                                         </motion.div>
                                     )}
-                                    <h3 className="text-xl font-bold text-foreground mb-2">{tier.name}</h3>
+                                    <h3 className="text-xl font-semibold text-foreground mb-2">{tier.name}</h3>
                                     <p className="text-muted-foreground text-sm mb-4">{tier.description}</p>
                                     <div className="mb-6">
-                                        <span className="text-3xl font-bold font-mono text-foreground">{tier.price}</span>
+                                        <span className="text-3xl font-semibold font-numeric text-foreground">{tier.price}</span>
                                         <span className="text-muted-foreground">{tier.period}</span>
                                     </div>
                                     <ul className="space-y-3 mb-6">
@@ -1124,7 +1124,7 @@ export default function LandingPage() {
                             <div>
                                 <div className="flex items-center gap-2 mb-4">
                                     <img src={arthaLogo} alt="Artha" className="h-8 w-8 rounded-lg" />
-                                    <span className="font-bold text-foreground">Artha</span>
+                                    <span className="font-semibold text-foreground">Artha</span>
                                 </div>
                                 <p className="text-sm text-muted-foreground">
                                     Invoice & Proposal Builder untuk Freelancer Indonesia

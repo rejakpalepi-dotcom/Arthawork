@@ -426,7 +426,7 @@ export default function Invoices() {
                     </div>
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="font-mono font-bold text-primary text-lg">
+                        <span className="font-numeric font-semibold text-primary text-lg">
                           {formatIDR(invoice.total)}
                         </span>
                         <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
@@ -477,7 +477,7 @@ export default function Invoices() {
                           <span className="text-foreground">{invoice.client_name || "—"}</span>
                         </td>
                         <td className="p-4 text-right">
-                          <span className="font-mono font-bold text-primary">
+                          <span className="font-numeric font-semibold text-primary">
                             {formatIDR(invoice.total)}
                           </span>
                         </td>

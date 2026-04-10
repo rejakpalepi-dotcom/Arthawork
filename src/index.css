@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import './styles/print.css';
 
 @tailwind base;
 @tailwind components;
@@ -6,33 +7,34 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
+    /* Surface hierarchy: background → card → elevated → secondary → muted */
+    --background: 210 40% 98%;      /* Page background */
     --foreground: 222 22% 12%;
-    --card: 0 0% 100%;
+    --card: 0 0% 100%;               /* Cards, panels */
     --card-foreground: 222 22% 12%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 22% 12%;
-    --primary: 187 100% 38%;
+    --primary: 187 100% 38%;         /* Brand teal — buttons, links, active */
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 35% 96%;
+    --secondary: 210 35% 96%;        /* Form inputs, table row alt */
     --secondary-foreground: 222 22% 18%;
-    --muted: 210 25% 94%;
+    --muted: 210 25% 94%;            /* Disabled, faded elements */
     --muted-foreground: 215 14% 45%;
-    --accent: 187 100% 38%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 220 14% 96%;           /* Neutral accent — NOT teal */
+    --accent-foreground: 222 22% 18%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --success: 152 69% 31%;
+    --success: 152 69% 31%;          /* Green — paid, complete */
     --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
+    --warning: 38 92% 50%;           /* Amber — pending, attention */
     --warning-foreground: 0 0% 10%;
-    --info: 210 100% 50%;
+    --info: 210 100% 50%;            /* Blue — informational */
     --info-foreground: 0 0% 100%;
     --border: 214 18% 90%;
     --input: 214 18% 90%;
     --ring: 187 100% 38%;
-    --radius: 1rem;
-    --surface-elevated: 210 35% 97%;
+    --radius: 0.75rem;
+    --surface-elevated: 210 35% 97%; /* Raised containers */
     --surface-subtle: 210 30% 94%;
     --cyan-glow: 187 100% 38%;
     --cyan-muted: 187 40% 40%;
@@ -60,8 +62,8 @@
     --secondary-foreground: 0 0% 95%;
     --muted: 0 0% 22%;
     --muted-foreground: 0 0% 60%;
-    --accent: 187 100% 38%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 220 14% 18%;           /* Neutral accent — NOT teal */
+    --accent-foreground: 0 0% 95%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     --success: 152 76% 36%;
@@ -96,6 +98,9 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    font-size: 15px;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
     background-image:
       radial-gradient(1200px circle at 10% 10%, hsl(var(--primary) / 0.14), transparent 45%),
       radial-gradient(900px circle at 90% 20%, hsl(var(--cyan-glow) / 0.12), transparent 40%),
@@ -111,6 +116,7 @@
   h5,
   h6 {
     @apply font-heading font-semibold tracking-tight;
+    letter-spacing: -0.015em;
   }
 }
 

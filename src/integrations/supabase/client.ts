@@ -5,6 +5,65 @@ import type { Database } from './types';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+// ─── Startup guard ───────────────────────────────────
+// Prevents a blank-page crash if .env is missing or misconfigured.
+if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+  const msg = [
+    '━━━ Artha: Missing environment variables ━━━',
+    '',
+    'The following variables must be set in your .env file:',
+    `  VITE_SUPABASE_URL           → ${SUPABASE_URL ? '✓' : '✗ missing'}`,
+    `  VITE_SUPABASE_PUBLISHABLE_KEY → ${SUPABASE_PUBLISHABLE_KEY ? '✓' : '✗ missing'}`,
+    '',
+    'Copy .env.example to .env and fill in the values.',
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+  ].join('\n');
+
+  console.error(msg);
+
+  // Render a visible error in the DOM so the developer doesn't just see a blank page
+  const root = document.getElementById('root');
+  if (root) {
+    root.innerHTML = `
+      <div style="
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0f0f0f;
+        color: #e5e5e5;
+        font-family: monospace;
+        padding: 2rem;
+      ">
+        <div style="max-width: 520px; text-align: center;">
+          <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+          <h1 style="font-size: 20px; font-weight: 600; margin-bottom: 8px; color: #f87171;">
+            Missing Environment Variables
+          </h1>
+          <p style="font-size: 14px; color: #9ca3af; margin-bottom: 24px; line-height: 1.6;">
+            Artha cannot start because required Supabase credentials are not configured.
+            Copy <code style="color:#60a5fa">.env.example</code> to <code style="color:#60a5fa">.env</code> and fill in your project URL and publishable key.
+          </p>
+          <pre style="
+            text-align: left;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 12px;
+            color: #a3a3a3;
+            overflow-x: auto;
+          ">VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=eyJ...</pre>
+        </div>
+      </div>
+    `;
+  }
+
+  // Throw to halt module execution — prevents createClient(undefined, undefined)
+  throw new Error('Artha startup failed: missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY');
+}
+
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 

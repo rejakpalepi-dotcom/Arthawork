@@ -46,7 +46,7 @@ const statusConfig: Record<string, { label: string; color: string }> = {
     locked: { label: "Terkunci", color: "bg-amber-500/20 text-amber-500" },
     active: { label: "Aktif", color: "bg-green-500/20 text-green-500" },
     review: { label: "Review", color: "bg-blue-500/20 text-blue-500" },
-    revision: { label: "Revisi", color: "bg-purple-500/20 text-purple-500" },
+    revision: { label: "Revisi", color: "bg-amber-500/20 text-amber-600" },
     final: { label: "Final", color: "bg-primary/20 text-primary" },
     archived: { label: "Arsip", color: "bg-muted text-muted-foreground" },
 };

@@ -144,7 +144,7 @@ export default function Login() {
             <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
           </header>
           <section className="space-y-4 animate-in fade-in slide-in-from-left-8 duration-700 delay-150">
-            <h1 className="text-4xl font-bold text-foreground">
+            <h1 className="text-4xl font-semibold text-foreground">
               Manage your business
               <br />
               <span className="gradient-text animate-in fade-in duration-1000 delay-300">with confidence.</span>
@@ -164,7 +164,7 @@ export default function Login() {
                 <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain animate-bounce" />
                 <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
               </div>
-              <h2 className="text-2xl font-bold text-foreground">Welcome to Artha</h2>
+              <h2 className="text-2xl font-semibold text-foreground">Welcome to Artha</h2>
               <p className="text-muted-foreground mt-2">Access your creative dashboard</p>
             </div>
 

@@ -1,64 +1,72 @@
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import { renderPagesToPDF } from "./exportEngine";
+import type { ExportResult } from "./exportEngine";
 import type { ProposalData } from "@/pages/ProposalBuilder";
 import { formatIDR } from "@/lib/currency";
 
+/**
+ * Export a proposal to a multi-page PDF.
+ *
+ * Renders 6 HTML pages (cover, intro, experience, services, timeline, investment)
+ * off-screen using the same visual language as ProposalPreview, then captures
+ * each page as a separate PDF page.
+ *
+ * NOTE: This still uses template strings for the off-screen rendering (not React
+ * components) because we need to render outside the React tree for html2canvas.
+ * However, the visual design matches ProposalPreview exactly — same spacing,
+ * colors, and typography — and `.print-document` is applied for theme isolation.
+ */
 export async function exportProposalToPDF(
   data: ProposalData,
   fileName: string = "proposal.pdf"
-): Promise<void> {
-  const pdf = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: "a4",
-  });
+): Promise<ExportResult> {
+  // Build the page renderers
+  const pageHtml = [
+    renderCoverPage(data),
+    renderIntroPage(data),
+    renderExperiencePage(data),
+    renderServicesPage(data),
+    renderTimelinePage(data),
+    renderInvestmentPage(data),
+  ];
 
-  const pageWidth = 210;
-  const pageHeight = 297;
-
-  // Create temporary container for rendering
+  // Create DOM elements for each page
   const container = document.createElement("div");
   container.style.position = "absolute";
   container.style.left = "-9999px";
   container.style.top = "0";
-  container.style.width = "794px"; // A4 width at 96 DPI
   document.body.appendChild(container);
 
-  const pages = [
-    () => renderCoverPage(data),
-    () => renderIntroPage(data),
-    () => renderExperiencePage(data),
-    () => renderServicesPage(data),
-    () => renderTimelinePage(data),
-    () => renderInvestmentPage(data),
-  ];
+  const pageElements: HTMLElement[] = [];
+
+  for (const html of pageHtml) {
+    const page = document.createElement("div");
+    page.style.width = "794px";
+    page.style.height = "1123px";
+    page.style.overflow = "hidden";
+    page.innerHTML = html;
+    container.appendChild(page);
+    pageElements.push(page);
+  }
 
   try {
-    for (let i = 0; i < pages.length; i++) {
-      if (i > 0) pdf.addPage();
-
-      container.innerHTML = pages[i]();
-
-      const canvas = await html2canvas(container, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: null,
-        logging: false,
-      });
-
-      const imgData = canvas.toDataURL("image/png");
-      const imgWidth = pageWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, Math.min(imgHeight, pageHeight));
-    }
-
-    pdf.save(fileName);
+    const result = await renderPagesToPDF(pageElements, {
+      fileName,
+    });
+    return result;
   } finally {
     document.body.removeChild(container);
   }
 }
+
+// ─── Page Templates ─────────────────────────────────────────────
+// These match ProposalPreview's visual output exactly, with explicit
+// colors (no CSS variables) and the .print-document-compatible palette.
+// Typography: Source Serif 4 for editorial headings, IBM Plex Sans for
+// numeric values, Inter for body text.
+
+const FONT_HEADING = "'Source Serif 4', Georgia, serif";
+const FONT_BODY = "'Inter', system-ui, sans-serif";
+const FONT_NUMERIC = "'IBM Plex Sans', 'Inter', system-ui, sans-serif";
 
 function renderCoverPage(data: ProposalData): string {
   const titleWords = data.projectTitle.split(" ");
@@ -66,7 +74,7 @@ function renderCoverPage(data: ProposalData): string {
   const secondLine = titleWords.slice(2).join(" ");
 
   return `
-    <div style="width: 794px; height: 1123px; background: #1a1a1a; color: white; font-family: system-ui, -apple-system, sans-serif; position: relative; overflow: hidden;">
+    <div style="width: 794px; height: 1123px; background: #1a1a1a; color: white; font-family: ${FONT_BODY}; position: relative; overflow: hidden;">
       <div style="position: absolute; top: 0; right: 0; width: 320px; height: 320px; background: rgba(0, 172, 193, 0.1); border-radius: 50%; filter: blur(100px); transform: translate(33%, -33%);"></div>
       <div style="position: absolute; bottom: 0; left: 0; width: 240px; height: 240px; background: rgba(0, 172, 193, 0.08); border-radius: 50%; filter: blur(80px); transform: translate(-33%, 33%);"></div>
       
@@ -83,7 +91,7 @@ function renderCoverPage(data: ProposalData): string {
       <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 32px 48px; position: relative; z-index: 10; margin-top: 200px;">
         <div style="margin-bottom: 24px;">
           <div style="color: #00ACC1; font-size: 12px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 16px;">Project Proposal</div>
-          <h1 style="font-size: 52px; font-weight: 900; line-height: 1.1; text-transform: uppercase; margin: 0;">
+          <h1 style="font-family: ${FONT_HEADING}; font-size: 52px; font-weight: 900; line-height: 1.1; text-transform: uppercase; margin: 0;">
             ${firstLine}
             ${secondLine ? `<br><span style="color: #00ACC1;">${secondLine}</span>` : ""}
           </h1>
@@ -105,7 +113,7 @@ function renderIntroPage(data: ProposalData): string {
   const paragraphs = data.introText.split("\n\n").map(p => `<p style="margin: 0 0 12px;">${p}</p>`).join("");
   
   return `
-    <div style="width: 794px; height: 1123px; background: white; font-family: system-ui, -apple-system, sans-serif; display: flex; flex-direction: column;">
+    <div style="width: 794px; height: 1123px; background: white; font-family: ${FONT_BODY}; display: flex; flex-direction: column;">
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 40px 48px 24px;">
         <div></div>
         ${data.clientCompany ? `<span style="font-size: 12px; color: #9ca3af;">${data.clientCompany}</span>` : ""}
@@ -124,7 +132,7 @@ function renderIntroPage(data: ProposalData): string {
         
         <div style="flex: 1;">
           <div style="font-size: 10px; color: #00ACC1; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px;">Value Proposition</div>
-          <h2 style="font-size: 28px; font-weight: 900; color: #1a1a1a; margin: 0 0 24px; line-height: 1.2; text-transform: uppercase;">${data.introTitle}</h2>
+          <h2 style="font-family: ${FONT_HEADING}; font-size: 28px; font-weight: 900; color: #1a1a1a; margin: 0 0 24px; line-height: 1.2; text-transform: uppercase;">${data.introTitle}</h2>
           <div style="font-size: 14px; color: #4b5563; line-height: 1.7;">
             ${paragraphs}
           </div>
@@ -136,31 +144,37 @@ function renderIntroPage(data: ProposalData): string {
 
 function renderExperiencePage(data: ProposalData): string {
   return `
-    <div style="width: 794px; height: 1123px; background: white; font-family: system-ui, -apple-system, sans-serif; display: flex; flex-direction: column; justify-content: center; padding: 48px;">
-      <h2 style="font-size: 32px; font-weight: 900; color: #1a1a1a; margin: 0 0 16px; line-height: 1.2; text-transform: uppercase;">${data.experienceTitle}</h2>
+    <div style="width: 794px; height: 1123px; background: white; font-family: ${FONT_BODY}; display: flex; flex-direction: column; justify-content: center; padding: 48px;">
+      <h2 style="font-family: ${FONT_HEADING}; font-size: 32px; font-weight: 900; color: #1a1a1a; margin: 0 0 16px; line-height: 1.2; text-transform: uppercase;">${data.experienceTitle}</h2>
       <p style="font-size: 14px; color: #6b7280; margin: 0 0 40px; max-width: 400px; line-height: 1.6;">${data.experienceSubtitle}</p>
       
       <div style="display: flex; gap: 48px; margin-bottom: 40px;">
         <div>
-          <div style="font-size: 32px; font-weight: 900; color: #1a1a1a;">${data.projectCount}</div>
+          <div style="font-family: ${FONT_NUMERIC}; font-size: 32px; font-weight: 900; color: #1a1a1a; font-variant-numeric: tabular-nums;">${data.projectCount}</div>
           <div style="font-size: 10px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; font-weight: 500;">Projects</div>
         </div>
         <div>
-          <div style="font-size: 32px; font-weight: 900; color: #1a1a1a;">${data.countriesCount}</div>
+          <div style="font-family: ${FONT_NUMERIC}; font-size: 32px; font-weight: 900; color: #1a1a1a; font-variant-numeric: tabular-nums;">${data.countriesCount}</div>
           <div style="font-size: 10px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; font-weight: 500;">Countries</div>
         </div>
         <div>
-          <div style="font-size: 32px; font-weight: 900; color: #1a1a1a;">${data.rating}</div>
+          <div style="font-family: ${FONT_NUMERIC}; font-size: 32px; font-weight: 900; color: #1a1a1a; font-variant-numeric: tabular-nums;">${data.rating}</div>
           <div style="font-size: 10px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; font-weight: 500;">Rating</div>
         </div>
       </div>
       
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-        ${[1, 2, 3, 4, 5, 6].map(i => `
-          <div style="aspect-ratio: 1; background: #f9fafb; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid #f3f4f6;">
-            <span style="font-size: 32px; color: #e5e7eb;">🏢</span>
-          </div>
-        `).join("")}
+        ${[0, 1, 2, 3, 4, 5].map(i => {
+          const logoUrl = data.clientLogos?.[i];
+          return `
+            <div style="aspect-ratio: 1; background: #f9fafb; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid #f3f4f6; overflow: hidden;">
+              ${logoUrl
+                ? `<img src="${logoUrl}" style="width: 100%; height: 100%; object-fit: contain; padding: 4px;" />`
+                : `<span style="font-size: 32px; color: #e5e7eb;">🏢</span>`
+              }
+            </div>
+          `;
+        }).join("")}
       </div>
     </div>
   `;
@@ -170,13 +184,13 @@ function renderServicesPage(data: ProposalData): string {
   const allServices = [...data.selectedServices, ...(data.customServices || [])];
   
   return `
-    <div style="width: 794px; height: 1123px; background: white; font-family: system-ui, -apple-system, sans-serif; display: flex; flex-direction: column;">
+    <div style="width: 794px; height: 1123px; background: white; font-family: ${FONT_BODY}; display: flex; flex-direction: column;">
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 40px 48px 24px; border-bottom: 1px solid #f3f4f6;">
         <span style="font-size: 10px; color: #00ACC1; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;">Services</span>
       </div>
       
       <div style="flex: 1; padding: 32px 48px; overflow: hidden;">
-        <h2 style="font-size: 28px; font-weight: 900; color: #1a1a1a; margin: 0 0 8px; text-transform: uppercase;">${"Our Services"}</h2>
+        <h2 style="font-family: ${FONT_HEADING}; font-size: 28px; font-weight: 900; color: #1a1a1a; margin: 0 0 8px; text-transform: uppercase;">Our Services</h2>
         <p style="font-size: 12px; color: #6b7280; margin: 0 0 32px;">What we bring to the table</p>
         
         <div style="display: flex; flex-direction: column; gap: 16px;">
@@ -192,7 +206,7 @@ function renderServicesPage(data: ProposalData): string {
                     ${service.description ? `<p style="font-size: 12px; color: #6b7280; margin: 4px 0 0;">${service.description}</p>` : ""}
                   </div>
                 </div>
-                <span style="font-size: 13px; font-weight: 600; color: #00ACC1; white-space: nowrap;">${formatIDR(service.price)}</span>
+                <span style="font-family: ${FONT_NUMERIC}; font-size: 13px; font-weight: 600; color: #00ACC1; white-space: nowrap; font-variant-numeric: tabular-nums;">${formatIDR(service.price)}</span>
               </div>
             </div>
           `).join("")}
@@ -205,13 +219,13 @@ function renderServicesPage(data: ProposalData): string {
 
 function renderTimelinePage(data: ProposalData): string {
   return `
-    <div style="width: 794px; height: 1123px; background: white; font-family: system-ui, -apple-system, sans-serif; display: flex; flex-direction: column;">
+    <div style="width: 794px; height: 1123px; background: white; font-family: ${FONT_BODY}; display: flex; flex-direction: column;">
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 40px 48px 24px; border-bottom: 1px solid #f3f4f6;">
         <span style="font-size: 10px; color: #00ACC1; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;">Timeline</span>
       </div>
       
       <div style="flex: 1; padding: 32px 48px;">
-        <h2 style="font-size: 28px; font-weight: 900; color: #1a1a1a; margin: 0 0 8px; text-transform: uppercase;">Project Timeline</h2>
+        <h2 style="font-family: ${FONT_HEADING}; font-size: 28px; font-weight: 900; color: #1a1a1a; margin: 0 0 8px; text-transform: uppercase;">Project Timeline</h2>
         <p style="font-size: 12px; color: #6b7280; margin: 0 0 40px;">Our roadmap to success</p>
         
         <div style="position: relative; padding-left: 24px;">
@@ -242,14 +256,14 @@ function renderInvestmentPage(data: ProposalData): string {
   const total = subtotal + taxAmount;
 
   return `
-    <div style="width: 794px; height: 1123px; background: #1a1a1a; color: white; font-family: system-ui, -apple-system, sans-serif; display: flex; flex-direction: column;">
+    <div style="width: 794px; height: 1123px; background: #1a1a1a; color: white; font-family: ${FONT_BODY}; display: flex; flex-direction: column;">
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 40px 48px 24px;">
         <div></div>
         <span style="font-size: 10px; color: #00ACC1; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;">Investment</span>
       </div>
       
       <div style="flex: 1; padding: 0 48px 32px;">
-        <h2 style="font-size: 28px; font-weight: 900; color: white; margin: 0 0 8px; text-transform: uppercase;">Project Investment</h2>
+        <h2 style="font-family: ${FONT_HEADING}; font-size: 28px; font-weight: 900; color: white; margin: 0 0 8px; text-transform: uppercase;">Project Investment</h2>
         <p style="font-size: 12px; color: #9ca3af; margin: 0 0 32px;">Scope of work and pricing</p>
         
         <div style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; margin-bottom: 32px;">
@@ -262,7 +276,7 @@ function renderInvestmentPage(data: ProposalData): string {
             <div style="padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.05); display: grid; grid-template-columns: 2fr 1fr 1fr; font-size: 13px; align-items: center;">
               <span style="color: white; font-weight: 500;">${service.name}</span>
               <span style="text-align: center; color: #9ca3af;">${service.unit || "—"}</span>
-              <span style="text-align: right; color: white;">${formatIDR(service.price)}</span>
+              <span style="font-family: ${FONT_NUMERIC}; text-align: right; color: white; font-variant-numeric: tabular-nums;">${formatIDR(service.price)}</span>
             </div>
           `).join("")}
         </div>
@@ -270,7 +284,7 @@ function renderInvestmentPage(data: ProposalData): string {
         <div style="margin-bottom: 32px;">
           <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 900; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1);">
             <span style="color: white; text-transform: uppercase;">Total Investment</span>
-            <span style="color: #00ACC1;">${formatIDR(total)}</span>
+            <span style="font-family: ${FONT_NUMERIC}; color: #00ACC1; font-variant-numeric: tabular-nums;">${formatIDR(total)}</span>
           </div>
         </div>
       </div>
@@ -279,7 +293,7 @@ function renderInvestmentPage(data: ProposalData): string {
         <div style="background: #00ACC1; border-radius: 12px; padding: 24px 32px; display: flex; align-items: center; justify-content: space-between;">
           <div>
             <div style="font-size: 10px; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500;">Project Total</div>
-            <div style="font-size: 24px; font-weight: 900; color: white;">${formatIDR(total)}</div>
+            <div style="font-family: ${FONT_NUMERIC}; font-size: 24px; font-weight: 900; color: white; font-variant-numeric: tabular-nums;">${formatIDR(total)}</div>
           </div>
           <div style="display: flex; align-items: center; gap: 8px; color: white; font-size: 13px; font-weight: 600; text-transform: uppercase;">Start Project →</div>
         </div>

@@ -83,7 +83,7 @@ export default function Checkout() {
                             <div className="border-t border-border pt-4">
                                 <div className="flex justify-between text-lg">
                                     <span className="font-semibold">Total</span>
-                                    <span className="font-bold text-primary">{tierConfig.priceDisplay}</span>
+                                    <span className="font-semibold text-primary">{tierConfig.priceDisplay}</span>
                                 </div>
                             </div>
                         </CardContent>

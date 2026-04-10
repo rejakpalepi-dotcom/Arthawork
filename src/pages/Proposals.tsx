@@ -34,7 +34,6 @@ interface Proposal {
   created_at: string;
   updated_at: string;
   sent_at?: string | null;
-  viewed_at?: string | null;
   approved_at?: string | null;
   valid_until?: string | null;
 }
@@ -89,7 +88,7 @@ export default function Proposals() {
 
     const { data, error } = await supabase
       .from("proposals")
-      .select("id, title, description, total, status, created_at, updated_at, sent_at, viewed_at, approved_at, valid_until, clients(name)")
+      .select("id, title, description, total, status, created_at, updated_at, sent_at, approved_at, valid_until, clients(name)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -109,7 +108,6 @@ export default function Proposals() {
           created_at: p.created_at,
           updated_at: p.updated_at,
           sent_at: (row.sent_at as string) || null,
-          viewed_at: (row.viewed_at as string) || null,
           approved_at: (row.approved_at as string) || null,
           valid_until: (row.valid_until as string) || null,
         };
@@ -355,7 +353,7 @@ export default function Proposals() {
               </div>
               <span className="text-sm text-muted-foreground">Pipeline Value</span>
             </div>
-            <p className="text-2xl font-bold text-foreground mb-1">{formatIDR(stats.pipelineValue)}</p>
+            <p className="text-2xl font-semibold text-foreground mb-1">{formatIDR(stats.pipelineValue)}</p>
             {stats.pipelineValue > 0 && stats.pipelineTrend !== 0 ? (
               <div className="flex items-center gap-1">
                 <TrendingUp className={cn("w-4 h-4", stats.pipelineTrend > 0 ? "text-success" : "text-destructive rotate-180")} />
@@ -377,7 +375,7 @@ export default function Proposals() {
               </div>
               <span className="text-sm text-muted-foreground">Acceptance Rate</span>
             </div>
-            <p className="text-2xl font-bold text-foreground mb-1">{stats.acceptanceRate}%</p>
+            <p className="text-2xl font-semibold text-foreground mb-1">{stats.acceptanceRate}%</p>
             {stats.acceptanceRate > 0 && stats.acceptanceTrend !== 0 ? (
               <div className="flex items-center gap-1">
                 <TrendingUp className={cn("w-4 h-4", stats.acceptanceTrend > 0 ? "text-success" : "text-destructive rotate-180")} />
@@ -399,7 +397,7 @@ export default function Proposals() {
               </div>
               <span className="text-sm text-muted-foreground">Active Proposals</span>
             </div>
-            <p className="text-2xl font-bold text-foreground mb-1">{stats.activeCount}</p>
+            <p className="text-2xl font-semibold text-foreground mb-1">{stats.activeCount}</p>
             <div className="flex items-center gap-1">
               <Plus className="w-4 h-4 text-primary" />
               <span className="text-sm text-primary">{stats.newThisWeek}</span>
@@ -557,7 +555,7 @@ export default function Proposals() {
                   <div className="flex items-center justify-between pt-4 border-t border-border">
                     <div>
                       <p className="text-xs text-muted-foreground mb-1">Value</p>
-                      <p className="text-lg font-bold text-foreground font-mono">{formatIDR(proposal.total)}</p>
+                      <p className="text-lg font-semibold text-foreground font-numeric">{formatIDR(proposal.total)}</p>
                     </div>
                     <StatusBadge type="proposal" status={resolvedStatus} />
                   </div>

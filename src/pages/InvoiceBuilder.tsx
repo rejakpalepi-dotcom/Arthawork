@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Save, Send, ZoomIn, ZoomOut, Eye, FileEdit } from "lucide-react";
+import { Save, Send, ZoomIn, ZoomOut, Eye, FileEdit, Download } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { BuilderContextBar } from "@/components/layout/BuilderContextBar";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { InvoicePreview } from "@/components/invoice/InvoicePreview";
 import { SaveStatusIndicator } from "@/components/ui/SaveStatusIndicator";
 import { invoiceFormSchema, InvoiceFormData } from "@/components/invoice/types";
 import { supabase } from "@/integrations/supabase/client";
+import { renderElementToPDF } from "@/lib/exportEngine";
 import { toast } from "sonner";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { useSendInvoiceEmail } from "@/hooks/useSendInvoiceEmail";
@@ -47,6 +48,7 @@ export default function InvoiceBuilder() {
   const { id: editId } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [previewScale, setPreviewScale] = useState(1);
   const [mobileView, setMobileView] = useState<"form" | "preview">("form");
   const [isLoading, setIsLoading] = useState(!!editId);
@@ -327,6 +329,70 @@ export default function InvoiceBuilder() {
     await handleSend();
   };
 
+  // ---------- Export PDF ----------
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      // Create a hidden container with the export-ready preview
+      const container = document.createElement("div");
+      container.style.position = "absolute";
+      container.style.left = "-9999px";
+      container.style.top = "0";
+      container.id = "invoice-export-container";
+      document.body.appendChild(container);
+
+      // Import ReactDOM to render the preview
+      const { createRoot } = await import("react-dom/client");
+      const root = createRoot(container);
+
+      // Render export-ready preview
+      root.render(
+        <InvoicePreview
+          data={formData}
+          subtotal={subtotal}
+          taxAmount={taxAmount}
+          total={total}
+          businessSettings={businessSettings}
+          currentStatus="draft"
+          forExport={true}
+        />
+      );
+
+      // Wait for render
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      const fileName = `Invoice-${formData.invoiceNumber || "draft"}.pdf`;
+      const result = await renderElementToPDF(container, {
+        fileName,
+        margins: [15, 12, 15, 12],
+      });
+
+      root.unmount();
+      document.body.removeChild(container);
+
+      if (result.success) {
+        toast.success("PDF exported successfully!");
+      } else {
+        toast.error(result.error || "Failed to export PDF", {
+          action: {
+            label: "Retry",
+            onClick: handleExportPDF,
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Export error:", error);
+      toast.error("Failed to export PDF", {
+        action: {
+          label: "Retry",
+          onClick: handleExportPDF,
+        },
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <DashboardLayout>
@@ -372,6 +438,15 @@ export default function InvoiceBuilder() {
                 <span className="sm:hidden">
                   {autosave.status === "saving" ? "..." : "Save"}
                 </span>
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleExportPDF}
+                disabled={isExporting}
+                className="hidden sm:flex gap-2 text-xs md:text-sm min-h-[40px] md:min-h-[44px] px-3 md:px-4"
+              >
+                <Download className="w-4 h-4" />
+                <span>{isExporting ? "Exporting..." : "Export PDF"}</span>
               </Button>
               <Button
                 onClick={handleSend}

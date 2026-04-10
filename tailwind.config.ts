@@ -15,10 +15,11 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["Poppins", "system-ui", "sans-serif"],
         heading: ["Space Grotesk", "system-ui", "sans-serif"],
         serif: ["Source Serif 4", "Georgia", "serif"],
         mono: ["JetBrains Mono", "monospace"],
+        numeric: ["IBM Plex Sans", "Inter", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

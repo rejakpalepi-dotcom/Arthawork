@@ -18,7 +18,6 @@ export interface Invoice {
     notes: string | null;
     updated_at: string | null;
     sent_at: string | null;
-    viewed_at: string | null;
     paid_at: string | null;
     created_at: string;
 }
@@ -46,7 +45,7 @@ export function useInvoices() {
 
         const { data, error: fetchError } = await supabase
             .from("invoices")
-            .select("id, invoice_number, total, status, due_date, issue_date, subtotal, tax_rate, tax_amount, notes, created_at, updated_at, sent_at, viewed_at, paid_at, clients(name, email, phone, address)")
+            .select("id, invoice_number, total, status, due_date, issue_date, subtotal, tax_rate, tax_amount, notes, created_at, updated_at, sent_at, paid_at, clients(name, email, phone, address)")
             .eq("user_id", user.id)
             .order("created_at", { ascending: false });
 
@@ -83,7 +82,6 @@ export function useInvoices() {
                     created_at: inv.created_at,
                     updated_at: (inv as Record<string, unknown>).updated_at as string | null,
                     sent_at: (inv as Record<string, unknown>).sent_at as string | null,
-                    viewed_at: (inv as Record<string, unknown>).viewed_at as string | null,
                     paid_at: (inv as Record<string, unknown>).paid_at as string | null,
                 };
             }));
@@ -161,9 +159,6 @@ export function useInvoiceMutations() {
         switch (status) {
             case 'sent':
                 timestampFields.sent_at = now;
-                break;
-            case 'viewed':
-                timestampFields.viewed_at = now;
                 break;
             case 'paid':
                 timestampFields.paid_at = now;
