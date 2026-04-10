@@ -186,7 +186,7 @@ export function AnnotationSidebar({
                             >
                                 <p className="text-sm text-slate-400 line-clamp-2">{annotation.comment}</p>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-xs text-green-500">✓ {annotation.resolved_by}</span>
+                                    <span className="text-xs text-green-500">Selesai oleh {annotation.resolved_by}</span>
                                 </div>
                             </div>
                         ))}

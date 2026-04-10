@@ -9,14 +9,14 @@ const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 // Prevents a blank-page crash if .env is missing or misconfigured.
 if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
   const msg = [
-    '━━━ Artha: Missing environment variables ━━━',
+    '--- Artha: Missing environment variables ---',
     '',
     'The following variables must be set in your .env file:',
-    `  VITE_SUPABASE_URL           → ${SUPABASE_URL ? '✓' : '✗ missing'}`,
-    `  VITE_SUPABASE_PUBLISHABLE_KEY → ${SUPABASE_PUBLISHABLE_KEY ? '✓' : '✗ missing'}`,
+    `  VITE_SUPABASE_URL            ${SUPABASE_URL ? '[OK]' : '[MISSING]'}`,
+    `  VITE_SUPABASE_PUBLISHABLE_KEY ${SUPABASE_PUBLISHABLE_KEY ? '[OK]' : '[MISSING]'}`,
     '',
     'Copy .env.example to .env and fill in the values.',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+    '--------------------------------------------',
   ].join('\n');
 
   console.error(msg);
@@ -36,7 +36,7 @@ if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
         padding: 2rem;
       ">
         <div style="max-width: 520px; text-align: center;">
-          <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+          <div style="font-size: 48px; margin-bottom: 16px;">(!)</div>
           <h1 style="font-size: 20px; font-weight: 600; margin-bottom: 8px; color: #f87171;">
             Missing Environment Variables
           </h1>

@@ -250,7 +250,7 @@ function ExperiencePreview({ data, forExport }: PageProps) {
                 {logoUrl ? (
                   <img src={logoUrl} alt={`Client ${i + 1}`} className="w-full h-full object-contain p-2" />
                 ) : (
-                  <span className="text-gray-200 text-lg">◻</span>
+                  <span className="text-gray-200 text-lg">-</span>
                 )}
               </div>
             );

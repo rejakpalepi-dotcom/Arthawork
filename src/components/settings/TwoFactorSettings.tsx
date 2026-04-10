@@ -73,7 +73,7 @@ export function TwoFactorSettings() {
         const success = await verifyMFAEnrollment(enrollData.id, verifyCode);
 
         if (success) {
-            toast.success("2FA berhasil diaktifkan! 🔒", {
+            toast.success("2FA berhasil diaktifkan", {
                 description: "Akun kamu sekarang lebih aman.",
             });
             setShowDialog(false);

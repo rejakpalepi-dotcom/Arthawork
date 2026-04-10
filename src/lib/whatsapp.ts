@@ -109,21 +109,21 @@ export function getInvoiceReminderMessage(
 
     const studioName = businessName || 'Tim Kami';
 
-    let message = `Halo ${clientName} 👋
+    let message = `Halo ${clientName},
 
 Semoga harimu menyenangkan! Kami dari *${studioName}* ingin mengirimkan invoice untuk project yang sedang berjalan.
 
-━━━━━━━━━━━━━━━━
-📄 *INVOICE ${invoiceNumber}*
-━━━━━━━━━━━━━━━━
+----------------
+*INVOICE ${invoiceNumber}*
+----------------
 
-💰 *Total:* ${formattedAmount}
-📅 *Jatuh Tempo:* ${dueDate}`;
+*Total:* ${formattedAmount}
+*Jatuh Tempo:* ${dueDate}`;
 
     if (paymentLink) {
         message += `
 
-🔗 *Lihat & Bayar Invoice:*
+*Lihat & Bayar Invoice:*
 ${paymentLink}
 
 _Klik link di atas untuk melihat detail invoice dan melakukan pembayaran._`;
@@ -133,7 +133,7 @@ _Klik link di atas untuk melihat detail invoice dan melakukan pembayaran._`;
 
 Jangan ragu untuk menghubungi kami jika ada pertanyaan.
 
-Terima kasih atas kerjasamanya! 🙏
+Terima kasih atas kerjasamanya.
 
 Salam hangat,
 *${studioName}*`;
@@ -149,7 +149,7 @@ export function getProposalFollowUpMessage(
     proposalTitle: string,
     validUntil?: string
 ): string {
-    let message = `Halo ${clientName} 👋
+    let message = `Halo ${clientName},
 
 Saya ingin follow up mengenai proposal *"${proposalTitle}"* yang sudah saya kirimkan.
 
@@ -158,7 +158,7 @@ Apakah ada pertanyaan atau hal yang perlu didiskusikan lebih lanjut?`;
     if (validUntil) {
         message += `
 
-⏰ Proposal berlaku hingga: ${validUntil}`;
+Proposal berlaku hingga: ${validUntil}`;
     }
 
     message += `
@@ -184,13 +184,13 @@ export function getContractReminderMessage(
         minimumFractionDigits: 0,
     }).format(dpAmount);
 
-    return `Halo ${clientName} 👋
+    return `Halo ${clientName},
 
 Kontrak *"${contractTitle}"* sudah siap untuk ditandatangani!
 
-💰 DP yang perlu dibayar: *${formattedAmount}*
+DP yang perlu dibayar: *${formattedAmount}*
 
-📝 Silahkan klik link berikut untuk review dan tanda tangan:
+Silahkan klik link berikut untuk review dan tanda tangan:
 ${contractLink}
 
 Terima kasih!
@@ -205,9 +205,9 @@ export function getProjectUpdateMessage(
     projectTitle: string,
     portalLink: string
 ): string {
-    return `Halo ${clientName} 👋
+    return `Halo ${clientName},
 
-Ada update terbaru untuk proyek *"${projectTitle}"*! 🎨
+Ada update terbaru untuk proyek *"${projectTitle}"*.
 
 Silahkan cek di portal klien:
 ${portalLink}

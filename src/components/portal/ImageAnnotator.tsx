@@ -161,7 +161,7 @@ export function ImageAnnotator({
 
                                         {annotation.status === "resolved" && (
                                             <p className="text-xs text-green-500 mt-2">
-                                                ✓ Selesai oleh {annotation.resolved_by}
+                                                Selesai oleh {annotation.resolved_by}
                                             </p>
                                         )}
                                     </div>

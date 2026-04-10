@@ -126,7 +126,7 @@ export function useNotifications() {
                         if (oldData.status !== 'paid' && newData.status === 'paid') {
                             addNotification({
                                 type: "invoice_paid",
-                                title: "Invoice Paid! 💰",
+                                title: "Invoice Paid",
                                 message: `Invoice #${newData.invoice_number} has been marked as paid.`,
                                 entityId: newData.id,
                                 entityType: "invoice",
@@ -159,7 +159,7 @@ export function useNotifications() {
                         if (oldData.status !== 'approved' && newData.status === 'approved') {
                             addNotification({
                                 type: "proposal_accepted",
-                                title: "Proposal Accepted! 🎉",
+                                title: "Proposal Accepted",
                                 message: `Your proposal "${newData.title}" has been accepted.`,
                                 entityId: newData.id,
                                 entityType: "proposal",
@@ -196,7 +196,7 @@ export function useNotifications() {
                         const newData = payload.new as ClientPayload;
                         addNotification({
                             type: "new_client",
-                            title: "New Client Added! 👋",
+                            title: "New Client Added",
                             message: `${newData.name} has been added to your clients.`,
                             entityId: newData.id,
                             entityType: "client",

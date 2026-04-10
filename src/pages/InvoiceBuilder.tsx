@@ -288,7 +288,7 @@ export default function InvoiceBuilder() {
         });
 
         if (emailResult.success) {
-          toast.success("📧 Invoice sent to client!", {
+          toast.success("Invoice sent to client", {
             description: `Email delivered to ${data.clientEmail}`,
           });
         } else {
@@ -297,7 +297,7 @@ export default function InvoiceBuilder() {
           });
         }
       } else {
-        toast.success("✅ Invoice marked as sent", {
+        toast.success("Invoice marked as sent", {
           description: "No client email provided — invoice saved without sending email",
         });
       }

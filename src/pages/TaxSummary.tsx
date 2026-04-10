@@ -293,7 +293,7 @@ export default function TaxSummary() {
                             </div>
 
                             <div className="p-4 rounded-lg bg-muted/50 text-sm text-muted-foreground">
-                                <p className="font-medium mb-1">💡 Tips SPT</p>
+                                <p className="font-medium mb-1">Tips SPT</p>
                                 <p>
                                     PPh 23 yang dipotong klien dapat dikreditkan saat pengisian SPT Tahunan.
                                     Pastikan Anda menyimpan bukti potong dari setiap klien.

@@ -118,9 +118,9 @@ export default function Pricing() {
                         Trusted by 1,000+ Indonesian creatives
                     </p>
                     <div className="flex justify-center gap-8 text-muted-foreground/50">
-                        <span>🔒 Secure Payment</span>
-                        <span>💳 QRIS, VA, E-wallet</span>
-                        <span>❌ Cancel Anytime</span>
+                        <span>Secure Payment</span>
+                        <span>QRIS, VA, E-wallet</span>
+                        <span>Cancel Anytime</span>
                     </div>
                 </div>
             </div>

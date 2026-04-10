@@ -25,7 +25,7 @@ export function OnboardingTour() {
       // Welcome Step
       {
         popover: {
-          title: "🚀 SELAMAT DATANG DI ARTHA",
+          title: "SELAMAT DATANG DI ARTHA",
           description: "Workspace profesional untuk kesuksesan bisnis freelance lu! Yuk kita tunjukin cara memaksimalkan potensi bisnis lu.",
           side: "over",
           align: "center",
@@ -34,7 +34,7 @@ export function OnboardingTour() {
       // Subscription Info
       {
         popover: {
-          title: "💎 PILIH PAKET LU",
+          title: "PILIH PAKET LU",
           description: "Artha punya 3 paket: Free (3 invoice/bulan), Pro (Rp 50k - unlimited), dan Business (Rp 199k - fitur tim).",
           side: "over",
           align: "center",
@@ -43,7 +43,7 @@ export function OnboardingTour() {
       // Payment Methods
       {
         popover: {
-          title: "💳 BANYAK PILIHAN PEMBAYARAN",
+          title: "BANYAK PILIHAN PEMBAYARAN",
           description: "Terima pembayaran via QRIS, Virtual Account (BCA, Mandiri, BNI), dan E-Wallet (GoPay, OVO, DANA)!",
           side: "over",
           align: "center",
@@ -57,7 +57,7 @@ export function OnboardingTour() {
       {
         element: '[aria-label="Business metrics"] > div:first-child',
         popover: {
-          title: "📊 PIPELINE VALUE",
+          title: "PIPELINE VALUE",
           description: "Total potensi duit dari semua proposal aktif. Pantau peluang income lu!",
           side: "bottom",
           align: "start",
@@ -67,7 +67,7 @@ export function OnboardingTour() {
       {
         element: '[aria-label="Business metrics"] > div:nth-child(2)',
         popover: {
-          title: "📈 ACCEPTANCE RATE",
+          title: "ACCEPTANCE RATE",
           description: "Seberapa jago lu memenangkan project? Makin tinggi, makin oke pitching lu!",
           side: "bottom",
           align: "start",
@@ -77,7 +77,7 @@ export function OnboardingTour() {
       {
         element: 'aside nav',
         popover: {
-          title: "🧭 PUSAT NAVIGASI",
+          title: "PUSAT NAVIGASI",
           description: "Akses Clients, Services, Proposals, dan Invoices dari sini.",
           side: "right",
           align: "start",
@@ -87,7 +87,7 @@ export function OnboardingTour() {
       {
         element: 'aside nav a[href="/clients"]',
         popover: {
-          title: "👥 MANAJEMEN KLIEN",
+          title: "MANAJEMEN KLIEN",
           description: "Simpan semua info klien. Auto-sync ke invoice dan proposal.",
           side: "right",
           align: "center",
@@ -97,7 +97,7 @@ export function OnboardingTour() {
       {
         element: 'aside nav a[href="/invoices"]',
         popover: {
-          title: "💰 PUSAT INVOICE",
+          title: "PUSAT INVOICE",
           description: "Track status lunas, belum bayar, dan overdue.",
           side: "right",
           align: "center",
@@ -107,7 +107,7 @@ export function OnboardingTour() {
       {
         element: 'aside a[href="/invoices/new"]',
         popover: {
-          title: "⚡ BUAT CEPAT",
+          title: "BUAT CEPAT",
           description: "Klik untuk buat Invoice profesional dalam hitungan menit!",
           side: "right",
           align: "center",
@@ -117,7 +117,7 @@ export function OnboardingTour() {
       {
         element: 'aside a[href="/settings"]',
         popover: {
-          title: "⚙️ PENGATURAN",
+          title: "PENGATURAN",
           description: "Setup profil bisnis dan kelola subscription lu di sini.",
           side: "right",
           align: "center",
@@ -127,7 +127,7 @@ export function OnboardingTour() {
       {
         element: 'aside nav a[href="/contracts"]',
         popover: {
-          title: "📜 KONTRAK CERDAS (BARU!)",
+          title: "KONTRAK CERDAS",
           description: "Buat kontrak digital dengan tanda tangan elektronik. Client harus bayar DP dulu sebelum project dimulai - anti ghosting!",
           side: "right",
           align: "center",
@@ -137,7 +137,7 @@ export function OnboardingTour() {
       {
         element: 'aside nav a[href="/projects"]',
         popover: {
-          title: "📁 MANAJEMEN PROJECT",
+          title: "MANAJEMEN PROJECT",
           description: "Pantau status project, deadline, dan progres kerja di satu tempat.",
           side: "right",
           align: "center",
@@ -147,7 +147,7 @@ export function OnboardingTour() {
       {
         element: 'aside a[href="/tax-summary"]',
         popover: {
-          title: "🧮 KALKULATOR PAJAK (BARU!)",
+          title: "KALKULATOR PAJAK",
           description: "Otomatis hitung PPh 21 dan PPh 23 di invoice. Ada rekapitulasi tahunan untuk bantu isi SPT. Cocok buat klien korporat!",
           side: "right",
           align: "center",
@@ -160,7 +160,7 @@ export function OnboardingTour() {
       // Stats cards (exist on mobile)
       {
         popover: {
-          title: "📊 DASHBOARD STATS",
+          title: "DASHBOARD STATS",
           description: "Lihat Pipeline Value, Acceptance Rate, dan Total Earnings di bagian atas. Scroll untuk jelajahi fitur lainnya!",
           side: "over",
           align: "center",
@@ -169,8 +169,8 @@ export function OnboardingTour() {
       // Bottom navigation hint
       {
         popover: {
-          title: "📱 NAVIGASI MOBILE",
-          description: "Gunakan menu di pojok kiri atas (☰) untuk akses Clients, Proposals, Invoices, dan Settings.",
+          title: "NAVIGASI MOBILE",
+          description: "Gunakan menu di pojok kiri atas untuk akses Clients, Proposals, Invoices, dan Settings.",
           side: "over",
           align: "center",
         },
@@ -180,9 +180,9 @@ export function OnboardingTour() {
     // Final step for all
     const finalStep: DriveStep = {
       popover: {
-        title: "⌨️ TIPS PRO",
+        title: "TIPS PRO",
         description: mobileMode
-          ? "Tap menu ☰ untuk mulai! Explore Clients, buat Proposal, dan kirim Invoice pertama lu!"
+          ? "Tap menu untuk mulai. Explore Clients, buat Proposal, dan kirim Invoice pertama lu!"
           : "Cmd+K = Global Search, Cmd+N = New Project. Kerja makin cepat!",
         side: "over",
         align: "center",
@@ -227,7 +227,7 @@ export function OnboardingTour() {
         progressText: "{{current}} dari {{total}}",
         nextBtnText: "Lanjut →",
         prevBtnText: "← Kembali",
-        doneBtnText: "Mulai! 🚀",
+        doneBtnText: "Mulai",
         onDestroyStarted: () => {
           markTourComplete();
           driverObj.destroy();

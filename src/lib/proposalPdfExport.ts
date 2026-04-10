@@ -124,7 +124,7 @@ function renderIntroPage(data: ProposalData): string {
           ${data.heroImageUrl ? 
             `<img src="${data.heroImageUrl}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;" />` : 
             `<div style="text-align: center; color: #9ca3af;">
-              <span style="font-size: 48px; color: #d1d5db;">🌐</span>
+              <span style="font-size: 48px; color: #d1d5db;">--</span>
               <p style="font-size: 14px; margin-top: 8px; font-weight: 500;">Place Image Here</p>
             </div>`
           }
@@ -170,7 +170,7 @@ function renderExperiencePage(data: ProposalData): string {
             <div style="aspect-ratio: 1; background: #f9fafb; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid #f3f4f6; overflow: hidden;">
               ${logoUrl
                 ? `<img src="${logoUrl}" style="width: 100%; height: 100%; object-fit: contain; padding: 4px;" />`
-                : `<span style="font-size: 32px; color: #e5e7eb;">🏢</span>`
+                : `<span style="font-size: 32px; color: #e5e7eb;">--</span>`
               }
             </div>
           `;

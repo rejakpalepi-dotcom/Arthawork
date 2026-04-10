@@ -169,7 +169,7 @@ export const EMAIL_TEMPLATES = {
         preview: "Anda menerima proposal baru",
     },
     welcome: {
-        subject: "Selamat Datang di Artha! 🎉",
+        subject: "Selamat Datang di Artha",
         preview: "Mulai buat invoice profesional",
     },
 };

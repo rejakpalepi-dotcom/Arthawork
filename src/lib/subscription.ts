@@ -54,7 +54,7 @@ export const SUBSCRIPTION_TIERS: Record<SubscriptionTier, TierConfig> = {
             "Custom branding (logo + colors)",
             "Payment reminders",
             "No watermark",
-            "Smart Contracts with DP Lock 🔒",
+            "Smart Contracts with DP Lock",
             "Priority email support",
         ],
         limits: {
@@ -73,9 +73,9 @@ export const SUBSCRIPTION_TIERS: Record<SubscriptionTier, TierConfig> = {
         features: [
             "Everything in Pro",
             "5 team members",
-            "Premium Client Portal 🌌",
+            "Premium Client Portal",
             "Pin-point feedback on designs",
-            "Indonesian Tax Engine (PPh 21/23) 🧮",
+            "Indonesian Tax Engine (PPh 21/23)",
             "Annual Tax Summary for SPT",
             "Recurring invoices (auto-bill)",
             "White-label (100% your brand)",

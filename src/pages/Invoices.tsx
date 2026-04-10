@@ -215,9 +215,9 @@ export default function Invoices() {
           <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
             <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Bill To</h3>
             <p style="font-size: 18px; font-weight: 600; margin: 0;">${safeClientName}</p>
-            ${invoice.client_email ? `<p style="color: #666; margin: 4px 0;">📧 ${safeClientEmail}</p>` : ""}
-            ${invoice.client_phone ? `<p style="color: #666; margin: 4px 0;">📞 ${safeClientPhone}</p>` : ""}
-            ${invoice.client_address ? `<p style="color: #666; margin: 4px 0;">📍 ${safeClientAddress}</p>` : ""}
+            ${invoice.client_email ? `<p style="color: #666; margin: 4px 0;">${safeClientEmail}</p>` : ""}
+            ${invoice.client_phone ? `<p style="color: #666; margin: 4px 0;">${safeClientPhone}</p>` : ""}
+            ${invoice.client_address ? `<p style="color: #666; margin: 4px 0;">${safeClientAddress}</p>` : ""}
           </div>
           
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
