@@ -40,11 +40,11 @@ export default function Pricing() {
 
             {/* Hero */}
             <div className="py-16 text-center">
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                    Choose Your Plan
+                <h1 className="text-4xl md:text-5xl font-bold font-heading text-foreground mb-4">
+                    Harga Transparan
                 </h1>
                 <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                    Start free, upgrade when you're ready. All plans include a 14-day free trial.
+                    Mulai gratis, upgrade kapan saja.
                 </p>
             </div>
 
@@ -60,17 +60,17 @@ export default function Pricing() {
                             <div
                                 key={key}
                                 className={cn(
-                                    "relative rounded-2xl border-2 p-6 transition-all cursor-pointer",
+                                    "relative bg-card rounded-xl border p-6 transition-colors cursor-pointer",
                                     isHighlighted
-                                        ? "border-primary bg-primary/5 shadow-lg shadow-primary/10"
-                                        : "border-border hover:border-primary/50",
+                                        ? "border-primary ring-1 ring-primary/20"
+                                        : "border-border hover:border-primary/30",
                                     isSelected && "ring-2 ring-primary ring-offset-2 ring-offset-background"
                                 )}
                                 onClick={() => setSelectedTier(key)}
                             >
                                 {isHighlighted && (
-                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full">
-                                        MOST POPULAR
+                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs font-medium rounded-full">
+                                        POPULER
                                     </div>
                                 )}
 
@@ -78,11 +78,11 @@ export default function Pricing() {
                                     <div className={cn("p-2 rounded-lg", isHighlighted ? "bg-primary/10" : "bg-secondary")}>
                                         <Icon className={cn("w-6 h-6", iconColor)} />
                                     </div>
-                                    <h2 className="text-2xl font-bold text-foreground">{tier.displayName}</h2>
+                                    <h2 className="text-2xl font-bold font-heading text-foreground">{tier.displayName}</h2>
                                 </div>
 
                                 <div className="mb-6">
-                                    <span className="text-4xl font-bold text-foreground">
+                                    <span className="text-4xl font-bold font-numeric text-foreground">
                                         {tier.price === 0 ? "Free" : tier.priceDisplay}
                                     </span>
                                     {tier.price > 0 && (
@@ -93,7 +93,7 @@ export default function Pricing() {
                                 <ul className="space-y-3 mb-8">
                                     {tier.features.map((feature, i) => (
                                         <li key={i} className="flex items-start gap-2">
-                                            <Check className="w-5 h-5 text-success shrink-0 mt-0.5" />
+                                            <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                                             <span className="text-muted-foreground">{feature}</span>
                                         </li>
                                     ))}
@@ -112,14 +112,14 @@ export default function Pricing() {
                     })}
                 </div>
 
-                {/* FAQ or Trust badges */}
+                {/* Trust signals — aligned with landing page */}
                 <div className="mt-16 text-center">
                     <p className="text-muted-foreground mb-4">
-                        Trusted by 1,000+ Indonesian creatives
+                        Dipercaya freelancer di seluruh Indonesia
                     </p>
-                    <div className="flex justify-center gap-8 text-muted-foreground/50">
+                    <div className="flex justify-center gap-8 text-sm text-muted-foreground/70">
                         <span>Secure Payment</span>
-                        <span>QRIS, VA, E-wallet</span>
+                        <span>QRIS, VA, E-Wallet</span>
                         <span>Cancel Anytime</span>
                     </div>
                 </div>

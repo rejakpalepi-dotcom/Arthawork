@@ -33,23 +33,6 @@ export function StatsCard({
         className
       )}
     >
-      {/* Background pattern for highlight variant */}
-      {isHighlight && (
-        <div className="absolute inset-0 opacity-20">
-          <svg className="w-full h-full" viewBox="0 0 200 100" preserveAspectRatio="none">
-            <path
-              d="M0 80 Q 30 60, 60 70 T 120 50 T 180 60 L 200 100 L 0 100 Z"
-              fill="currentColor"
-              opacity="0.3"
-            />
-            <path
-              d="M0 90 Q 40 70, 80 80 T 160 65 L 200 100 L 0 100 Z"
-              fill="currentColor"
-              opacity="0.2"
-            />
-          </svg>
-        </div>
-      )}
 
       <div className="relative flex items-start justify-between">
         <div className="space-y-1 md:space-y-2 flex-1 min-w-0">

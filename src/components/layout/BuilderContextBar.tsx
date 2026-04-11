@@ -60,7 +60,7 @@ export function BuilderContextBar({
   };
 
   return (
-    <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+    <div className="border-b border-border bg-card sticky top-0 z-10">
       <div className="px-4 md:px-6 py-3 md:py-4">
         {/* Row 1: Back + Breadcrumb + Actions */}
         <div className="flex items-center justify-between gap-4">

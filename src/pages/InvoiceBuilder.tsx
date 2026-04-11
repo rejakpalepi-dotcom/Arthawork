@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
+import { transitionBuilderView, type BuilderViewState } from "@/lib/builderViewMachine";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
@@ -50,7 +51,11 @@ export default function InvoiceBuilder() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [previewScale, setPreviewScale] = useState(1);
-  const [mobileView, setMobileView] = useState<"form" | "preview">("form");
+  const [mobileView, setMobileView] = useState<BuilderViewState>("editor");
+  const switchView = (event: "SWITCH_TO_EDITOR" | "SWITCH_TO_PREVIEW") => {
+    const next = transitionBuilderView(mobileView, event);
+    if (next) setMobileView(next);
+  };
   const [isLoading, setIsLoading] = useState(!!editId);
   const [draftId, setDraftId] = useState<string | null>(editId ?? null);
   const { settings: businessSettings } = useBusinessSettings();
@@ -464,10 +469,10 @@ export default function InvoiceBuilder() {
           {/* Mobile View Toggle */}
           <div className="flex lg:hidden border-t border-border">
             <button
-              onClick={() => setMobileView("form")}
+              onClick={() => switchView("SWITCH_TO_EDITOR")}
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
-                mobileView === "form"
+                mobileView === "editor"
                   ? "text-primary border-b-2 border-primary bg-primary/5"
                   : "text-muted-foreground"
               )}
@@ -476,7 +481,7 @@ export default function InvoiceBuilder() {
               Edit Form
             </button>
             <button
-              onClick={() => setMobileView("preview")}
+              onClick={() => switchView("SWITCH_TO_PREVIEW")}
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
                 mobileView === "preview"
@@ -495,7 +500,7 @@ export default function InvoiceBuilder() {
             {/* Form Side */}
             <div className={cn(
               "overflow-y-auto p-4 md:p-6 border-r border-border",
-              mobileView !== "form" && "hidden lg:block"
+              mobileView !== "editor" && "hidden lg:block"
             )}>
               <div className="mb-4 md:mb-6">
                 <h2 className="text-lg md:text-xl font-semibold text-foreground mb-1">Build Invoice</h2>
@@ -512,10 +517,10 @@ export default function InvoiceBuilder() {
 
             {/* Preview Side */}
             <div className={cn(
-              "bg-secondary/20 overflow-y-auto",
+              "bg-muted/30 overflow-y-auto",
               mobileView !== "preview" && "hidden lg:block"
             )}>
-              <div className="sticky top-0 z-10 bg-secondary/80 backdrop-blur-sm border-b border-border px-4 md:px-6 py-3 flex items-center justify-between">
+              <div className="sticky top-0 z-10 bg-muted border-b border-border px-4 md:px-6 py-3 flex items-center justify-between">
                 <h2 className="text-sm font-medium text-foreground">Live Preview</h2>
                 <div className="flex items-center gap-1">
                   <Button

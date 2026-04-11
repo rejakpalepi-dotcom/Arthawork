@@ -21,7 +21,7 @@ export function MobileHeader({ title }: MobileHeaderProps) {
   const pageTitle = title || routeConfig?.title || "Artha";
 
   return (
-    <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border md:hidden">
+    <header className="sticky top-0 z-40 bg-background border-b border-border md:hidden">
       <div className="flex items-center justify-between h-14 px-4">
         <div className="flex items-center gap-2 min-w-0">
           <img src={arthaLogo} alt="Artha" className="h-7 w-7 rounded-lg shrink-0" />

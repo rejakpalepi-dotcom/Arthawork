@@ -101,12 +101,6 @@
     font-size: 15px;
     line-height: 1.6;
     letter-spacing: 0.01em;
-    background-image:
-      radial-gradient(1200px circle at 10% 10%, hsl(var(--primary) / 0.14), transparent 45%),
-      radial-gradient(900px circle at 90% 20%, hsl(var(--cyan-glow) / 0.12), transparent 40%),
-      radial-gradient(700px circle at 20% 90%, hsl(var(--primary) / 0.08), transparent 40%);
-    background-attachment: fixed;
-    background-repeat: no-repeat;
   }
 
   h1,
@@ -123,11 +117,11 @@
 @layer utilities {
 
   .glass-card {
-    @apply bg-card/65 backdrop-blur-xl border border-border/60 shadow-lg shadow-black/5;
+    @apply bg-card border border-border shadow-sm;
   }
 
   .card-hover {
-    @apply transition-all duration-200 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10;
+    @apply transition-all duration-200 hover:border-primary/30 hover:shadow-md hover:shadow-primary/5;
   }
 
   .sidebar-item {
@@ -157,7 +151,7 @@
   }
 
   .stat-card {
-    @apply glass-card rounded-2xl p-6 card-hover;
+    @apply bg-card border border-border rounded-xl p-5 card-hover;
   }
 
   .artha-driver-popover {

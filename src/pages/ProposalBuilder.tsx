@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { transitionBuilderView, type BuilderViewState } from "@/lib/builderViewMachine";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -128,7 +129,11 @@ export default function ProposalBuilder() {
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
-  const [mobileView, setMobileView] = useState<"form" | "preview">("form");
+  const [mobileView, setMobileView] = useState<BuilderViewState>("editor");
+  const switchView = (event: "SWITCH_TO_EDITOR" | "SWITCH_TO_PREVIEW") => {
+    const next = transitionBuilderView(mobileView, event);
+    if (next) setMobileView(next);
+  };
   const [draftId, setDraftId] = useState<string | null>(editId ?? null);
 
   // ---------- Load clients ----------
@@ -420,10 +425,10 @@ export default function ProposalBuilder() {
         {/* Mobile View Toggle */}
         <div className="flex lg:hidden border-t border-b border-border mb-3 -mx-4 px-4 md:mx-0 md:px-0">
           <button
-            onClick={() => setMobileView("form")}
+            onClick={() => switchView("SWITCH_TO_EDITOR")}
             className={cn(
               "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
-              mobileView === "form"
+              mobileView === "editor"
                 ? "text-primary border-b-2 border-primary bg-primary/5"
                 : "text-muted-foreground"
             )}
@@ -432,7 +437,7 @@ export default function ProposalBuilder() {
             Edit Form
           </button>
           <button
-            onClick={() => setMobileView("preview")}
+            onClick={() => switchView("SWITCH_TO_PREVIEW")}
             className={cn(
               "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
               mobileView === "preview"
@@ -450,7 +455,7 @@ export default function ProposalBuilder() {
           {/* Left Panel - Editor */}
           <div className={cn(
             "bg-card rounded-xl border border-border p-4 md:p-6 overflow-y-auto",
-            mobileView !== "form" && "hidden lg:block"
+            mobileView !== "editor" && "hidden lg:block"
           )}>
             <ProposalEditor
               currentPage={currentPage}

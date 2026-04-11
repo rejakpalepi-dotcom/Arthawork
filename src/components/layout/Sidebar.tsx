@@ -137,7 +137,7 @@ export function Sidebar() {
         {navGroups.map((group, groupIndex) => (
           <div key={groupIndex} className={groupIndex > 0 ? "mt-4" : ""}>
             {group.label && !collapsed && (
-              <p className="px-3 mb-1.5 text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-wider">
+              <p className="px-3 mb-1.5 text-[11px] font-semibold text-muted-foreground/60 uppercase tracking-wider">
                 {group.label}
               </p>
             )}
