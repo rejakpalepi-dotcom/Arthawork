@@ -373,7 +373,7 @@ export default function Invoices() {
         ) : (
           <>
             {/* Mobile Card View */}
-            <div className="md:hidden space-y-3 rounded-[28px] border border-border/70 bg-card/70 p-4 shadow-sm">
+            <div data-ui-panel="invoices-search" className="md:hidden space-y-3 rounded-[28px] border border-border/70 bg-card/70 p-4 shadow-sm">
               {invoices.map((invoice, index) => {
                 const resolvedStatus = resolveInvoiceStatus({ status: invoice.status, due_date: invoice.due_date });
                 const dueDateInfo = formatDueDate(invoice.due_date);
@@ -479,7 +479,7 @@ export default function Invoices() {
             </div>
 
             {/* Desktop Table View */}
-            <div className="hidden md:block glass-card rounded-[28px] border border-border/70 overflow-hidden shadow-sm">
+            <div data-ui-panel="invoices-search" className="hidden md:block glass-card rounded-[28px] border border-border/70 overflow-hidden shadow-sm">
               <div className="border-b border-border/70 px-5 py-4">
                 <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-foreground">Daftar Invoice</h2>
                 <p className="mt-1 text-sm text-muted-foreground">Lihat status, nominal, dan aksi utama tanpa perlu membuka invoice satu per satu.</p>

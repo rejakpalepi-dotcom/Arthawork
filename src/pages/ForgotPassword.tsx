@@ -51,9 +51,9 @@ export default function ForgotPassword() {
         canonical="https://artha.app/forgot-password"
         noIndex
       />
-      <main className="min-h-screen bg-background flex">
+      <main data-ui-shell="auth-forgot-password" className="flex min-h-screen bg-background">
         {/* Left Panel - Branding */}
-        <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border">
+        <aside className="hidden border-r border-border/70 bg-gradient-to-br from-background via-card to-background p-12 lg:flex lg:w-1/2 lg:flex-col lg:justify-between">
           <header className="flex items-center gap-3">
             <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
             <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
@@ -68,17 +68,18 @@ export default function ForgotPassword() {
               Masukkan email dan kami akan kirimkan link untuk mengatur ulang password.
             </p>
           </section>
-          <footer className="text-muted-foreground text-sm">© 2025 Artha. All rights reserved.</footer>
+          <footer className="text-sm text-muted-foreground">© 2025 Artha. Seluruh hak cipta dilindungi.</footer>
         </aside>
 
         {/* Right Panel - Reset Form */}
-        <section className="flex-1 flex items-center justify-center p-8">
-          <div className="w-full max-w-md space-y-8">
+        <section className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:px-10">
+          <div className="w-full max-w-md rounded-[30px] border border-border/70 bg-card/88 p-6 shadow-[0_28px_64px_-36px_rgba(15,23,42,0.45)] backdrop-blur sm:p-8">
             <div className="text-center lg:text-left">
-              <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+              <div className="mb-8 flex items-center justify-center gap-3 lg:hidden">
                 <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
                 <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
               </div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">Pulihkan akses</p>
               <h2 className="text-2xl font-semibold text-foreground">Atur Ulang Password</h2>
               <p className="text-muted-foreground mt-2">Masukkan email untuk menerima link reset</p>
             </div>
@@ -122,12 +123,7 @@ export default function ForgotPassword() {
                   </div>
                 </div>
 
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={loading}
-                  aria-label="Kirim link reset password"
-                >
+                <Button type="submit" className="h-11 w-full rounded-full" disabled={loading} aria-label="Kirim link reset password">
                   {loading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -140,10 +136,7 @@ export default function ForgotPassword() {
               </form>
             )}
 
-            <Link
-              to="/login"
-              className="flex items-center justify-center gap-2 text-primary hover:underline"
-            >
+            <Link to="/login" className="mt-6 flex items-center justify-center gap-2 text-primary hover:underline">
               <ArrowLeft className="w-4 h-4" />
               Kembali ke login
             </Link>

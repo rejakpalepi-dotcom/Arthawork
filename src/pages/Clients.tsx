@@ -127,11 +127,11 @@ export default function Clients() {
         />
 
         {/* Search */}
-        <div className="relative mb-4 md:mb-6">
+        <div data-ui-panel="clients-search" className="relative mb-4 md:mb-6 rounded-[24px] border border-border/70 bg-card/72 p-3 shadow-sm md:max-w-xl">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Cari klien..."
-            className="pl-10 w-full md:max-w-md min-h-[44px]"
+            className="min-h-[44px] w-full border-border/70 bg-background/80 pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

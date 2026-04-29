@@ -407,7 +407,7 @@ export default function Proposals() {
         </div>
 
         {/* Tabs & Filters */}
-        <div className="mb-6 rounded-[28px] border border-border/70 bg-card/75 p-4 shadow-sm">
+        <div data-ui-panel="proposals-controls" className="mb-6 rounded-[28px] border border-border/70 bg-card/75 p-4 shadow-sm">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-1 overflow-x-auto p-1 bg-secondary/80 rounded-xl">
             {tabs.map((tab) => (

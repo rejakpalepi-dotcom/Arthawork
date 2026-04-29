@@ -80,4 +80,20 @@ describe("Authenticated layout polish regressions", () => {
     expect(editServiceModal).toContain('data-ui-panel="edit-service-modal"');
     expect(upgradeModal).toContain('data-ui-panel="upgrade-modal"');
   });
+
+  it("auth pages and dense list workspaces expose device QA hooks", () => {
+    const login = readProjectFile("src/pages/Login.tsx");
+    const signup = readProjectFile("src/pages/Signup.tsx");
+    const forgotPassword = readProjectFile("src/pages/ForgotPassword.tsx");
+    const invoices = readProjectFile("src/pages/Invoices.tsx");
+    const proposals = readProjectFile("src/pages/Proposals.tsx");
+    const clients = readProjectFile("src/pages/Clients.tsx");
+
+    expect(login).toContain('data-ui-shell="auth-login"');
+    expect(signup).toContain('data-ui-shell="auth-signup"');
+    expect(forgotPassword).toContain('data-ui-shell="auth-forgot-password"');
+    expect(invoices).toContain('data-ui-panel="invoices-search"');
+    expect(proposals).toContain('data-ui-panel="proposals-controls"');
+    expect(clients).toContain('data-ui-panel="clients-search"');
+  });
 });

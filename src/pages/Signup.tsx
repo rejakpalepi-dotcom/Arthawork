@@ -158,9 +158,9 @@ export default function Signup() {
         description="Create your free Artha account. Start managing proposals, invoices, and clients in minutes. Built for creative professionals."
         canonical="https://artha.app/signup"
       />
-      <main className="min-h-screen bg-background flex">
+      <main data-ui-shell="auth-signup" className="flex min-h-screen bg-background">
         {/* Left Panel - Branding */}
-        <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border">
+        <aside className="hidden border-r border-border/70 bg-gradient-to-br from-background via-card to-background p-12 lg:flex lg:w-1/2 lg:flex-col lg:justify-between">
           <header className="flex items-center">
             <div className="flex items-center gap-3">
               <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain rounded-lg" />
@@ -184,9 +184,9 @@ export default function Signup() {
         </aside>
 
         {/* Right Panel - Signup Form */}
-        <section className="flex-1 flex items-center justify-center p-8">
-          <div className="w-full max-w-md space-y-8">
-            <div className="flex items-center justify-between lg:hidden mb-8">
+        <section className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:px-10">
+          <div className="w-full max-w-md rounded-[30px] border border-border/70 bg-card/88 p-6 shadow-[0_28px_64px_-36px_rgba(15,23,42,0.45)] backdrop-blur sm:p-8">
+            <div className="mb-8 flex items-center justify-between lg:hidden">
               <div className="flex items-center gap-3">
                 <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
                 <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
@@ -206,6 +206,7 @@ export default function Signup() {
             </div>
 
             <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">Buat akun baru</p>
               <h2 className="text-2xl font-semibold text-foreground">Buat Akun</h2>
               <p className="text-muted-foreground mt-2">Daftar gratis dan mulai kelola bisnis</p>
             </div>
@@ -296,7 +297,7 @@ export default function Signup() {
                 aria-hidden="true"
               />
 
-              <Button type="submit" className="w-full gap-2" disabled={loading}>
+              <Button type="submit" className="h-11 w-full rounded-full gap-2" disabled={loading}>
                 {loading ? "Membuat Akun..." : "Daftar dengan Email"}
                 <ArrowRight className="w-4 h-4" />
               </Button>
@@ -316,7 +317,7 @@ export default function Signup() {
             <Button
               variant="outline"
               type="button"
-              className="w-full gap-3 h-11"
+              className="h-11 w-full rounded-full gap-3"
               onClick={() => signInWithOAuth("google")}
               disabled={oauthLoading !== null}
             >
@@ -338,8 +339,8 @@ export default function Signup() {
               <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
                 <div className="text-center space-y-4">
                   <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
-                  <p className="text-foreground font-medium">Signing you in...</p>
-                  <p className="text-muted-foreground text-sm">Please wait while we redirect you</p>
+                  <p className="text-foreground font-medium">Sedang memproses login...</p>
+                  <p className="text-sm text-muted-foreground">Tunggu sebentar saat kami mengarahkanmu</p>
                 </div>
               </div>
             )}

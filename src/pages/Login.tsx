@@ -136,9 +136,9 @@ export default function Login() {
         description="Masuk ke Artha untuk mengelola bisnis kreatifmu. Akses proposal, invoice, dan dashboard klien dalam satu tempat."
         canonical="https://artha.app/login"
       />
-      <main className="min-h-screen bg-background flex">
+      <main data-ui-shell="auth-login" className="flex min-h-screen bg-background">
         {/* Left Panel - Branding */}
-        <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-background via-card to-background p-12 flex-col justify-between border-r border-border overflow-hidden">
+        <aside className="hidden overflow-hidden border-r border-border/70 bg-gradient-to-br from-background via-card to-background p-12 lg:flex lg:w-1/2 lg:flex-col lg:justify-between">
           <header className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-500">
             <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain animate-pulse" />
             <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
@@ -153,17 +153,18 @@ export default function Login() {
               Rapikan invoice, proposal, dan pengelolaan klien dalam satu workspace.
             </p>
           </section>
-          <footer className="text-muted-foreground text-sm animate-in fade-in duration-500 delay-700">© 2025 Artha. All rights reserved.</footer>
+          <footer className="text-sm text-muted-foreground animate-in fade-in duration-500 delay-700">© 2025 Artha. Seluruh hak cipta dilindungi.</footer>
         </aside>
 
         {/* Right Panel - Login Form */}
-        <section className="flex-1 flex items-center justify-center p-8">
-          <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
+        <section className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:px-10">
+          <div className="w-full max-w-md rounded-[30px] border border-border/70 bg-card/88 p-6 shadow-[0_28px_64px_-36px_rgba(15,23,42,0.45)] backdrop-blur animate-in fade-in slide-in-from-right-8 duration-500 sm:p-8">
             <div className="text-center lg:text-left">
-              <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+              <div className="mb-8 flex items-center justify-center gap-3 lg:hidden">
                 <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain animate-bounce" />
                 <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
               </div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">Masuk ke workspace</p>
               <h2 className="text-2xl font-semibold text-foreground">Masuk ke Artha</h2>
               <p className="text-muted-foreground mt-2">Akses dashboard kerja kreatifmu</p>
             </div>
@@ -253,7 +254,7 @@ export default function Login() {
                 aria-hidden="true"
               />
 
-              <Button type="submit" className="w-full" disabled={loading} aria-label="Masuk ke akun Artha kamu">
+              <Button type="submit" className="h-11 w-full rounded-full" disabled={loading} aria-label="Masuk ke akun Artha kamu">
                 {loading ? "Masuk..." : "Masuk"}
               </Button>
 
@@ -269,7 +270,7 @@ export default function Login() {
               <Button
                 variant="outline"
                 type="button"
-                className="w-full gap-2"
+                className="h-11 w-full rounded-full gap-2"
                 onClick={handleGoogleLogin}
                 disabled={oauthLoading !== null}
               >
@@ -295,7 +296,7 @@ export default function Login() {
                     />
                   </svg>
                 )}
-                {oauthLoading === "google" ? "Masuk..." : "Lanjut dengan Google"}
+                {oauthLoading === "google" ? "Masuk..." : "Lanjutkan dengan Google"}
               </Button>
             </form>
 
@@ -305,7 +306,7 @@ export default function Login() {
                 <div className="text-center space-y-4">
                   <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
                   <p className="text-foreground font-medium">Sedang memproses login...</p>
-                  <p className="text-muted-foreground text-sm">Tunggu sebentar saat kami mengarahkanmu</p>
+                  <p className="text-sm text-muted-foreground">Tunggu sebentar saat kami mengarahkanmu</p>
                 </div>
               </div>
             )}
@@ -317,7 +318,7 @@ export default function Login() {
               </Link>
             </p>
 
-            <p className="text-center text-xs text-muted-foreground">Butuh bantuan untuk masuk?</p>
+            <p className="mt-6 text-center text-xs text-muted-foreground">Butuh bantuan untuk masuk?</p>
           </div>
         </section>
       </main>
