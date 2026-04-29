@@ -77,10 +77,10 @@ export default function Clients() {
         .eq("id", deleteModal.clientId);
 
       if (error) throw error;
-      toast.success("Client deleted successfully!");
+      toast.success("Klien berhasil dihapus");
       fetchClients();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to delete client";
+      const message = error instanceof Error ? error.message : "Gagal menghapus klien";
       toast.error(message);
     } finally {
       setDeleting(false);
@@ -99,8 +99,8 @@ export default function Clients() {
       <DashboardLayout>
         <div className="p-4 md:p-8">
           <PageHeader
-            title="Clients"
-            description="Manage your client relationships"
+            title="KLIEN"
+            description="Kelola data klien dan hubungan kerja kamu"
           />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {[1, 2, 3].map((i) => (
@@ -116,12 +116,12 @@ export default function Clients() {
     <DashboardLayout>
       <div className="p-4 md:p-8">
         <PageHeader
-          title="Clients"
-          description="Manage your client relationships"
+          title="KLIEN"
+          description="Kelola data klien dan hubungan kerja kamu"
           actions={
             <Button className="gap-2 w-full sm:w-auto min-h-[44px]" onClick={() => setShowAddModal(true)}>
               <Plus className="w-4 h-4" />
-              Add Client
+              Tambah Klien
             </Button>
           }
         />
@@ -130,7 +130,7 @@ export default function Clients() {
         <div className="relative mb-4 md:mb-6">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Search clients..."
+            placeholder="Cari klien..."
             className="pl-10 w-full md:max-w-md min-h-[44px]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -142,15 +142,15 @@ export default function Clients() {
           <div className="glass-card rounded-2xl">
             <EmptyState
               icon={Users}
-              title="No clients yet"
-              description="Add your first client to start managing your relationships."
-              actionLabel="Add Client"
+              title="Belum ada klien"
+              description="Tambahkan klien pertama untuk mulai mengelola hubungan kerja."
+              actionLabel="TAMBAH KLIEN"
               onAction={() => setShowAddModal(true)}
             />
           </div>
         ) : filteredClients.length === 0 ? (
           <div className="glass-card rounded-2xl p-8 text-center">
-            <p className="text-muted-foreground">No clients match your search.</p>
+            <p className="text-muted-foreground">Tidak ada klien yang cocok dengan pencarianmu.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -175,7 +175,7 @@ export default function Clients() {
                     <DropdownMenuContent align="end" className="bg-card border-border">
                       <DropdownMenuItem onClick={() => setEditModal({ open: true, client })}>
                         <Pencil className="w-4 h-4 mr-2" />
-                        Edit Client
+                        Ubah Klien
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
@@ -183,7 +183,7 @@ export default function Clients() {
                         onClick={() => setDeleteModal({ open: true, clientId: client.id })}
                       >
                         <Trash2 className="w-4 h-4 mr-2" />
-                        Delete Client
+                        Hapus Klien
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -239,8 +239,8 @@ export default function Clients() {
         onOpenChange={(open) => setDeleteModal({ open, clientId: deleteModal.clientId })}
         onConfirm={handleDelete}
         loading={deleting}
-        title="Delete Client?"
-        description="This will permanently delete this client. This action cannot be undone."
+        title="Hapus klien?"
+        description="Klien ini akan dihapus permanen dan tindakan ini tidak bisa dibatalkan."
       />
     </DashboardLayout>
   );

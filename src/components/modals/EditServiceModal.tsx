@@ -11,8 +11,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Package, DollarSign, Loader2 } from "lucide-react";
 
 const serviceSchema = z.object({
-  name: z.string().min(1, "Service name is required").max(100, "Name must be less than 100 characters"),
-  price: z.coerce.number().min(0, "Price must be positive"),
+  name: z.string().min(1, "Nama layanan wajib diisi").max(100, "Nama maksimal 100 karakter"),
+  price: z.coerce.number().min(0, "Harga harus bernilai positif"),
 });
 
 type ServiceFormData = z.infer<typeof serviceSchema>;
@@ -67,12 +67,12 @@ export function EditServiceModal({ open, onOpenChange, onSuccess, service }: Edi
 
       if (error) throw error;
 
-      toast.success("Service updated successfully!");
+      toast.success("Layanan berhasil diperbarui");
       reset();
       onOpenChange(false);
       onSuccess?.();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to update service";
+      const message = error instanceof Error ? error.message : "Gagal memperbarui layanan";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -85,20 +85,20 @@ export function EditServiceModal({ open, onOpenChange, onSuccess, service }: Edi
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Package className="w-5 h-5 text-primary" />
-            Edit Service
+            UBAH LAYANAN
           </DialogTitle>
-          <DialogDescription>Update the service details and pricing.</DialogDescription>
+          <DialogDescription>Perbarui detail layanan dan harga.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
           <div className="space-y-2">
             <Label htmlFor="edit-name" className="flex items-center gap-2">
               <Package className="w-4 h-4 text-muted-foreground" />
-              Service Name *
+              Nama Layanan *
             </Label>
             <Input
               id="edit-name"
-              placeholder="e.g., Website Design"
+              placeholder="Contoh: Desain Website"
               {...register("name")}
               className={errors.name ? "border-destructive" : ""}
             />
@@ -108,7 +108,7 @@ export function EditServiceModal({ open, onOpenChange, onSuccess, service }: Edi
           <div className="space-y-2">
             <Label htmlFor="edit-price" className="flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-muted-foreground" />
-              Base Price *
+              Harga Dasar *
             </Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">Rp</span>
@@ -127,11 +127,11 @@ export function EditServiceModal({ open, onOpenChange, onSuccess, service }: Edi
 
           <div className="flex justify-end gap-3 pt-4 border-t border-border">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
-              Cancel
+              Batal
             </Button>
             <Button type="submit" disabled={loading}>
               {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Save Changes
+              Simpan Perubahan
             </Button>
           </div>
         </form>

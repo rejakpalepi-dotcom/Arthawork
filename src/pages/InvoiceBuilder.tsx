@@ -102,7 +102,7 @@ export default function InvoiceBuilder() {
           .single();
 
         if (error || !invoice) {
-          toast.error("Invoice not found");
+          toast.error("Invoice tidak ditemukan");
           navigate("/invoices");
           return;
         }
@@ -142,7 +142,7 @@ export default function InvoiceBuilder() {
         }
       } catch (err) {
         console.error("Error loading invoice draft:", err);
-        toast.error("Failed to load invoice");
+        toast.error("Gagal memuat invoice");
         navigate("/invoices");
       } finally {
         setIsLoading(false);
@@ -271,7 +271,7 @@ export default function InvoiceBuilder() {
 
       const currentId = draftId;
       if (!currentId) {
-        toast.error("Please save the invoice first");
+        toast.error("Simpan invoice terlebih dahulu");
         setIsSubmitting(false);
         return;
       }
@@ -293,17 +293,17 @@ export default function InvoiceBuilder() {
         });
 
         if (emailResult.success) {
-          toast.success("Invoice sent to client", {
-            description: `Email delivered to ${data.clientEmail}`,
+          toast.success("Invoice berhasil dikirim ke klien", {
+            description: `Email berhasil dikirim ke ${data.clientEmail}`,
           });
         } else {
-          toast.warning("Invoice saved but email failed", {
-            description: emailResult.error || "Could not send email",
+          toast.warning("Invoice tersimpan, tetapi email gagal dikirim", {
+            description: emailResult.error || "Email tidak bisa dikirim",
           });
         }
       } else {
-        toast.success("Invoice marked as sent", {
-          description: "No client email provided — invoice saved without sending email",
+        toast.success("Invoice ditandai sebagai terkirim", {
+          description: "Email klien belum diisi, jadi invoice disimpan tanpa pengiriman email",
         });
       }
 
@@ -312,7 +312,7 @@ export default function InvoiceBuilder() {
       navigate("/invoices");
     } catch (error: unknown) {
       console.error("Error sending invoice:", error);
-      const message = error instanceof Error ? error.message : "Failed to send invoice";
+      const message = error instanceof Error ? error.message : "Gagal mengirim invoice";
       toast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -323,7 +323,7 @@ export default function InvoiceBuilder() {
   const handleBack = () => {
     if (autosave.isDirty || autosave.status === "unsaved" || autosave.status === "saving") {
       const confirmed = window.confirm(
-        "You have unsaved changes. Are you sure you want to leave?"
+        "Masih ada perubahan yang belum tersimpan. Yakin ingin keluar?"
       );
       if (!confirmed) return;
     }
@@ -334,7 +334,7 @@ export default function InvoiceBuilder() {
     await handleSend();
   };
 
-  // ---------- Export PDF ----------
+  // ---------- Ekspor PDF ----------
   const handleExportPDF = async () => {
     setIsExporting(true);
     try {
@@ -376,20 +376,20 @@ export default function InvoiceBuilder() {
       document.body.removeChild(container);
 
       if (result.success) {
-        toast.success("PDF exported successfully!");
+        toast.success("PDF berhasil diekspor");
       } else {
-        toast.error(result.error || "Failed to export PDF", {
+        toast.error(result.error || "Gagal mengekspor PDF", {
           action: {
-            label: "Retry",
+            label: "Coba Lagi",
             onClick: handleExportPDF,
           },
         });
       }
     } catch (error) {
       console.error("Export error:", error);
-      toast.error("Failed to export PDF", {
+      toast.error("Gagal mengekspor PDF", {
         action: {
-          label: "Retry",
+          label: "Coba Lagi",
           onClick: handleExportPDF,
         },
       });
@@ -404,7 +404,7 @@ export default function InvoiceBuilder() {
         <div className="flex items-center justify-center h-full">
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-            <span className="text-sm text-muted-foreground">Loading invoice...</span>
+            <span className="text-sm text-muted-foreground">Memuat invoice...</span>
           </div>
         </div>
       </DashboardLayout>
@@ -418,8 +418,8 @@ export default function InvoiceBuilder() {
         <BuilderContextBar
           breadcrumbs={[
             { label: "Dokumen" },
-            { label: "Invoices", href: "/invoices" },
-            { label: editId ? "Edit Invoice" : "New Invoice" },
+            { label: "Invoice", href: "/invoices" },
+            { label: editId ? "Ubah Invoice" : "Invoice Baru" },
           ]}
           backTo="/invoices"
           onBack={handleBack}
@@ -438,10 +438,10 @@ export default function InvoiceBuilder() {
               >
                 <Save className="w-4 h-4" />
                 <span className="hidden sm:inline">
-                  {autosave.status === "saving" ? "Saving..." : "Save Draft"}
+                  {autosave.status === "saving" ? "Menyimpan..." : "Simpan Draf"}
                 </span>
                 <span className="sm:hidden">
-                  {autosave.status === "saving" ? "..." : "Save"}
+                  {autosave.status === "saving" ? "..." : "Simpan"}
                 </span>
               </Button>
               <Button
@@ -451,7 +451,7 @@ export default function InvoiceBuilder() {
                 className="hidden sm:flex gap-2 text-xs md:text-sm min-h-[40px] md:min-h-[44px] px-3 md:px-4"
               >
                 <Download className="w-4 h-4" />
-                <span>{isExporting ? "Exporting..." : "Export PDF"}</span>
+                <span>{isExporting ? "Mengekspor..." : "Ekspor PDF"}</span>
               </Button>
               <Button
                 onClick={handleSend}
@@ -459,8 +459,8 @@ export default function InvoiceBuilder() {
                 className="gap-2 text-xs md:text-sm min-h-[40px] md:min-h-[44px] px-3 md:px-4"
               >
                 <Send className="w-4 h-4" />
-                <span className="hidden sm:inline">{isSubmitting ? "Sending..." : "Send Invoice"}</span>
-                <span className="sm:hidden">{isSubmitting ? "..." : "Send"}</span>
+                <span className="hidden sm:inline">{isSubmitting ? "Mengirim..." : "Kirim Invoice"}</span>
+                <span className="sm:hidden">{isSubmitting ? "..." : "Kirim"}</span>
               </Button>
             </>
           }
@@ -478,7 +478,7 @@ export default function InvoiceBuilder() {
               )}
             >
               <FileEdit className="w-4 h-4" />
-              Edit Form
+              Form
             </button>
             <button
               onClick={() => switchView("SWITCH_TO_PREVIEW")}
@@ -490,7 +490,7 @@ export default function InvoiceBuilder() {
               )}
             >
               <Eye className="w-4 h-4" />
-              Preview
+              Pratinjau
             </button>
           </div>
 
@@ -503,9 +503,9 @@ export default function InvoiceBuilder() {
               mobileView !== "editor" && "hidden lg:block"
             )}>
               <div className="mb-4 md:mb-6">
-                <h2 className="text-lg md:text-xl font-semibold text-foreground mb-1">Build Invoice</h2>
+                <h2 className="text-lg md:text-xl font-semibold text-foreground mb-1">SUSUN INVOICE</h2>
                 <p className="text-xs md:text-sm text-muted-foreground">
-                  Fill in the project scope and billing details below.
+                  Lengkapi detail tagihan dan item pekerjaan di bawah ini.
                 </p>
               </div>
               <InvoiceForm
@@ -521,7 +521,7 @@ export default function InvoiceBuilder() {
               mobileView !== "preview" && "hidden lg:block"
             )}>
               <div className="sticky top-0 z-10 bg-muted border-b border-border px-4 md:px-6 py-3 flex items-center justify-between">
-                <h2 className="text-sm font-medium text-foreground">Live Preview</h2>
+                <h2 className="text-sm font-medium text-foreground">PRATINJAU LANGSUNG</h2>
                 <div className="flex items-center gap-1">
                   <Button
                     variant="ghost"

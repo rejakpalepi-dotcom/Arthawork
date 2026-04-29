@@ -73,35 +73,35 @@ function CoverEditor({
       <div className="pb-4 border-b border-border">
         <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
           <Layout className="h-5 w-5 text-primary" />
-          Cover Page
+          HALAMAN SAMPUL
         </h2>
-        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Set up your proposal's first impression</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Atur kesan pertama proposalmu</p>
       </div>
 
       <div className="space-y-5">
         <div className="space-y-2">
           <Label htmlFor="studioName" className="text-sm font-medium text-foreground">
-            Studio / Business Name
+            Nama Studio / Bisnis
           </Label>
           <Input
             id="studioName"
             value={data.studioName}
             onChange={(e) => onUpdate({ studioName: e.target.value })}
-            placeholder="Your Studio Name"
+            placeholder="Nama studio atau bisnismu"
             className="bg-muted/50 border-border"
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="client" className="text-sm font-medium text-foreground">
-            Client
+            Klien
           </Label>
           {isLoading ? (
             <Skeleton className="h-10 w-full" />
           ) : (
             <Select value={data.clientId || ""} onValueChange={onClientChange}>
               <SelectTrigger className="bg-muted/50 border-border">
-                <SelectValue placeholder="Select a client" />
+                <SelectValue placeholder="Pilih klien" />
               </SelectTrigger>
               <SelectContent className="bg-card border-border">
                 {clients.map((client) => (
@@ -113,13 +113,13 @@ function CoverEditor({
             </Select>
           )}
           {clients.length === 0 && !isLoading && (
-            <p className="text-xs text-muted-foreground">No clients found. Add clients first.</p>
+            <p className="text-xs text-muted-foreground">Belum ada klien. Tambahkan klien terlebih dahulu.</p>
           )}
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="projectTitle" className="text-sm font-medium text-foreground">
-            Project Title
+            Judul Proyek
           </Label>
           <Input
             id="projectTitle"
@@ -138,7 +138,7 @@ function CoverEditor({
             id="tagline"
             value={data.tagline}
             onChange={(e) => onUpdate({ tagline: e.target.value })}
-            placeholder="Design Fearlessly, Present like a Pro"
+            placeholder="Presentasi yang rapi, eksekusi yang meyakinkan"
             className="bg-muted/50 border-border"
           />
         </div>
@@ -183,40 +183,40 @@ function IntroEditor({
       <div className="pb-4 border-b border-border">
         <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
           <FileText className="h-5 w-5 text-primary" />
-          Introduction
+          PENDAHULUAN
         </h2>
-        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Tell your story and value proposition</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Jelaskan cerita dan nilai yang kamu tawarkan</p>
       </div>
 
       <div className="space-y-5">
         <div className="space-y-2">
           <Label htmlFor="introTitle" className="text-sm font-medium text-foreground">
-            Section Title
+            Judul Bagian
           </Label>
           <Input
             id="introTitle"
             value={data.introTitle}
             onChange={(e) => onUpdate({ introTitle: e.target.value })}
-            placeholder="Why work with me?"
+            placeholder="Kenapa bekerja sama dengan saya?"
             className="bg-muted/50 border-border"
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="introText" className="text-sm font-medium text-foreground">
-            Introduction Text
+            Teks Pendahuluan
           </Label>
           <Textarea
             id="introText"
             value={data.introText}
             onChange={(e) => onUpdate({ introText: e.target.value })}
-            placeholder="Tell your story..."
+            placeholder="Ceritakan pendekatan dan nilai kerjamu..."
             className="min-h-[180px] bg-muted/50 border-border resize-none leading-relaxed"
           />
         </div>
 
         <div className="space-y-2">
-          <Label className="text-sm font-medium text-foreground">Hero Image</Label>
+          <Label className="text-sm font-medium text-foreground">Gambar Utama</Label>
           <input
             ref={fileInputRef}
             type="file"

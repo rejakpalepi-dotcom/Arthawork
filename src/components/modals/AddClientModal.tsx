@@ -11,11 +11,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { User, Mail, Phone, MapPin, Building2, Loader2 } from "lucide-react";
 
 const clientSchema = z.object({
-  company: z.string().max(100, "Company name must be less than 100 characters").optional(),
-  name: z.string().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
-  email: z.string().email("Invalid email address").or(z.literal("")).optional(),
-  phone: z.string().max(20, "Phone must be less than 20 characters").optional(),
-  address: z.string().max(200, "Address must be less than 200 characters").optional(),
+  company: z.string().max(100, "Nama perusahaan maksimal 100 karakter").optional(),
+  name: z.string().min(1, "Nama wajib diisi").max(100, "Nama maksimal 100 karakter"),
+  email: z.string().email("Format email tidak valid").or(z.literal("")).optional(),
+  phone: z.string().max(20, "Nomor telepon maksimal 20 karakter").optional(),
+  address: z.string().max(200, "Alamat maksimal 200 karakter").optional(),
 });
 
 type ClientFormData = z.infer<typeof clientSchema>;
@@ -50,7 +50,7 @@ export function AddClientModal({ open, onOpenChange, onSuccess }: AddClientModal
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast.error("You must be logged in to add a client");
+        toast.error("Kamu harus masuk untuk menambah klien");
         return;
       }
 
@@ -65,12 +65,12 @@ export function AddClientModal({ open, onOpenChange, onSuccess }: AddClientModal
 
       if (error) throw error;
 
-      toast.success("Client added successfully!");
+      toast.success("Klien berhasil ditambahkan");
       reset();
       onOpenChange(false);
       onSuccess?.();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to add client";
+      const message = error instanceof Error ? error.message : "Gagal menambah klien";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -83,10 +83,10 @@ export function AddClientModal({ open, onOpenChange, onSuccess }: AddClientModal
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <User className="w-5 h-5 text-primary" />
-            Add New Client
+            TAMBAH KLIEN BARU
           </DialogTitle>
           <DialogDescription>
-            Add a new client to your roster.
+            Tambahkan klien baru ke daftar kerja kamu.
           </DialogDescription>
         </DialogHeader>
 
@@ -94,11 +94,11 @@ export function AddClientModal({ open, onOpenChange, onSuccess }: AddClientModal
           <div className="space-y-2">
             <Label htmlFor="company" className="flex items-center gap-2">
               <Building2 className="w-4 h-4 text-muted-foreground" />
-              Company Name
+              Nama Perusahaan
             </Label>
             <Input
               id="company"
-              placeholder="Company or organization name"
+              placeholder="Nama perusahaan atau organisasi"
               {...register("company")}
               className={errors.company ? "border-destructive" : ""}
             />
@@ -110,11 +110,11 @@ export function AddClientModal({ open, onOpenChange, onSuccess }: AddClientModal
           <div className="space-y-2">
             <Label htmlFor="name" className="flex items-center gap-2">
               <User className="w-4 h-4 text-muted-foreground" />
-              Contact Person (PIC) *
+              PIC / Kontak Utama *
             </Label>
             <Input
               id="name"
-              placeholder="Person in charge name"
+              placeholder="Nama penanggung jawab"
               {...register("name")}
               className={errors.name ? "border-destructive" : ""}
             />
@@ -143,7 +143,7 @@ export function AddClientModal({ open, onOpenChange, onSuccess }: AddClientModal
           <div className="space-y-2">
             <Label htmlFor="phone" className="flex items-center gap-2">
               <Phone className="w-4 h-4 text-muted-foreground" />
-              Phone
+              Telepon
             </Label>
             <Input
               id="phone"
@@ -159,11 +159,11 @@ export function AddClientModal({ open, onOpenChange, onSuccess }: AddClientModal
           <div className="space-y-2">
             <Label htmlFor="address" className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-muted-foreground" />
-              Address
+              Alamat
             </Label>
             <Input
               id="address"
-              placeholder="123 Business St, City, Country"
+              placeholder="Jalan, kota, dan detail alamat"
               {...register("address")}
               className={errors.address ? "border-destructive" : ""}
             />
@@ -179,11 +179,11 @@ export function AddClientModal({ open, onOpenChange, onSuccess }: AddClientModal
               onClick={() => onOpenChange(false)}
               disabled={loading}
             >
-              Cancel
+              Batal
             </Button>
             <Button type="submit" disabled={loading}>
               {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Add Client
+              Tambah Klien
             </Button>
           </div>
         </form>

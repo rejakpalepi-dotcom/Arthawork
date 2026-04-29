@@ -11,11 +11,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { User, Mail, Phone, MapPin, Building2, Loader2 } from "lucide-react";
 
 const clientSchema = z.object({
-  company: z.string().max(100, "Company name must be less than 100 characters").optional(),
-  name: z.string().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
-  email: z.string().email("Invalid email address").or(z.literal("")).optional(),
-  phone: z.string().max(20, "Phone must be less than 20 characters").optional(),
-  address: z.string().max(200, "Address must be less than 200 characters").optional(),
+  company: z.string().max(100, "Nama perusahaan maksimal 100 karakter").optional(),
+  name: z.string().min(1, "Nama wajib diisi").max(100, "Nama maksimal 100 karakter"),
+  email: z.string().email("Format email tidak valid").or(z.literal("")).optional(),
+  phone: z.string().max(20, "Nomor telepon maksimal 20 karakter").optional(),
+  address: z.string().max(200, "Alamat maksimal 200 karakter").optional(),
 });
 
 type ClientFormData = z.infer<typeof clientSchema>;
@@ -85,11 +85,11 @@ export function EditClientModal({ open, onOpenChange, client, onSuccess }: EditC
 
       if (error) throw error;
 
-      toast.success("Client updated successfully!");
+      toast.success("Klien berhasil diperbarui");
       onOpenChange(false);
       onSuccess?.();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to update client";
+      const message = error instanceof Error ? error.message : "Gagal memperbarui klien";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -102,10 +102,10 @@ export function EditClientModal({ open, onOpenChange, client, onSuccess }: EditC
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <User className="w-5 h-5 text-primary" />
-            Edit Client
+            UBAH KLIEN
           </DialogTitle>
           <DialogDescription>
-            Update client information.
+            Perbarui informasi klien.
           </DialogDescription>
         </DialogHeader>
 
@@ -113,11 +113,11 @@ export function EditClientModal({ open, onOpenChange, client, onSuccess }: EditC
           <div className="space-y-2">
             <Label htmlFor="edit-company" className="flex items-center gap-2">
               <Building2 className="w-4 h-4 text-muted-foreground" />
-              Company Name
+              Nama Perusahaan
             </Label>
             <Input
               id="edit-company"
-              placeholder="Company or organization name"
+              placeholder="Nama perusahaan atau organisasi"
               {...register("company")}
               className={errors.company ? "border-destructive" : ""}
             />
@@ -129,11 +129,11 @@ export function EditClientModal({ open, onOpenChange, client, onSuccess }: EditC
           <div className="space-y-2">
             <Label htmlFor="edit-name" className="flex items-center gap-2">
               <User className="w-4 h-4 text-muted-foreground" />
-              Contact Person (PIC) *
+              PIC / Kontak Utama *
             </Label>
             <Input
               id="edit-name"
-              placeholder="Person in charge name"
+              placeholder="Nama penanggung jawab"
               {...register("name")}
               className={errors.name ? "border-destructive" : ""}
             />
@@ -162,7 +162,7 @@ export function EditClientModal({ open, onOpenChange, client, onSuccess }: EditC
           <div className="space-y-2">
             <Label htmlFor="edit-phone" className="flex items-center gap-2">
               <Phone className="w-4 h-4 text-muted-foreground" />
-              Phone
+              Telepon
             </Label>
             <Input
               id="edit-phone"
@@ -178,11 +178,11 @@ export function EditClientModal({ open, onOpenChange, client, onSuccess }: EditC
           <div className="space-y-2">
             <Label htmlFor="edit-address" className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-muted-foreground" />
-              Address
+              Alamat
             </Label>
             <Input
               id="edit-address"
-              placeholder="123 Business St, City, Country"
+              placeholder="Jalan, kota, dan detail alamat"
               {...register("address")}
               className={errors.address ? "border-destructive" : ""}
             />
@@ -198,11 +198,11 @@ export function EditClientModal({ open, onOpenChange, client, onSuccess }: EditC
               onClick={() => onOpenChange(false)}
               disabled={loading}
             >
-              Cancel
+              Batal
             </Button>
             <Button type="submit" disabled={loading}>
               {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Save Changes
+              Simpan Perubahan
             </Button>
           </div>
         </form>

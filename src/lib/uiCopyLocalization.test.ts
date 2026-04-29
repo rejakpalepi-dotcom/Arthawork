@@ -74,4 +74,53 @@ describe("UI copy localization regressions", () => {
     expect(invoices).not.toContain("Your Business Name");
     expect(invoices).not.toContain("Failed to export PDF");
   });
+
+  it("invoice builder, clients, and services flows avoid obvious English UI copy", () => {
+    const invoiceBuilder = readProjectFile("src/pages/InvoiceBuilder.tsx");
+    const invoiceForm = readProjectFile("src/components/invoice/InvoiceForm.tsx");
+    const clients = readProjectFile("src/pages/Clients.tsx");
+    const addClient = readProjectFile("src/components/modals/AddClientModal.tsx");
+    const editClient = readProjectFile("src/components/modals/EditClientModal.tsx");
+    const services = readProjectFile("src/pages/Services.tsx");
+    const addService = readProjectFile("src/components/modals/AddServiceModal.tsx");
+    const editService = readProjectFile("src/components/modals/EditServiceModal.tsx");
+
+    expect(invoiceBuilder).not.toContain("Failed to load invoice");
+    expect(invoiceBuilder).not.toContain("Save Draft");
+    expect(invoiceBuilder).not.toContain("Export PDF");
+    expect(invoiceBuilder).not.toContain("Send Invoice");
+    expect(invoiceBuilder).not.toContain("Build Invoice");
+    expect(invoiceForm).not.toContain("Invoice Details");
+    expect(invoiceForm).not.toContain("Client Information");
+    expect(invoiceForm).not.toContain("Add Item");
+    expect(invoiceForm).not.toContain("Select due date");
+    expect(clients).not.toContain('title="Clients"');
+    expect(clients).not.toContain("Add Client");
+    expect(clients).not.toContain("Search clients...");
+    expect(addClient).not.toContain("Add New Client");
+    expect(editClient).not.toContain("Edit Client");
+    expect(services).not.toContain('title="Services"');
+    expect(services).not.toContain("Add Service");
+    expect(services).not.toContain("No services yet");
+    expect(addService).not.toContain("Add New Service");
+    expect(editService).not.toContain("Edit Service");
+  });
+
+  it("proposal builder core flow and first editor sections use Indonesian copy", () => {
+    const proposalBuilder = readProjectFile("src/pages/ProposalBuilder.tsx");
+    const proposalEditor = readProjectFile("src/components/proposal/ProposalEditor.tsx");
+
+    expect(proposalBuilder).not.toContain("Failed to load clients");
+    expect(proposalBuilder).not.toContain("Failed to load proposal");
+    expect(proposalBuilder).not.toContain("Save Draft");
+    expect(proposalBuilder).not.toContain("Export PDF");
+    expect(proposalBuilder).not.toContain("Loading proposal...");
+    expect(proposalEditor).not.toContain("Cover Page");
+    expect(proposalEditor).not.toContain("Set up your proposal's first impression");
+    expect(proposalEditor).not.toContain("Select a client");
+    expect(proposalEditor).not.toContain("No clients found. Add clients first.");
+    expect(proposalEditor).not.toContain("Introduction");
+    expect(proposalEditor).not.toContain("Introduction Text");
+    expect(proposalEditor).not.toContain("Hero Image");
+  });
 });

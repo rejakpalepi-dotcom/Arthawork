@@ -152,7 +152,7 @@ export default function ProposalBuilder() {
       if (error) throw error;
       setClients(data || []);
     } catch (error: unknown) {
-      toast.error("Failed to load clients");
+      toast.error("Gagal memuat klien");
     }
   };
 
@@ -204,7 +204,7 @@ export default function ProposalBuilder() {
         }
       } catch (err) {
         console.error("Error loading proposal draft:", err);
-        toast.error("Failed to load proposal");
+        toast.error("Gagal memuat proposal");
         navigate("/proposals");
       } finally {
         setIsLoading(false);
@@ -309,7 +309,7 @@ export default function ProposalBuilder() {
   const handleBack = () => {
     if (autosave.isDirty || autosave.status === "unsaved" || autosave.status === "saving") {
       const confirmed = window.confirm(
-        "You have unsaved changes. Are you sure you want to leave?"
+        "Masih ada perubahan yang belum tersimpan. Yakin ingin keluar?"
       );
       if (!confirmed) return;
     }
@@ -323,7 +323,7 @@ export default function ProposalBuilder() {
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             <span className="text-sm text-muted-foreground">
-              {editId ? "Loading proposal..." : "Loading..."}
+              {editId ? "Memuat proposal..." : "Memuat..."}
             </span>
           </div>
         </div>
@@ -337,8 +337,8 @@ export default function ProposalBuilder() {
         <BuilderContextBar
           breadcrumbs={[
             { label: "Dokumen" },
-            { label: "Proposals", href: "/proposals" },
-            { label: editId ? "Edit Proposal" : "New Proposal" },
+            { label: "Proposal", href: "/proposals" },
+            { label: editId ? "Ubah Proposal" : "Proposal Baru" },
           ]}
           backTo="/proposals"
           onBack={handleBack}
@@ -355,7 +355,7 @@ export default function ProposalBuilder() {
                 size="sm"
                 className="min-h-[40px] px-4 font-semibold"
               >
-                {autosave.status === "saving" ? "Saving..." : "Save Draft"}
+                {autosave.status === "saving" ? "Menyimpan..." : "Simpan Draf"}
               </Button>
               <Button
                 onClick={async () => {
@@ -364,11 +364,11 @@ export default function ProposalBuilder() {
                     const fileName = `${proposalData.projectTitle.replace(/\s+/g, "-").toLowerCase()}-proposal.pdf`;
                     const result = await exportProposalToPDF(proposalData, fileName);
                     if (result.success) {
-                      toast.success("Proposal exported successfully!");
+                      toast.success("Proposal berhasil diekspor");
                     } else {
-                      toast.error(result.error || "Failed to export proposal", {
+                      toast.error(result.error || "Gagal mengekspor proposal", {
                         action: {
-                          label: "Retry",
+                          label: "Coba Lagi",
                           onClick: () => {
                             // Re-trigger export
                             const retryBtn = document.querySelector('[data-export-pdf]') as HTMLButtonElement;
@@ -379,7 +379,7 @@ export default function ProposalBuilder() {
                     }
                   } catch (error) {
                     console.error("Export error:", error);
-                    toast.error("Failed to export proposal");
+                    toast.error("Gagal mengekspor proposal");
                   } finally {
                     setIsExporting(false);
                   }
@@ -391,7 +391,7 @@ export default function ProposalBuilder() {
                 className="hidden min-h-[40px] px-4 sm:inline-flex font-semibold"
               >
                 <Download className="h-4 w-4" />
-                {isExporting ? "Exporting..." : "Export PDF"}
+                {isExporting ? "Mengekspor..." : "Ekspor PDF"}
               </Button>
             </>
           }
@@ -438,7 +438,7 @@ export default function ProposalBuilder() {
             )}
           >
             <FileEdit className="w-4 h-4" />
-            Edit Form
+            Form
           </button>
           <button
             onClick={() => switchView("SWITCH_TO_PREVIEW")}
@@ -450,7 +450,7 @@ export default function ProposalBuilder() {
             )}
           >
             <Eye className="w-4 h-4" />
-            Preview
+            Pratinjau
           </button>
         </div>
 
@@ -478,7 +478,7 @@ export default function ProposalBuilder() {
           )}>
             <div className="text-xs text-muted-foreground mb-3 flex items-center gap-2 font-medium">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              Live Preview
+              Pratinjau Langsung
             </div>
             <div className="flex-1 flex items-center justify-center min-h-0">
               <div

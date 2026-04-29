@@ -11,8 +11,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Package, DollarSign, Loader2 } from "lucide-react";
 
 const serviceSchema = z.object({
-  name: z.string().min(1, "Service name is required").max(100, "Name must be less than 100 characters"),
-  price: z.number().min(0, "Price must be positive").or(z.string().transform((val) => parseFloat(val) || 0)),
+  name: z.string().min(1, "Nama layanan wajib diisi").max(100, "Nama maksimal 100 karakter"),
+  price: z.number().min(0, "Harga harus bernilai positif").or(z.string().transform((val) => parseFloat(val) || 0)),
 });
 
 type ServiceFormData = z.infer<typeof serviceSchema>;
@@ -44,7 +44,7 @@ export function AddServiceModal({ open, onOpenChange, onSuccess }: AddServiceMod
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast.error("You must be logged in to add a service");
+        toast.error("Kamu harus masuk untuk menambah layanan");
         return;
       }
 
@@ -56,12 +56,12 @@ export function AddServiceModal({ open, onOpenChange, onSuccess }: AddServiceMod
 
       if (error) throw error;
 
-      toast.success("Service added successfully!");
+      toast.success("Layanan berhasil ditambahkan");
       reset();
       onOpenChange(false);
       onSuccess?.();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to add service";
+      const message = error instanceof Error ? error.message : "Gagal menambah layanan";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -74,10 +74,10 @@ export function AddServiceModal({ open, onOpenChange, onSuccess }: AddServiceMod
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Package className="w-5 h-5 text-primary" />
-            Add New Service
+            TAMBAH LAYANAN BARU
           </DialogTitle>
           <DialogDescription>
-            Define a new service offering with its base price.
+            Tentukan layanan baru beserta harga dasarnya.
           </DialogDescription>
         </DialogHeader>
 
@@ -85,11 +85,11 @@ export function AddServiceModal({ open, onOpenChange, onSuccess }: AddServiceMod
           <div className="space-y-2">
             <Label htmlFor="name" className="flex items-center gap-2">
               <Package className="w-4 h-4 text-muted-foreground" />
-              Service Name *
+              Nama Layanan *
             </Label>
             <Input
               id="name"
-              placeholder="e.g., Website Design"
+              placeholder="Contoh: Desain Website"
               {...register("name")}
               className={errors.name ? "border-destructive" : ""}
             />
@@ -101,7 +101,7 @@ export function AddServiceModal({ open, onOpenChange, onSuccess }: AddServiceMod
           <div className="space-y-2">
             <Label htmlFor="price" className="flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-muted-foreground" />
-              Base Price *
+              Harga Dasar *
             </Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
@@ -129,11 +129,11 @@ export function AddServiceModal({ open, onOpenChange, onSuccess }: AddServiceMod
               onClick={() => onOpenChange(false)}
               disabled={loading}
             >
-              Cancel
+              Batal
             </Button>
             <Button type="submit" disabled={loading}>
               {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Add Service
+              Tambah Layanan
             </Button>
           </div>
         </form>

@@ -70,10 +70,10 @@ export default function Services() {
         .eq("id", deleteModal.serviceId);
 
       if (error) throw error;
-      toast.success("Service deleted successfully!");
+      toast.success("Layanan berhasil dihapus");
       fetchServices();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to delete service";
+      const message = error instanceof Error ? error.message : "Gagal menghapus layanan";
       toast.error(message);
     } finally {
       setDeleting(false);
@@ -86,8 +86,8 @@ export default function Services() {
       <DashboardLayout>
         <div className="p-8">
           <PageHeader
-            title="Services"
-            description="Define your service offerings and pricing"
+            title="LAYANAN"
+            description="Atur daftar layanan dan harga dasar yang kamu tawarkan"
           />
           <div className="glass-card rounded-2xl p-8">
             <div className="space-y-4">
@@ -105,12 +105,12 @@ export default function Services() {
     <DashboardLayout>
       <div className="p-8">
         <PageHeader
-          title="Services"
-          description="Define your service offerings and pricing"
+          title="LAYANAN"
+          description="Atur daftar layanan dan harga dasar yang kamu tawarkan"
           actions={
             <Button className="gap-2" onClick={() => setShowAddModal(true)}>
               <Plus className="w-4 h-4" />
-              Add Service
+              Tambah Layanan
             </Button>
           }
         />
@@ -119,9 +119,9 @@ export default function Services() {
           <div className="glass-card rounded-2xl">
             <EmptyState
               icon={Package}
-              title="No services yet"
-              description="Add your first service to start building invoices faster."
-              actionLabel="Add Service"
+              title="Belum ada layanan"
+              description="Tambahkan layanan pertama agar proses pembuatan invoice lebih cepat."
+              actionLabel="TAMBAH LAYANAN"
               onAction={() => setShowAddModal(true)}
             />
           </div>
@@ -130,9 +130,9 @@ export default function Services() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">Service Name</th>
-                  <th className="text-right p-4 text-sm font-medium text-muted-foreground">Base Price</th>
-                  <th className="text-right p-4 text-sm font-medium text-muted-foreground">Actions</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">Nama Layanan</th>
+                  <th className="text-right p-4 text-sm font-medium text-muted-foreground">Harga Dasar</th>
+                  <th className="text-right p-4 text-sm font-medium text-muted-foreground">Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -196,8 +196,8 @@ export default function Services() {
         onOpenChange={(open) => setDeleteModal({ open, serviceId: deleteModal.serviceId })}
         onConfirm={handleDelete}
         loading={deleting}
-        title="Delete Service?"
-        description="This will permanently delete this service. This action cannot be undone."
+        title="Hapus layanan?"
+        description="Layanan ini akan dihapus permanen dan tindakan ini tidak bisa dibatalkan."
       />
     </DashboardLayout>
   );
