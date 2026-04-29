@@ -29,6 +29,14 @@ const statusColors = {
   pending: "bg-warning/20 text-warning",
 };
 
+const statusLabels = {
+  sent: "Terkirim",
+  paid: "Lunas",
+  approved: "Disetujui",
+  draft: "Draf",
+  pending: "Menunggu",
+};
+
 export function RecentActivity() {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +65,7 @@ export function RecentActivity() {
           id: inv.id,
           type: "invoice",
           title: `Invoice ${inv.invoice_number}`,
-          subtitle: `${client?.name || "Unknown Client"} - ${formatIDR(Number(inv.total))}`,
+          subtitle: `${client?.name || "Klien tanpa nama"} - ${formatIDR(Number(inv.total))}`,
           timestamp: formatDistanceToNow(new Date(inv.created_at), { addSuffix: true }),
           status: inv.status as "sent" | "paid" | "approved" | "draft" | "pending",
         });
@@ -77,7 +85,7 @@ export function RecentActivity() {
           id: prop.id,
           type: "proposal",
           title: prop.title,
-          subtitle: client?.name || "Unknown Client",
+          subtitle: client?.name || "Klien tanpa nama",
           timestamp: formatDistanceToNow(new Date(prop.created_at), { addSuffix: true }),
           status: prop.status as "sent" | "paid" | "approved" | "draft" | "pending",
         });
@@ -95,7 +103,7 @@ export function RecentActivity() {
         allActivities.push({
           id: client.id,
           type: "client",
-          title: "New Client Added",
+          title: "Klien baru ditambahkan",
           subtitle: client.company || client.name,
           timestamp: formatDistanceToNow(new Date(client.created_at), { addSuffix: true }),
         });
@@ -118,7 +126,7 @@ export function RecentActivity() {
     return (
       <div className="glass-card rounded-2xl p-6 animate-fade-in">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-foreground">Recent Activity</h3>
+          <h3 className="text-lg font-semibold text-foreground">AKTIVITAS TERBARU</h3>
         </div>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
@@ -133,12 +141,12 @@ export function RecentActivity() {
     return (
       <div className="glass-card rounded-2xl p-6 animate-fade-in">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-foreground">Recent Activity</h3>
+          <h3 className="text-lg font-semibold text-foreground">AKTIVITAS TERBARU</h3>
         </div>
         <EmptyState
           icon={Inbox}
-          title="No activity yet"
-          description="Your recent invoices, proposals, and client activity will appear here."
+          title="Belum ada aktivitas"
+          description="Aktivitas invoice, proposal, dan klien terbaru akan muncul di sini."
           className="py-8"
         />
       </div>
@@ -148,8 +156,8 @@ export function RecentActivity() {
   return (
     <div className="glass-card rounded-2xl p-6 animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-foreground">Recent Activity</h3>
-        <button className="text-sm text-primary hover:underline">View All</button>
+        <h3 className="text-lg font-semibold text-foreground">AKTIVITAS TERBARU</h3>
+        <button className="text-sm text-primary hover:underline">Lihat Semua</button>
       </div>
       <div className="space-y-4">
         {activities.map((activity, index) => {
@@ -179,7 +187,7 @@ export function RecentActivity() {
                       statusColors[activity.status]
                     )}
                   >
-                    {activity.status}
+                    {statusLabels[activity.status]}
                   </span>
                 )}
               </div>

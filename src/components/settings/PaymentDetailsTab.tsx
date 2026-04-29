@@ -14,21 +14,21 @@ interface PaymentDetailsTabProps {
 
 export function PaymentDetailsTab({ settings, saving, onUpdate, onSave }: PaymentDetailsTabProps) {
   const handleConnectStripe = async () => {
-    toast.info("Redirecting to Stripe Connect...");
+    toast.info("Menghubungkan ke Stripe...");
     
     // Simulate Stripe Connect flow
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     onUpdate({ stripe_connected: true });
-    toast.success("Stripe Connected Successfully!", {
-      description: "You can now accept online payments from invoices."
+    toast.success("Stripe berhasil terhubung", {
+      description: "Kamu sekarang bisa menerima pembayaran online dari invoice."
     });
   };
 
   const handleDisconnectStripe = () => {
     onUpdate({ stripe_connected: false });
-    toast.info("Stripe Disconnected", {
-      description: "Online payments are no longer enabled."
+    toast.info("Stripe diputuskan", {
+      description: "Pembayaran online tidak lagi aktif."
     });
   };
 
@@ -36,13 +36,13 @@ export function PaymentDetailsTab({ settings, saving, onUpdate, onSave }: Paymen
     <div className="lg:col-span-3 glass-card rounded-2xl p-8 animate-fade-in">
       <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
         <CreditCard className="w-5 h-5 text-primary" />
-        Payment Details
+        DETAIL PEMBAYARAN
       </h2>
 
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="bankName">Bank Name</Label>
+            <Label htmlFor="bankName">Nama Bank</Label>
             <Input
               id="bankName"
               placeholder="Bank Central Asia"
@@ -51,7 +51,7 @@ export function PaymentDetailsTab({ settings, saving, onUpdate, onSave }: Paymen
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="accountName">Account Name</Label>
+            <Label htmlFor="accountName">Nama Pemilik Rekening</Label>
             <Input
               id="accountName"
               placeholder="Artha Studio"
@@ -63,7 +63,7 @@ export function PaymentDetailsTab({ settings, saving, onUpdate, onSave }: Paymen
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="accountNumber">Account Number</Label>
+            <Label htmlFor="accountNumber">Nomor Rekening</Label>
             <Input
               id="accountNumber"
               placeholder="1234567890"
@@ -72,7 +72,7 @@ export function PaymentDetailsTab({ settings, saving, onUpdate, onSave }: Paymen
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="routingNumber">Routing / SWIFT Code</Label>
+            <Label htmlFor="routingNumber">Kode Routing / SWIFT</Label>
             <Input
               id="routingNumber"
               placeholder="CENAIDJA"
@@ -83,28 +83,28 @@ export function PaymentDetailsTab({ settings, saving, onUpdate, onSave }: Paymen
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="paymentNotes">Payment Instructions</Label>
+          <Label htmlFor="paymentNotes">Instruksi Pembayaran</Label>
           <Input
             id="paymentNotes"
-            placeholder="Include invoice number in transfer description"
+            placeholder="Cantumkan nomor invoice pada deskripsi transfer"
             value={settings.payment_notes}
             onChange={(e) => onUpdate({ payment_notes: e.target.value })}
           />
         </div>
 
         <div className="p-4 rounded-xl bg-primary/5 border border-primary/10">
-          <h3 className="text-sm font-medium text-foreground mb-2">Online Payments</h3>
+          <h3 className="text-sm font-medium text-foreground mb-2">PEMBAYARAN ONLINE</h3>
           <p className="text-sm text-muted-foreground mb-3">
             {settings.stripe_connected 
-              ? "Stripe is connected. You can accept online payments from invoices."
-              : "Connect a payment processor to accept online payments directly from invoices."
+              ? "Stripe sudah terhubung. Kamu bisa menerima pembayaran online dari invoice."
+              : "Hubungkan pemroses pembayaran agar invoice bisa dibayar langsung secara online."
             }
           </p>
           {settings.stripe_connected ? (
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 text-success text-sm font-medium">
                 <CheckCircle2 className="w-4 h-4" />
-                Stripe Connected
+                Stripe Terhubung
               </div>
               <Button 
                 variant="ghost" 
@@ -113,7 +113,7 @@ export function PaymentDetailsTab({ settings, saving, onUpdate, onSave }: Paymen
                 className="text-muted-foreground hover:text-destructive"
               >
                 <Unplug className="w-4 h-4 mr-1" />
-                Disconnect
+                Putuskan
               </Button>
             </div>
           ) : (
@@ -122,7 +122,7 @@ export function PaymentDetailsTab({ settings, saving, onUpdate, onSave }: Paymen
               size="sm" 
               onClick={handleConnectStripe}
             >
-              Connect Stripe
+              Hubungkan Stripe
             </Button>
           )}
         </div>
@@ -130,7 +130,7 @@ export function PaymentDetailsTab({ settings, saving, onUpdate, onSave }: Paymen
         <div className="flex justify-end pt-4 border-t border-border">
           <Button onClick={onSave} disabled={saving}>
             {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            Save Changes
+            Simpan Perubahan
           </Button>
         </div>
       </div>

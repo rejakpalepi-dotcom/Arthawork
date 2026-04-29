@@ -38,7 +38,7 @@ export function AccountTab() {
 
   const handleUpdatePassword = async () => {
     if (!newPassword || newPassword.length < 6) {
-      toast.error("Password must be at least 6 characters");
+      toast.error("Password minimal 6 karakter");
       return;
     }
 
@@ -50,11 +50,11 @@ export function AccountTab() {
 
       if (error) throw error;
 
-      toast.success("Password updated successfully!");
+      toast.success("Password berhasil diperbarui");
       setCurrentPassword("");
       setNewPassword("");
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to update password";
+      const message = error instanceof Error ? error.message : "Gagal memperbarui password";
       toast.error(message);
     } finally {
       setChangingPassword(false);
@@ -79,9 +79,9 @@ export function AccountTab() {
           .eq("id", user.id);
       }
 
-      toast.success("Profile updated successfully!");
+      toast.success("Profil berhasil diperbarui");
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to update profile";
+      const message = error instanceof Error ? error.message : "Gagal memperbarui profil";
       toast.error(message);
     } finally {
       setUpdating(false);
@@ -89,7 +89,7 @@ export function AccountTab() {
   };
 
   const handleDeleteAccount = async () => {
-    toast.error("Account deletion requires admin action. Please contact support.");
+    toast.error("Penghapusan akun memerlukan bantuan admin. Hubungi tim support.");
     setShowDeleteModal(false);
   };
 
@@ -97,13 +97,13 @@ export function AccountTab() {
     <div className="lg:col-span-3 glass-card rounded-2xl p-8 animate-fade-in">
       <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
         <User className="w-5 h-5 text-primary" />
-        Account Settings
+        PENGATURAN AKUN
       </h2>
 
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="fullName">Full Name</Label>
+            <Label htmlFor="fullName">Nama Lengkap</Label>
             <Input
               id="fullName"
               placeholder="Alex Morgan"
@@ -112,7 +112,7 @@ export function AccountTab() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="accountEmail">Email Address</Label>
+            <Label htmlFor="accountEmail">Alamat Email</Label>
             <Input
               id="accountEmail"
               type="email"
@@ -121,18 +121,18 @@ export function AccountTab() {
               onChange={(e) => setEmail(e.target.value)}
               disabled
             />
-            <p className="text-xs text-muted-foreground">Email cannot be changed</p>
+            <p className="text-xs text-muted-foreground">Alamat email tidak bisa diubah</p>
           </div>
         </div>
 
         <div className="p-4 rounded-xl bg-secondary/50 border border-border">
           <h3 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
             <Lock className="w-4 h-4" />
-            Change Password
+            Ubah Password
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="currentPassword">Current Password</Label>
+              <Label htmlFor="currentPassword">Password Saat Ini</Label>
               <Input
                 id="currentPassword"
                 type="password"
@@ -142,7 +142,7 @@ export function AccountTab() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="newPassword">New Password</Label>
+              <Label htmlFor="newPassword">Password Baru</Label>
               <Input
                 id="newPassword"
                 type="password"
@@ -160,17 +160,17 @@ export function AccountTab() {
             disabled={changingPassword}
           >
             {changingPassword && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            Update Password
+            Perbarui Password
           </Button>
         </div>
 
         <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
           <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
             <Download className="w-4 h-4" />
-            Export Your Data
+            EKSPOR DATA
           </h3>
           <p className="text-sm text-muted-foreground mb-3">
-            Download all your data (invoices, clients, proposals) as a JSON file.
+            Unduh seluruh data kamu seperti invoice, klien, dan proposal dalam format JSON.
           </p>
           <Button
             variant="outline"
@@ -180,39 +180,39 @@ export function AccountTab() {
               const success = await exportAndDownloadUserData();
               setExporting(false);
               if (success) {
-                toast.success("Data exported successfully!");
+                toast.success("Data berhasil diekspor");
               } else {
-                toast.error("Failed to export data");
+                toast.error("Gagal mengekspor data");
               }
             }}
             disabled={exporting}
           >
             {exporting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            {exporting ? "Exporting..." : "Export My Data"}
+            {exporting ? "Mengekspor..." : "Ekspor Data Saya"}
           </Button>
         </div>
 
         <div className="p-4 rounded-xl bg-destructive/5 border border-destructive/20">
           <h3 className="text-sm font-medium text-destructive mb-2 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4" />
-            Danger Zone
+            ZONA KRITIS
           </h3>
           <p className="text-sm text-muted-foreground mb-3">
-            Permanently delete your account and all associated data.
+            Hapus akun dan seluruh data terkait secara permanen.
           </p>
           <Button
             variant="destructive"
             size="sm"
             onClick={() => setShowDeleteModal(true)}
           >
-            Delete Account
+            Hapus Akun
           </Button>
         </div>
 
         <div className="flex justify-end pt-4 border-t border-border">
           <Button onClick={handleSaveProfile} disabled={updating}>
             {updating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            Save Changes
+            Simpan Perubahan
           </Button>
         </div>
       </div>
@@ -221,8 +221,8 @@ export function AccountTab() {
         open={showDeleteModal}
         onOpenChange={setShowDeleteModal}
         onConfirm={handleDeleteAccount}
-        title="Delete Account?"
-        description="This will permanently delete your account and all associated data. This action cannot be undone."
+        title="Hapus akun?"
+        description="Akun dan seluruh data terkait akan dihapus permanen. Tindakan ini tidak bisa dibatalkan."
       />
     </div>
   );

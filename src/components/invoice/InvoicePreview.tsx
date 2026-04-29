@@ -25,13 +25,13 @@ export function InvoicePreview({
   currentStatus = 'draft',
   forExport = false,
 }: InvoicePreviewProps) {
-  const businessName = businessSettings?.business_name || "Your Business Name";
-  const businessAddress = businessSettings?.address || "Your Business Address";
-  const businessEmail = businessSettings?.email || "Your Business Email";
+  const businessName = businessSettings?.business_name || "Nama Bisnis Kamu";
+  const businessAddress = businessSettings?.address || "Alamat bisnis kamu";
+  const businessEmail = businessSettings?.email || "halo@bisniskamu.com";
   const logoUrl = businessSettings?.logo_url;
-  const bankName = businessSettings?.bank_name || "Your Bank";
+  const bankName = businessSettings?.bank_name || "Nama Bank";
   const accountNumber = businessSettings?.account_number || "XXXX XXXX XXX";
-  const accountName = businessSettings?.account_name || "Account Name";
+  const accountName = businessSettings?.account_name || "Nama Pemilik Rekening";
 
   const statusConfig = getInvoiceStatus(currentStatus);
   const dueDateInfo = formatDueDate(data.dueDate ? data.dueDate.toISOString() : null);
@@ -139,13 +139,13 @@ export function InvoicePreview({
                 className="text-[10px] font-medium text-gray-400 uppercase tracking-wider"
                 style={forExport ? exportStyles.subtleText : undefined}
               >
-                Issue Date
+                Tanggal Terbit
               </p>
               <p
                 className="text-sm font-medium text-gray-800 mt-0.5"
                 style={forExport ? { color: "#1f2937" } : undefined}
               >
-                {data.issueDate ? format(data.issueDate, "dd MMM yyyy") : "Not set"}
+                {data.issueDate ? format(data.issueDate, "dd MMM yyyy") : "Belum diatur"}
               </p>
             </div>
             <div>
@@ -153,7 +153,7 @@ export function InvoicePreview({
                 className="text-[10px] font-medium text-gray-400 uppercase tracking-wider"
                 style={forExport ? exportStyles.subtleText : undefined}
               >
-                Due Date
+                Jatuh Tempo
               </p>
               <p
                 className={cn(
@@ -162,7 +162,7 @@ export function InvoicePreview({
                 )}
                 style={forExport ? { color: dueDateInfo.isOverdue ? "#dc2626" : dueDateInfo.isUrgent ? "#d97706" : "#1f2937" } : undefined}
               >
-                {dueDateInfo.text || "Not set"}
+                {dueDateInfo.text || "Belum diatur"}
               </p>
             </div>
             <div>
@@ -170,7 +170,7 @@ export function InvoicePreview({
                 className="text-[10px] font-medium text-gray-400 uppercase tracking-wider"
                 style={forExport ? exportStyles.subtleText : undefined}
               >
-                Currency
+                Mata Uang
               </p>
               <p
                 className="text-sm font-medium text-gray-800 font-numeric mt-0.5"
@@ -207,13 +207,13 @@ export function InvoicePreview({
             className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2"
             style={forExport ? exportStyles.subtleText : undefined}
           >
-            Bill To
+            Ditagihkan Kepada
           </p>
           <p
             className="text-sm font-semibold text-gray-900"
             style={forExport ? { color: "#111827" } : undefined}
           >
-            {data.clientName || "Client Name"}
+            {data.clientName || "Nama Klien"}
           </p>
           {data.clientEmail && (
             <p
@@ -287,7 +287,7 @@ export function InvoicePreview({
                     className="py-8 text-center text-gray-400 text-sm"
                     style={forExport ? exportStyles.subtleText : undefined}
                   >
-                    No items added
+                    Belum ada item ditambahkan
                   </td>
                 </tr>
               ) : (
@@ -379,7 +379,7 @@ export function InvoicePreview({
           </div>
         </div>
 
-        {/* ─── Payment Details ─── */}
+        {/* ─── Detail Pembayaran ─── */}
         <div
           className="mt-8 pt-6 border-t border-gray-200"
           style={forExport ? { borderColor: "#e5e7eb" } : undefined}
@@ -390,7 +390,7 @@ export function InvoicePreview({
             className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-3"
             style={forExport ? exportStyles.subtleText : undefined}
           >
-            Payment Details
+            Detail Pembayaran
           </p>
           <div className="grid grid-cols-3 gap-x-6 gap-y-2">
             <div>

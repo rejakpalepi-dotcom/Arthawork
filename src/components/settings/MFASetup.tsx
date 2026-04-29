@@ -36,7 +36,7 @@ export function MFASetup({ onComplete }: MFASetupProps) {
             setMfaEnabled(!!totpFactor);
             setFactorId(totpFactor?.id || null);
         } catch (error) {
-            console.error("Failed to check MFA status:", error);
+            console.error("Gagal memeriksa status MFA:", error);
         }
     };
 
@@ -55,10 +55,10 @@ export function MFASetup({ onComplete }: MFASetupProps) {
             setFactorId(data.id);
             setShowVerify(true);
 
-            toast.info("Scan the QR code with your authenticator app");
+            toast.info("Pindai QR code dengan aplikasi autentikator kamu");
         } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "Failed to set up MFA";
-            toast.error("Failed to set up MFA", { description: message });
+            const message = error instanceof Error ? error.message : "Gagal menyiapkan MFA";
+            toast.error("Gagal menyiapkan MFA", { description: message });
         } finally {
             setLoading(false);
         }
@@ -81,10 +81,10 @@ export function MFASetup({ onComplete }: MFASetupProps) {
             setShowVerify(false);
             setQrCode(null);
             setSecret(null);
-            toast.success("Two-Factor Authentication enabled!");
+            toast.success("Autentikasi dua langkah berhasil diaktifkan");
             onComplete?.();
         } catch (error: unknown) {
-            toast.error("Invalid code", { description: "Please check and try again." });
+            toast.error("Kode tidak valid", { description: "Periksa kembali lalu coba lagi." });
         } finally {
             setLoading(false);
         }
@@ -104,10 +104,10 @@ export function MFASetup({ onComplete }: MFASetupProps) {
             await authAudit.mfaDisabled();
             setMfaEnabled(false);
             setFactorId(null);
-            toast.success("Two-Factor Authentication disabled");
+            toast.success("Autentikasi dua langkah dinonaktifkan");
         } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "Failed to disable MFA";
-            toast.error("Failed to disable MFA", { description: message });
+            const message = error instanceof Error ? error.message : "Gagal menonaktifkan MFA";
+            toast.error("Gagal menonaktifkan MFA", { description: message });
         } finally {
             setLoading(false);
         }
@@ -131,9 +131,9 @@ export function MFASetup({ onComplete }: MFASetupProps) {
                         <Shield className="w-6 h-6 text-muted-foreground" />
                     )}
                     <div>
-                        <CardTitle className="text-lg">Two-Factor Authentication</CardTitle>
+                        <CardTitle className="text-lg">AUTENTIKASI DUA LANGKAH</CardTitle>
                         <CardDescription>
-                            Add an extra layer of security to your account
+                            Tambahkan lapisan keamanan ekstra untuk akunmu
                         </CardDescription>
                     </div>
                 </div>
@@ -144,7 +144,7 @@ export function MFASetup({ onComplete }: MFASetupProps) {
                         <div className="flex justify-center">
                             <img
                                 src={qrCode}
-                                alt="QR Code for authenticator app"
+                                alt="QR code untuk aplikasi autentikator"
                                 className="w-48 h-48 rounded-lg border border-border"
                             />
                         </div>
@@ -152,7 +152,7 @@ export function MFASetup({ onComplete }: MFASetupProps) {
                         {secret && (
                             <div className="p-3 bg-secondary rounded-lg">
                                 <p className="text-xs text-muted-foreground mb-1">
-                                    Or enter this code manually:
+                                    Atau masukkan kode ini secara manual:
                                 </p>
                                 <div className="flex items-center gap-2">
                                     <code className="flex-1 text-sm font-mono break-all">{secret}</code>
@@ -168,7 +168,7 @@ export function MFASetup({ onComplete }: MFASetupProps) {
                         )}
 
                         <div className="space-y-2">
-                            <Label htmlFor="verifyCode">Enter 6-digit code from app</Label>
+                            <Label htmlFor="verifyCode">Masukkan 6 digit kode dari aplikasi</Label>
                             <Input
                                 id="verifyCode"
                                 value={verifyCode}
@@ -189,7 +189,7 @@ export function MFASetup({ onComplete }: MFASetupProps) {
                                 }}
                                 disabled={loading}
                             >
-                                Cancel
+                                Batal
                             </Button>
                             <Button
                                 onClick={handleVerifyMFA}
@@ -197,7 +197,7 @@ export function MFASetup({ onComplete }: MFASetupProps) {
                                 className="flex-1"
                             >
                                 {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                                Verify & Enable
+                                Verifikasi & Aktifkan
                             </Button>
                         </div>
                     </div>
@@ -213,14 +213,14 @@ export function MFASetup({ onComplete }: MFASetupProps) {
                                 disabled={loading}
                             />
                             <span className={mfaEnabled ? "text-success" : "text-muted-foreground"}>
-                                {mfaEnabled ? "Enabled" : "Disabled"}
+                                {mfaEnabled ? "Aktif" : "Nonaktif"}
                             </span>
                         </div>
 
                         {mfaEnabled && (
                             <div className="flex items-center gap-2 text-sm text-success">
                                 <ShieldCheck className="w-4 h-4" />
-                                Your account is protected
+                                Akunmu sudah terlindungi
                             </div>
                         )}
                     </div>
@@ -230,7 +230,7 @@ export function MFASetup({ onComplete }: MFASetupProps) {
                     <div className="flex items-start gap-2 p-3 bg-warning/10 rounded-lg text-sm">
                         <ShieldAlert className="w-4 h-4 text-warning mt-0.5 shrink-0" />
                         <p className="text-muted-foreground">
-                            We recommend enabling 2FA to protect your account from unauthorized access.
+                            Kami sarankan mengaktifkan 2FA agar akunmu lebih aman dari akses yang tidak sah.
                         </p>
                     </div>
                 )}

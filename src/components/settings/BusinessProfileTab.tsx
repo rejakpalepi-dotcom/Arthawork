@@ -16,22 +16,22 @@ export function BusinessProfileTab({ settings, saving, onUpdate, onSave }: Busin
     <div className="lg:col-span-3 glass-card rounded-2xl p-8 animate-fade-in">
       <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
         <Building2 className="w-5 h-5 text-primary" />
-        Business Profile
+        PROFIL BISNIS
       </h2>
 
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="businessName">Business Name</Label>
+            <Label htmlFor="businessName">Nama Bisnis</Label>
             <Input
               id="businessName"
-              placeholder="Your Studio Name"
+              placeholder="Nama studio atau usahamu"
               value={settings.business_name}
               onChange={(e) => onUpdate({ business_name: e.target.value })}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
+            <Label htmlFor="email">Alamat Email</Label>
             <Input
               id="email"
               type="email"
@@ -44,7 +44,7 @@ export function BusinessProfileTab({ settings, saving, onUpdate, onSave }: Busin
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label htmlFor="phone">Nomor Telepon</Label>
             <Input
               id="phone"
               placeholder="+1 (555) 000-0000"
@@ -53,7 +53,7 @@ export function BusinessProfileTab({ settings, saving, onUpdate, onSave }: Busin
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="website">Website</Label>
+            <Label htmlFor="website">Situs Web</Label>
             <Input
               id="website"
               placeholder="https://yourstudio.com"
@@ -64,10 +64,10 @@ export function BusinessProfileTab({ settings, saving, onUpdate, onSave }: Busin
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="address">Business Address</Label>
+          <Label htmlFor="address">Alamat Bisnis</Label>
           <Input
             id="address"
-            placeholder="123 Creative Street, Design City"
+            placeholder="Jalan, kota, dan detail alamat bisnismu"
             value={settings.address}
             onChange={(e) => onUpdate({ address: e.target.value })}
           />
@@ -76,7 +76,7 @@ export function BusinessProfileTab({ settings, saving, onUpdate, onSave }: Busin
         <div className="flex justify-end pt-4 border-t border-border">
           <Button onClick={() => onSave()} disabled={saving}>
             {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            Save Changes
+            Simpan Perubahan
           </Button>
         </div>
       </div>

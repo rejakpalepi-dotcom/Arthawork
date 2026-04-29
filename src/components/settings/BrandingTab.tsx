@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Palette, Upload, Loader2, X, Image } from "lucide-react";
+import { Palette, Upload, Loader2, X } from "lucide-react";
 import { BusinessSettings } from "@/hooks/useBusinessSettings";
 import { toast } from "sonner";
 
@@ -23,12 +23,12 @@ export function BrandingTab({ settings, saving, onUpdate, onSave, onUploadLogo }
     if (!file) return;
 
     if (file.size > 2 * 1024 * 1024) {
-      toast.error("File size must be less than 2MB");
+      toast.error("Ukuran file harus di bawah 2MB");
       return;
     }
 
     if (!["image/png", "image/jpeg", "image/svg+xml"].includes(file.type)) {
-      toast.error("Please upload a PNG, JPG, or SVG file");
+      toast.error("Unggah file PNG, JPG, atau SVG");
       return;
     }
 
@@ -36,7 +36,7 @@ export function BrandingTab({ settings, saving, onUpdate, onSave, onUploadLogo }
     const url = await onUploadLogo(file);
     if (url) {
       onUpdate({ logo_url: url });
-      toast.success("Logo uploaded successfully!");
+      toast.success("Logo berhasil diunggah");
     }
     setUploading(false);
   };
@@ -58,7 +58,7 @@ export function BrandingTab({ settings, saving, onUpdate, onSave, onUploadLogo }
     <div className="lg:col-span-3 glass-card rounded-2xl p-8 animate-fade-in">
       <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
         <Palette className="w-5 h-5 text-primary" />
-        Branding
+        IDENTITAS VISUAL
       </h2>
 
       <div className="space-y-6">
@@ -69,7 +69,7 @@ export function BrandingTab({ settings, saving, onUpdate, onSave, onUploadLogo }
               <div className="w-32 h-32 rounded-xl overflow-hidden border-2 border-border bg-secondary/30">
                 <img
                   src={settings.logo_url}
-                  alt="Business logo"
+                  alt="Logo bisnis"
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -93,10 +93,10 @@ export function BrandingTab({ settings, saving, onUpdate, onSave, onUploadLogo }
                 <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
               )}
               <p className="text-sm text-muted-foreground">
-                {uploading ? "Uploading..." : "Drag and drop your logo here, or click to browse"}
+                {uploading ? "Mengunggah..." : "Tarik logo ke sini atau klik untuk memilih file"}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                PNG, JPG, or SVG (max 2MB)
+                PNG, JPG, atau SVG maksimal 2MB
               </p>
             </div>
           )}
@@ -111,7 +111,7 @@ export function BrandingTab({ settings, saving, onUpdate, onSave, onUploadLogo }
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="primaryColor">Primary Color</Label>
+            <Label htmlFor="primaryColor">Warna Utama</Label>
             <div className="flex items-center gap-3">
               <input
                 type="color"
@@ -129,7 +129,7 @@ export function BrandingTab({ settings, saving, onUpdate, onSave, onUploadLogo }
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="accentColor">Accent Color</Label>
+            <Label htmlFor="accentColor">Warna Aksen</Label>
             <div className="flex items-center gap-3">
               <input
                 type="color"
@@ -152,7 +152,7 @@ export function BrandingTab({ settings, saving, onUpdate, onSave, onUploadLogo }
           <Label htmlFor="tagline">Tagline</Label>
           <Input
             id="tagline"
-            placeholder="Creative solutions for modern brands"
+            placeholder="Solusi kreatif untuk brand modern"
             value={settings.tagline}
             onChange={(e) => onUpdate({ tagline: e.target.value })}
           />
@@ -161,7 +161,7 @@ export function BrandingTab({ settings, saving, onUpdate, onSave, onUploadLogo }
         <div className="flex justify-end pt-4 border-t border-border">
           <Button onClick={onSave} disabled={saving}>
             {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            Save Changes
+            Simpan Perubahan
           </Button>
         </div>
       </div>

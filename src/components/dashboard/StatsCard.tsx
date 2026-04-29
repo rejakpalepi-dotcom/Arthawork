@@ -75,7 +75,7 @@ export function StatsCard({
                 "text-xs hidden lg:inline",
                 isHighlight ? "text-primary-foreground/70" : "text-muted-foreground"
               )}>
-                vs last month
+                dibanding bulan lalu
               </span>
             </div>
           )}

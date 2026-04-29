@@ -206,7 +206,7 @@ export default function Proposals() {
       toast.success(`Proposal berhasil diubah ke status ${statusLabels[newStatus] || newStatus}!`);
       fetchProposals();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to update status";
+      const message = error instanceof Error ? error.message : "Gagal memperbarui status";
       toast.error(message);
     }
   };
@@ -224,7 +224,7 @@ export default function Proposals() {
       toast.success("Proposal berhasil dihapus!");
       fetchProposals();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to delete proposal";
+      const message = error instanceof Error ? error.message : "Gagal menghapus proposal";
       toast.error(message);
     } finally {
       setDeleting(false);
@@ -285,7 +285,7 @@ export default function Proposals() {
       document.body.removeChild(container);
       toast.success("PDF berhasil diekspor!");
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to export PDF";
+      const message = error instanceof Error ? error.message : "Gagal mengekspor PDF";
       toast.error(message);
     } finally {
       setExportingId(null);
@@ -351,19 +351,19 @@ export default function Proposals() {
               <div className="p-2 rounded-lg bg-primary/10">
                 <DollarSign className="w-5 h-5 text-primary" />
               </div>
-              <span className="text-sm text-muted-foreground">Pipeline Value</span>
+              <span className="text-sm text-muted-foreground">Nilai Pipeline</span>
             </div>
             <p className="text-2xl font-semibold text-foreground mb-1">{formatIDR(stats.pipelineValue)}</p>
             {stats.pipelineValue > 0 && stats.pipelineTrend !== 0 ? (
               <div className="flex items-center gap-1">
                 <TrendingUp className={cn("w-4 h-4", stats.pipelineTrend > 0 ? "text-success" : "text-destructive rotate-180")} />
                 <span className={cn("text-sm", stats.pipelineTrend > 0 ? "text-success" : "text-destructive")}>{Math.abs(stats.pipelineTrend)}%</span>
-                <span className="text-xs text-muted-foreground">vs last month</span>
+                <span className="text-xs text-muted-foreground">dibanding bulan lalu</span>
               </div>
             ) : (
               <div className="flex items-center gap-1">
                 <span className="text-sm text-muted-foreground">0%</span>
-                <span className="text-xs text-muted-foreground">vs last month</span>
+                <span className="text-xs text-muted-foreground">dibanding bulan lalu</span>
               </div>
             )}
           </div>
@@ -373,19 +373,19 @@ export default function Proposals() {
               <div className="p-2 rounded-lg bg-success/10">
                 <FileCheck className="w-5 h-5 text-success" />
               </div>
-              <span className="text-sm text-muted-foreground">Acceptance Rate</span>
+              <span className="text-sm text-muted-foreground">Tingkat Persetujuan</span>
             </div>
             <p className="text-2xl font-semibold text-foreground mb-1">{stats.acceptanceRate}%</p>
             {stats.acceptanceRate > 0 && stats.acceptanceTrend !== 0 ? (
               <div className="flex items-center gap-1">
                 <TrendingUp className={cn("w-4 h-4", stats.acceptanceTrend > 0 ? "text-success" : "text-destructive rotate-180")} />
                 <span className={cn("text-sm", stats.acceptanceTrend > 0 ? "text-success" : "text-destructive")}>{Math.abs(stats.acceptanceTrend)}%</span>
-                <span className="text-xs text-muted-foreground">vs last month</span>
+                <span className="text-xs text-muted-foreground">dibanding bulan lalu</span>
               </div>
             ) : (
               <div className="flex items-center gap-1">
                 <span className="text-sm text-muted-foreground">0%</span>
-                <span className="text-xs text-muted-foreground">vs last month</span>
+                <span className="text-xs text-muted-foreground">dibanding bulan lalu</span>
               </div>
             )}
           </div>
@@ -401,7 +401,7 @@ export default function Proposals() {
             <div className="flex items-center gap-1">
               <Plus className="w-4 h-4 text-primary" />
               <span className="text-sm text-primary">{stats.newThisWeek}</span>
-              <span className="text-xs text-muted-foreground">new this week</span>
+              <span className="text-xs text-muted-foreground">baru minggu ini</span>
             </div>
           </div>
         </div>
@@ -500,10 +500,10 @@ export default function Proposals() {
                           <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
                         </button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-card border-border">
+                        <DropdownMenuContent align="end" className="bg-card border-border">
                         <DropdownMenuItem onClick={() => handleEdit(proposal.id)}>
                           <Pencil className="w-4 h-4 mr-2" />
-                          Edit
+                          Ubah
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleExportPDF(proposal)}
@@ -531,7 +531,7 @@ export default function Proposals() {
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleStatusUpdate(proposal.id, "rejected")}>
                               <AlertCircle className="w-4 h-4 mr-2" />
-                              Mark as Declined
+                              Tandai Ditolak
                             </DropdownMenuItem>
                           </>
                         )}
@@ -554,7 +554,7 @@ export default function Proposals() {
 
                   <div className="flex items-center justify-between pt-4 border-t border-border">
                     <div>
-                      <p className="text-xs text-muted-foreground mb-1">Value</p>
+                      <p className="text-xs text-muted-foreground mb-1">Nilai</p>
                       <p className="text-lg font-semibold text-foreground font-numeric">{formatIDR(proposal.total)}</p>
                     </div>
                     <StatusBadge type="proposal" status={resolvedStatus} />

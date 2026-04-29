@@ -13,8 +13,8 @@ export function RevenueChart({ data }: RevenueChartProps) {
     <div className="glass-card rounded-2xl p-6 animate-fade-in h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-foreground">Revenue Trends</h3>
-          <p className="text-sm text-muted-foreground">Monthly income overview</p>
+          <h3 className="text-lg font-semibold text-foreground">TREN PENDAPATAN</h3>
+          <p className="text-sm text-muted-foreground">Ringkasan pemasukan bulanan</p>
         </div>
         <div className="flex items-center gap-1 p-1 bg-secondary rounded-lg">
           <button
@@ -24,7 +24,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
               period === "6months" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
             )}
           >
-            Last 6 Months
+            6 Bulan Terakhir
           </button>
         </div>
       </div>
@@ -53,7 +53,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
                   borderRadius: '8px',
                   color: 'hsl(0, 0%, 95%)'
                 }}
-                formatter={(value: number) => [new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value), 'Revenue']}
+                formatter={(value: number) => [new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value), 'Pendapatan']}
               />
               <Area
                 type="monotone"
@@ -69,7 +69,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
           </ResponsiveContainer>
         ) : (
           <div className="h-full flex items-center justify-center text-muted-foreground">
-            No revenue data yet
+            Belum ada data pendapatan
           </div>
         )}
       </div>

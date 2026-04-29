@@ -42,7 +42,7 @@ export function TodaysFocus() {
       if (error) throw error;
       setTodos(data || []);
     } catch (error: unknown) {
-      console.error("Failed to load todos:", error);
+      console.error("Gagal memuat fokus hari ini:", error);
     } finally {
       setLoading(false);
     }
@@ -55,7 +55,7 @@ export function TodaysFocus() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast.error("Please log in to add tasks");
+        toast.error("Silakan masuk untuk menambah tugas");
         return;
       }
 
@@ -70,7 +70,7 @@ export function TodaysFocus() {
       setTodos(prev => [...prev, data]);
       setNewTask("");
     } catch (error: unknown) {
-      toast.error("Failed to add task");
+      toast.error("Gagal menambah tugas");
     } finally {
       setSaving(false);
     }
@@ -89,7 +89,7 @@ export function TodaysFocus() {
         t.id === id ? { ...t, is_completed: !currentStatus } : t
       ));
     } catch (error: unknown) {
-      toast.error("Failed to update task");
+      toast.error("Gagal memperbarui tugas");
     }
   };
 
@@ -115,7 +115,7 @@ export function TodaysFocus() {
       setEditingId(null);
       setEditText("");
     } catch (error: unknown) {
-      toast.error("Failed to update task");
+      toast.error("Gagal memperbarui tugas");
     }
   };
 
@@ -130,14 +130,14 @@ export function TodaysFocus() {
 
       setTodos(prev => prev.filter(t => t.id !== id));
     } catch (error: unknown) {
-      toast.error("Failed to delete task");
+      toast.error("Gagal menghapus tugas");
     }
   };
 
   if (loading) {
     return (
       <div className="glass-card rounded-2xl p-6 animate-fade-in">
-        <h3 className="text-lg font-semibold text-foreground mb-4">Today&apos;s Focus</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-4">FOKUS HARI INI</h3>
         <div className="flex items-center justify-center py-8">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
@@ -147,12 +147,12 @@ export function TodaysFocus() {
 
   return (
     <div className="glass-card rounded-2xl p-6 animate-fade-in">
-      <h3 className="text-lg font-semibold text-foreground mb-4">Today&apos;s Focus</h3>
+      <h3 className="text-lg font-semibold text-foreground mb-4">FOKUS HARI INI</h3>
 
       {/* Add new task */}
       <div className="flex gap-2 mb-4">
         <Input
-          placeholder="Add a new task..."
+          placeholder="Tambahkan fokus baru..."
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && addTodo()}
@@ -173,7 +173,7 @@ export function TodaysFocus() {
       <div className="space-y-1">
         {todos.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
-            No tasks yet. Add one above!
+            Belum ada fokus hari ini. Tambahkan dari kolom di atas.
           </p>
         ) : (
           todos.map((todo) => (

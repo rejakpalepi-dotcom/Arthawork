@@ -124,7 +124,7 @@ export default function Invoices() {
       toast.success("Invoice berhasil ditandai lunas!");
       fetchInvoices();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to update invoice";
+      const message = error instanceof Error ? error.message : "Gagal memperbarui invoice";
       toast.error(message);
     }
   };
@@ -148,7 +148,7 @@ export default function Invoices() {
       toast.success("Invoice berhasil dihapus!");
       fetchInvoices();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to delete invoice";
+      const message = error instanceof Error ? error.message : "Gagal menghapus invoice";
       toast.error(message);
     } finally {
       setDeleting(false);
@@ -166,9 +166,9 @@ export default function Invoices() {
         .eq("invoice_id", invoice.id);
 
       // Use dynamic business settings
-      const businessName = businessSettings?.business_name || "Your Business Name";
-      const businessAddress = businessSettings?.address || "Your Business Address";
-      const businessEmail = businessSettings?.email || "your@email.com";
+      const businessName = businessSettings?.business_name || "Nama Bisnis Kamu";
+      const businessAddress = businessSettings?.address || "Alamat bisnis kamu";
+      const businessEmail = businessSettings?.email || "halo@bisniskamu.com";
       const logoUrl = businessSettings?.logo_url;
       const bankName = businessSettings?.bank_name || "";
       const accountNumber = businessSettings?.account_number || "";
@@ -287,7 +287,7 @@ export default function Invoices() {
       document.body.removeChild(container);
       toast.success("PDF berhasil diekspor!");
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to export PDF";
+      const message = error instanceof Error ? error.message : "Gagal mengekspor PDF";
       toast.error(message);
     } finally {
       setExportingId(null);

@@ -35,7 +35,7 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
     return (
       <div className="glass-card rounded-2xl p-6 animate-fade-in">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-foreground">Recent Invoices</h3>
+          <h3 className="text-lg font-semibold text-foreground">INVOICE TERBARU</h3>
           <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
         </div>
         <div className="space-y-4">
@@ -50,7 +50,7 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
   return (
     <div className="glass-card rounded-2xl p-6 animate-fade-in">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-foreground">Recent Invoices</h3>
+        <h3 className="text-lg font-semibold text-foreground">INVOICE TERBARU</h3>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="p-1.5 hover:bg-secondary rounded-lg transition-colors">
@@ -59,10 +59,10 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => navigate("/invoices")}>
-              View All Invoices
+              Lihat Semua Invoice
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate("/invoices/new")}>
-              Create New Invoice
+              Buat Invoice Baru
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -71,9 +71,9 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
       {invoices.length === 0 ? (
         <EmptyState
           icon={Receipt}
-          title="No invoices yet"
-          description="Your invoices will appear here."
-          actionLabel="Create Invoice"
+          title="Belum ada invoice"
+          description="Invoice yang kamu buat akan muncul di sini."
+          actionLabel="BUAT INVOICE"
           onAction={() => navigate("/invoices/new")}
         />
       ) : (
@@ -98,14 +98,14 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
                     <div className="flex items-start justify-between gap-2 mb-1">
                       <div>
                         <h4 className="text-sm font-semibold text-foreground">
-                          Invoice #{invoice.invoice_number}
+                          INVOICE #{invoice.invoice_number}
                         </h4>
                         <p className="text-xs text-muted-foreground mt-0.5">
                           {invoice.status === "paid"
-                            ? `Paid on ${invoice.paid_date ? new Date(invoice.paid_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'N/A'}`
+                            ? `Lunas pada ${invoice.paid_date ? new Date(invoice.paid_date).toLocaleDateString('id-ID', { month: 'short', day: 'numeric' }) : '-'}`
                             : invoice.due_date
-                              ? `Due ${new Date(invoice.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}${isOverdue ? ' (Overdue)' : ''}`
-                              : 'No due date'
+                              ? `Jatuh tempo ${new Date(invoice.due_date).toLocaleDateString('id-ID', { month: 'short', day: 'numeric' })}${isOverdue ? ' (Lewat jatuh tempo)' : ''}`
+                              : 'Tanpa jatuh tempo'
                           }
                         </p>
                       </div>
@@ -123,7 +123,7 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
                         className="h-8 text-xs"
                         onClick={() => navigate(`/invoices/${invoice.id}`)}
                       >
-                        View details
+                        Lihat detail
                       </Button>
                     </div>
                   </div>

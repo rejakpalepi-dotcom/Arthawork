@@ -22,6 +22,10 @@ describe("UI copy localization regressions", () => {
   it("dashboard and quick actions use Indonesian action copy", () => {
     const dashboard = readProjectFile("src/pages/Dashboard.tsx");
     const actions = readProjectFile("src/components/dashboard/QuickActions.tsx");
+    const recentInvoices = readProjectFile("src/components/dashboard/RecentInvoices.tsx");
+    const activeProjects = readProjectFile("src/components/dashboard/ActiveProjects.tsx");
+    const todaysFocus = readProjectFile("src/components/dashboard/TodaysFocus.tsx");
+    const recentActivity = readProjectFile("src/components/dashboard/RecentActivity.tsx");
 
     expect(dashboard).not.toContain("New Project");
     expect(dashboard).not.toContain("Revenue Trends");
@@ -30,11 +34,44 @@ describe("UI copy localization regressions", () => {
     expect(actions).not.toContain("New Proposal");
     expect(actions).not.toContain("Add Client");
     expect(actions).not.toContain("Export Report");
+    expect(recentInvoices).not.toContain("Recent Invoices");
+    expect(recentInvoices).not.toContain("View All Invoices");
+    expect(activeProjects).not.toContain("Active Projects");
+    expect(activeProjects).not.toContain("View All");
+    expect(todaysFocus).not.toContain("Today&apos;s Focus");
+    expect(todaysFocus).not.toContain("Add a new task...");
+    expect(recentActivity).not.toContain("Recent Activity");
+    expect(recentActivity).not.toContain("View All");
   });
 
   it("landing page no longer includes the SaaS badge copy", () => {
     const landing = readProjectFile("src/pages/LandingPage.tsx");
 
     expect(landing).not.toContain("SaaS untuk freelancer Indonesia");
+  });
+
+  it("settings and financial pages use localized fallback copy", () => {
+    const account = readProjectFile("src/components/settings/AccountTab.tsx");
+    const business = readProjectFile("src/components/settings/BusinessProfileTab.tsx");
+    const branding = readProjectFile("src/components/settings/BrandingTab.tsx");
+    const payment = readProjectFile("src/components/settings/PaymentDetailsTab.tsx");
+    const mfa = readProjectFile("src/components/settings/MFASetup.tsx");
+    const proposals = readProjectFile("src/pages/Proposals.tsx");
+    const invoices = readProjectFile("src/pages/Invoices.tsx");
+
+    expect(account).not.toContain("Account Settings");
+    expect(account).not.toContain("Export Your Data");
+    expect(business).not.toContain("Business Profile");
+    expect(business).not.toContain("Business Name");
+    expect(branding).not.toContain("Primary Color");
+    expect(branding).not.toContain("Drag and drop your logo here, or click to browse");
+    expect(payment).not.toContain("Payment Details");
+    expect(payment).not.toContain("Connect Stripe");
+    expect(mfa).not.toContain("Two-Factor Authentication");
+    expect(mfa).not.toContain("Your account is protected");
+    expect(proposals).not.toContain("Pipeline Value");
+    expect(proposals).not.toContain("Acceptance Rate");
+    expect(invoices).not.toContain("Your Business Name");
+    expect(invoices).not.toContain("Failed to export PDF");
   });
 });

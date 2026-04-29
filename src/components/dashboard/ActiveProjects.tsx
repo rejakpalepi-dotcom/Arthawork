@@ -34,13 +34,13 @@ interface ActiveProjectsProps {
 
 // Status configuration with Electric Cyan theme
 const statusConfig = {
-  draft: { label: "Draft", color: "bg-muted text-muted-foreground border border-border", icon: Clock },
-  sent: { label: "Sent", color: "bg-warning/20 text-warning border border-warning/30", icon: Clock },
-  approved: { label: "Approved", color: "bg-success/20 text-success border border-success/30", icon: Check },
-  rejected: { label: "Rejected", color: "bg-destructive/20 text-destructive border border-destructive/30", icon: X },
-  progressing: { label: "Progressing", color: "bg-primary/20 text-primary border border-primary/30", icon: Clock },
-  done: { label: "Done", color: "bg-success/20 text-success border border-success/30", icon: Check },
-  canceled: { label: "Canceled", color: "bg-destructive/20 text-destructive border border-destructive/30", icon: X },
+  draft: { label: "Draf", color: "bg-muted text-muted-foreground border border-border", icon: Clock },
+  sent: { label: "Terkirim", color: "bg-warning/20 text-warning border border-warning/30", icon: Clock },
+  approved: { label: "Disetujui", color: "bg-success/20 text-success border border-success/30", icon: Check },
+  rejected: { label: "Ditolak", color: "bg-destructive/20 text-destructive border border-destructive/30", icon: X },
+  progressing: { label: "Berjalan", color: "bg-primary/20 text-primary border border-primary/30", icon: Clock },
+  done: { label: "Selesai", color: "bg-success/20 text-success border border-success/30", icon: Check },
+  canceled: { label: "Dibatalkan", color: "bg-destructive/20 text-destructive border border-destructive/30", icon: X },
 };
 
 const avatarColors = [
@@ -65,11 +65,11 @@ export function ActiveProjects({ projects, loading, onStatusChange }: ActiveProj
 
       if (error) throw error;
 
-      toast.success(`Status updated to ${statusConfig[newStatus as keyof typeof statusConfig]?.label || newStatus}`);
+      toast.success(`Status berhasil diubah ke ${statusConfig[newStatus as keyof typeof statusConfig]?.label || newStatus}`);
       onStatusChange?.();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      toast.error("Failed to update status: " + message);
+      const message = error instanceof Error ? error.message : "Terjadi kesalahan yang tidak diketahui";
+      toast.error("Gagal memperbarui status: " + message);
     } finally {
       setUpdatingId(null);
     }
@@ -79,7 +79,7 @@ export function ActiveProjects({ projects, loading, onStatusChange }: ActiveProj
     return (
       <div className="glass-card rounded-2xl p-6 animate-fade-in">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-foreground">Active Projects</h3>
+          <h3 className="text-lg font-semibold text-foreground">PROYEK AKTIF</h3>
         </div>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
@@ -93,21 +93,21 @@ export function ActiveProjects({ projects, loading, onStatusChange }: ActiveProj
   return (
     <div className="glass-card rounded-2xl p-6 animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-foreground">Active Projects</h3>
+        <h3 className="text-lg font-semibold text-foreground">PROYEK AKTIF</h3>
         <button
           onClick={() => navigate("/proposals")}
           className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
         >
-          View All
+          Lihat Semua
         </button>
       </div>
 
       {projects.length === 0 ? (
         <EmptyState
           icon={Folder}
-          title="No active projects"
-          description="Projects will appear here when you create proposals."
-          actionLabel="Create Proposal"
+          title="Belum ada proyek aktif"
+          description="Proyek akan muncul di sini setelah proposal mulai berjalan."
+          actionLabel="BUAT PROPOSAL"
           onAction={() => navigate("/proposals/new")}
         />
       ) : (
@@ -115,9 +115,9 @@ export function ActiveProjects({ projects, loading, onStatusChange }: ActiveProj
           <table className="w-full">
             <thead>
               <tr className="text-left">
-                <th className="pb-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Client</th>
-                <th className="pb-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Project</th>
-                <th className="pb-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Value</th>
+                <th className="pb-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Klien</th>
+                <th className="pb-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Proyek</th>
+                <th className="pb-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Nilai</th>
                 <th className="pb-4 text-xs font-medium text-muted-foreground uppercase tracking-wider text-right">Status</th>
                 <th className="pb-4 w-10"></th>
               </tr>
@@ -175,28 +175,28 @@ export function ActiveProjects({ projects, loading, onStatusChange }: ActiveProj
                             className="gap-2"
                           >
                             <Clock className="w-4 h-4 text-primary" />
-                            <span>Progressing</span>
+                            <span>Tandai Berjalan</span>
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleStatusChange(project.id, "done")}
                             className="gap-2"
                           >
                             <Check className="w-4 h-4 text-success" />
-                            <span>Done</span>
+                            <span>Tandai Selesai</span>
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleStatusChange(project.id, "canceled")}
                             className="gap-2"
                           >
                             <X className="w-4 h-4 text-destructive" />
-                            <span>Canceled</span>
+                            <span>Tandai Batal</span>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
                             onClick={() => navigate(`/proposals/${project.id}/edit`)}
                             className="gap-2"
                           >
-                            Edit Proposal
+                            Ubah Proposal
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
