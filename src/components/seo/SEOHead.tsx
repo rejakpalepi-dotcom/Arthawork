@@ -8,7 +8,7 @@ interface SEOHeadProps {
 }
 
 const SITE_URL = "https://arthawork.vercel.app";
-const DEFAULT_OG_IMAGE = `${SITE_URL}/og-preview.jpg?v=7`;
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-preview-v8.jpg`;
 const BASE_TITLE = "Artha | Proposal & Invoice Builder untuk Freelancer Indonesia";
 const BASE_DESCRIPTION =
   "Artha membantu freelancer Indonesia membuat proposal yang lebih meyakinkan, invoice yang lebih cepat dibayar, dan workflow klien yang lebih rapi.";
@@ -104,6 +104,10 @@ export function SEOHead({
       property: "og:image",
       content: DEFAULT_OG_IMAGE,
     });
+    upsertMeta('meta[property="og:image:url"]', {
+      property: "og:image:url",
+      content: DEFAULT_OG_IMAGE,
+    });
     upsertMeta('meta[property="og:image:secure_url"]', {
       property: "og:image:secure_url",
       content: DEFAULT_OG_IMAGE,
@@ -138,6 +142,10 @@ export function SEOHead({
     });
     upsertMeta('meta[name="twitter:image"]', {
       name: "twitter:image",
+      content: DEFAULT_OG_IMAGE,
+    });
+    upsertMeta('meta[name="twitter:image:src"]', {
+      name: "twitter:image:src",
       content: DEFAULT_OG_IMAGE,
     });
     upsertMeta('meta[name="twitter:image:alt"]', {
