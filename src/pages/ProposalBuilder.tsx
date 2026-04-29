@@ -333,7 +333,7 @@ export default function ProposalBuilder() {
 
   return (
     <DashboardLayout>
-      <div className="h-[calc(100vh-2rem)] flex flex-col font-sans">
+      <div data-ui-shell="proposal-builder" className="h-[calc(100vh-2rem)] flex flex-col font-sans">
         <BuilderContextBar
           breadcrumbs={[
             { label: "Dokumen" },
@@ -427,13 +427,13 @@ export default function ProposalBuilder() {
         </div>
 
         {/* Mobile View Toggle */}
-        <div className="flex lg:hidden border-t border-b border-border mb-3 -mx-4 px-4 md:mx-0 md:px-0">
+        <div className="mx-4 mb-3 flex rounded-[22px] border border-border/70 bg-card/90 p-1 shadow-sm lg:hidden md:mx-0">
           <button
             onClick={() => switchView("SWITCH_TO_EDITOR")}
             className={cn(
-              "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
+              "flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-medium transition-colors",
               mobileView === "editor"
-                ? "text-primary border-b-2 border-primary bg-primary/5"
+                ? "bg-primary text-primary-foreground shadow-sm"
                 : "text-muted-foreground"
             )}
           >
@@ -443,9 +443,9 @@ export default function ProposalBuilder() {
           <button
             onClick={() => switchView("SWITCH_TO_PREVIEW")}
             className={cn(
-              "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
+              "flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-medium transition-colors",
               mobileView === "preview"
-                ? "text-primary border-b-2 border-primary bg-primary/5"
+                ? "bg-primary text-primary-foreground shadow-sm"
                 : "text-muted-foreground"
             )}
           >

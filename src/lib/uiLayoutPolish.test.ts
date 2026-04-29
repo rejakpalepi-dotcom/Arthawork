@@ -54,4 +54,30 @@ describe("Authenticated layout polish regressions", () => {
     expect(clientPortal).toContain('data-ui-shell="client-portal"');
     expect(contractViewer).toContain('data-ui-shell="contract-viewer"');
   });
+
+  it("responsive builders, empty states, and dialog primitives expose QA hooks", () => {
+    const invoiceBuilder = readProjectFile("src/pages/InvoiceBuilder.tsx");
+    const proposalBuilder = readProjectFile("src/pages/ProposalBuilder.tsx");
+    const emptyState = readProjectFile("src/components/ui/empty-state.tsx");
+    const dialog = readProjectFile("src/components/ui/dialog.tsx");
+    const alertDialog = readProjectFile("src/components/ui/alert-dialog.tsx");
+    const deleteConfirmModal = readProjectFile("src/components/modals/DeleteConfirmModal.tsx");
+    const addClientModal = readProjectFile("src/components/modals/AddClientModal.tsx");
+    const addServiceModal = readProjectFile("src/components/modals/AddServiceModal.tsx");
+    const editClientModal = readProjectFile("src/components/modals/EditClientModal.tsx");
+    const editServiceModal = readProjectFile("src/components/modals/EditServiceModal.tsx");
+    const upgradeModal = readProjectFile("src/components/subscription/UpgradeModal.tsx");
+
+    expect(invoiceBuilder).toContain('data-ui-shell="invoice-builder"');
+    expect(proposalBuilder).toContain('data-ui-shell="proposal-builder"');
+    expect(emptyState).toContain('data-ui-panel="empty-state"');
+    expect(dialog).toContain('data-ui-surface="dialog-content"');
+    expect(alertDialog).toContain('data-ui-surface="alert-dialog-content"');
+    expect(deleteConfirmModal).toContain('data-ui-panel="delete-confirm-modal"');
+    expect(addClientModal).toContain('data-ui-panel="add-client-modal"');
+    expect(addServiceModal).toContain('data-ui-panel="add-service-modal"');
+    expect(editClientModal).toContain('data-ui-panel="edit-client-modal"');
+    expect(editServiceModal).toContain('data-ui-panel="edit-service-modal"');
+    expect(upgradeModal).toContain('data-ui-panel="upgrade-modal"');
+  });
 });

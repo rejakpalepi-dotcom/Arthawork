@@ -62,7 +62,10 @@ export function EmptyState({
   }
 
   return (
-    <div className={cn("flex flex-col items-center justify-center py-16 px-6 text-center", className)}>
+    <div
+      data-ui-panel="empty-state"
+      className={cn("flex flex-col items-center justify-center rounded-[28px] border border-border/70 bg-card/55 px-6 py-16 text-center shadow-sm backdrop-blur", className)}
+    >
       <IllustrationBackground icon={Icon} />
 
       <h3 className="text-xl font-semibold text-foreground mb-2">{title}</h3>
@@ -92,4 +95,3 @@ export function EmptyState({
     </div>
   );
 }
-

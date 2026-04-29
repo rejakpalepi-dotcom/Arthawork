@@ -24,12 +24,12 @@ export function DeleteConfirmModal({
   onOpenChange,
   onConfirm,
   loading = false,
-  title = "Are you sure?",
-  description = "This action cannot be undone.",
+  title = "Yakin ingin menghapus?",
+  description = "Tindakan ini tidak bisa dibatalkan.",
 }: DeleteConfirmModalProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      <AlertDialogContent data-ui-panel="delete-confirm-modal">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-destructive" />
@@ -38,14 +38,14 @@ export function DeleteConfirmModal({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={loading}>Batal</AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
             disabled={loading}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
             {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            Delete
+            Hapus
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

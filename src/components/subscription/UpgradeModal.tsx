@@ -44,7 +44,7 @@ export function UpgradeModal({ open, onOpenChange, reason, featureName }: Upgrad
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[600px] bg-card border-border">
+            <DialogContent data-ui-panel="upgrade-modal" className="sm:max-w-[600px] bg-card border-border">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2 text-xl">
                         <Zap className="w-6 h-6 text-primary" />

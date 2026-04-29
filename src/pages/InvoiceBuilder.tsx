@@ -413,7 +413,7 @@ export default function InvoiceBuilder() {
 
   return (
     <DashboardLayout>
-      <div className="flex flex-col h-full">
+      <div data-ui-shell="invoice-builder" className="flex flex-col h-full">
         {/* Builder Context Bar */}
         <BuilderContextBar
           breadcrumbs={[
@@ -467,13 +467,13 @@ export default function InvoiceBuilder() {
         />
 
           {/* Mobile View Toggle */}
-          <div className="flex lg:hidden border-t border-border">
+          <div className="mx-4 mb-3 flex rounded-[22px] border border-border/70 bg-card/90 p-1 shadow-sm lg:hidden">
             <button
               onClick={() => switchView("SWITCH_TO_EDITOR")}
               className={cn(
-                "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
+                "flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-medium transition-colors",
                 mobileView === "editor"
-                  ? "text-primary border-b-2 border-primary bg-primary/5"
+                  ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground"
               )}
             >
@@ -483,9 +483,9 @@ export default function InvoiceBuilder() {
             <button
               onClick={() => switchView("SWITCH_TO_PREVIEW")}
               className={cn(
-                "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors min-h-[44px]",
+                "flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-medium transition-colors",
                 mobileView === "preview"
-                  ? "text-primary border-b-2 border-primary bg-primary/5"
+                  ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground"
               )}
             >
@@ -496,10 +496,10 @@ export default function InvoiceBuilder() {
 
         {/* Main Content */}
         <div className="flex-1 overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
+          <div className="grid h-full grid-cols-1 gap-3 px-4 pb-4 lg:grid-cols-2 lg:gap-0 lg:px-0 lg:pb-0">
             {/* Form Side */}
             <div className={cn(
-              "overflow-y-auto p-4 md:p-6 border-r border-border",
+              "overflow-y-auto rounded-[28px] border border-border/70 bg-card/88 p-4 shadow-sm md:p-6 lg:rounded-none lg:border-0 lg:border-r lg:bg-transparent lg:shadow-none",
               mobileView !== "editor" && "hidden lg:block"
             )}>
               <div className="mb-4 md:mb-6">
@@ -517,10 +517,10 @@ export default function InvoiceBuilder() {
 
             {/* Preview Side */}
             <div className={cn(
-              "bg-muted/30 overflow-y-auto",
+              "overflow-y-auto rounded-[28px] border border-border/70 bg-muted/30 shadow-sm lg:rounded-none lg:border-0 lg:shadow-none",
               mobileView !== "preview" && "hidden lg:block"
             )}>
-              <div className="sticky top-0 z-10 bg-muted border-b border-border px-4 md:px-6 py-3 flex items-center justify-between">
+              <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-muted/95 px-4 py-3 backdrop-blur md:px-6">
                 <h2 className="text-sm font-medium text-foreground">PRATINJAU LANGSUNG</h2>
                 <div className="flex items-center gap-1">
                   <Button

@@ -70,7 +70,7 @@ export function AddServiceModal({ open, onOpenChange, onSuccess }: AddServiceMod
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent data-ui-panel="add-service-modal" className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Package className="w-5 h-5 text-primary" />
@@ -122,16 +122,17 @@ export function AddServiceModal({ open, onOpenChange, onSuccess }: AddServiceMod
             )}
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-border">
+          <div className="flex justify-end gap-3 pt-4 border-t border-border/70">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={loading}
+              className="rounded-full px-4"
             >
               Batal
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} className="rounded-full px-4">
               {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               Tambah Layanan
             </Button>
