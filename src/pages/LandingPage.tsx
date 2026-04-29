@@ -1,746 +1,887 @@
 import { Link } from "react-router-dom";
+import { useRef, type ReactNode } from "react";
+import { motion, useInView, type Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { SEOHead } from "@/components/seo/SEOHead";
-import { useRef } from "react";
-import { motion, useInView, Variants } from "framer-motion";
 import {
-    InvoiceIcon,
-    ProposalIcon,
-    ClientsIcon,
-    ClockIcon,
-    ShieldIcon,
-    MobileIcon,
-    ArrowRightIcon,
-    CheckIcon,
-    MessageIcon,
-    MailIcon,
-    FileIcon,
-    LinkIcon,
-    ChevronDownIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  ClientsIcon,
+  ClockIcon,
+  InvoiceIcon,
+  LinkIcon,
+  MailIcon,
+  MessageIcon,
+  MobileIcon,
+  ProposalIcon,
+  ShieldIcon,
 } from "@/lib/icons";
-import { fadeInUp, fadeIn, staggerContainer, scaleIn } from "@/lib/landingAnimations";
+import {
+  fadeIn,
+  fadeInUp,
+  scaleIn,
+  staggerContainer,
+} from "@/lib/landingAnimations";
 
-// Reusable animated section wrapper
 function AnimatedSection({
-    children,
-    className = "",
-    variants = fadeInUp
+  children,
+  className = "",
+  variants = fadeInUp,
 }: {
-    children: React.ReactNode;
-    className?: string;
-    variants?: Variants;
+  children: ReactNode;
+  className?: string;
+  variants?: Variants;
 }) {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
 
-    return (
-        <motion.div
-            ref={ref}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            variants={variants}
-            className={className}
-        >
-            {children}
-        </motion.div>
-    );
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={variants}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
 }
 
 const arthaLogo = "/icon-512.png";
 
-// Feature data with custom icons
+const trustPoints = [
+  "Template proposal yang siap dikirim ke klien Indonesia",
+  "Invoice profesional dengan QRIS, VA, dan e-wallet",
+  "Rapi dipakai solo freelancer maupun studio kecil",
+];
+
+const problemCards = [
+  {
+    title: "Proposal lama terasa generik",
+    description:
+      "Klien lambat approve karena deck, timeline, dan ruang lingkup tidak terasa jelas sejak layar pertama.",
+  },
+  {
+    title: "Invoice sering telat dibayar",
+    description:
+      "Pembayaran molor ketika invoice kurang rapi, metode bayar terbatas, atau follow-up masih manual.",
+  },
+  {
+    title: "Data klien tercecer",
+    description:
+      "Nama bisnis, PIC, pricing, dan revisi sering tersebar di chat, drive, dan spreadsheet yang berbeda.",
+  },
+];
+
+const valueMetrics = [
+  { value: "< 10 menit", label: "Dari draft ke dokumen siap kirim" },
+  { value: "3 alur", label: "Proposal, invoice, dan client management dalam satu workspace" },
+  { value: "ID-first", label: "Dirancang untuk workflow freelancer Indonesia" },
+];
+
 const features = [
-    {
-        Icon: InvoiceIcon,
-        title: "Invoice Profesional",
-        description: "Buat invoice dengan berbagai metode pembayaran: QRIS, VA, E-Wallet.",
-    },
-    {
-        Icon: ProposalIcon,
-        title: "Proposal Builder",
-        description: "Template proposal profesional dengan timeline dan milestone.",
-    },
-    {
-        Icon: ClientsIcon,
-        title: "Kelola Klien",
-        description: "Database klien terpusat, tersinkronisasi ke semua dokumen.",
-    },
-    {
-        Icon: ClockIcon,
-        title: "Hemat Waktu",
-        description: "Dari proposal sampai invoice dalam hitungan menit.",
-    },
-    {
-        Icon: ShieldIcon,
-        title: "Aman & Terenkripsi",
-        description: "Data terenkripsi, login dengan autentikasi dua faktor.",
-    },
-    {
-        Icon: MobileIcon,
-        title: "Mobile Ready",
-        description: "Akses dari mana saja via browser atau install sebagai PWA.",
-    },
+  {
+    Icon: ProposalIcon,
+    title: "Proposal Builder",
+    description:
+      "Susun scope, deliverables, timeline, dan milestone payment dalam format yang enak dibaca klien.",
+  },
+  {
+    Icon: InvoiceIcon,
+    title: "Invoice yang lebih cepat dibayar",
+    description:
+      "Tambahkan QRIS, virtual account, atau transfer supaya klien tidak berhenti di tahap approval.",
+  },
+  {
+    Icon: ClientsIcon,
+    title: "Client records terpusat",
+    description:
+      "Semua data klien, histori dokumen, dan detail project tersimpan rapi untuk project berikutnya.",
+  },
+  {
+    Icon: ClockIcon,
+    title: "Workflow hemat waktu",
+    description:
+      "Duplikasi template, reuse item fee, dan ubah brief jadi dokumen operasional tanpa mulai dari nol.",
+  },
+  {
+    Icon: ShieldIcon,
+    title: "Professional by default",
+    description:
+      "Copy, hierarchy, spacing, dan struktur dokumen dibuat agar terlihat lebih kredibel sejak pertama dibuka.",
+  },
+  {
+    Icon: MobileIcon,
+    title: "Tetap enak di mobile",
+    description:
+      "Buka, review, dan kirim dokumen dari desktop maupun mobile tanpa layout pecah atau CTA tenggelam.",
+  },
 ];
 
-// Pricing tiers - synced with subscription.ts
-const pricingTiers = [
-    {
-        name: "Free",
-        price: "Rp 0",
-        period: "selamanya",
-        description: "Untuk yang baru mulai",
-        features: [
-            "3 invoice/bulan",
-            "5 proposal/bulan",
-            "10 klien",
-            "Template dasar",
-            "Ada watermark Artha",
-        ],
-        cta: "Mulai Gratis",
-        popular: false,
-    },
-    {
-        name: "Pro",
-        price: "Rp 50.000",
-        period: "/bulan",
-        description: "Untuk freelancer serius",
-        features: [
-            "Unlimited invoice & proposal",
-            "Unlimited klien",
-            "Template premium",
-            "Custom branding",
-            "Payment reminders",
-            "Tanpa watermark",
-            "Smart Contracts",
-            "Priority support",
-        ],
-        cta: "Pilih Pro",
-        popular: true,
-    },
-    {
-        name: "Business",
-        price: "Rp 199.000",
-        period: "/bulan",
-        description: "Untuk agensi & studio",
-        features: [
-            "Semua fitur Pro",
-            "5 anggota tim",
-            "Client Portal",
-            "Tax Engine (PPh 21/23)",
-            "Recurring invoices",
-            "White-label 100%",
-            "Analytics",
-            "Account manager",
-        ],
-        cta: "Pilih Business",
-        popular: false,
-    },
+const workflowSteps = [
+  {
+    step: "01",
+    title: "Bangun proposal dari brief",
+    description:
+      "Pilih template, rapikan scope, dan tetapkan milestone agar klien langsung paham apa yang dibeli.",
+  },
+  {
+    step: "02",
+    title: "Kirim dan share tanpa friksi",
+    description:
+      "Bagikan via link, PDF, email, atau WhatsApp sesuai channel yang paling sering dipakai klienmu.",
+  },
+  {
+    step: "03",
+    title: "Naikkan ke invoice saat deal",
+    description:
+      "Begitu klien approve, ubah alur menjadi invoice profesional tanpa bongkar data dari awal.",
+  },
 ];
 
-// Use cases
-const useCases = [
-    { title: "Freelance Designer", desc: "Invoice desain, proposal project" },
-    { title: "Fotografer", desc: "Quote wedding, invoice event" },
-    { title: "Developer", desc: "Kontrak project, milestone billing" },
-    { title: "Agensi Kreatif", desc: "Team billing, client portal" },
-    { title: "Konsultan", desc: "Retainer invoice, recurring billing" },
-    { title: "Content Creator", desc: "Brand deal, sponsorship invoice" },
+const audienceCards = [
+  {
+    title: "Freelance Designer",
+    description: "Proposal branding, website, social media retainer, hingga invoice revisi tambahan.",
+  },
+  {
+    title: "Photographer & Videographer",
+    description: "Quote wedding, event rundown, DP structure, dan invoice pelunasan yang lebih mudah diikuti.",
+  },
+  {
+    title: "Web Developer",
+    description: "Scope sprint, breakdown milestone, serah-terima, dan invoicing project berbasis fase.",
+  },
+  {
+    title: "Creative Studio",
+    description: "Rapikan handoff internal dan tampilkan proposal yang terasa lebih premium di depan klien besar.",
+  },
 ];
 
-// Stats
-const stats = [
-    { value: "500+", label: "Invoice Dibuat" },
-    { value: "50+", label: "Freelancer Aktif" },
-    { value: "99.9%", label: "Uptime" },
+const socialProof = [
+  {
+    name: "Andi Pratama",
+    role: "Freelance Designer",
+    quote:
+      "Proposal saya jadi lebih jelas dan klien tidak lagi banyak tanya soal scope. Approval terasa lebih cepat.",
+  },
+  {
+    name: "Sari Dewi",
+    role: "Wedding Photographer",
+    quote:
+      "Invoice jadi lebih profesional dan flow DP sampai pelunasan lebih rapi buat tim maupun klien.",
+  },
+  {
+    name: "Budi Santoso",
+    role: "Web Developer",
+    quote:
+      "Yang paling terasa itu saya tidak lagi mindahin data manual dari chat ke invoice setiap kali closing.",
+  },
 ];
 
-// Testimonials data
-const testimonials = [
-    {
-        name: "Andi Pratama",
-        role: "Freelance Designer",
-        avatar: "AP",
-        quote: "Invoice saya jadi lebih profesional. Client langsung bayar tanpa tanya-tanya lagi!",
-    },
-    {
-        name: "Sari Dewi",
-        role: "Fotografer Wedding",
-        avatar: "SD",
-        quote: "Proposal wedding jadi lebih mudah dibuat. Hemat waktu banget!",
-    },
-    {
-        name: "Budi Santoso",
-        role: "Web Developer",
-        avatar: "BS",
-        quote: "Milestone billing jadi gampang. Tracking pembayaran jelas.",
-    },
-    {
-        name: "Maya Putri",
-        role: "Content Creator",
-        avatar: "MP",
-        quote: "Brand deal invoice nya profesional. Sponsor jadi lebih trust.",
-    },
-    {
-        name: "Rizky Fauzan",
-        role: "Video Editor",
-        avatar: "RF",
-        quote: "Sebelumnya pakai Excel, sekarang 10x lebih cepat!",
-    },
-    {
-        name: "Dian Kusuma",
-        role: "UI/UX Designer",
-        avatar: "DK",
-        quote: "Client portal nya keren, client bisa langsung approve proposal.",
-    },
-];
-
-// Export/Share methods with proper icons
 const exportMethods = [
-    { name: "WhatsApp", Icon: MessageIcon, desc: "Kirim langsung ke chat" },
-    { name: "Email", Icon: MailIcon, desc: "Otomatis dengan template" },
-    { name: "PDF", Icon: FileIcon, desc: "Download berkualitas tinggi" },
-    { name: "Link", Icon: LinkIcon, desc: "Share via link unik" },
+  { name: "WhatsApp", Icon: MessageIcon, desc: "Kirim cepat ke channel yang paling sering dipakai klien." },
+  { name: "Email", Icon: MailIcon, desc: "Bawaan terlihat formal untuk project bernilai lebih besar." },
+  { name: "Share Link", Icon: LinkIcon, desc: "Praktis untuk review tanpa bolak-balik file versi." },
+];
+
+const pricingTiers = [
+  {
+    name: "Free",
+    price: "Rp 0",
+    period: "selamanya",
+    description: "Untuk validasi workflow sebelum pindah penuh ke Artha.",
+    features: [
+      "3 invoice per bulan",
+      "5 proposal per bulan",
+      "10 data klien",
+      "Template dasar",
+    ],
+    cta: "Mulai Gratis",
+    href: "/signup",
+    popular: false,
+  },
+  {
+    name: "Pro",
+    price: "Rp 50.000",
+    period: "/bulan",
+    description: "Untuk freelancer yang sudah rutin closing project dan butuh workflow lebih tajam.",
+    features: [
+      "Unlimited invoice & proposal",
+      "Unlimited client records",
+      "Custom branding",
+      "Payment reminder",
+      "Tanpa watermark",
+    ],
+    cta: "Pilih Pro",
+    href: "/pricing",
+    popular: true,
+  },
+  {
+    name: "Business",
+    price: "Rp 199.000",
+    period: "/bulan",
+    description: "Untuk studio kecil atau tim yang perlu konsistensi antar account.",
+    features: [
+      "Semua fitur Pro",
+      "5 anggota tim",
+      "Client portal",
+      "Tax summary",
+      "White-label",
+    ],
+    cta: "Lihat Business",
+    href: "/pricing",
+    popular: false,
+  },
+];
+
+const faqs = [
+  {
+    q: "Apa yang membedakan Artha dari template invoice biasa?",
+    a: "Artha bukan hanya template. Kamu punya alur lengkap dari proposal, client records, sampai invoice yang tetap konsisten secara visual dan operasional.",
+  },
+  {
+    q: "Apakah Artha cocok untuk freelancer Indonesia?",
+    a: "Ya. Copy, struktur, dan metode pembayaran diprioritaskan untuk kebutuhan freelancer Indonesia, termasuk QRIS dan kanal pembayaran yang familiar di pasar lokal.",
+  },
+  {
+    q: "Kalau saya masih pakai Google Docs atau Excel, apakah migrasinya ribet?",
+    a: "Tidak. Kamu bisa mulai dari workflow baru dulu, lalu pindahkan template atau struktur fee yang paling sering dipakai secara bertahap.",
+  },
+  {
+    q: "Apakah klien saya harus membuat akun?",
+    a: "Tidak selalu. Dokumen bisa dibagikan lewat format yang ringan seperti link, PDF, email, atau WhatsApp sesuai kebutuhan interaksi dengan klien.",
+  },
 ];
 
 export default function LandingPage() {
-    return (
-        <>
-            <SEOHead
-                title="Artha - Invoice & Proposal Builder untuk Freelancer Indonesia"
-                description="Buat invoice profesional dan proposal yang memenangkan klien. Terima pembayaran via QRIS, VA, dan E-Wallet. Gratis untuk mulai!"
-                canonical="https://arthawork.vercel.app/"
-            />
+  return (
+    <>
+      <SEOHead
+        title="Artha | Proposal & Invoice Builder untuk Freelancer Indonesia"
+        description="Artha membantu freelancer Indonesia membuat proposal yang lebih meyakinkan, invoice yang lebih cepat dibayar, dan workflow klien yang lebih rapi."
+        canonical="https://arthawork.vercel.app/"
+      />
 
-            <div className="min-h-screen bg-background">
-                {/* Navigation */}
-                <nav className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border">
-                    <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-                        <Link to="/" className="flex items-center gap-2">
-                            <img src={arthaLogo} alt="Artha" className="h-8 w-8 rounded-lg" />
-                            <span className="font-semibold text-xl text-foreground">Artha</span>
-                        </Link>
-                        <div className="hidden md:flex items-center gap-6">
-                            <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Fitur</a>
-                            <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">Harga</a>
-                            <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <Link to="/login">
-                                <Button variant="ghost" size="sm">Masuk</Button>
-                            </Link>
-                            <Link to="/signup">
-                                <Button size="sm">Daftar Gratis</Button>
-                            </Link>
-                        </div>
-                    </div>
-                </nav>
+      <div className="min-h-screen bg-[linear-gradient(180deg,hsl(var(--background))_0%,hsl(190_48%_97%)_26%,hsl(var(--background))_100%)] text-foreground">
+        <nav className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+            <Link to="/" className="flex items-center gap-3">
+              <img src={arthaLogo} alt="Artha" className="h-9 w-9 rounded-2xl shadow-sm" />
+              <div>
+                <p className="text-base font-semibold leading-none">Artha</p>
+                <p className="text-xs text-muted-foreground">Proposal & invoice workflow</p>
+              </div>
+            </Link>
 
-                {/* Hero Section */}
-                <section className="pt-24 md:pt-32 pb-8 md:pb-12 px-4 relative overflow-hidden">
-                    {/* Subtle hero-only background accent */}
-                    <div
-                        className="absolute inset-0 pointer-events-none"
-                        style={{
-                            backgroundImage: `radial-gradient(800px circle at 30% 20%, hsl(187 100% 38% / 0.06), transparent 50%)`,
-                        }}
-                    />
-
-                    <motion.div
-                        className="max-w-4xl mx-auto text-center relative z-10"
-                        initial="hidden"
-                        animate="visible"
-                        variants={staggerContainer}
-                    >
-                        {/* Static headline — clear and direct */}
-                        <motion.h1
-                            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-heading tracking-tight mb-4 md:mb-6 text-foreground"
-                            variants={fadeInUp}
-                        >
-                            DRAFT IT. SEND IT. GET PAID.
-                        </motion.h1>
-
-                        {/* Tagline */}
-                        <motion.p
-                            className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto mb-6 md:mb-8"
-                            variants={fadeInUp}
-                        >
-                            Invoice & Proposal Builder untuk Freelancer Indonesia.
-                            Profesional dalam hitungan menit.
-                        </motion.p>
-
-                        {/* CTA Button */}
-                        <motion.div variants={fadeInUp}>
-                            <Link to="/signup">
-                                <Button size="lg" className="gap-2 px-6 md:px-8 py-5 md:py-6">
-                                    Mulai Gratis <ArrowRightIcon className="w-4 h-4" />
-                                </Button>
-                            </Link>
-                        </motion.div>
-                    </motion.div>
-                </section>
-
-                {/* Video Demo Section */}
-                <section className="py-12 px-4">
-                    <div className="max-w-5xl mx-auto">
-                        <div className="text-center mb-8">
-                            <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-2">
-                                Lihat cara kerja Artha
-                            </h2>
-                            <p className="text-sm text-muted-foreground">
-                                Buat invoice profesional dalam 60 detik
-                            </p>
-                        </div>
-
-                        <AnimatedSection variants={scaleIn}>
-                            <div className="relative aspect-video bg-card rounded-2xl border border-border overflow-hidden shadow-md">
-                                <video
-                                    className="w-full h-full object-cover"
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                    preload="auto"
-                                >
-                                    <source src="/videos/new video thumbnails.mp4" type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </AnimatedSection>
-                    </div>
-                </section>
-
-                {/* Features Section */}
-                <section id="features" className="py-12 md:py-16 px-4">
-                    <div className="max-w-6xl mx-auto">
-                        <AnimatedSection className="text-center mb-8 md:mb-12">
-                            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
-                                Fitur Artha
-                            </h2>
-                            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-                                Tools lengkap untuk menjalankan bisnis freelance
-                            </p>
-                        </AnimatedSection>
-
-                        <motion.div
-                            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, margin: "-80px" }}
-                            variants={staggerContainer}
-                        >
-                            {features.map((feature) => (
-                                <motion.div
-                                    key={feature.title}
-                                    className="bg-card rounded-xl p-6 border border-border hover:border-primary/30 transition-colors"
-                                    variants={fadeInUp}
-                                >
-                                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                                        <feature.Icon className="w-6 h-6 text-primary" />
-                                    </div>
-                                    <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
-                                    <p className="text-muted-foreground text-sm">{feature.description}</p>
-                                </motion.div>
-                            ))}
-                        </motion.div>
-                    </div>
-                </section>
-
-                {/* Use Cases Section */}
-                <section className="py-12 md:py-16 px-4 bg-muted/30">
-                    <div className="max-w-6xl mx-auto">
-                        <AnimatedSection className="text-center mb-8 md:mb-12">
-                            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
-                                Dibuat untuk semua kreator
-                            </h2>
-                            <p className="text-lg text-muted-foreground">
-                                Dari freelancer hingga agensi
-                            </p>
-                        </AnimatedSection>
-
-                        <motion.div
-                            className="grid grid-cols-2 md:grid-cols-3 gap-4"
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, margin: "-50px" }}
-                            variants={staggerContainer}
-                        >
-                            {useCases.map((useCase) => (
-                                <motion.div
-                                    key={useCase.title}
-                                    className="bg-card rounded-xl p-5 border border-border text-center"
-                                    variants={fadeInUp}
-                                >
-                                    <h3 className="font-semibold text-foreground mb-1">{useCase.title}</h3>
-                                    <p className="text-sm text-muted-foreground">{useCase.desc}</p>
-                                </motion.div>
-                            ))}
-                        </motion.div>
-
-                        <AnimatedSection className="text-center mt-10">
-                            <Link to="/signup">
-                                <Button variant="outline" className="gap-2">
-                                    Explore semua fitur <ArrowRightIcon className="w-4 h-4" />
-                                </Button>
-                            </Link>
-                        </AnimatedSection>
-                    </div>
-                </section>
-
-                {/* Stats Counter Section */}
-                <section className="py-12 px-4 border-y border-border">
-                    <div className="max-w-4xl mx-auto">
-                        <AnimatedSection className="text-center mb-8">
-                            <p className="text-lg text-muted-foreground">
-                                Dipercaya freelancer di seluruh Indonesia
-                            </p>
-                        </AnimatedSection>
-                        <motion.div
-                            className="flex flex-wrap justify-center gap-16 md:gap-24"
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true }}
-                            variants={staggerContainer}
-                        >
-                            {stats.map((stat) => (
-                                <motion.div
-                                    key={stat.label}
-                                    className="text-center"
-                                    variants={fadeInUp}
-                                >
-                                    <p className="text-3xl md:text-4xl font-semibold font-numeric text-foreground">
-                                        {stat.value}
-                                    </p>
-                                    <p className="text-muted-foreground mt-1 text-sm">{stat.label}</p>
-                                </motion.div>
-                            ))}
-                        </motion.div>
-                    </div>
-                </section>
-
-                {/* Export/Share Showcase Section */}
-                <section className="py-12 px-4">
-                    <div className="max-w-4xl mx-auto">
-                        <AnimatedSection className="text-center mb-10">
-                            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
-                                Kirim Invoice ke Mana Saja
-                            </h2>
-                            <p className="text-lg text-muted-foreground">
-                                Satu klik, langsung sampai ke client
-                            </p>
-                        </AnimatedSection>
-
-                        <motion.div
-                            className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true }}
-                            variants={staggerContainer}
-                        >
-                            {exportMethods.map((method) => (
-                                <motion.div
-                                    key={method.name}
-                                    className="bg-card rounded-xl p-6 border border-border text-center"
-                                    variants={fadeInUp}
-                                >
-                                    <div className="flex justify-center mb-3">
-                                        <method.Icon className="w-8 h-8 text-primary" />
-                                    </div>
-                                    <h3 className="font-semibold text-foreground mb-1">{method.name}</h3>
-                                    <p className="text-sm text-muted-foreground">{method.desc}</p>
-                                </motion.div>
-                            ))}
-                        </motion.div>
-                    </div>
-                </section>
-
-                {/* Testimonial Section */}
-                <section className="py-12 px-4 bg-muted/30 overflow-hidden">
-                    <div className="max-w-6xl mx-auto">
-                        <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-start">
-                            {/* Left Side - Title & Stats */}
-                            <AnimatedSection className="md:sticky md:top-32">
-                                <p className="text-sm text-primary font-medium mb-2 uppercase tracking-wide">
-                                    TESTIMONIALS
-                                </p>
-                                <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-4">
-                                    Dipercaya Freelancer Indonesia
-                                </h2>
-                                <p className="text-muted-foreground mb-8">
-                                    Lihat apa kata mereka tentang Artha
-                                </p>
-
-                                {/* Mini Stats */}
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div>
-                                        <p className="text-2xl md:text-3xl font-semibold font-numeric text-foreground">500+</p>
-                                        <p className="text-sm text-muted-foreground">Invoice Dibuat</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-2xl md:text-3xl font-semibold font-numeric text-foreground">50+</p>
-                                        <p className="text-sm text-muted-foreground">Freelancer Aktif</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-2xl md:text-3xl font-semibold font-numeric text-foreground">99.9%</p>
-                                        <p className="text-sm text-muted-foreground">Uptime</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-2xl md:text-3xl font-semibold font-numeric text-foreground">4.9/5</p>
-                                        <p className="text-sm text-muted-foreground">User Rating</p>
-                                    </div>
-                                </div>
-                            </AnimatedSection>
-
-                            {/* Right Side - Scrolling Testimonials */}
-                            <div className="relative h-[400px] md:h-[500px] overflow-hidden">
-                                {/* Gradient Fade Top */}
-                                <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-muted/30 to-transparent z-10 pointer-events-none" />
-                                {/* Gradient Fade Bottom */}
-                                <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-muted/30 to-transparent z-10 pointer-events-none" />
-
-                                {/* Scrolling Column */}
-                                <div
-                                    className="space-y-4"
-                                    style={{
-                                        animation: 'scrollUp 20s linear infinite'
-                                    }}
-                                >
-                                    {/* Triple for seamless loop */}
-                                    {[...testimonials, ...testimonials, ...testimonials].map((testimonial, index) => (
-                                        <div
-                                            key={`${testimonial.name}-${index}`}
-                                            className="bg-card rounded-xl p-5 border border-border"
-                                        >
-                                            <p className="text-foreground text-sm mb-4">"{testimonial.quote}"</p>
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
-                                                    {testimonial.avatar}
-                                                </div>
-                                                <div>
-                                                    <p className="font-medium text-foreground text-sm">{testimonial.name}</p>
-                                                    <p className="text-xs text-muted-foreground">{testimonial.role}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* CSS Keyframes for vertical scroll */}
-                        <style>{`
-                            @keyframes scrollUp {
-                                0% {
-                                    transform: translateY(0);
-                                }
-                                100% {
-                                    transform: translateY(calc(-136px * 6 - 96px));
-                                }
-                            }
-                        `}</style>
-                    </div>
-                </section>
-
-                {/* Pricing Section */}
-                <section id="pricing" className="py-12 md:py-16 px-4">
-                    <div className="max-w-6xl mx-auto">
-                        <AnimatedSection className="text-center mb-8 md:mb-12">
-                            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
-                                Harga Transparan
-                            </h2>
-                            <p className="text-lg text-muted-foreground">
-                                Mulai gratis, upgrade kapan saja
-                            </p>
-                        </AnimatedSection>
-
-                        <motion.div
-                            className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto"
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, margin: "-80px" }}
-                            variants={staggerContainer}
-                        >
-                            {pricingTiers.map((tier) => (
-                                <motion.div
-                                    key={tier.name}
-                                    className={`bg-card rounded-xl p-6 border relative ${tier.popular ? "border-primary ring-1 ring-primary/20" : "border-border"
-                                        }`}
-                                    variants={fadeInUp}
-                                >
-                                    {tier.popular && (
-                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs font-medium rounded-full">
-                                            POPULER
-                                        </div>
-                                    )}
-                                    <h3 className="text-xl font-semibold text-foreground mb-2">{tier.name}</h3>
-                                    <p className="text-muted-foreground text-sm mb-4">{tier.description}</p>
-                                    <div className="mb-6">
-                                        <span className="text-3xl font-semibold font-numeric text-foreground">{tier.price}</span>
-                                        <span className="text-muted-foreground ml-1">{tier.period}</span>
-                                    </div>
-                                    <ul className="space-y-3 mb-6">
-                                        {tier.features.map((f) => (
-                                            <li key={f} className="flex items-center gap-2 text-sm">
-                                                <CheckIcon className="w-4 h-4 text-primary shrink-0" />
-                                                <span className="text-muted-foreground">{f}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                    <Link to={tier.name === "Free" ? "/signup" : "/pricing"}>
-                                        <Button
-                                            className="w-full"
-                                            variant={tier.popular ? "default" : "outline"}
-                                        >
-                                            {tier.cta}
-                                        </Button>
-                                    </Link>
-                                </motion.div>
-                            ))}
-                        </motion.div>
-
-                        <AnimatedSection className="text-center mt-8">
-                            <p className="text-sm text-muted-foreground">
-                                Pembayaran via QRIS, Virtual Account, dan E-Wallet.
-                            </p>
-                        </AnimatedSection>
-                    </div>
-                </section>
-
-                {/* FAQ Section */}
-                <section id="faq" className="py-12 md:py-16 px-4 bg-muted/30">
-                    <div className="max-w-3xl mx-auto">
-                        <AnimatedSection className="text-center mb-10">
-                            <p className="text-sm text-primary font-medium mb-2 uppercase tracking-wide">
-                                FAQ
-                            </p>
-                            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
-                                Pertanyaan yang Sering Ditanyakan
-                            </h2>
-                            <p className="text-muted-foreground">
-                                Jawaban untuk pertanyaan umum tentang Artha
-                            </p>
-                        </AnimatedSection>
-
-                        <motion.div
-                            className="space-y-3"
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true }}
-                            variants={staggerContainer}
-                        >
-                            {[
-                                {
-                                    q: "Apa itu Artha?",
-                                    a: "Artha adalah platform invoice dan proposal builder profesional untuk freelancer Indonesia. Dengan Artha, kamu bisa buat invoice menarik dengan berbagai metode pembayaran (QRIS, VA, E-Wallet) dan proposal profesional dengan template premium."
-                                },
-                                {
-                                    q: "Apakah Artha gratis?",
-                                    a: "Ya! Artha punya tier Free yang gratis selamanya. Kamu bisa buat 3 invoice/bulan, 5 proposal/bulan, dan kelola 10 klien tanpa biaya. Untuk fitur unlimited, bisa upgrade ke Pro (Rp 50.000/bulan) atau Business (Rp 199.000/bulan)."
-                                },
-                                {
-                                    q: "Metode pembayaran apa saja yang didukung?",
-                                    a: "Artha mendukung berbagai metode pembayaran: QRIS (scan QR), Virtual Account (BCA, Mandiri, BNI, BRI), E-Wallet (GoPay, OVO, DANA, ShopeePay), dan transfer bank. Semua terintegrasi otomatis, klien tinggal bayar dan kamu dapat notifikasi."
-                                },
-                                {
-                                    q: "Apakah Artha menghitung pajak otomatis?",
-                                    a: "Ya! Artha memiliki fitur Tax Summary yang menghitung PPh 21 dan PPh 23 secara otomatis. Sangat membantu freelancer untuk laporan pajak tahunan."
-                                },
-                                {
-                                    q: "Bisa custom branding di invoice?",
-                                    a: "Tentu! Dengan Artha Pro dan Business, kamu bisa tambahkan logo sendiri, warna brand, dan hapus watermark Artha. Invoice terlihat 100% profesional dengan branding kamu."
-                                }
-                            ].map((faq, index) => (
-                                <motion.details
-                                    key={index}
-                                    className="bg-card rounded-xl border border-border group"
-                                    variants={fadeInUp}
-                                >
-                                    <summary className="p-5 cursor-pointer list-none flex justify-between items-center">
-                                        <h3 className="font-medium text-foreground pr-4">{faq.q}</h3>
-                                        <ChevronDownIcon className="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180 shrink-0" />
-                                    </summary>
-                                    <div className="px-5 pb-5 text-muted-foreground text-sm leading-relaxed">
-                                        {faq.a}
-                                    </div>
-                                </motion.details>
-                            ))}
-                        </motion.div>
-
-                        {/* Last Updated for GEO */}
-                        <p className="text-center text-xs text-muted-foreground mt-8">
-                            Terakhir diperbarui: Februari 2026
-                        </p>
-                    </div>
-                </section>
-
-                {/* Final CTA */}
-                <section className="py-12 md:py-16 px-4">
-                    <AnimatedSection className="max-w-2xl mx-auto text-center">
-                        <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-4">
-                            Siap untuk mulai?
-                        </h2>
-                        <p className="text-muted-foreground mb-8">
-                            Gratis selamanya. Upgrade kapan saja.
-                        </p>
-                        <Link to="/signup">
-                            <Button size="lg" className="gap-2 px-8 py-6">
-                                Daftar Gratis Sekarang <ArrowRightIcon className="w-4 h-4" />
-                            </Button>
-                        </Link>
-                    </AnimatedSection>
-                </section>
-
-                {/* Footer */}
-                <footer className="border-t border-border py-12 px-4">
-                    <div className="max-w-6xl mx-auto">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-                            {/* Brand */}
-                            <div>
-                                <div className="flex items-center gap-2 mb-4">
-                                    <img src={arthaLogo} alt="Artha" className="h-8 w-8 rounded-lg" />
-                                    <span className="font-semibold text-foreground">Artha</span>
-                                </div>
-                                <p className="text-sm text-muted-foreground">
-                                    Invoice & Proposal Builder untuk Freelancer Indonesia
-                                </p>
-                            </div>
-
-                            {/* Product */}
-                            <div>
-                                <h4 className="font-semibold text-foreground mb-4">Product</h4>
-                                <ul className="space-y-2 text-sm">
-                                    <li><a href="#features" className="text-muted-foreground hover:text-foreground">Fitur</a></li>
-                                    <li><a href="#pricing" className="text-muted-foreground hover:text-foreground">Harga</a></li>
-                                    <li><Link to="/faq" className="text-muted-foreground hover:text-foreground">FAQ</Link></li>
-                                </ul>
-                            </div>
-
-                            {/* Company */}
-                            <div>
-                                <h4 className="font-semibold text-foreground mb-4">Company</h4>
-                                <ul className="space-y-2 text-sm">
-                                    <li><Link to="/terms" className="text-muted-foreground hover:text-foreground">Syarat & Ketentuan</Link></li>
-                                    <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground">Kebijakan Privasi</Link></li>
-                                </ul>
-                            </div>
-
-                            {/* Newsletter */}
-                            <div>
-                                <h4 className="font-semibold text-foreground mb-4">Stay Updated</h4>
-                                <p className="text-sm text-muted-foreground mb-3">
-                                    Dapatkan tips freelance & update fitur terbaru
-                                </p>
-                                {/* Placeholder - can add email input later */}
-                            </div>
-                        </div>
-
-                        <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
-                            <p className="text-sm text-muted-foreground">
-                                &copy; 2026 Artha. All rights reserved.
-                            </p>
-                        </div>
-                    </div>
-                </footer>
+            <div className="hidden items-center gap-6 md:flex">
+              <a href="#features" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Fitur</a>
+              <a href="#workflow" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Workflow</a>
+              <a href="#pricing" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Harga</a>
+              <a href="#faq" className="text-sm text-muted-foreground transition-colors hover:text-foreground">FAQ</a>
             </div>
-        </>
-    );
+
+            <div className="flex items-center gap-3">
+              <Link to="/login">
+                <Button variant="ghost" size="sm">Masuk</Button>
+              </Link>
+              <Link to="/signup">
+                <Button size="sm">Daftar Gratis</Button>
+              </Link>
+            </div>
+          </div>
+        </nav>
+
+        <main>
+          <section className="relative overflow-hidden px-4 pb-16 pt-28 md:pb-24 md:pt-36">
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute left-[8%] top-20 h-56 w-56 rounded-full bg-primary/10 blur-3xl" />
+              <div className="absolute right-[10%] top-32 h-72 w-72 rounded-full bg-cyan-200/40 blur-3xl" />
+              <div className="absolute bottom-0 left-1/2 h-48 w-[36rem] -translate-x-1/2 rounded-full bg-white/60 blur-3xl" />
+            </div>
+
+            <motion.div
+              className="relative z-10 mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]"
+              initial="hidden"
+              animate="visible"
+              variants={staggerContainer}
+            >
+              <div>
+                <motion.div
+                  variants={fadeInUp}
+                  className="mb-5 inline-flex rounded-full border border-primary/15 bg-white/80 px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-primary shadow-sm"
+                >
+                  SaaS untuk freelancer Indonesia
+                </motion.div>
+
+                <motion.h1
+                  variants={fadeInUp}
+                  className="max-w-3xl text-4xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-5xl lg:text-6xl"
+                >
+                  Proposal lebih meyakinkan. Invoice lebih cepat dibayar.
+                </motion.h1>
+
+                <motion.p
+                  variants={fadeInUp}
+                  className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg"
+                >
+                  Artha membantu freelancer, konsultan, dan studio kecil merapikan alur dari brief,
+                  proposal, approval, sampai invoice tanpa lagi bergantung pada dokumen yang terasa
+                  seadanya.
+                </motion.p>
+
+                <motion.div variants={fadeInUp} className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <Link to="/signup">
+                    <Button size="lg" className="min-w-[220px] gap-2 rounded-2xl">
+                      Mulai Gratis Sekarang <ArrowRightIcon className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                  <a href="#product-preview">
+                    <Button size="lg" variant="outline" className="min-w-[220px] rounded-2xl">
+                      Lihat alur produk
+                    </Button>
+                  </a>
+                </motion.div>
+
+                <motion.div variants={fadeInUp} className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm text-muted-foreground">
+                  <span>Tanpa kartu kredit</span>
+                  <span>Setup cepat</span>
+                  <span>Siap untuk proposal, invoice, dan client workflow</span>
+                </motion.div>
+
+                <motion.ul variants={fadeInUp} className="mt-8 grid gap-3 sm:grid-cols-3">
+                  {trustPoints.map((point) => (
+                    <li
+                      key={point}
+                      className="rounded-2xl border border-white/60 bg-white/75 px-4 py-4 text-sm text-foreground shadow-[0_20px_60px_-38px_rgba(15,23,42,0.45)] backdrop-blur"
+                    >
+                      <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <CheckIcon className="h-4 w-4" />
+                      </div>
+                      {point}
+                    </li>
+                  ))}
+                </motion.ul>
+              </div>
+
+              <motion.div variants={scaleIn} id="product-preview" className="relative">
+                <div className="overflow-hidden rounded-[2rem] border border-white/80 bg-white/85 p-4 shadow-[0_40px_100px_-44px_rgba(8,15,24,0.55)] backdrop-blur">
+                  <div className="rounded-[1.5rem] border border-border/70 bg-slate-950 p-3 text-white">
+                    <div className="mb-3 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.22em] text-cyan-200/80">Active proposal</p>
+                        <p className="mt-1 text-base font-medium">Website Redesign Retainer</p>
+                      </div>
+                      <div className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-medium text-emerald-200">
+                        Ready to send
+                      </div>
+                    </div>
+
+                    <div className="grid gap-3 md:grid-cols-[1fr_14rem]">
+                      <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
+                          <div>
+                            <p className="text-sm text-white/70">Proposal summary</p>
+                            <p className="mt-2 text-xl font-semibold">Brand overhaul + landing page sprint</p>
+                          </div>
+                          <p className="text-right text-sm text-white/70">
+                            Timeline
+                            <span className="mt-1 block text-base text-white">3 minggu</span>
+                          </p>
+                        </div>
+
+                        <div className="grid gap-3 py-4 sm:grid-cols-3">
+                          <div className="rounded-2xl bg-white/5 p-3">
+                            <p className="text-xs uppercase tracking-[0.16em] text-white/55">Phase 1</p>
+                            <p className="mt-2 text-sm">Discovery & content structure</p>
+                          </div>
+                          <div className="rounded-2xl bg-white/5 p-3">
+                            <p className="text-xs uppercase tracking-[0.16em] text-white/55">Phase 2</p>
+                            <p className="mt-2 text-sm">Wireframe & UI refinement</p>
+                          </div>
+                          <div className="rounded-2xl bg-white/5 p-3">
+                            <p className="text-xs uppercase tracking-[0.16em] text-white/55">Phase 3</p>
+                            <p className="mt-2 text-sm">Build handoff & invoice</p>
+                          </div>
+                        </div>
+
+                        <div className="rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-xs uppercase tracking-[0.16em] text-cyan-100/75">Estimated value</p>
+                              <p className="mt-2 text-2xl font-semibold">Rp 18.500.000</p>
+                            </div>
+                            <div className="rounded-2xl bg-white px-4 py-2 text-sm font-medium text-slate-950">
+                              Convert to invoice
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                          <p className="text-xs uppercase tracking-[0.16em] text-white/55">Client</p>
+                          <p className="mt-2 text-base font-medium">Mitra Studio</p>
+                          <p className="mt-1 text-sm text-white/70">2 proposal, 4 invoice, 1 ongoing retainer</p>
+                        </div>
+                        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                          <p className="text-xs uppercase tracking-[0.16em] text-white/55">Distribution</p>
+                          <div className="mt-3 space-y-2 text-sm text-white/80">
+                            <p>WhatsApp</p>
+                            <p>Email</p>
+                            <p>Share link</p>
+                          </div>
+                        </div>
+                        <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 p-4">
+                          <p className="text-xs uppercase tracking-[0.16em] text-white/55">Payment ready</p>
+                          <p className="mt-2 text-lg font-medium">QRIS, VA, e-wallet</p>
+                          <p className="mt-1 text-sm text-white/70">Lebih sedikit friksi saat invoice dibuka.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </section>
+
+          <section className="px-4 pb-8">
+            <div className="mx-auto grid max-w-6xl gap-4 rounded-[2rem] border border-border/70 bg-white/75 p-5 shadow-[0_28px_70px_-50px_rgba(15,23,42,0.45)] backdrop-blur md:grid-cols-3 md:p-7">
+              {valueMetrics.map((metric) => (
+                <div key={metric.label} className="rounded-[1.5rem] border border-border/80 bg-background/80 p-5">
+                  <p className="text-2xl font-semibold tracking-[-0.03em] text-foreground">{metric.value}</p>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{metric.label}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="px-4 py-16 md:py-24">
+            <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+              <AnimatedSection>
+                <p className="text-sm font-medium uppercase tracking-[0.18em] text-primary">Masalah yang sering terasa</p>
+                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+                  Kalau proposal dan invoice terlihat biasa, conversion ikut ikut turun.
+                </h2>
+                <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
+                  Banyak freelancer sebenarnya tidak kalah di skill. Yang sering kalah justru di
+                  cara menyusun offer, meletakkan detail biaya, dan menutup proses pembayaran dengan
+                  workflow yang terasa profesional.
+                </p>
+              </AnimatedSection>
+
+              <motion.div
+                className="grid gap-4"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-80px" }}
+                variants={staggerContainer}
+              >
+                {problemCards.map((card) => (
+                  <motion.div
+                    key={card.title}
+                    variants={fadeInUp}
+                    className="rounded-[1.6rem] border border-border/80 bg-card/90 p-6 shadow-[0_24px_60px_-44px_rgba(15,23,42,0.35)]"
+                  >
+                    <h3 className="text-lg font-semibold">{card.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{card.description}</p>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </section>
+
+          <section id="features" className="px-4 py-16 md:py-24">
+            <div className="mx-auto max-w-6xl">
+              <AnimatedSection className="max-w-2xl">
+                <p className="text-sm font-medium uppercase tracking-[0.18em] text-primary">Fitur inti</p>
+                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+                  Dirancang untuk menaikkan rasa percaya sebelum klien membuka angka.
+                </h2>
+                <p className="mt-4 text-base leading-7 text-muted-foreground">
+                  Bukan sekadar tampilan cantik. Setiap blok di Artha dibuat untuk membantu
+                  freelancer menyusun narasi, harga, dan langkah berikutnya dengan lebih jelas.
+                </p>
+              </AnimatedSection>
+
+              <motion.div
+                className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-60px" }}
+                variants={staggerContainer}
+              >
+                {features.map((feature) => (
+                  <motion.article
+                    key={feature.title}
+                    variants={fadeInUp}
+                    className="rounded-[1.75rem] border border-border/80 bg-white/85 p-6 shadow-[0_28px_70px_-52px_rgba(15,23,42,0.42)]"
+                  >
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                      <feature.Icon className="h-6 w-6" />
+                    </div>
+                    <h3 className="mt-5 text-lg font-semibold">{feature.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{feature.description}</p>
+                  </motion.article>
+                ))}
+              </motion.div>
+            </div>
+          </section>
+
+          <section id="workflow" className="bg-muted/35 px-4 py-16 md:py-24">
+            <div className="mx-auto max-w-6xl">
+              <AnimatedSection className="text-center">
+                <p className="text-sm font-medium uppercase tracking-[0.18em] text-primary">Workflow</p>
+                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+                  Dari brief sampai invoice, tanpa putus konteks.
+                </h2>
+              </AnimatedSection>
+
+              <motion.div
+                className="mt-10 grid gap-5 lg:grid-cols-3"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={staggerContainer}
+              >
+                {workflowSteps.map((step) => (
+                  <motion.div
+                    key={step.step}
+                    variants={fadeInUp}
+                    className="rounded-[1.75rem] border border-border/80 bg-card p-6"
+                  >
+                    <p className="text-sm font-medium tracking-[0.18em] text-primary">{step.step}</p>
+                    <h3 className="mt-4 text-xl font-semibold">{step.title}</h3>
+                    <p className="mt-3 text-sm leading-6 text-muted-foreground">{step.description}</p>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </section>
+
+          <section className="px-4 py-16 md:py-24">
+            <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_1fr]">
+              <AnimatedSection className="rounded-[2rem] border border-border/80 bg-slate-950 p-7 text-white shadow-[0_40px_100px_-60px_rgba(8,15,24,0.85)]">
+                <p className="text-sm font-medium uppercase tracking-[0.18em] text-cyan-200">Why it converts better</p>
+                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+                  Dokumen yang rapi bukan bonus. Itu bagian dari proses closing.
+                </h2>
+                <div className="mt-8 space-y-4">
+                  {[
+                    "Headline proposal, scope, dan CTA pembayaran disusun dengan hierarchy yang lebih jelas.",
+                    "Visual document lebih tenang dan kredibel, jadi pembaca fokus ke nilai project.",
+                    "Aksi lanjut seperti kirim link, PDF, email, atau WhatsApp tetap terasa seamless.",
+                  ].map((point) => (
+                    <div key={point} className="flex gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
+                      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-cyan-300/10 text-cyan-200">
+                        <CheckIcon className="h-4 w-4" />
+                      </div>
+                      <p className="text-sm leading-6 text-white/82">{point}</p>
+                    </div>
+                  ))}
+                </div>
+              </AnimatedSection>
+
+              <AnimatedSection variants={fadeIn}>
+                <p className="text-sm font-medium uppercase tracking-[0.18em] text-primary">Use cases</p>
+                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+                  Cocok untuk banyak pola kerja, bukan satu niche yang sempit.
+                </h2>
+                <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                  {audienceCards.map((card) => (
+                    <article
+                      key={card.title}
+                      className="rounded-[1.6rem] border border-border/80 bg-white/85 p-5 shadow-[0_24px_60px_-48px_rgba(15,23,42,0.4)]"
+                    >
+                      <h3 className="text-lg font-semibold">{card.title}</h3>
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground">{card.description}</p>
+                    </article>
+                  ))}
+                </div>
+
+                <div className="mt-8 rounded-[1.75rem] border border-primary/10 bg-primary/5 p-5">
+                  <p className="text-sm font-medium text-foreground">
+                    Keyword intent yang sengaja dibangun:
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                    proposal freelancer Indonesia, invoice profesional, software invoice QRIS,
+                    template proposal jasa, proposal branding client, invoice wedding photographer,
+                    proposal web developer, dan client workflow untuk studio kecil.
+                  </p>
+                </div>
+              </AnimatedSection>
+            </div>
+          </section>
+
+          <section className="bg-muted/35 px-4 py-16 md:py-24">
+            <div className="mx-auto max-w-6xl">
+              <AnimatedSection className="text-center">
+                <p className="text-sm font-medium uppercase tracking-[0.18em] text-primary">Distribution</p>
+                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+                  Kirim dokumen lewat channel yang sudah dipakai klienmu.
+                </h2>
+              </AnimatedSection>
+
+              <motion.div
+                className="mt-10 grid gap-5 md:grid-cols-3"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={staggerContainer}
+              >
+                {exportMethods.map((method) => (
+                  <motion.div
+                    key={method.name}
+                    variants={fadeInUp}
+                    className="rounded-[1.6rem] border border-border/80 bg-card p-6 text-center"
+                  >
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                      <method.Icon className="h-6 w-6" />
+                    </div>
+                    <h3 className="mt-5 text-lg font-semibold">{method.name}</h3>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{method.desc}</p>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </section>
+
+          <section className="px-4 py-16 md:py-24">
+            <div className="mx-auto max-w-6xl">
+              <AnimatedSection className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <p className="text-sm font-medium uppercase tracking-[0.18em] text-primary">Testimonials</p>
+                  <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+                    Dipakai untuk membuat first impression yang lebih matang.
+                  </h2>
+                </div>
+                <p className="max-w-xl text-sm leading-6 text-muted-foreground">
+                  Social proof tetap penting, tapi saya sengaja tampilkan dengan nada yang lebih
+                  realistis supaya tidak terasa seperti halaman SaaS generik.
+                </p>
+              </AnimatedSection>
+
+              <motion.div
+                className="mt-10 grid gap-5 lg:grid-cols-3"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={staggerContainer}
+              >
+                {socialProof.map((item) => (
+                  <motion.blockquote
+                    key={item.name}
+                    variants={fadeInUp}
+                    className="rounded-[1.75rem] border border-border/80 bg-white/90 p-6 shadow-[0_30px_70px_-52px_rgba(15,23,42,0.45)]"
+                  >
+                    <p className="text-base leading-7 text-foreground/92">"{item.quote}"</p>
+                    <footer className="mt-6 border-t border-border/80 pt-4">
+                      <p className="font-semibold">{item.name}</p>
+                      <p className="text-sm text-muted-foreground">{item.role}</p>
+                    </footer>
+                  </motion.blockquote>
+                ))}
+              </motion.div>
+            </div>
+          </section>
+
+          <section id="pricing" className="px-4 py-16 md:py-24">
+            <div className="mx-auto max-w-6xl">
+              <AnimatedSection className="text-center">
+                <p className="text-sm font-medium uppercase tracking-[0.18em] text-primary">Pricing</p>
+                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+                  Mulai gratis. Upgrade saat workflow-mu memang sudah butuh lebih.
+                </h2>
+                <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
+                  Pricing dibuat mudah dipahami. Tidak ada jargon yang menyembunyikan batasan utama
+                  atau membuat user merasa harus nebak fitur penting ada di tier mana.
+                </p>
+              </AnimatedSection>
+
+              <motion.div
+                className="mt-10 grid gap-5 xl:grid-cols-3"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={staggerContainer}
+              >
+                {pricingTiers.map((tier) => (
+                  <motion.article
+                    key={tier.name}
+                    variants={fadeInUp}
+                    className={`rounded-[1.9rem] border p-6 ${
+                      tier.popular
+                        ? "border-primary/35 bg-slate-950 text-white shadow-[0_38px_100px_-58px_rgba(13,148,136,0.65)]"
+                        : "border-border/80 bg-card"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <h3 className="text-xl font-semibold">{tier.name}</h3>
+                        <p className={`mt-2 text-sm leading-6 ${tier.popular ? "text-white/72" : "text-muted-foreground"}`}>
+                          {tier.description}
+                        </p>
+                      </div>
+                      {tier.popular ? (
+                        <span className="rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+                          Paling dipilih
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-7 flex items-end gap-2">
+                      <span className="text-4xl font-semibold tracking-[-0.03em]">{tier.price}</span>
+                      <span className={tier.popular ? "pb-1 text-white/70" : "pb-1 text-muted-foreground"}>
+                        {tier.period}
+                      </span>
+                    </div>
+
+                    <ul className="mt-7 space-y-3">
+                      {tier.features.map((feature) => (
+                        <li key={feature} className="flex gap-3">
+                          <span className={`mt-0.5 flex h-6 w-6 items-center justify-center rounded-lg ${tier.popular ? "bg-white/10 text-cyan-200" : "bg-primary/10 text-primary"}`}>
+                            <CheckIcon className="h-3.5 w-3.5" />
+                          </span>
+                          <span className={`text-sm leading-6 ${tier.popular ? "text-white/84" : "text-muted-foreground"}`}>
+                            {feature}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <Link to={tier.href} className="mt-8 block">
+                      <Button
+                        size="lg"
+                        variant={tier.popular ? "default" : "outline"}
+                        className={`w-full rounded-2xl ${tier.popular ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
+                      >
+                        {tier.cta}
+                      </Button>
+                    </Link>
+                  </motion.article>
+                ))}
+              </motion.div>
+            </div>
+          </section>
+
+          <section id="faq" className="bg-muted/35 px-4 py-16 md:py-24">
+            <div className="mx-auto max-w-4xl">
+              <AnimatedSection className="text-center">
+                <p className="text-sm font-medium uppercase tracking-[0.18em] text-primary">FAQ</p>
+                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+                  Hal yang biasanya ditanya sebelum pindah workflow.
+                </h2>
+              </AnimatedSection>
+
+              <motion.div
+                className="mt-10 space-y-4"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={staggerContainer}
+              >
+                {faqs.map((faq) => (
+                  <motion.details
+                    key={faq.q}
+                    variants={fadeInUp}
+                    className="group rounded-[1.6rem] border border-border/80 bg-card p-0"
+                  >
+                    <summary className="cursor-pointer list-none px-6 py-5 text-left">
+                      <div className="flex items-start justify-between gap-4">
+                        <h3 className="text-lg font-semibold leading-7">{faq.q}</h3>
+                        <span className="mt-1 text-sm text-muted-foreground transition-transform group-open:rotate-45">+</span>
+                      </div>
+                    </summary>
+                    <div className="px-6 pb-6 text-sm leading-7 text-muted-foreground">
+                      {faq.a}
+                    </div>
+                  </motion.details>
+                ))}
+              </motion.div>
+
+              <p className="mt-8 text-center text-xs text-muted-foreground">
+                Terakhir diperbarui: 29 April 2026
+              </p>
+            </div>
+          </section>
+
+          <section className="px-4 py-16 md:py-24">
+            <AnimatedSection className="mx-auto max-w-4xl rounded-[2.25rem] border border-border/80 bg-slate-950 px-6 py-10 text-center text-white shadow-[0_40px_120px_-70px_rgba(8,15,24,0.95)] md:px-12">
+              <p className="text-sm font-medium uppercase tracking-[0.18em] text-cyan-200">Ready to move</p>
+              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] md:text-5xl">
+                Kalau kamu sudah lelah dengan proposal yang terlihat biasa, Artha layak dicoba.
+              </h2>
+              <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/74 md:text-base">
+                Mulai dari tier gratis untuk melihat apakah workflow, tone, dan struktur dokumennya
+                benar-benar cocok dengan cara kamu closing project.
+              </p>
+              <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                <Link to="/signup">
+                  <Button size="lg" className="min-w-[220px] rounded-2xl">
+                    Daftar Gratis
+                  </Button>
+                </Link>
+                <Link to="/pricing">
+                  <Button size="lg" variant="outline" className="min-w-[220px] rounded-2xl border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white">
+                    Bandingkan paket
+                  </Button>
+                </Link>
+              </div>
+            </AnimatedSection>
+          </section>
+        </main>
+
+        <footer className="border-t border-border/70 px-4 py-10">
+          <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]">
+            <div>
+              <div className="flex items-center gap-3">
+                <img src={arthaLogo} alt="Artha" className="h-9 w-9 rounded-2xl" />
+                <div>
+                  <p className="font-semibold">Artha</p>
+                  <p className="text-sm text-muted-foreground">Proposal & invoice builder</p>
+                </div>
+              </div>
+              <p className="mt-4 max-w-sm text-sm leading-6 text-muted-foreground">
+                SaaS untuk freelancer Indonesia yang ingin proposal lebih meyakinkan, invoice lebih
+                cepat dibayar, dan workflow klien yang terasa lebih profesional.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-foreground/85">Product</h3>
+              <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
+                <li><a href="#features" className="hover:text-foreground">Fitur</a></li>
+                <li><a href="#workflow" className="hover:text-foreground">Workflow</a></li>
+                <li><a href="#pricing" className="hover:text-foreground">Harga</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-foreground/85">Resources</h3>
+              <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
+                <li><Link to="/faq" className="hover:text-foreground">FAQ</Link></li>
+                <li><Link to="/terms" className="hover:text-foreground">Syarat & Ketentuan</Link></li>
+                <li><Link to="/privacy" className="hover:text-foreground">Kebijakan Privasi</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-foreground/85">Action</h3>
+              <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
+                <li><Link to="/signup" className="hover:text-foreground">Mulai gratis</Link></li>
+                <li><Link to="/login" className="hover:text-foreground">Masuk</Link></li>
+                <li><Link to="/pricing" className="hover:text-foreground">Lihat paket</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mx-auto mt-10 flex max-w-6xl flex-col gap-3 border-t border-border/70 pt-6 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
+            <p>&copy; 2026 Artha. All rights reserved.</p>
+            <p>Built for Indonesia-first freelance workflows.</p>
+          </div>
+        </footer>
+      </div>
+    </>
+  );
 }
