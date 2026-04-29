@@ -34,4 +34,24 @@ describe("Authenticated layout polish regressions", () => {
     expect(accountTab).toContain('data-ui-panel="account-tab"');
     expect(landing).toContain('data-ui-shell="landing-marketing"');
   });
+
+  it("mobile, security, and client-facing surfaces expose dedicated polish hooks", () => {
+    const notifications = readProjectFile("src/components/NotificationCenter.tsx");
+    const mobileHeader = readProjectFile("src/components/layout/MobileHeader.tsx");
+    const mobileNav = readProjectFile("src/components/layout/MobileNav.tsx");
+    const mfaSetup = readProjectFile("src/components/settings/MFASetup.tsx");
+    const twoFactor = readProjectFile("src/components/settings/TwoFactorSettings.tsx");
+    const invoiceDetail = readProjectFile("src/pages/InvoiceDetail.tsx");
+    const clientPortal = readProjectFile("src/pages/ClientPortal.tsx");
+    const contractViewer = readProjectFile("src/pages/ContractViewer.tsx");
+
+    expect(notifications).toContain('data-ui-panel="notification-center"');
+    expect(mobileHeader).toContain('data-ui-panel="mobile-header"');
+    expect(mobileNav).toContain('data-ui-panel="mobile-nav"');
+    expect(mfaSetup).toContain('data-ui-panel="mfa-setup"');
+    expect(twoFactor).toContain('data-ui-panel="twofactor-settings"');
+    expect(invoiceDetail).toContain('data-ui-shell="invoice-detail"');
+    expect(clientPortal).toContain('data-ui-shell="client-portal"');
+    expect(contractViewer).toContain('data-ui-shell="contract-viewer"');
+  });
 });

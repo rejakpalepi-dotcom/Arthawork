@@ -182,40 +182,65 @@ export default function InvoiceDetail() {
 
   return (
     <DashboardLayout>
-      <div className="p-8">
+      <div data-ui-shell="invoice-detail" className="space-y-8 p-6 md:p-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col gap-5 rounded-[32px] border border-border/70 bg-card/96 p-6 shadow-[0_22px_54px_-28px_rgba(15,23,42,0.35)] md:flex-row md:items-start md:justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/invoices")}>
+            <Button variant="ghost" size="icon" className="h-11 w-11 rounded-2xl border border-border/70 bg-secondary/35" onClick={() => navigate("/invoices")}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-semibold text-foreground">INVOICE #{invoice.invoice_number}</h1>
+                <h1 className="text-2xl font-semibold tracking-tight text-foreground">INVOICE #{invoice.invoice_number}</h1>
                 <StatusBadge type="invoice" status={resolvedStatus} />
               </div>
               <p className="text-muted-foreground text-sm mt-1">
                 Diterbitkan pada {new Date(invoice.issue_date).toLocaleDateString("id-ID", { month: "long", day: "numeric", year: "numeric" })}
               </p>
+              <p className="mt-2 text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
+                Ringkasan pembayaran dan dokumen final
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             {invoice.status !== "paid" && (
-              <Button variant="outline" onClick={handleMarkAsPaid}>
+              <Button variant="outline" className="rounded-full px-4" onClick={handleMarkAsPaid}>
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Tandai Lunas
               </Button>
             )}
-            <Button variant="outline" onClick={handleExportPDF} disabled={exporting}>
+            <Button variant="outline" className="rounded-full px-4" onClick={handleExportPDF} disabled={exporting}>
               <Download className="w-4 h-4 mr-2" />
               {exporting ? "Mengekspor..." : "Ekspor PDF"}
             </Button>
           </div>
         </div>
 
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="rounded-[28px] border border-border/70 bg-card/92 p-5 shadow-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">Status</p>
+            <p className={cn("mt-2 text-lg font-semibold tracking-tight", statusUI.textClassName)}>
+              {statusUI.label}
+            </p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {formatDueDate(invoice.due_date, resolvedStatus)}
+            </p>
+          </div>
+          <div className="rounded-[28px] border border-border/70 bg-card/92 p-5 shadow-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">Klien</p>
+            <p className="mt-2 text-lg font-semibold tracking-tight text-foreground">{invoice.client_name}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{invoice.client_company || "Detail perusahaan belum ditambahkan"}</p>
+          </div>
+          <div className="rounded-[28px] border border-border/70 bg-card/92 p-5 shadow-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">Total tagihan</p>
+            <p className="mt-2 text-lg font-semibold tracking-tight text-foreground">{formatIDR(invoice.total)}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{isOverdue ? "Perlu tindak lanjut pembayaran" : "Siap dikirim atau diunduh"}</p>
+          </div>
+        </div>
+
         {/* Invoice Preview */}
         <div className="max-w-4xl mx-auto">
-          <div id="invoice-detail-preview" className="print-document bg-white border border-gray-200" style={{ color: '#1a1a1a' }}>
+          <div id="invoice-detail-preview" className="print-document overflow-hidden rounded-[32px] border border-gray-200 bg-white shadow-[0_28px_72px_-32px_rgba(15,23,42,0.35)]" style={{ color: '#1a1a1a' }}>
             {/* Header */}
             <div className="px-8 pt-8 pb-6" data-print-element="header">
               <div className="flex justify-between items-start">
@@ -277,9 +302,9 @@ export default function InvoiceDetail() {
                 <table className="w-full border-collapse">
                   <thead>
                     <tr style={{ borderBottom: '2px solid #111827' }}>
-                      <th className="text-left pb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#6b7280' }}>Description</th>
+                      <th className="text-left pb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#6b7280' }}>Deskripsi</th>
                       <th className="text-right pb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#6b7280' }}>Qty</th>
-                      <th className="text-right pb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#6b7280' }}>Unit Price</th>
+                      <th className="text-right pb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#6b7280' }}>Harga Satuan</th>
                       <th className="text-right pb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#6b7280' }}>Total</th>
                     </tr>
                   </thead>
@@ -321,7 +346,7 @@ export default function InvoiceDetail() {
                 <div className="mt-8 pt-6" style={{ borderTop: '1px solid #e5e7eb' }} data-print-element="payment" data-print-page-break="avoid">
                   {invoice.notes && (
                     <div className="mb-4">
-                      <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#9ca3af' }}>Notes</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#9ca3af' }}>Catatan</p>
                       <p className="text-xs leading-relaxed" style={{ color: '#6b7280' }}>{invoice.notes}</p>
                     </div>
                   )}

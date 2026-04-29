@@ -90,7 +90,7 @@ export default function ClientPortal() {
     // Loading State
     if (projectLoading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 md:p-8">
+            <div data-ui-shell="client-portal" className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 md:p-8">
                 <div className="max-w-6xl mx-auto space-y-6">
                     <Skeleton className="h-16 w-64 mx-auto" />
                     <Skeleton className="h-[500px]" />
@@ -102,7 +102,7 @@ export default function ClientPortal() {
     // Error State
     if (projectError || !project) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
+            <div data-ui-shell="client-portal" className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
                 <Card className="max-w-md w-full border-red-500/30 bg-red-500/10">
                     <CardContent className="flex flex-col items-center py-12 text-center">
                         <AlertTriangle className="h-16 w-16 text-red-500 mb-4" />
@@ -119,7 +119,7 @@ export default function ClientPortal() {
     // Locked State
     if (project.status === "locked") {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
+            <div data-ui-shell="client-portal" className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
                 <Card className="max-w-md w-full border-amber-500/30 bg-amber-500/10">
                     <CardContent className="flex flex-col items-center py-12 text-center">
                         <Lock className="h-16 w-16 text-amber-500 mb-4" />
@@ -136,7 +136,7 @@ export default function ClientPortal() {
     // Name Entry Screen
     if (!isEntered) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
+            <div data-ui-shell="client-portal" className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
                 {/* Background Decorations */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
@@ -149,7 +149,7 @@ export default function ClientPortal() {
                     className="relative z-10"
                 >
                     <SanskritFrame>
-                        <Card className="w-full max-w-md border-amber-500/30 bg-slate-900/80 backdrop-blur">
+                        <Card className="w-full max-w-md rounded-[30px] border-amber-500/30 bg-slate-900/80 shadow-[0_28px_72px_-32px_rgba(0,0,0,0.65)] backdrop-blur">
                             <CardHeader className="text-center">
                                 <div className="flex justify-center mb-4">
                                     <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-500/20 to-primary/20 border border-amber-500/30">
@@ -195,7 +195,7 @@ export default function ClientPortal() {
     })) || [];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        <div data-ui-shell="client-portal" className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
             {/* Background Decorations */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-30">
                 <div className="absolute top-0 left-1/3 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-3xl" />
@@ -204,7 +204,7 @@ export default function ClientPortal() {
 
             <div className="relative z-10">
                 {/* Header */}
-                <header className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-lg border-b border-slate-800">
+                <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-xl">
                     <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500/20 to-primary/20 border border-amber-500/30 shadow-sm">
@@ -295,7 +295,7 @@ export default function ClientPortal() {
                         {/* Sidebar (1/3) */}
                         <div className="space-y-6">
                             {/* Project Info */}
-                            <Card className="border-slate-700 bg-slate-800/50">
+                            <Card className="rounded-[28px] border-slate-700/80 bg-slate-800/55 shadow-[0_24px_48px_-28px_rgba(0,0,0,0.55)]">
                                 <CardHeader>
                                     <CardTitle className="text-lg">Detail Proyek</CardTitle>
                                 </CardHeader>
@@ -329,7 +329,7 @@ export default function ClientPortal() {
                             </Card>
 
                             {/* Annotations */}
-                            <Card className="border-slate-700 bg-slate-800/50">
+                            <Card className="rounded-[28px] border-slate-700/80 bg-slate-800/55 shadow-[0_24px_48px_-28px_rgba(0,0,0,0.55)]">
                                 <CardHeader>
                                     <CardTitle className="text-lg">Komentar Revisi</CardTitle>
                                 </CardHeader>

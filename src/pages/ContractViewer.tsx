@@ -75,7 +75,7 @@ export default function ContractViewer() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8">
+            <div data-ui-shell="contract-viewer" className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8">
                 <div className="max-w-3xl mx-auto space-y-6">
                     <Skeleton className="h-12 w-64" />
                     <Skeleton className="h-64" />
@@ -87,7 +87,7 @@ export default function ContractViewer() {
 
     if (error || !contract) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
+            <div data-ui-shell="contract-viewer" className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
                 <Card className="max-w-md w-full border-red-500/30 bg-red-500/10">
                     <CardContent className="flex flex-col items-center py-12 text-center">
                         <AlertTriangle className="h-16 w-16 text-red-500 mb-4" />
@@ -106,7 +106,7 @@ export default function ContractViewer() {
     const scopeItems = contract.scope_of_work as ContractScopeItem[];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        <div data-ui-shell="contract-viewer" className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
             {/* Sanskrit-inspired decorative background */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-5">
                 <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500 rounded-full blur-3xl" />
@@ -139,7 +139,7 @@ export default function ContractViewer() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                 >
-                    <Card className="border-slate-700 bg-slate-800/50 backdrop-blur">
+                    <Card className="rounded-[30px] border-slate-700/80 bg-slate-800/55 shadow-[0_28px_72px_-32px_rgba(0,0,0,0.65)] backdrop-blur-xl">
                         <CardHeader>
                             <div className="flex items-start justify-between gap-4">
                                 <div>
@@ -155,7 +155,7 @@ export default function ContractViewer() {
                         <CardContent className="space-y-6">
                             {/* Client & Studio Info */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex items-center gap-3 p-4 rounded-lg bg-slate-700/50">
+                                <div className="flex items-center gap-3 rounded-[24px] bg-slate-700/50 p-4">
                                     <Building2 className="h-5 w-5 text-amber-400" />
                                     <div>
                                         <p className="text-xs text-muted-foreground">Klien</p>
@@ -169,7 +169,7 @@ export default function ContractViewer() {
                                         )}
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-3 p-4 rounded-lg bg-slate-700/50">
+                                <div className="flex items-center gap-3 rounded-[24px] bg-slate-700/50 p-4">
                                     <Calendar className="h-5 w-5 text-amber-400" />
                                     <div>
                                         <p className="text-xs text-muted-foreground">Tanggal Pembayaran</p>
@@ -193,7 +193,7 @@ export default function ContractViewer() {
                                         {scopeItems.map((item, index) => (
                                             <div
                                                 key={item.id || index}
-                                                className="flex items-start gap-3 p-3 rounded-lg bg-slate-700/30"
+                                                className="flex items-start gap-3 rounded-[22px] bg-slate-700/30 p-3"
                                             >
                                                 <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
                                                 <span className="text-sm text-slate-200">{item.description}</span>
@@ -211,7 +211,7 @@ export default function ContractViewer() {
                                     <DollarSign className="h-4 w-4 text-amber-400" />
                                     Rincian Biaya
                                 </h3>
-                                <div className="p-4 rounded-lg bg-slate-700/50 space-y-3">
+                                <div className="space-y-3 rounded-[24px] bg-slate-700/50 p-4">
                                     <div className="flex justify-between">
                                         <span className="text-muted-foreground">Total Nilai Kontrak</span>
                                         <span className="font-medium text-white">

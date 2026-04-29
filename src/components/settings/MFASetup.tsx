@@ -122,13 +122,17 @@ export function MFASetup({ onComplete }: MFASetupProps) {
     };
 
     return (
-        <Card>
-            <CardHeader>
+        <Card data-ui-panel="mfa-setup" className="overflow-hidden rounded-[30px] border-border/70 bg-card/96 shadow-[0_22px_54px_-28px_rgba(15,23,42,0.35)]">
+            <CardHeader className="border-b border-border/70 bg-gradient-to-r from-primary/[0.07] via-background to-background">
                 <div className="flex items-center gap-3">
                     {mfaEnabled ? (
-                        <ShieldCheck className="w-6 h-6 text-success" />
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-success/12 text-success">
+                            <ShieldCheck className="w-6 h-6" />
+                        </div>
                     ) : (
-                        <Shield className="w-6 h-6 text-muted-foreground" />
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary text-muted-foreground">
+                            <Shield className="w-6 h-6" />
+                        </div>
                     )}
                     <div>
                         <CardTitle className="text-lg">AUTENTIKASI DUA LANGKAH</CardTitle>
@@ -138,20 +142,35 @@ export function MFASetup({ onComplete }: MFASetupProps) {
                     </div>
                 </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-5 p-6">
                 {showVerify && qrCode ? (
                     <div className="space-y-4">
-                        <div className="flex justify-center">
+                        <div className="rounded-[26px] border border-border/70 bg-secondary/35 p-5">
+                            <div className="mb-4 flex items-center justify-between gap-3">
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+                                        Langkah 1
+                                    </p>
+                                    <p className="text-sm font-medium text-foreground">
+                                        Pindai kode QR dengan aplikasi autentikator
+                                    </p>
+                                </div>
+                                <span className="rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary">
+                                    Persiapan
+                                </span>
+                            </div>
+                            <div className="flex justify-center">
                             <img
                                 src={qrCode}
                                 alt="QR code untuk aplikasi autentikator"
                                 className="w-48 h-48 rounded-lg border border-border"
                             />
                         </div>
+                        </div>
 
                         {secret && (
-                            <div className="p-3 bg-secondary rounded-lg">
-                                <p className="text-xs text-muted-foreground mb-1">
+                            <div className="rounded-2xl border border-border/70 bg-secondary/35 p-4">
+                                <p className="mb-1 text-xs font-medium text-muted-foreground">
                                     Atau masukkan kode ini secara manual:
                                 </p>
                                 <div className="flex items-center gap-2">
@@ -167,7 +186,7 @@ export function MFASetup({ onComplete }: MFASetupProps) {
                             </div>
                         )}
 
-                        <div className="space-y-2">
+                        <div className="space-y-2 rounded-2xl border border-border/70 bg-background p-4">
                             <Label htmlFor="verifyCode">Masukkan 6 digit kode dari aplikasi</Label>
                             <Input
                                 id="verifyCode"
@@ -202,7 +221,7 @@ export function MFASetup({ onComplete }: MFASetupProps) {
                         </div>
                     </div>
                 ) : (
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between rounded-[24px] border border-border/70 bg-secondary/30 px-4 py-4">
                         <div className="flex items-center gap-2">
                             <Switch
                                 checked={mfaEnabled}
@@ -227,7 +246,7 @@ export function MFASetup({ onComplete }: MFASetupProps) {
                 )}
 
                 {!mfaEnabled && !showVerify && (
-                    <div className="flex items-start gap-2 p-3 bg-warning/10 rounded-lg text-sm">
+                    <div className="flex items-start gap-2 rounded-2xl border border-warning/20 bg-warning/10 p-4 text-sm">
                         <ShieldAlert className="w-4 h-4 text-warning mt-0.5 shrink-0" />
                         <p className="text-muted-foreground">
                             Kami sarankan mengaktifkan 2FA agar akunmu lebih aman dari akses yang tidak sah.

@@ -110,12 +110,12 @@ export function TwoFactorSettings() {
 
     if (loading) {
         return (
-            <Card>
-                <CardHeader>
+            <Card data-ui-panel="twofactor-settings" className="overflow-hidden rounded-[30px] border-border/70 bg-card/96 shadow-[0_22px_54px_-28px_rgba(15,23,42,0.35)]">
+                <CardHeader className="border-b border-border/70">
                     <Skeleton className="h-6 w-48" />
                     <Skeleton className="h-4 w-64 mt-2" />
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-6">
                     <Skeleton className="h-10 w-full" />
                 </CardContent>
             </Card>
@@ -124,11 +124,11 @@ export function TwoFactorSettings() {
 
     return (
         <>
-            <Card>
-                <CardHeader>
+            <Card data-ui-panel="twofactor-settings" className="overflow-hidden rounded-[30px] border-border/70 bg-card/96 shadow-[0_22px_54px_-28px_rgba(15,23,42,0.35)]">
+                <CardHeader className="border-b border-border/70 bg-gradient-to-r from-primary/[0.07] via-background to-background">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className={`p-2 rounded-lg ${enabled ? "bg-green-500/10" : "bg-muted"}`}>
+                            <div className={`rounded-2xl p-3 ${enabled ? "bg-green-500/10" : "bg-muted"}`}>
                                 {enabled ? (
                                     <ShieldCheck className="w-5 h-5 text-green-500" />
                                 ) : (
@@ -142,15 +142,15 @@ export function TwoFactorSettings() {
                                 </CardDescription>
                             </div>
                         </div>
-                        <Badge variant={enabled ? "default" : "secondary"}>
+                        <Badge variant={enabled ? "default" : "secondary"} className="rounded-full px-3 py-1">
                             {enabled ? "Aktif" : "Nonaktif"}
                         </Badge>
                     </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-6">
                     {enabled ? (
                         <div className="space-y-4">
-                            <div className="flex items-center gap-3 p-4 bg-green-500/5 rounded-lg border border-green-500/20">
+                            <div className="flex items-center gap-3 rounded-[24px] border border-green-500/20 bg-green-500/5 p-4">
                                 <ShieldCheck className="w-8 h-8 text-green-500" />
                                 <div>
                                     <p className="font-medium text-green-700 dark:text-green-400">
@@ -163,7 +163,7 @@ export function TwoFactorSettings() {
                             </div>
 
                             {factors.filter(f => f.status === "verified").map((factor) => (
-                                <div key={factor.id} className="flex items-center justify-between p-3 border rounded-lg">
+                                <div key={factor.id} className="flex items-center justify-between rounded-[24px] border border-border/70 bg-secondary/25 p-4">
                                     <div className="flex items-center gap-3">
                                         <Smartphone className="w-5 h-5 text-muted-foreground" />
                                         <div>
@@ -187,7 +187,7 @@ export function TwoFactorSettings() {
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            <div className="flex items-center gap-3 p-4 bg-amber-500/5 rounded-lg border border-amber-500/20">
+                            <div className="flex items-center gap-3 rounded-[24px] border border-amber-500/20 bg-amber-500/5 p-4">
                                 <Shield className="w-8 h-8 text-amber-500" />
                                 <div>
                                     <p className="font-medium text-amber-700 dark:text-amber-400">
@@ -213,24 +213,24 @@ export function TwoFactorSettings() {
             </Card>
 
             <Dialog open={showDialog} onOpenChange={setShowDialog}>
-                <DialogContent className="max-w-md">
+                <DialogContent className="max-w-md rounded-[30px] border-border/70 bg-background/95 shadow-2xl backdrop-blur-xl">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
                             <Smartphone className="w-5 h-5 text-primary" />
-                            Setup Authenticator App
+                            Siapkan Aplikasi Autentikator
                         </DialogTitle>
                         <DialogDescription>
-                            Scan QR code ini dengan Google Authenticator, Authy, atau app sejenis.
+                            Pindai QR code ini dengan Google Authenticator, Authy, atau aplikasi serupa.
                         </DialogDescription>
                     </DialogHeader>
 
                     {enrollData && (
                         <div className="space-y-6">
                             {/* QR Code */}
-                            <div className="flex justify-center p-4 bg-white rounded-lg">
+                            <div className="flex justify-center rounded-[24px] border border-border/70 bg-white p-4 shadow-sm">
                                 <img
                                     src={enrollData.totp.qr_code}
-                                    alt="QR Code"
+                                    alt="QR code autentikator"
                                     className="w-48 h-48"
                                 />
                             </div>
@@ -258,7 +258,7 @@ export function TwoFactorSettings() {
 
                             {/* Verification */}
                             <div className="space-y-2">
-                                <Label>Masukkan kode 6 digit dari app:</Label>
+                                <Label>Masukkan 6 digit kode dari aplikasi:</Label>
                                 <Input
                                     type="text"
                                     inputMode="numeric"

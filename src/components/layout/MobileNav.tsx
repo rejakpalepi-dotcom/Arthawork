@@ -88,8 +88,11 @@ export function MobileNav() {
   return (
     <>
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-sidebar border-t border-sidebar-border md:hidden">
-        <div className="flex items-center justify-around h-16 px-2 safe-area-inset-bottom">
+      <nav
+        data-ui-panel="mobile-nav"
+        className="fixed bottom-0 left-0 right-0 z-50 border-t border-sidebar-border/70 bg-sidebar/92 backdrop-blur-xl md:hidden"
+      >
+        <div className="safe-area-inset-bottom mx-3 my-2 flex h-[4.5rem] items-center justify-around rounded-[28px] border border-sidebar-border/80 bg-sidebar px-2 shadow-[0_18px_48px_-24px_rgba(15,23,42,0.65)]">
           {bottomNavItems.map((item) => {
             const isActive = location.pathname === item.path;
             const isActionButton = item.isAction;
@@ -99,17 +102,17 @@ export function MobileNav() {
                 key={item.label}
                 onClick={() => handleNavClick(item)}
                 className={cn(
-                  "flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 py-1 rounded-lg transition-colors",
+                  "flex min-h-[44px] min-w-[44px] flex-col items-center justify-center px-2 py-1 transition-all",
                   isActionButton
-                    ? "bg-primary text-primary-foreground -mt-4 w-14 h-14 rounded-full shadow-lg"
+                    ? "-mt-6 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-xl shadow-primary/25"
                     : isActive
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "rounded-2xl bg-primary/10 text-primary"
+                      : "rounded-2xl text-muted-foreground hover:bg-muted/60 hover:text-foreground"
                 )}
               >
                 <item.icon className={cn("shrink-0", isActionButton ? "w-6 h-6" : "w-5 h-5")} />
                 {!isActionButton && (
-                  <span className="text-[10px] mt-1 font-medium">{item.label}</span>
+                  <span className="mt-1 text-[10px] font-semibold tracking-wide">{item.label}</span>
                 )}
               </button>
             );
@@ -119,15 +122,22 @@ export function MobileNav() {
 
       {/* Hamburger Menu Sheet */}
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetContent side="right" className="w-[280px] bg-sidebar border-sidebar-border p-0">
-          <SheetHeader className="p-4 border-b border-sidebar-border">
+        <SheetContent side="right" className="w-[300px] border-sidebar-border/80 bg-sidebar/98 p-0 backdrop-blur-xl">
+          <SheetHeader className="border-b border-sidebar-border/80 px-5 py-5">
             <SheetTitle className="flex items-center gap-2">
-              <img src={arthaLogo} alt="Artha" className="h-8 w-8" />
-              <span className="font-bold text-foreground">Artha</span>
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-sidebar-border/80 bg-card/80 shadow-sm">
+                <img src={arthaLogo} alt="Artha" className="h-8 w-8 rounded-xl" />
+              </div>
+              <div className="text-left">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                  Menu
+                </p>
+                <span className="font-bold text-foreground">Artha</span>
+              </div>
             </SheetTitle>
           </SheetHeader>
 
-          <div className="py-4">
+          <div className="px-3 py-4">
             {menuItems.map((item) => {
               const isActive = location.pathname === item.path;
               return (
@@ -136,9 +146,9 @@ export function MobileNav() {
                   to={item.path}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 min-h-[48px] transition-colors",
+                    "flex min-h-[52px] items-center gap-3 rounded-2xl px-4 py-3 transition-colors",
                     isActive
-                      ? "bg-primary/10 text-primary border-r-2 border-primary"
+                      ? "bg-primary/10 text-primary shadow-sm"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                 >
@@ -149,15 +159,15 @@ export function MobileNav() {
             })}
           </div>
 
-          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-sidebar-border">
+          <div className="absolute bottom-0 left-0 right-0 border-t border-sidebar-border/80 bg-sidebar/96 p-4">
             <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
               <AlertDialogTrigger asChild>
-                <button className="flex items-center gap-3 w-full px-4 py-3 min-h-[48px] text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg transition-colors">
+                <button className="flex min-h-[52px] w-full items-center gap-3 rounded-2xl px-4 py-3 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
                   <LogOut className="w-5 h-5" />
                   <span className="font-medium">Keluar</span>
                 </button>
               </AlertDialogTrigger>
-              <AlertDialogContent>
+              <AlertDialogContent className="rounded-[28px] border-border/70 bg-background/95 shadow-2xl backdrop-blur-xl">
                 <AlertDialogHeader>
                   <AlertDialogTitle>Keluar dari Artha?</AlertDialogTitle>
                   <AlertDialogDescription>
