@@ -67,11 +67,11 @@ describe("SEOHead", () => {
     );
     expect(document.querySelector('meta[property="og:image"]')).toHaveAttribute(
       "content",
-      "https://arthawork.vercel.app/og-preview.jpg?v=5",
+      "https://arthawork.vercel.app/og-preview.jpg?v=6",
     );
     expect(document.querySelector('meta[name="twitter:image"]')).toHaveAttribute(
       "content",
-      "https://arthawork.vercel.app/og-preview.jpg?v=5",
+      "https://arthawork.vercel.app/og-preview.jpg?v=6",
     );
     expect(
       document.querySelector('script[data-seo-schema="software-application"]'),
