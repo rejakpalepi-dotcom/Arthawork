@@ -8,7 +8,7 @@ interface SEOHeadProps {
 }
 
 const SITE_URL = "https://arthawork.vercel.app";
-const DEFAULT_OG_IMAGE = `${SITE_URL}/og-preview.jpg?v=6`;
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-preview.jpg?v=7`;
 const BASE_TITLE = "Artha | Proposal & Invoice Builder untuk Freelancer Indonesia";
 const BASE_DESCRIPTION =
   "Artha membantu freelancer Indonesia membuat proposal yang lebih meyakinkan, invoice yang lebih cepat dibayar, dan workflow klien yang lebih rapi.";

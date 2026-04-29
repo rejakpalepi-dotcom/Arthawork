@@ -1,139 +1,136 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="78" y1="48" x2="1093" y2="610" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#F7FCFD"/>
-      <stop offset="0.5" stop-color="#ECF8FA"/>
-      <stop offset="1" stop-color="#F7FAFC"/>
+    <linearGradient id="bg" x1="58" y1="36" x2="1124" y2="612" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#030817"/>
+      <stop offset="0.48" stop-color="#071127"/>
+      <stop offset="1" stop-color="#08111E"/>
     </linearGradient>
-    <linearGradient id="panel" x1="734" y1="117" x2="1048" y2="476" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#10212B"/>
-      <stop offset="1" stop-color="#071117"/>
+    <linearGradient id="cyan" x1="98" y1="94" x2="260" y2="244" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4BE3FF"/>
+      <stop offset="1" stop-color="#1E9BFF"/>
     </linearGradient>
-    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#16C5D8"/>
-      <stop offset="1" stop-color="#0E99A8"/>
+    <linearGradient id="line" x1="-12" y1="494" x2="498" y2="666" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#16D7FF" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#16D7FF" stop-opacity="0"/>
     </linearGradient>
-    <filter id="shadow" x="0" y="0" width="1200" height="630" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+    <linearGradient id="cardLine" x1="760" y1="136" x2="1114" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1DD7FF"/>
+      <stop offset="1" stop-color="#0C3B63"/>
+    </linearGradient>
+    <filter id="glow" x="-80" y="-80" width="1360" height="790" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="24" result="blur"/>
+    </filter>
+    <filter id="shadow" x="690" y="90" width="450" height="470" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
       <feFlood flood-opacity="0" result="BackgroundImageFix"/>
       <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-      <feOffset dy="20"/>
-      <feGaussianBlur stdDeviation="30"/>
-      <feColorMatrix type="matrix" values="0 0 0 0 0.0196078 0 0 0 0 0.0941176 0 0 0 0 0.145098 0 0 0 0.16 0"/>
-      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_2"/>
+      <feOffset dy="18"/>
+      <feGaussianBlur stdDeviation="22"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.0588235 0 0 0 0 0.768627 0 0 0 0 1 0 0 0 0.24 0"/>
+      <feBlend mode="screen" in2="BackgroundImageFix" result="effect1_dropShadow_1_2"/>
       <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_2" result="shape"/>
-    </filter>
-    <filter id="soft" x="758" y="22" width="386" height="386" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-      <feGaussianBlur stdDeviation="42" result="effect1_foregroundBlur_1_2"/>
     </filter>
   </defs>
 
-  <rect width="1200" height="630" rx="40" fill="url(#bg)"/>
-  <circle cx="1001" cy="215" r="151" fill="#A5F3FC" fill-opacity="0.48" filter="url(#soft)"/>
-  <circle cx="256" cy="567" r="168" fill="#CCFBF1" fill-opacity="0.45"/>
-
-  <g filter="url(#shadow)">
-    <rect x="62" y="54" width="1076" height="522" rx="36" fill="#FFFFFF" fill-opacity="0.74"/>
-    <rect x="62.75" y="54.75" width="1074.5" height="520.5" rx="35.25" stroke="#D7E6EA" stroke-opacity="0.9" stroke-width="1.5"/>
-  </g>
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <circle cx="1034" cy="124" r="164" fill="#1ACBFF" fill-opacity="0.16" filter="url(#glow)"/>
+  <circle cx="972" cy="542" r="204" fill="#113D63" fill-opacity="0.18" filter="url(#glow)"/>
+  <path d="M-24 494C81 523 173 571 266 629C353 683 439 710 515 706" stroke="url(#line)" stroke-width="4" stroke-linecap="round"/>
 
   <g>
-    <rect x="112" y="114" width="74" height="74" rx="22" fill="url(#accent)"/>
-    <image href="icon-512.png" x="124" y="126" width="50" height="50"/>
-
-    <text x="206" y="142" fill="#0F1720" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" letter-spacing="-0.02em">
+    <rect x="78" y="84" width="72" height="72" rx="22" fill="url(#cyan)"/>
+    <path d="M102 139L118 101H131L148 139H134L126.5 119.5L116 139H102Z" fill="#04111F"/>
+    <text x="172" y="134" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="800" letter-spacing="-0.04em">
       Artha
     </text>
-    <text x="206" y="172" fill="#4E6470" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="500">
-      Proposal and invoice workflow for freelancers in Indonesia
-    </text>
   </g>
 
   <g>
-    <text x="112" y="256" fill="#0F1720" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700" letter-spacing="-0.04em">
-      Proposal lebih meyakinkan.
+    <text x="80" y="266" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" letter-spacing="-0.055em">
+      Proposal Lebih Meyakinkan
     </text>
-    <text x="112" y="324" fill="#0F1720" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700" letter-spacing="-0.04em">
-      Invoice lebih cepat dibayar.
+    <text x="80" y="372" fill="#38D8FF" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="800" letter-spacing="-0.055em">
+      Invoice Lebih Cepat Dibayar
     </text>
-    <text x="112" y="382" fill="#536672" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400">
-      Susun scope, kirim dokumen, dan rapikan pembayaran klien
+    <text x="80" y="438" fill="#D8E4F2" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="500" letter-spacing="-0.02em">
+      Untuk freelancer Indonesia
     </text>
-    <text x="112" y="418" fill="#536672" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400">
-      tanpa lagi bergantung pada template yang terasa seadanya.
-    </text>
+    <rect x="80" y="458" width="120" height="6" rx="3" fill="#35D8FF"/>
   </g>
 
   <g>
-    <rect x="112" y="470" width="230" height="50" rx="18" fill="#0FB5C5"/>
-    <text x="145" y="502" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700">
-      Mulai Gratis Sekarang
+    <rect x="80" y="502" width="218" height="64" rx="18" fill="#071527"/>
+    <rect x="80.75" y="502.75" width="216.5" height="62.5" rx="17.25" stroke="#1ED7FF" stroke-opacity="0.8" stroke-width="1.5"/>
+    <text x="108" y="546" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="800" letter-spacing="-0.03em">
+      QRIS
     </text>
-
-    <rect x="360" y="470" width="152" height="50" rx="18" fill="#EDF6F8"/>
-    <text x="391" y="502" fill="#35505A" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700">
-      QRIS Ready
-    </text>
-  </g>
-
-  <g>
-    <rect x="112" y="540" width="198" height="34" rx="17" fill="#F3FAFB"/>
-    <text x="132" y="562" fill="#46606A" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600">
-      Proposal builder
-    </text>
-
-    <rect x="324" y="540" width="176" height="34" rx="17" fill="#F3FAFB"/>
-    <text x="344" y="562" fill="#46606A" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600">
-      Invoice workflow
-    </text>
-
-    <rect x="514" y="540" width="175" height="34" rx="17" fill="#F3FAFB"/>
-    <text x="534" y="562" fill="#46606A" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600">
-      Client records
+    <text x="186" y="546" fill="#DDEAF4" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="500">
+      Ready
     </text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="742" y="118" width="314" height="388" rx="32" fill="url(#panel)"/>
-    <rect x="742.75" y="118.75" width="312.5" height="386.5" rx="31.25" stroke="#2A4552" stroke-width="1.5"/>
-  </g>
+    <rect x="760" y="126" width="360" height="428" rx="34" fill="#081423"/>
+    <rect x="760.8" y="126.8" width="358.4" height="426.4" rx="33.2" stroke="url(#cardLine)" stroke-width="1.6"/>
 
-  <g>
-    <rect x="769" y="148" width="260" height="62" rx="20" fill="#102D38"/>
-    <text x="793" y="174" fill="#86EAF5" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="0.14em">
-      ACTIVE PROPOSAL
+    <path d="M914 126V554" stroke="#223448" stroke-width="1.5"/>
+    <text x="790" y="176" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="800" letter-spacing="-0.04em">
+      Artha
     </text>
-    <text x="793" y="198" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">
-      Website redesign retainer
+    <text x="946" y="178" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="-0.03em">
+      Ringkasan Proposal
     </text>
 
-    <rect x="769" y="228" width="260" height="120" rx="24" fill="#0D2028"/>
-    <rect x="791" y="253" width="96" height="24" rx="12" fill="#123846"/>
-    <text x="810" y="269" fill="#9DD8E1" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">
-      Discovery
+    <rect x="782" y="206" width="112" height="50" rx="15" fill="#0D2840"/>
+    <circle cx="807" cy="231" r="12" fill="#1ED7FF"/>
+    <path d="M801 234V229.5H807V224H813V234H801Z" fill="#03111E"/>
+    <text x="828" y="238" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">
+      Dashboard
     </text>
-    <rect x="900" y="253" width="108" height="24" rx="12" fill="#123846"/>
-    <text x="922" y="269" fill="#9DD8E1" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">
-      UI Refinement
+
+    <text x="792" y="294" fill="#E5EFF8" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="500">
+      Proposal
     </text>
-    <text x="791" y="308" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">
+    <text x="792" y="348" fill="#E5EFF8" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="500">
+      Invoice
+    </text>
+    <text x="792" y="402" fill="#E5EFF8" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="500">
+      Klien
+    </text>
+
+    <rect x="944" y="206" width="146" height="36" rx="18" fill="#0A1D16"/>
+    <rect x="944.75" y="206.75" width="144.5" height="34.5" rx="17.25" stroke="#1DBA7A" stroke-opacity="0.6" stroke-width="1.5"/>
+    <circle cx="967" cy="224" r="9" fill="#26D68B"/>
+    <path d="M963.5 224L966 226.5L970.5 221.5" stroke="#052317" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="983" y="229" fill="#7FE6B5" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">
+      Terkirim
+    </text>
+
+    <rect x="946" y="258" width="146" height="96" rx="22" fill="#0B1B2E"/>
+    <rect x="966" y="278" width="44" height="44" rx="14" fill="url(#cyan)" fill-opacity="0.7"/>
+    <rect x="978" y="290" width="20" height="24" rx="4" fill="#E9F7FF"/>
+    <rect x="983" y="296" width="10" height="2.5" rx="1.25" fill="#2C8CF4"/>
+    <rect x="983" y="302" width="10" height="2.5" rx="1.25" fill="#2C8CF4"/>
+    <text x="1026" y="302" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="800" letter-spacing="-0.03em">
+      Website Company Profile
+    </text>
+    <text x="1026" y="329" fill="#C0CFDD" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="500">
+      PT Maju Bersama
+    </text>
+
+    <rect x="946" y="374" width="146" height="120" rx="24" fill="#0B1B2E"/>
+    <text x="968" y="410" fill="#AFC3D4" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600">
+      Total Invoice
+    </text>
+    <text x="968" y="468" fill="#37D8FF" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" letter-spacing="-0.05em">
       Rp 18.500.000
     </text>
-    <text x="791" y="332" fill="#8AA4AF" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="500">
-      Convert proposal to invoice without
-    </text>
-    <text x="791" y="353" fill="#8AA4AF" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="500">
-      rebuilding the workflow from scratch.
-    </text>
-
-    <rect x="769" y="370" width="260" height="108" rx="24" fill="#0D2028"/>
-    <rect x="791" y="392" width="140" height="35" rx="17.5" fill="#0FB5C5"/>
-    <text x="821" y="415" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">
-      Convert to invoice
-    </text>
-    <text x="791" y="454" fill="#94A8B1" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="600">
-      Ready for share link, PDF, WhatsApp, or email
+    <rect x="968" y="510" width="118" height="36" rx="18" fill="#0A1D16"/>
+    <rect x="968.75" y="510.75" width="116.5" height="34.5" rx="17.25" stroke="#1DBA7A" stroke-opacity="0.55" stroke-width="1.5"/>
+    <circle cx="990" cy="528" r="9" fill="#26D68B"/>
+    <path d="M986.5 528L989 530.5L993.5 525.5" stroke="#052317" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="1006" y="533" fill="#7FE6B5" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">
+      Siap Dibayar
     </text>
   </g>
 </svg>
