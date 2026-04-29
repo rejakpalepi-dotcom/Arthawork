@@ -17,7 +17,7 @@ const faqData: FAQItem[] = [
     {
         category: "Memulai",
         question: "Bagaimana cara membuat akun Artha?",
-        answer: "Klik tombol 'Sign Up' di halaman login, masukkan email dan password, lalu verifikasi email Anda. Setelah itu, Anda bisa langsung mulai menggunakan Artha dengan paket Free."
+        answer: "Klik tombol 'Daftar' di halaman login, masukkan email dan password, lalu verifikasi email Anda. Setelah itu, Anda bisa langsung mulai menggunakan Artha dengan paket Gratis."
     },
     {
         category: "Memulai",
@@ -27,7 +27,7 @@ const faqData: FAQItem[] = [
     {
         category: "Memulai",
         question: "Bagaimana cara upgrade ke Pro atau Business?",
-        answer: "Buka Settings > Subscription, pilih paket yang diinginkan, lalu bayar menggunakan QRIS, Virtual Account (BCA/Mandiri/BNI), atau E-Wallet (GoPay/OVO/DANA)."
+        answer: "Buka Pengaturan lalu masuk ke tab Langganan, pilih paket yang diinginkan, lalu bayar menggunakan QRIS, Virtual Account (BCA/Mandiri/BNI), atau e-wallet seperti GoPay, OVO, dan DANA."
     },
     // Invoice
     {
@@ -49,7 +49,7 @@ const faqData: FAQItem[] = [
     {
         category: "Proposal",
         question: "Apa template proposal yang tersedia?",
-        answer: "Artha menyediakan template profesional dengan section: About, Services, Timeline, Investment, dan Terms. Anda bisa customize setiap section sesuai kebutuhan."
+        answer: "Artha menyediakan template proposal profesional dengan bagian pendahuluan, ruang lingkup, timeline, investasi, dan catatan kerja. Setiap bagian bisa Anda sesuaikan dengan kebutuhan proyek."
     },
     {
         category: "Proposal",
@@ -71,7 +71,7 @@ const faqData: FAQItem[] = [
     {
         category: "Pembayaran",
         question: "Bagaimana cara membatalkan langganan?",
-        answer: "Buka Settings > Subscription, klik 'Cancel Subscription'. Akun Anda akan tetap Pro/Business sampai akhir periode pembayaran, lalu otomatis downgrade ke Free."
+        answer: "Buka Pengaturan lalu masuk ke tab Langganan, pilih opsi pembatalan langganan. Akun Anda akan tetap aktif di paket berjalan sampai akhir periode pembayaran, lalu otomatis kembali ke paket Gratis."
     },
     // Security
     {
@@ -82,7 +82,7 @@ const faqData: FAQItem[] = [
     {
         category: "Keamanan",
         question: "Bagaimana cara mengaktifkan 2FA?",
-        answer: "Buka Settings > Security, klik 'Enable 2FA', scan QR code dengan Google Authenticator atau app sejenis, lalu verifikasi dengan kode 6 digit."
+        answer: "Buka Pengaturan lalu masuk ke tab Keamanan, aktifkan verifikasi dua langkah, pindai QR code dengan Google Authenticator atau aplikasi sejenis, lalu verifikasi dengan kode 6 digit."
     },
 ];
 

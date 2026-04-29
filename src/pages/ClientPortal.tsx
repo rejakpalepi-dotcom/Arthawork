@@ -157,7 +157,7 @@ export default function ClientPortal() {
                                     </div>
                                 </div>
                                 <CardTitle className="text-2xl text-white">{project.title}</CardTitle>
-                                <p className="text-muted-foreground">Premium Client Portal</p>
+                                <p className="text-muted-foreground">Portal Klien Artha</p>
                             </CardHeader>
 
                             <CardContent className="space-y-6">
@@ -207,13 +207,13 @@ export default function ClientPortal() {
                 <header className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-lg border-b border-slate-800">
                     <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="p-2 rounded-lg bg-gradient-to-br from-amber-500/20 to-primary/20 border border-amber-500/30">
+                            <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500/20 to-primary/20 border border-amber-500/30 shadow-sm">
                                 <Sparkles className="h-5 w-5 text-amber-400" />
                             </div>
                             <div>
-                                <h1 className="font-semibold text-white">{project.title}</h1>
+                                <h1 className="font-semibold text-white tracking-tight">{project.title}</h1>
                                 <p className="text-sm text-muted-foreground">
-                                    Premium Client Portal
+                                    Portal klien untuk revisi dan approval
                                 </p>
                             </div>
                         </div>
@@ -346,12 +346,12 @@ export default function ClientPortal() {
                             {/* Download Button (for final) */}
                             {project.status === "final" && selectedFile && (
                                 <Button
-                                    className="w-full bg-gradient-to-r from-green-500 to-emerald-600"
+                                    className="w-full h-11 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 shadow-sm"
                                     asChild
                                 >
                                     <a href={selectedFile.file_url} download>
                                         <Download className="h-4 w-4 mr-2" />
-                                        Download File Final
+                                        Unduh File Final
                                     </a>
                                 </Button>
                             )}
@@ -364,7 +364,7 @@ export default function ClientPortal() {
                     <p className="text-xs text-muted-foreground">
                         Powered by <span className="text-amber-400 font-semibold">ArthaWork</span>
                         <br />
-                        Premium Client Experience
+                        Pengalaman klien yang rapi dan fokus
                     </p>
                 </footer>
             </div>

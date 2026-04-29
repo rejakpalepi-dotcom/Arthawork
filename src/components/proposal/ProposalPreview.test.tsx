@@ -4,18 +4,18 @@ import { ProposalPreview } from "@/components/proposal/ProposalPreview";
 import type { ProposalData } from "@/pages/ProposalBuilder";
 
 const proposalFixture: ProposalData = {
-  projectTitle: "Website Redesign Retainer",
+  projectTitle: "Retainer Redesign Website",
   clientId: "client-1",
   clientName: "Rejak",
   clientCompany: "Arthawork",
   studioName: "Artha Studio",
   tagline: "Proposal yang lebih rapi dan lebih cepat dibayar",
   year: "2026",
-  introTitle: "Why work with me?",
+  introTitle: "Kenapa proyek ini layak dijalankan bersama",
   introText: "Short intro copy.",
   heroImageUrl: "",
-  experienceTitle: "Trusted by growing brands",
-  experienceSubtitle: "Experience subtitle",
+  experienceTitle: "Dipercaya brand yang sedang tumbuh",
+  experienceSubtitle: "Pengalaman yang membangun kejelasan dan kepercayaan",
   projectCount: "50+",
   countriesCount: "12",
   rating: "5.0",
@@ -49,7 +49,7 @@ describe("ProposalPreview visual modes", () => {
     );
 
     expect(html).toContain("bg-[#1a1a1a] text-white");
-    expect(html).toContain("Project Proposal");
+    expect(html).toContain("Proposal Proyek");
   });
 
   it("renders the closing investment page with the same dark shell family", () => {
@@ -58,7 +58,8 @@ describe("ProposalPreview visual modes", () => {
     );
 
     expect(html).toContain("bg-[#1a1a1a] text-white");
-    expect(html).toContain("Ready to begin?");
+    expect(html).toContain("Siap memulai?");
+    expect(html).toContain("Mulai proyek");
     expect(html).toContain("Rp");
   });
 });

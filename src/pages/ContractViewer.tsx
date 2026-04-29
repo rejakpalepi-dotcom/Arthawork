@@ -220,7 +220,7 @@ export default function ContractViewer() {
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-muted-foreground">
-                                            Down Payment ({contract.dp_percentage}%)
+                                            Uang Muka ({contract.dp_percentage}%)
                                         </span>
                                         <span className="font-semibold text-amber-400">
                                             {formatCurrency(contract.dp_amount)}

@@ -125,7 +125,7 @@ function CoverEditor({
             id="projectTitle"
             value={data.projectTitle}
             onChange={(e) => onUpdate({ projectTitle: e.target.value })}
-            placeholder="The Ultimate Project Proposal"
+            placeholder="Proposal kolaborasi brand"
             className="bg-muted/50 border-border"
           />
         </div>
@@ -145,7 +145,7 @@ function CoverEditor({
 
         <div className="space-y-2">
           <Label htmlFor="year" className="text-sm font-medium text-foreground">
-            Year
+            Tahun
           </Label>
           <Input
             id="year"
@@ -241,8 +241,8 @@ function IntroEditor({
               className="w-full border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors cursor-pointer bg-muted/30 group"
             >
               <ImagePlus className="h-10 w-10 text-muted-foreground mx-auto mb-2 group-hover:text-primary transition-colors" />
-              <p className="text-sm text-muted-foreground font-medium group-hover:text-foreground transition-colors">Upload Image Here</p>
-              <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 10MB</p>
+              <p className="text-sm text-muted-foreground font-medium group-hover:text-foreground transition-colors">Unggah gambar utama</p>
+              <p className="text-xs text-muted-foreground mt-1">PNG atau JPG hingga 10MB</p>
             </button>
           )}
         </div>
@@ -281,34 +281,34 @@ function ExperienceEditor({
       <div className="pb-4 border-b border-border">
         <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
           <Briefcase className="h-5 w-5 text-primary" />
-          Track Record
+          REKAM JEJAK
         </h2>
-        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Showcase your experience and accomplishments</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Tunjukkan kapasitas kerja, pengalaman, dan kepercayaan yang sudah dibangun</p>
       </div>
 
       <div className="space-y-5">
         <div className="space-y-2">
           <Label htmlFor="experienceTitle" className="text-sm font-medium text-foreground">
-            Headline
+            Judul Utama
           </Label>
           <Textarea
             id="experienceTitle"
             value={data.experienceTitle}
             onChange={(e) => onUpdate({ experienceTitle: e.target.value })}
-            placeholder="I've worked with clients near and far..."
+            placeholder="Dipercaya brand yang sedang tumbuh dan tim yang butuh kejelasan"
             className="min-h-[80px] bg-muted/50 border-border resize-none"
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="experienceSubtitle" className="text-sm font-medium text-foreground">
-            Subtitle
+            Subjudul
           </Label>
           <Textarea
             id="experienceSubtitle"
             value={data.experienceSubtitle}
             onChange={(e) => onUpdate({ experienceSubtitle: e.target.value })}
-            placeholder="From local startups to international enterprises..."
+            placeholder="Jelaskan singkat kualitas kerja dan konteks pengalaman Anda"
             className="min-h-[80px] bg-muted/50 border-border resize-none"
           />
         </div>
@@ -316,7 +316,7 @@ function ExperienceEditor({
         <div className="grid grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label htmlFor="projectCount" className="text-sm font-medium text-foreground">
-              Projects
+              Proyek
             </Label>
             <Input
               id="projectCount"
@@ -328,7 +328,7 @@ function ExperienceEditor({
           </div>
           <div className="space-y-2">
             <Label htmlFor="countriesCount" className="text-sm font-medium text-foreground">
-              Countries
+              Wilayah
             </Label>
             <Input
               id="countriesCount"
@@ -340,7 +340,7 @@ function ExperienceEditor({
           </div>
           <div className="space-y-2">
             <Label htmlFor="rating" className="text-sm font-medium text-foreground">
-              Rating
+              Nilai
             </Label>
             <Input
               id="rating"
@@ -353,7 +353,7 @@ function ExperienceEditor({
         </div>
 
         <div className="space-y-2">
-          <Label className="text-sm font-medium text-foreground">Client Logos</Label>
+          <Label className="text-sm font-medium text-foreground">Logo Klien</Label>
           <div className="grid grid-cols-3 gap-3">
             {[0, 1, 2, 3, 4, 5].map((i) => {
               const logo = data.clientLogos?.[i];
@@ -390,7 +390,7 @@ function ExperienceEditor({
               );
             })}
           </div>
-          <p className="text-xs text-muted-foreground">PNG, JPG up to 10MB</p>
+          <p className="text-xs text-muted-foreground">PNG atau JPG hingga 10MB</p>
         </div>
       </div>
     </div>
@@ -446,7 +446,7 @@ function ServicesEditor({
       name: "",
       description: "",
       price: 0,
-      unit: "project",
+      unit: "proyek",
     };
     onUpdate({ customServices: [...(data.customServices || []), newService] });
   };
@@ -476,14 +476,14 @@ function ServicesEditor({
       <div className="pb-4 border-b border-border">
         <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
           <Gem className="h-5 w-5 text-primary" />
-          Design Services
+          LAYANAN DAN RUANG LINGKUP
         </h2>
-        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Select or add custom services for this proposal</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Pilih layanan dari katalog atau tambahkan ruang lingkup khusus untuk proposal ini</p>
       </div>
 
       {/* Available Services from Database */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium text-foreground">Select From Catalog</Label>
+        <Label className="text-sm font-medium text-foreground">Pilih dari Katalog</Label>
         {isLoading ? (
           <>
             <Skeleton className="h-16 w-full" />
@@ -492,7 +492,7 @@ function ServicesEditor({
         ) : availableServices.length === 0 ? (
           <div className="text-center py-4 text-muted-foreground border border-dashed border-border rounded-xl">
             <Gem className="h-8 w-8 mx-auto mb-2 text-muted-foreground/50" />
-            <p className="text-sm">No services in catalog. Add custom services below.</p>
+            <p className="text-sm">Belum ada layanan di katalog. Tambahkan layanan khusus di bawah.</p>
           </div>
         ) : (
           availableServices.map((service) => {
@@ -530,12 +530,12 @@ function ServicesEditor({
 
       {/* Custom Services */}
       <div className="space-y-3 pt-4 border-t border-border">
-        <Label className="text-sm font-medium text-foreground">Custom Services</Label>
+        <Label className="text-sm font-medium text-foreground">Layanan Khusus</Label>
         {(data.customServices || []).map((service, index) => (
           <div key={service.id} className="p-4 rounded-xl border border-border bg-muted/30 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-                Custom Item {index + 1}
+                Item Khusus {index + 1}
               </span>
               <button
                 type="button"
@@ -547,26 +547,26 @@ function ServicesEditor({
             </div>
             <div className="space-y-3">
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Service Name</Label>
+                <Label className="text-xs text-muted-foreground">Nama Layanan</Label>
                 <Input
                   value={service.name}
                   onChange={(e) => updateCustomService(service.id, { name: e.target.value })}
-                  placeholder="e.g., Brand Identity Design"
+                  placeholder="Contoh: Desain identitas brand"
                   className="bg-background border-border text-sm"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Task Details / Deliverables</Label>
+                <Label className="text-xs text-muted-foreground">Detail Pekerjaan / Deliverable</Label>
                 <Textarea
                   value={service.description || ""}
                   onChange={(e) => updateCustomService(service.id, { description: e.target.value })}
-                  placeholder="Describe the deliverables..."
+                  placeholder="Jelaskan output kerja yang akan diterima klien"
                   className="bg-background border-border text-sm min-h-[60px] resize-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-muted-foreground">Investment (IDR)</Label>
+                  <Label className="text-xs text-muted-foreground">Nilai (IDR)</Label>
                   <Input
                     type="number"
                     value={service.price}
@@ -580,7 +580,7 @@ function ServicesEditor({
                   <Input
                     value={service.unit || ""}
                     onChange={(e) => updateCustomService(service.id, { unit: e.target.value })}
-                    placeholder="e.g., project, hour"
+                    placeholder="Contoh: proyek, jam"
                     className="bg-background border-border text-sm"
                   />
                 </div>
@@ -596,14 +596,14 @@ function ServicesEditor({
           className="w-full border-dashed border-border hover:border-primary"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Add Custom Service
+          Tambah Layanan Khusus
         </Button>
       </div>
 
       {allServices.length > 0 && (
         <div className="pt-4 border-t border-border">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">{allServices.length} service(s) total</span>
+            <span className="text-muted-foreground">{allServices.length} layanan dipilih</span>
             <span className="font-semibold text-primary text-base">
               {formatIDR(totalPrice)}
             </span>
@@ -624,7 +624,7 @@ function TimelineEditor({
   const addMilestone = () => {
     const newMilestone: Milestone = {
       id: crypto.randomUUID(),
-      week: `Week ${data.milestones.length + 1}`,
+      week: `Minggu ${data.milestones.length + 1}`,
       title: "",
       description: "",
     };
@@ -648,9 +648,9 @@ function TimelineEditor({
       <div className="pb-4 border-b border-border">
         <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
           <Calendar className="h-5 w-5 text-primary" />
-          Project Timeline
+          TIMELINE PROYEK
         </h2>
-        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Define project milestones and schedule</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Susun tahapan kerja agar ruang lingkup dan ekspektasi timeline tetap jelas</p>
       </div>
 
       <div className="space-y-4">
@@ -658,7 +658,7 @@ function TimelineEditor({
           <div key={milestone.id} className="p-4 rounded-xl border border-border bg-muted/30 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-                Milestone {index + 1}
+                Tahap {index + 1}
               </span>
               <button
                 type="button"
@@ -670,30 +670,30 @@ function TimelineEditor({
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Week/Phase</Label>
+                <Label className="text-xs text-muted-foreground">Minggu / Fase</Label>
                 <Input
                   value={milestone.week}
                   onChange={(e) => updateMilestone(milestone.id, { week: e.target.value })}
-                  placeholder="Week 1"
+                  placeholder="Minggu 1"
                   className="bg-background border-border text-sm"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Title</Label>
+                <Label className="text-xs text-muted-foreground">Judul Tahap</Label>
                 <Input
                   value={milestone.title}
                   onChange={(e) => updateMilestone(milestone.id, { title: e.target.value })}
-                  placeholder="Discovery & Planning"
+                  placeholder="Discovery dan penyelarasan"
                   className="bg-background border-border text-sm"
                 />
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Description</Label>
+              <Label className="text-xs text-muted-foreground">Deskripsi</Label>
               <Textarea
                 value={milestone.description}
                 onChange={(e) => updateMilestone(milestone.id, { description: e.target.value })}
-                placeholder="Brief description of this phase..."
+                placeholder="Ringkasan pekerjaan pada tahap ini"
                 className="bg-background border-border text-sm min-h-[60px] resize-none"
               />
             </div>
@@ -707,7 +707,7 @@ function TimelineEditor({
           className="w-full border-dashed border-border hover:border-primary"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Add Milestone
+          Tambah Tahap
         </Button>
       </div>
     </div>
@@ -762,16 +762,16 @@ function InvestmentEditor({
       <div className="pb-4 border-b border-border">
         <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
           <CreditCard className="h-5 w-5 text-primary" />
-          Investment
+          INVESTASI
         </h2>
-        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Review scope of work and pricing</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Rapikan ruang lingkup, rincian nilai, pajak, dan catatan penawaran akhir</p>
       </div>
 
       {allServices.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground border border-dashed border-border rounded-xl">
           <CreditCard className="h-10 w-10 mx-auto mb-2 text-muted-foreground/50" />
-          <p className="text-sm font-medium">No services added yet</p>
-          <p className="text-xs mt-1 mb-4">Go to Design Services tab to select from catalog, or add a custom service below.</p>
+          <p className="text-sm font-medium">Belum ada layanan yang dimasukkan</p>
+          <p className="text-xs mt-1 mb-4">Buka tab layanan untuk memilih dari katalog atau tambahkan layanan khusus di bawah.</p>
           <Button
             type="button"
             variant="outline"
@@ -779,14 +779,14 @@ function InvestmentEditor({
             className="border-dashed border-primary/50 hover:border-primary"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add Custom Service
+            Tambah Layanan Khusus
           </Button>
         </div>
       ) : (
         <>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label className="text-sm font-medium text-foreground">Scope of Work</Label>
+              <Label className="text-sm font-medium text-foreground">Ruang Lingkup</Label>
               <Button
                 type="button"
                 variant="ghost"
@@ -795,22 +795,22 @@ function InvestmentEditor({
                 className="text-primary hover:text-primary/80 h-7 text-xs"
               >
                 <Plus className="h-3 w-3 mr-1" />
-                Add Service
+                Tambah Layanan
               </Button>
             </div>
             <div className="rounded-xl border border-border overflow-hidden">
               <div className="bg-muted/50 px-4 py-2 border-b border-border grid grid-cols-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                <span>Service</span>
+                <span>Layanan</span>
                 <span className="text-center">Unit</span>
-                <span className="text-right">Price</span>
-                <span className="text-right">Action</span>
+                <span className="text-right">Nilai</span>
+                <span className="text-right">Aksi</span>
               </div>
               {allServices.map((service) => (
                 <div key={service.id} className="px-4 py-3 border-b border-border last:border-0 grid grid-cols-4 text-sm items-center gap-2">
                   <div>
-                    <span className="text-foreground font-medium">{service.name || "Untitled Service"}</span>
+                    <span className="text-foreground font-medium">{service.name || "Layanan Tanpa Judul"}</span>
                     {service.isCustom && (
-                      <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium">Custom</span>
+                      <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium">Khusus</span>
                     )}
                   </div>
                   <span className="text-center text-muted-foreground">{service.unit || "—"}</span>
@@ -835,7 +835,7 @@ function InvestmentEditor({
           {(data.customServices || []).filter(s => !s.name).map((service) => (
             <div key={service.id} className="p-4 rounded-xl border border-dashed border-primary/50 bg-primary/5 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-primary uppercase tracking-wider">New Custom Service</span>
+                <span className="text-xs font-semibold text-primary uppercase tracking-wider">Layanan Khusus Baru</span>
                 <button
                   type="button"
                   onClick={() => removeCustomService(service.id)}
@@ -846,16 +846,16 @@ function InvestmentEditor({
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-muted-foreground">Service Name</Label>
+                  <Label className="text-xs text-muted-foreground">Nama Layanan</Label>
                   <Input
                     value={service.name}
                     onChange={(e) => updateCustomService(service.id, { name: e.target.value })}
-                    placeholder="e.g., Custom Design"
+                    placeholder="Contoh: desain tambahan"
                     className="bg-background border-border text-sm"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-muted-foreground">Price</Label>
+                  <Label className="text-xs text-muted-foreground">Nilai</Label>
                   <Input
                     type="number"
                     value={service.price || ""}
@@ -871,7 +871,7 @@ function InvestmentEditor({
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <div className="flex-1 space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Tax Rate (%)</Label>
+                <Label className="text-xs text-muted-foreground">Tarif Pajak (%)</Label>
                 <Input
                   type="number"
                   min="0"
@@ -886,11 +886,11 @@ function InvestmentEditor({
 
           <div className="space-y-3">
             <div className="space-y-1.5">
-              <Label className="text-sm font-medium text-foreground">Additional Notes</Label>
+              <Label className="text-sm font-medium text-foreground">Catatan Tambahan</Label>
               <Textarea
                 value={data.investmentNotes}
                 onChange={(e) => onUpdate({ investmentNotes: e.target.value })}
-                placeholder="Payment terms, conditions, etc..."
+                placeholder="Tambahkan syarat pembayaran, catatan proses, atau ketentuan penting lainnya"
                 className="min-h-[100px] bg-muted/50 border-border resize-none"
               />
             </div>
@@ -903,12 +903,12 @@ function InvestmentEditor({
             </div>
             {data.taxRate > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Tax ({data.taxRate}%)</span>
+                <span className="text-muted-foreground">Pajak ({data.taxRate}%)</span>
                 <span className="text-foreground">{formatIDR(taxAmount)}</span>
               </div>
             )}
             <div className="flex justify-between text-lg font-bold pt-2 border-t border-border">
-              <span className="text-foreground">Total Investment</span>
+              <span className="text-foreground">Total Investasi</span>
               <span className="text-primary">{formatIDR(total)}</span>
             </div>
           </div>

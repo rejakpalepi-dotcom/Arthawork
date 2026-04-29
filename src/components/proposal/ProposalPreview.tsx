@@ -90,9 +90,13 @@ function PageShell({
 
 function CoverPreview({ data, forExport }: PageProps) {
   return (
-    <PageShell dark forExport={forExport} printElement="cover-page">
+    <PageShell dark forExport={forExport} printElement="cover-page" className="relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-24 left-10 h-56 w-56 rounded-full bg-cyan-400/10 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-white/5 blur-3xl" />
+      </div>
       {/* Top bar */}
-      <div className="px-10 pt-10 flex items-start justify-between">
+      <div className="relative px-10 pt-10 flex items-start justify-between">
         <span
           className="text-[11px] font-medium tracking-wide text-white/80"
           style={forExport ? { color: "rgba(255,255,255,0.8)", fontFamily: FONT_SANS_EXPORT } : undefined}
@@ -105,7 +109,7 @@ function CoverPreview({ data, forExport }: PageProps) {
               className="text-[10px] text-gray-500"
               style={forExport ? { color: "#6b7280" } : undefined}
             >
-              Prepared for
+              Disiapkan untuk
             </div>
             <div
               className="text-[11px] font-medium text-white/90 mt-0.5"
@@ -118,13 +122,13 @@ function CoverPreview({ data, forExport }: PageProps) {
       </div>
 
       {/* Title block — vertically centered */}
-      <div className="flex-1 flex flex-col justify-center px-10">
+      <div className="relative flex-1 flex flex-col justify-center px-10">
         <div className="space-y-5">
           <div
             className="text-[10px] font-medium tracking-[0.15em] text-[#00ACC1]"
             style={forExport ? { color: "#00ACC1", fontFamily: FONT_SANS_EXPORT } : undefined}
           >
-            Project Proposal
+            Proposal Proyek
           </div>
           <h1
             className="text-[32px] font-serif font-semibold leading-[1.2] tracking-tight text-white"
@@ -143,7 +147,7 @@ function CoverPreview({ data, forExport }: PageProps) {
       </div>
 
       {/* Bottom bar */}
-      <div className="px-10 pb-10 flex items-end justify-between">
+      <div className="relative px-10 pb-10 flex items-end justify-between">
         <div className="text-[10px] text-gray-500 space-y-0.5" style={forExport ? { color: "#6b7280" } : undefined}>
           {data.clientName && <div>{data.clientName}</div>}
           <div>{data.year}</div>
@@ -219,9 +223,9 @@ function ExperiencePreview({ data, forExport }: PageProps) {
         {/* Stats row */}
         <div className="flex gap-10 mb-8">
           {[
-            { value: data.projectCount, label: "Projects" },
-            { value: data.countriesCount, label: "Countries" },
-            { value: data.rating, label: "Rating" },
+            { value: data.projectCount, label: "Proyek" },
+            { value: data.countriesCount, label: "Wilayah" },
+            { value: data.rating, label: "Nilai" },
           ].map((stat) => (
             <div key={stat.label}>
               <div
@@ -278,13 +282,13 @@ function ServicesPreview({ data, forExport }: PageProps) {
           style={forExport ? { fontFamily: FONT_SERIF_EXPORT, color: "#111827" } : undefined}
           data-print-heading="editorial"
         >
-          Scope of Work
+          Ruang Lingkup
         </h2>
         <p
           className="text-[13px] text-gray-500 mb-6"
           style={forExport ? { color: "#6b7280" } : undefined}
         >
-          What we bring to the table
+          Rincian hasil kerja yang akan Anda terima
         </p>
 
         <div className="space-y-0">
@@ -348,13 +352,13 @@ function TimelinePreview({ data, forExport }: PageProps) {
           style={forExport ? { fontFamily: FONT_SERIF_EXPORT, color: "#111827" } : undefined}
           data-print-heading="editorial"
         >
-          Timeline
+          Timeline Proyek
         </h2>
         <p
           className="text-[13px] text-gray-500 mb-8"
           style={forExport ? { color: "#6b7280" } : undefined}
         >
-          How we get from here to there
+          Tahapan kerja dari arah awal hingga finalisasi
         </p>
 
         <div className="space-y-0">
@@ -443,7 +447,14 @@ function InvestmentPreview({ data, forExport, pageMode }: PageProps) {
       forExport={forExport}
       pageNum={6}
       printElement="investment-page"
+      className={cn(isClosingDark && "relative overflow-hidden")}
     >
+      {isClosingDark && (
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-24 left-10 h-56 w-56 rounded-full bg-cyan-400/10 blur-3xl" />
+          <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-white/5 blur-3xl" />
+        </div>
+      )}
       <div className="flex-1 px-10 pt-10 pb-4 overflow-y-auto">
         <h2
           className={cn(
@@ -453,13 +464,13 @@ function InvestmentPreview({ data, forExport, pageMode }: PageProps) {
           style={forExport ? { fontFamily: FONT_SERIF_EXPORT, color: shellTitleColor } : undefined}
           data-print-heading="editorial"
         >
-          Investment
+          Investasi
         </h2>
         <p
           className={cn("text-[13px] mb-8", shellSubtleTextClass)}
           style={forExport ? { color: shellMutedColor } : undefined}
         >
-          Scope and pricing breakdown
+          Rangkuman ruang lingkup, nilai, dan kesiapan eksekusi
         </p>
 
         {/* Line items table */}
@@ -584,7 +595,7 @@ function InvestmentPreview({ data, forExport, pageMode }: PageProps) {
               className={cn("text-[10px] mb-0.5", shellSubtleTextClass)}
               style={forExport ? { color: shellMutedColor } : undefined}
             >
-              Ready to begin?
+              Siap memulai?
             </div>
             <div
               className={cn("text-base font-numeric font-semibold", isClosingDark ? "text-white" : "text-gray-900")}
@@ -601,7 +612,7 @@ function InvestmentPreview({ data, forExport, pageMode }: PageProps) {
             )}
             style={forExport ? { color: isClosingDark ? "#a5f3fc" : "#374151" } : undefined}
           >
-            Let's start →
+            Mulai proyek →
           </div>
         </div>
       </div>

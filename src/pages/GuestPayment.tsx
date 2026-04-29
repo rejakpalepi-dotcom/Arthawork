@@ -70,7 +70,7 @@ export default function GuestPayment() {
   useEffect(() => {
     const fetchInvoice = async () => {
       if (!token) {
-        setError("Invalid payment link");
+        setError("Tautan pembayaran tidak valid");
         setLoading(false);
         return;
       }
@@ -83,7 +83,7 @@ export default function GuestPayment() {
         if (invoiceError) throw invoiceError;
 
         if (!invoiceData || invoiceData.length === 0) {
-          setError("Invoice not found or link has expired");
+          setError("Invoice tidak ditemukan atau tautannya sudah kedaluwarsa");
           setLoading(false);
           return;
         }
@@ -112,7 +112,7 @@ export default function GuestPayment() {
           items: itemsData || [],
         });
       } catch (err) {
-        setError("Failed to load invoice");
+        setError("Gagal memuat invoice");
       } finally {
         setLoading(false);
       }
@@ -126,7 +126,7 @@ export default function GuestPayment() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin mx-auto" />
-          <p className="text-muted-foreground">Loading invoice...</p>
+          <p className="text-muted-foreground">Memuat invoice...</p>
         </div>
       </div>
     );
@@ -145,10 +145,10 @@ export default function GuestPayment() {
         <main className="max-w-4xl mx-auto p-6">
           <div className="glass-card rounded-2xl p-12 text-center">
             <AlertCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-foreground mb-2">Invoice Not Found</h1>
-            <p className="text-muted-foreground mb-6">{error || "The invoice you're looking for doesn't exist or has expired."}</p>
+            <h1 className="text-2xl font-bold text-foreground mb-2">Invoice Tidak Ditemukan</h1>
+            <p className="text-muted-foreground mb-6">{error || "Invoice yang Anda cari sudah tidak tersedia atau tautannya kedaluwarsa."}</p>
             <Link to="/">
-              <Button>Go to Homepage</Button>
+              <Button>Kembali ke Beranda</Button>
             </Link>
           </div>
         </main>
@@ -163,8 +163,8 @@ export default function GuestPayment() {
   return (
     <>
       <SEOHead
-        title={`Invoice #${invoice.invoice_number} - Payment`}
-        description={`Complete your payment for Invoice #${invoice.invoice_number}. Secure checkout powered by Artha.`}
+        title={`Invoice #${invoice.invoice_number} - Pembayaran`}
+        description={`Selesaikan pembayaran untuk Invoice #${invoice.invoice_number} melalui halaman pembayaran Artha.`}
       />
       <div className="min-h-screen bg-background">
         {/* Header */}
@@ -176,7 +176,7 @@ export default function GuestPayment() {
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Lock className="w-4 h-4" />
-              <span>Secure Checkout</span>
+              <span>Pembayaran Aman</span>
             </div>
           </div>
         </header>
@@ -186,12 +186,12 @@ export default function GuestPayment() {
             {/* Left Side - Invoice Summary */}
             <div className="space-y-6">
               <div>
-                <p className="text-sm text-primary font-medium mb-2">Payment Portal</p>
-                <h1 className="text-3xl font-bold text-foreground">
-                  Complete Your<br />Payment
+                <p className="text-sm text-primary font-medium mb-2 uppercase tracking-[0.18em]">Portal Pembayaran</p>
+                <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                  Selesaikan<br />Pembayaran Anda
                 </h1>
                 <p className="text-muted-foreground mt-3">
-                  Securely pay invoice #{invoice.invoice_number} for your recent project with Artha.
+                  Tinjau invoice, pilih metode pembayaran, dan selesaikan transaksi Anda dengan aman.
                 </p>
               </div>
 
@@ -200,12 +200,12 @@ export default function GuestPayment() {
                 <div>
                   <p className="text-xs text-muted-foreground uppercase tracking-wider">Project</p>
                   <p className="text-sm font-medium text-foreground mt-1">
-                    {invoice.items[0]?.description?.split(' - ')[0] || "Project"}
+                    {invoice.items[0]?.description?.split(' - ')[0] || "Proyek"}
                   </p>
                 </div>
                 {invoice.due_date && (
                   <div>
-                    <p className="text-xs text-muted-foreground uppercase tracking-wider">Due Date</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider">Jatuh Tempo</p>
                     <p className={cn("text-sm font-medium mt-1", isOverdue ? "text-destructive" : "text-foreground")}>
                       {format(new Date(invoice.due_date), "MMM d, yyyy")}
                     </p>
@@ -235,8 +235,8 @@ export default function GuestPayment() {
               <div className="glass-card rounded-2xl p-6 bg-gradient-to-br from-primary/10 to-transparent">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Total Amount Due</p>
-                    <p className="text-xs text-muted-foreground">Including all applicable taxes</p>
+                    <p className="text-sm text-muted-foreground">Total Tagihan</p>
+                    <p className="text-xs text-muted-foreground">Sudah termasuk komponen biaya yang berlaku</p>
                   </div>
                   <span className="text-3xl font-bold gradient-text font-mono">{formatIDR(invoice.total)}</span>
                 </div>
@@ -247,8 +247,8 @@ export default function GuestPayment() {
                 <div className="flex items-center gap-2">
                   <Building2 className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-muted-foreground">Client</p>
-                    <p className="font-medium text-foreground">{invoice.client_name || "Client"}</p>
+                    <p className="text-muted-foreground">Klien</p>
+                    <p className="font-medium text-foreground">{invoice.client_name || "Klien"}</p>
                     {invoice.client_company && (
                       <p className="text-xs text-muted-foreground">{invoice.client_company}</p>
                     )}
@@ -263,24 +263,24 @@ export default function GuestPayment() {
             </div>
 
             {/* Right Side - Payment Form */}
-            <div className="glass-card rounded-2xl p-8">
+            <div className="glass-card rounded-[28px] border border-border/60 p-8 shadow-xl">
               {invoice.status === "paid" ? (
                 <div className="text-center py-12">
                   <div className="w-20 h-20 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-4">
                     <CheckCircle className="w-10 h-10 text-success" />
                   </div>
-                  <h2 className="text-2xl font-bold text-success mb-2">Payment Complete</h2>
+                  <h2 className="text-2xl font-bold text-success mb-2">Pembayaran Selesai</h2>
                   <p className="text-muted-foreground">
-                    Thank you for your payment. This invoice has been paid.
+                    Terima kasih. Invoice ini sudah berhasil dibayar.
                   </p>
                 </div>
               ) : (
                 <>
                   {/* Payment Method Tabs */}
-                  <div className="flex items-center gap-2 p-1 bg-secondary rounded-xl mb-6">
+                  <div className="flex items-center gap-2 p-1.5 bg-secondary/80 rounded-2xl mb-6">
                     {[
-                      { id: "card" as const, label: "Card Payment", icon: CreditCard },
-                      { id: "bank" as const, label: "Bank Transfer", icon: Building2 },
+                      { id: "card" as const, label: "Kartu", icon: CreditCard },
+                      { id: "bank" as const, label: "Transfer Bank", icon: Building2 },
                       { id: "paypal" as const, label: "PayPal", icon: null },
                     ].map((method) => (
                       <button
@@ -301,10 +301,10 @@ export default function GuestPayment() {
 
                   {paymentMethod === "card" && (
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-foreground">Payment Details</h3>
+                      <h3 className="text-lg font-semibold text-foreground">Detail Pembayaran</h3>
 
                       <div>
-                        <Label htmlFor="cardNumber">Card Number</Label>
+                        <Label htmlFor="cardNumber">Nomor Kartu</Label>
                         <div className="relative mt-1.5">
                           <Input
                             id="cardNumber"
@@ -338,21 +338,21 @@ export default function GuestPayment() {
                       </div>
 
                       <div>
-                        <Label htmlFor="cardholderName">Cardholder Name</Label>
+                        <Label htmlFor="cardholderName">Nama Pemegang Kartu</Label>
                         <Input
                           id="cardholderName"
-                          placeholder="John Doe"
+                          placeholder="Nama lengkap"
                           className="mt-1.5"
                         />
                       </div>
 
                       <div>
-                        <Label htmlFor="email">Email for Receipt</Label>
+                        <Label htmlFor="email">Email untuk Bukti Pembayaran</Label>
                         <div className="relative mt-1.5">
                           <Input
                             id="email"
                             type="email"
-                            placeholder="billing@acmecorp.com"
+                            placeholder="billing@perusahaananda.com"
                             className="pl-10"
                           />
                           <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -366,57 +366,57 @@ export default function GuestPayment() {
                           onCheckedChange={(checked) => setUseBillingAddress(checked === true)}
                         />
                         <label htmlFor="useBilling" className="text-sm text-muted-foreground cursor-pointer">
-                          Use shipping address for billing
+                          Gunakan alamat penagihan yang sama
                         </label>
                       </div>
 
                       <Button className="w-full h-12 text-base gap-2 mt-4">
                         <Lock className="w-4 h-4" />
-                        Pay {formatIDR(invoice.total)}
+                        Bayar {formatIDR(invoice.total)}
                       </Button>
 
                       <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Shield className="w-3.5 h-3.5" />
-                          256-bit SSL Encrypted
+                          Enkripsi SSL 256-bit
                         </div>
                         <span>•</span>
-                        <span>Powered by Stripe</span>
+                        <span>Diproses oleh Stripe</span>
                       </div>
 
                       <p className="text-xs text-muted-foreground text-center mt-4">
-                        By confirming payment, you allow Artha to charge your card for the amount above securely.
+                        Dengan mengonfirmasi pembayaran, Anda memberi izin untuk memproses tagihan sesuai nominal di atas secara aman.
                       </p>
                     </div>
                   )}
 
                   {paymentMethod === "bank" && (
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-foreground">Bank Transfer Details</h3>
+                      <h3 className="text-lg font-semibold text-foreground">Detail Transfer Bank</h3>
                       <div className="space-y-3 p-4 rounded-xl bg-secondary/30 border border-border/50">
                         <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">Bank Name</span>
-                          <span className="font-medium text-foreground">{businessPayment?.bank_name || "Contact vendor for details"}</span>
+                          <span className="text-muted-foreground">Nama Bank</span>
+                          <span className="font-medium text-foreground">{businessPayment?.bank_name || "Hubungi penyedia untuk detail rekening"}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">Account Number</span>
-                          <span className="font-medium text-foreground font-mono">{businessPayment?.account_number || "N/A"}</span>
+                          <span className="text-muted-foreground">Nomor Rekening</span>
+                          <span className="font-medium text-foreground font-mono">{businessPayment?.account_number || "-"}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">Account Name</span>
-                          <span className="font-medium text-foreground">{businessPayment?.account_name || "N/A"}</span>
+                          <span className="text-muted-foreground">Nama Rekening</span>
+                          <span className="font-medium text-foreground">{businessPayment?.account_name || "-"}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">Amount</span>
+                          <span className="text-muted-foreground">Nominal</span>
                           <span className="font-semibold text-primary font-numeric">{formatIDR(invoice.total)}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">Reference</span>
+                          <span className="text-muted-foreground">Referensi</span>
                           <span className="font-medium text-foreground font-mono">{invoice.invoice_number}</span>
                         </div>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        {businessPayment?.payment_notes || "Please include the reference number in your transfer description. Payment confirmation may take 1-2 business days."}
+                        {businessPayment?.payment_notes || "Sertakan nomor referensi pada keterangan transfer. Konfirmasi pembayaran biasanya memerlukan 1 sampai 2 hari kerja."}
                       </p>
                     </div>
                   )}
@@ -426,12 +426,12 @@ export default function GuestPayment() {
                       <div className="w-16 h-16 rounded-2xl bg-[#0070ba]/10 flex items-center justify-center mx-auto">
                         <span className="text-2xl font-bold text-[#0070ba]">P</span>
                       </div>
-                      <h3 className="text-lg font-semibold text-foreground">Pay with PayPal</h3>
+                      <h3 className="text-lg font-semibold text-foreground">Bayar dengan PayPal</h3>
                       <p className="text-sm text-muted-foreground">
-                        You'll be redirected to PayPal to complete your payment securely.
+                        Anda akan diarahkan ke PayPal untuk menyelesaikan pembayaran secara aman.
                       </p>
                       <Button className="w-full h-12 bg-[#0070ba] hover:bg-[#005ea6] gap-2">
-                        Continue to PayPal
+                        Lanjut ke PayPal
                       </Button>
                     </div>
                   )}
@@ -444,8 +444,8 @@ export default function GuestPayment() {
         {/* Footer */}
         <footer className="border-t border-border py-6 px-6 mt-8">
           <div className="max-w-6xl mx-auto text-center text-muted-foreground text-sm">
-            <p>© 2025 Artha. All rights reserved.</p>
-            <p className="mt-1">Questions about this invoice? Contact us at support@artha.app</p>
+            <p>© 2025 Artha. Seluruh hak dilindungi.</p>
+            <p className="mt-1">Butuh bantuan terkait invoice ini? Hubungi support@artha.app</p>
           </div>
         </footer>
       </div>

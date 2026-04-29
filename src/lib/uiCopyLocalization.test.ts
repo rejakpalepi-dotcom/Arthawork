@@ -214,4 +214,46 @@ describe("UI copy localization regressions", () => {
     expect(errorBoundary).not.toContain("Try Again");
     expect(errorBoundary).not.toContain("Refresh Page");
   });
+
+  it("client-facing pages and proposal flow avoid obvious English UI copy", () => {
+    const contractViewer = readProjectFile("src/pages/ContractViewer.tsx");
+    const clientPortal = readProjectFile("src/pages/ClientPortal.tsx");
+    const guestPayment = readProjectFile("src/pages/GuestPayment.tsx");
+    const faq = readProjectFile("src/pages/FAQ.tsx");
+    const proposalBuilder = readProjectFile("src/pages/ProposalBuilder.tsx");
+    const proposalEditor = readProjectFile("src/components/proposal/ProposalEditor.tsx");
+    const proposalPreview = readProjectFile("src/components/proposal/ProposalPreview.tsx");
+
+    expect(contractViewer).not.toContain("Down Payment");
+    expect(clientPortal).not.toContain("Premium Client Portal");
+    expect(clientPortal).not.toContain("Download File Final");
+    expect(guestPayment).not.toContain("Loading invoice...");
+    expect(guestPayment).not.toContain("Invoice Not Found");
+    expect(guestPayment).not.toContain("Secure Checkout");
+    expect(guestPayment).not.toContain("Payment Portal");
+    expect(guestPayment).not.toContain("Complete Your");
+    expect(guestPayment).not.toContain("Total Amount Due");
+    expect(guestPayment).not.toContain("Card Payment");
+    expect(guestPayment).not.toContain("Bank Transfer Details");
+    expect(faq).not.toContain("Sign Up");
+    expect(faq).not.toContain("Settings >");
+    expect(faq).not.toContain("Cancel Subscription");
+    expect(faq).not.toContain("Enable 2FA");
+    expect(proposalBuilder).not.toContain("Proposal not found");
+    expect(proposalBuilder).not.toContain("The Ultimate Project Proposal");
+    expect(proposalBuilder).not.toContain("Why work with me?");
+    expect(proposalBuilder).not.toContain("Track Record");
+    expect(proposalEditor).not.toContain("Upload Image Here");
+    expect(proposalEditor).not.toContain("Headline");
+    expect(proposalEditor).not.toContain("Projects");
+    expect(proposalEditor).not.toContain("Countries");
+    expect(proposalEditor).not.toContain("Rating");
+    expect(proposalEditor).not.toContain("Scope of Work");
+    expect(proposalPreview).not.toContain("Project Proposal");
+    expect(proposalPreview).not.toContain("Prepared for");
+    expect(proposalPreview).not.toContain("What we bring to the table");
+    expect(proposalPreview).not.toContain("How we get from here to there");
+    expect(proposalPreview).not.toContain("Ready to begin?");
+    expect(proposalPreview).not.toContain("Let's start");
+  });
 });
