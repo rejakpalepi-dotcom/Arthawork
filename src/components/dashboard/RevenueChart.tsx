@@ -10,17 +10,17 @@ export function RevenueChart({ data }: RevenueChartProps) {
   const [period, setPeriod] = useState<"6months" | "year">("6months");
 
   return (
-    <div className="glass-card rounded-2xl p-6 animate-fade-in h-full">
+    <div className="glass-card rounded-[28px] border border-border/70 p-6 shadow-sm animate-fade-in h-full" data-ui-panel="revenue-chart">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-foreground">TREN PENDAPATAN</h3>
-          <p className="text-sm text-muted-foreground">Ringkasan pemasukan bulanan</p>
+          <p className="mt-1 text-sm text-muted-foreground">Ringkasan pemasukan yang mudah dibaca tanpa panel terasa padat.</p>
         </div>
-        <div className="flex items-center gap-1 p-1 bg-secondary rounded-lg">
+        <div className="flex items-center gap-1 p-1 bg-secondary/80 rounded-xl">
           <button
             onClick={() => setPeriod("6months")}
             className={cn(
-              "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
+              "px-3 py-2 text-xs font-medium rounded-lg transition-all",
               period === "6months" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
             )}
           >

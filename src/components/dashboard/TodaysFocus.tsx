@@ -136,8 +136,11 @@ export function TodaysFocus() {
 
   if (loading) {
     return (
-      <div className="glass-card rounded-2xl p-6 animate-fade-in">
-        <h3 className="text-lg font-semibold text-foreground mb-4">FOKUS HARI INI</h3>
+      <div className="glass-card rounded-[28px] border border-border/70 p-6 shadow-sm animate-fade-in" data-ui-panel="todays-focus">
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-foreground">FOKUS HARI INI</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Task kecil yang menjaga hari ini tetap bergerak.</p>
+        </div>
         <div className="flex items-center justify-center py-8">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
@@ -146,8 +149,11 @@ export function TodaysFocus() {
   }
 
   return (
-    <div className="glass-card rounded-2xl p-6 animate-fade-in">
-      <h3 className="text-lg font-semibold text-foreground mb-4">FOKUS HARI INI</h3>
+    <div className="glass-card rounded-[28px] border border-border/70 p-6 shadow-sm animate-fade-in" data-ui-panel="todays-focus">
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold text-foreground">FOKUS HARI INI</h3>
+        <p className="mt-1 text-sm text-muted-foreground">Susun prioritas kecil biar eksekusi harian tidak tercecer.</p>
+      </div>
 
       {/* Add new task */}
       <div className="flex gap-2 mb-4">
@@ -172,7 +178,7 @@ export function TodaysFocus() {
       {/* Task list */}
       <div className="space-y-1">
         {todos.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4">
+          <p className="rounded-2xl border border-dashed border-border/80 bg-secondary/30 px-4 py-6 text-sm text-muted-foreground text-center">
             Belum ada fokus hari ini. Tambahkan dari kolom di atas.
           </p>
         ) : (
@@ -180,7 +186,7 @@ export function TodaysFocus() {
             <div
               key={todo.id}
               className={cn(
-                "flex items-center gap-3 p-3 rounded-lg transition-all group hover:bg-secondary/50",
+                "flex items-center gap-3 p-3 rounded-xl transition-all group hover:bg-secondary/50",
                 todo.is_completed && "opacity-50"
               )}
             >

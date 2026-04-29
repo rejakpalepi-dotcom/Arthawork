@@ -33,9 +33,9 @@ export function SubscriptionTab() {
     const proposalProgress = proposalLimit === Infinity ? 0 : (usage.proposals / proposalLimit) * 100;
 
     return (
-        <div className="lg:col-span-3 space-y-6">
+        <div className="lg:col-span-3 space-y-6" data-ui-panel="subscription-tab">
             {/* Current plan */}
-            <Card>
+            <Card className="rounded-[28px] border-border/70 shadow-sm">
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -73,7 +73,7 @@ export function SubscriptionTab() {
 
             {/* Usage stats */}
             {tier === "free" && (
-                <Card>
+                <Card className="rounded-[28px] border-border/70 shadow-sm">
                     <CardHeader>
                         <CardTitle className="text-lg">Pemakaian Bulanan</CardTitle>
                         <CardDescription>
@@ -141,9 +141,10 @@ export function SubscriptionTab() {
             )}
 
             {/* Compare plans */}
-            <Card>
+            <Card className="rounded-[28px] border-border/70 shadow-sm">
                 <CardHeader>
                     <CardTitle className="text-lg">Bandingkan Paket</CardTitle>
+                    <CardDescription>Lihat posisi paket aktif Anda dibanding pilihan lain dengan ritme visual yang lebih rapi.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-3 gap-4 text-center">

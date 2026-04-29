@@ -18,4 +18,20 @@ describe("Authenticated layout polish regressions", () => {
     expect(proposals).toContain('data-ui-shell="proposal-overview"');
     expect(settings).toContain('data-ui-shell="settings-workspace"');
   });
+
+  it("supporting panels and landing page expose polish hooks", () => {
+    const todaysFocus = readProjectFile("src/components/dashboard/TodaysFocus.tsx");
+    const revenueChart = readProjectFile("src/components/dashboard/RevenueChart.tsx");
+    const subscriptionTab = readProjectFile("src/components/settings/SubscriptionTab.tsx");
+    const securityTab = readProjectFile("src/components/settings/SecurityTab.tsx");
+    const accountTab = readProjectFile("src/components/settings/AccountTab.tsx");
+    const landing = readProjectFile("src/pages/LandingPage.tsx");
+
+    expect(todaysFocus).toContain('data-ui-panel="todays-focus"');
+    expect(revenueChart).toContain('data-ui-panel="revenue-chart"');
+    expect(subscriptionTab).toContain('data-ui-panel="subscription-tab"');
+    expect(securityTab).toContain('data-ui-panel="security-tab"');
+    expect(accountTab).toContain('data-ui-panel="account-tab"');
+    expect(landing).toContain('data-ui-shell="landing-marketing"');
+  });
 });

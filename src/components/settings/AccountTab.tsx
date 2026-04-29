@@ -94,11 +94,14 @@ export function AccountTab() {
   };
 
   return (
-    <div className="lg:col-span-3 glass-card rounded-2xl p-8 animate-fade-in">
-      <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
-        <User className="w-5 h-5 text-primary" />
-        PENGATURAN AKUN
-      </h2>
+    <div className="lg:col-span-3 glass-card rounded-[28px] border border-border/70 p-8 shadow-sm animate-fade-in" data-ui-panel="account-tab">
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+          <User className="w-5 h-5 text-primary" />
+          PENGATURAN AKUN
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Kelola identitas akun, akses data, dan area sensitif tanpa panel terasa terlalu padat.</p>
+      </div>
 
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -125,7 +128,7 @@ export function AccountTab() {
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-secondary/50 border border-border">
+        <div className="p-5 rounded-2xl bg-secondary/50 border border-border/80">
           <h3 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
             <Lock className="w-4 h-4" />
             Ubah Password
@@ -164,7 +167,7 @@ export function AccountTab() {
           </Button>
         </div>
 
-        <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+        <div className="p-5 rounded-2xl bg-primary/5 border border-primary/20">
           <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
             <Download className="w-4 h-4" />
             EKSPOR DATA
@@ -192,7 +195,7 @@ export function AccountTab() {
           </Button>
         </div>
 
-        <div className="p-4 rounded-xl bg-destructive/5 border border-destructive/20">
+        <div className="p-5 rounded-2xl bg-destructive/5 border border-destructive/20">
           <h3 className="text-sm font-medium text-destructive mb-2 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4" />
             ZONA KRITIS
