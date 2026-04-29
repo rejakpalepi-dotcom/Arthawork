@@ -46,10 +46,11 @@ export default function Dashboard() {
         description="Your Artha business dashboard. Track revenue, manage proposals, invoices, and clients."
         noIndex={true}
       />
-      <div className="p-4 md:p-8 font-sans">
+      <div className="p-4 md:p-8 font-sans" data-ui-shell="dashboard-overview">
         {/* Header with Dynamic Greeting */}
-        <header className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6 md:mb-8">
-          <div>
+        <header className="mb-6 md:mb-8 rounded-[32px] border border-border/70 bg-card/85 px-5 py-5 shadow-sm backdrop-blur md:px-7 md:py-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="max-w-2xl">
             {loading ? (
               <>
                 <Skeleton className="h-8 md:h-9 w-48 md:w-64 mb-2" />
@@ -57,10 +58,13 @@ export default function Dashboard() {
               </>
             ) : (
               <>
-                <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-1 md:mb-2">
+                <div className="mb-2 inline-flex items-center rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
+                  Ringkasan Hari Ini
+                </div>
+                <h1 className="text-2xl md:text-[2rem] font-semibold tracking-tight text-foreground mb-1 md:mb-2">
                   {greeting}, {userName}
                 </h1>
-                <p className="text-sm md:text-base text-muted-foreground">
+                <p className="text-sm md:text-base leading-relaxed text-muted-foreground">
                   <span className="hidden sm:inline">{today} · </span>
                   {upcomingDeadlines} tenggat akan datang
                 </p>
@@ -70,7 +74,7 @@ export default function Dashboard() {
           <nav className="hidden md:flex items-center gap-3" aria-label="Aksi dashboard">
             <NotificationCenter />
             <Button
-              className="gap-2"
+              className="gap-2 min-h-[44px] rounded-xl px-5"
               onClick={() => navigate("/projects/new")}
               aria-label="Buat proyek baru"
             >
@@ -78,10 +82,18 @@ export default function Dashboard() {
               PROYEK BARU
             </Button>
           </nav>
+          </div>
         </header>
 
         {/* Stats Grid - 4 columns with real-time metrics */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8" aria-label="Metrik bisnis">
+        <section className="rounded-[28px] border border-border/60 bg-card/70 p-4 shadow-sm backdrop-blur md:p-5 mb-6 md:mb-8" aria-label="Metrik bisnis">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-foreground">Metrik Utama</h2>
+              <p className="text-sm text-muted-foreground">Pantau angka yang paling sering kamu lihat setiap hari.</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {loading ? (
             <>
               <Skeleton className="h-24 md:h-32 rounded-xl" />
@@ -121,18 +133,19 @@ export default function Dashboard() {
               />
             </>
           )}
+          </div>
         </section>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
           {/* Revenue Chart - takes 2 columns */}
-          <div className="lg:col-span-2 order-2 lg:order-1">
+          <div className="lg:col-span-2 order-2 lg:order-1 rounded-[28px] border border-border/60 bg-card/70 p-4 shadow-sm backdrop-blur md:p-5">
             <div className="flex items-center justify-between mb-3 md:mb-4">
               <h2 className="text-base md:text-lg font-semibold text-foreground">TREN PENDAPATAN</h2>
               <Button
                 variant="outline"
                 size="sm"
-                className="gap-2 text-xs md:text-sm"
+                className="gap-2 rounded-xl text-xs md:text-sm"
                 onClick={handleExport}
                 disabled={loading}
               >

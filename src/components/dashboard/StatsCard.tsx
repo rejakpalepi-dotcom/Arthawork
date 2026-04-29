@@ -28,8 +28,8 @@ export function StatsCard({
   return (
     <div 
       className={cn(
-        "stat-card animate-fade-in relative overflow-hidden",
-        isHighlight && "bg-primary text-primary-foreground border-primary/50",
+        "stat-card animate-fade-in relative overflow-hidden rounded-2xl border border-border/70 bg-card/90 shadow-sm",
+        isHighlight && "bg-primary text-primary-foreground border-primary/50 shadow-[0_18px_48px_-24px_rgba(14,165,233,0.75)]",
         className
       )}
     >
@@ -43,14 +43,14 @@ export function StatsCard({
             {title}
           </p>
           <p className={cn(
-            "text-xl md:text-3xl font-semibold font-numeric truncate",
+            "text-xl md:text-[1.9rem] font-semibold tracking-tight font-numeric truncate",
             isHighlight ? "text-primary-foreground" : "text-foreground"
           )}>
             {value}
           </p>
           {subtitle && (
             <span className={cn(
-              "hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
+              "hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium",
               isHighlight 
                 ? "bg-primary-foreground/20 text-primary-foreground" 
                 : "bg-primary/10 text-primary"

@@ -73,7 +73,7 @@ export default function Settings() {
 
   return (
     <DashboardLayout>
-      <div className="p-8">
+      <div className="p-8" data-ui-shell="settings-workspace">
         <div className="mb-8">
           <h1 className="text-3xl font-bold uppercase tracking-[0.03em] text-foreground mb-2">PENGATURAN</h1>
           <p className="text-muted-foreground">Atur preferensi studio dan akun kamu.</p>
@@ -81,16 +81,20 @@ export default function Settings() {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
-          <div className="glass-card rounded-2xl p-4 h-fit">
+          <div className="glass-card rounded-[28px] border border-border/70 p-4 h-fit shadow-sm lg:sticky lg:top-24">
+            <div className="mb-4 rounded-2xl border border-primary/10 bg-primary/5 px-4 py-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Workspace</p>
+              <p className="mt-1 text-sm text-muted-foreground">Pilih area pengaturan yang ingin kamu rapikan atau perbarui.</p>
+            </div>
             <nav className="space-y-1">
               {settingsSections.map((section) => (
                 <button
                   key={section.id}
                   onClick={() => setActiveTab(section.id)}
                   className={cn(
-                    "w-full flex items-center justify-start gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-left transition-colors",
+                    "w-full flex items-center justify-start gap-3 px-4 py-3 rounded-xl text-sm font-medium text-left transition-colors",
                     activeTab === section.id
-                      ? "bg-primary/15 text-primary"
+                      ? "bg-primary text-primary-foreground shadow-sm"
                       : "text-muted-foreground hover:bg-secondary hover:text-foreground",
                   )}
                 >

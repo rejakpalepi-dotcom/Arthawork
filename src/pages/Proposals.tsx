@@ -332,7 +332,7 @@ export default function Proposals() {
 
   return (
     <DashboardLayout>
-      <div className="p-8">
+      <div className="p-8" data-ui-shell="proposal-overview">
         <PageHeader
           title="PROPOSAL"
           description="Kelola proposal aktif, draft, dan arsip penawaran kamu."
@@ -346,7 +346,7 @@ export default function Proposals() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="glass-card rounded-2xl p-6">
+          <div className="glass-card rounded-[28px] border border-border/70 p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 rounded-lg bg-primary/10">
                 <DollarSign className="w-5 h-5 text-primary" />
@@ -368,7 +368,7 @@ export default function Proposals() {
             )}
           </div>
 
-          <div className="glass-card rounded-2xl p-6">
+          <div className="glass-card rounded-[28px] border border-border/70 p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 rounded-lg bg-success/10">
                 <FileCheck className="w-5 h-5 text-success" />
@@ -390,7 +390,7 @@ export default function Proposals() {
             )}
           </div>
 
-          <div className="glass-card rounded-2xl p-6">
+          <div className="glass-card rounded-[28px] border border-border/70 p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 rounded-lg bg-warning/10">
                 <Clock className="w-5 h-5 text-warning" />
@@ -407,14 +407,15 @@ export default function Proposals() {
         </div>
 
         {/* Tabs & Filters */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-1 p-1 bg-secondary rounded-lg">
+        <div className="mb-6 rounded-[28px] border border-border/70 bg-card/75 p-4 shadow-sm">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-1 overflow-x-auto p-1 bg-secondary/80 rounded-xl">
             {tabs.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={cn(
-                  "px-4 py-2 text-sm font-medium rounded-md transition-all",
+                  "whitespace-nowrap px-4 py-2 text-sm font-medium rounded-lg transition-all",
                   activeTab === tab
                     ? "bg-card text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
@@ -424,12 +425,21 @@ export default function Proposals() {
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="relative min-w-[240px] flex-1">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Cari judul proposal atau nama klien"
+                className="pl-9"
+              />
+            </div>
             <Button variant="outline" size="sm" className="gap-2">
               <Filter className="w-4 h-4" />
               FILTER
             </Button>
-            <div className="flex items-center gap-1 p-1 bg-secondary rounded-lg">
+            <div className="flex items-center gap-1 p-1 bg-secondary/80 rounded-xl">
               <button
                 onClick={() => setViewMode("grid")}
                 className={cn(
@@ -450,11 +460,12 @@ export default function Proposals() {
               </button>
             </div>
           </div>
+          </div>
         </div>
 
         {/* Proposals Grid/List */}
         {filteredProposals.length === 0 ? (
-          <div className="glass-card rounded-2xl">
+          <div className="glass-card rounded-[28px] border border-border/70 shadow-sm">
             <EmptyState
               icon={Inbox}
               title="Belum ada proposal"
@@ -481,7 +492,7 @@ export default function Proposals() {
               return (
                 <div
                   key={proposal.id}
-                  className="glass-card rounded-2xl p-6 card-hover animate-fade-in"
+                  className="glass-card rounded-[28px] border border-border/70 p-6 shadow-sm card-hover animate-fade-in"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <div className="flex items-start justify-between mb-4">

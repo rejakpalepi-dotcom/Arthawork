@@ -77,7 +77,7 @@ export function ActiveProjects({ projects, loading, onStatusChange }: ActiveProj
 
   if (loading) {
     return (
-      <div className="glass-card rounded-2xl p-6 animate-fade-in">
+      <div className="glass-card rounded-[28px] border border-border/70 p-6 shadow-sm animate-fade-in">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-foreground">PROYEK AKTIF</h3>
         </div>
@@ -91,9 +91,12 @@ export function ActiveProjects({ projects, loading, onStatusChange }: ActiveProj
   }
 
   return (
-    <div className="glass-card rounded-2xl p-6 animate-fade-in">
+    <div className="glass-card rounded-[28px] border border-border/70 p-6 shadow-sm animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-foreground">PROYEK AKTIF</h3>
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">PROYEK AKTIF</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Proyek yang sedang berjalan, ditinjau, atau butuh tindak lanjut.</p>
+        </div>
         <button
           onClick={() => navigate("/proposals")}
           className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"

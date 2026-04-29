@@ -55,11 +55,14 @@ export function BrandingTab({ settings, saving, onUpdate, onSave, onUploadLogo }
   };
 
   return (
-    <div className="lg:col-span-3 glass-card rounded-2xl p-8 animate-fade-in">
-      <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
-        <Palette className="w-5 h-5 text-primary" />
-        IDENTITAS VISUAL
-      </h2>
+    <div className="lg:col-span-3 glass-card rounded-[28px] border border-border/70 p-8 shadow-sm animate-fade-in">
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+          <Palette className="w-5 h-5 text-primary" />
+          IDENTITAS VISUAL
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Rapikan logo, warna, dan tagline supaya semua dokumen klien terasa konsisten dan lebih meyakinkan.</p>
+      </div>
 
       <div className="space-y-6">
         <div className="space-y-4">

@@ -33,11 +33,14 @@ export function PaymentDetailsTab({ settings, saving, onUpdate, onSave }: Paymen
   };
 
   return (
-    <div className="lg:col-span-3 glass-card rounded-2xl p-8 animate-fade-in">
-      <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
-        <CreditCard className="w-5 h-5 text-primary" />
-        DETAIL PEMBAYARAN
-      </h2>
+    <div className="lg:col-span-3 glass-card rounded-[28px] border border-border/70 p-8 shadow-sm animate-fade-in">
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+          <CreditCard className="w-5 h-5 text-primary" />
+          DETAIL PEMBAYARAN
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Susun rekening dan jalur pembayaran online dengan jelas agar invoice lebih mudah dibayar tanpa kebingungan.</p>
+      </div>
 
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

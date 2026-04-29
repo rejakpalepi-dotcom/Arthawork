@@ -52,7 +52,7 @@ export function PageHeader({
       {crumbs.length > 0 && (
         <nav
           aria-label="Breadcrumb"
-          className="hidden md:flex items-center gap-1.5 text-sm text-muted-foreground mb-3"
+          className="hidden md:flex items-center gap-1.5 text-sm text-muted-foreground mb-4"
         >
           {crumbs.map((crumb, i) => {
             const isLast = i === crumbs.length - 1;
@@ -78,13 +78,13 @@ export function PageHeader({
       )}
 
       {/* Title + Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-1 md:mb-2">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 rounded-[28px] border border-border/70 bg-card/80 px-5 py-5 shadow-sm backdrop-blur md:px-6 md:py-6">
+        <div className="max-w-2xl">
+          <h1 className="text-2xl md:text-[2rem] font-semibold tracking-tight text-foreground mb-1.5 md:mb-2">
             {title}
           </h1>
           {description && (
-            <p className="text-sm md:text-base text-muted-foreground">{description}</p>
+            <p className="text-sm md:text-base leading-relaxed text-muted-foreground">{description}</p>
           )}
         </div>
         {actions && (

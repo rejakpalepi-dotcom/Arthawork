@@ -33,7 +33,7 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
   const navigate = useNavigate();
   if (loading) {
     return (
-      <div className="glass-card rounded-2xl p-6 animate-fade-in">
+      <div className="glass-card rounded-[28px] border border-border/70 p-6 shadow-sm animate-fade-in">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-foreground">INVOICE TERBARU</h3>
           <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
@@ -48,9 +48,12 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
   }
 
   return (
-    <div className="glass-card rounded-2xl p-6 animate-fade-in">
+    <div className="glass-card rounded-[28px] border border-border/70 p-6 shadow-sm animate-fade-in">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-foreground">INVOICE TERBARU</h3>
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">INVOICE TERBARU</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Tagihan yang baru dibuat dan paling butuh perhatian.</p>
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="p-1.5 hover:bg-secondary rounded-lg transition-colors">
@@ -86,7 +89,7 @@ export function RecentInvoices({ invoices, loading }: RecentInvoicesProps) {
             return (
               <div
                 key={invoice.id}
-                className="p-4 rounded-xl bg-secondary/30 border border-border/50 hover:border-border transition-colors"
+                className="p-4 rounded-2xl bg-secondary/30 border border-border/50 hover:border-border transition-colors"
               >
                 <div className="flex items-start gap-4">
                   <div className={cn("p-2.5 rounded-lg shrink-0", statusUI.bgClass)}>

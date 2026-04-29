@@ -33,14 +33,17 @@ export function QuickActions({ onExportReport }: QuickActionsProps) {
   };
 
   return (
-    <div className="glass-card rounded-2xl p-6 animate-fade-in">
-      <h3 className="text-lg font-semibold uppercase tracking-[0.04em] text-foreground mb-4">AKSI CEPAT</h3>
+    <div className="glass-card rounded-[28px] border border-border/70 p-6 shadow-sm animate-fade-in">
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold uppercase tracking-[0.04em] text-foreground">AKSI CEPAT</h3>
+        <p className="mt-1 text-sm text-muted-foreground">Pintasan kerja untuk alur yang paling sering dipakai.</p>
+      </div>
       <div className="grid grid-cols-2 gap-3">
         {actions.map((action) => (
           <button
             key={action.label}
             onClick={() => handleAction(action)}
-            className="flex flex-col items-center justify-center gap-3 p-4 rounded-xl bg-secondary/50 border border-border hover:border-primary/30 hover:bg-secondary transition-all duration-200"
+            className="flex flex-col items-center justify-center gap-3 p-4 rounded-2xl bg-secondary/40 border border-border/70 hover:border-primary/30 hover:bg-secondary transition-all duration-200"
           >
             <div className="p-2.5 rounded-xl bg-card">
               <action.icon className={`w-5 h-5 ${action.color}`} />

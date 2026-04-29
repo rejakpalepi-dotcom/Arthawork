@@ -59,6 +59,15 @@ export default function Invoices() {
   const navigate = useNavigate();
   const { settings: businessSettings } = useBusinessSettings();
 
+  const invoiceStats = {
+    total: invoices.length,
+    paid: invoices.filter((invoice) => resolveInvoiceStatus({ status: invoice.status, due_date: invoice.due_date }) === "paid").length,
+    overdue: invoices.filter((invoice) => resolveInvoiceStatus({ status: invoice.status, due_date: invoice.due_date }) === "overdue").length,
+    outstanding: invoices
+      .filter((invoice) => resolveInvoiceStatus({ status: invoice.status, due_date: invoice.due_date }) !== "paid")
+      .reduce((sum, invoice) => sum + invoice.total, 0),
+  };
+
   const fetchInvoices = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -316,7 +325,7 @@ export default function Invoices() {
 
   return (
     <DashboardLayout>
-      <div className="p-4 md:p-8">
+      <div className="p-4 md:p-8" data-ui-shell="invoice-overview">
         <PageHeader
           title="INVOICE"
           description="Pantau pembayaran dan kelola invoice kamu."
@@ -328,8 +337,31 @@ export default function Invoices() {
           }
         />
 
+        <section className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+          <div className="rounded-2xl border border-border/70 bg-card/80 p-4 shadow-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Total</p>
+            <p className="mt-2 text-2xl font-semibold tracking-tight text-foreground">{invoiceStats.total}</p>
+            <p className="mt-1 text-sm text-muted-foreground">Semua invoice yang tersimpan</p>
+          </div>
+          <div className="rounded-2xl border border-border/70 bg-card/80 p-4 shadow-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Lunas</p>
+            <p className="mt-2 text-2xl font-semibold tracking-tight text-foreground">{invoiceStats.paid}</p>
+            <p className="mt-1 text-sm text-muted-foreground">Tagihan yang sudah dibayar</p>
+          </div>
+          <div className="rounded-2xl border border-border/70 bg-card/80 p-4 shadow-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Lewat Tempo</p>
+            <p className="mt-2 text-2xl font-semibold tracking-tight text-foreground">{invoiceStats.overdue}</p>
+            <p className="mt-1 text-sm text-muted-foreground">Butuh follow up secepatnya</p>
+          </div>
+          <div className="rounded-2xl border border-primary/15 bg-primary/5 p-4 shadow-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">Outstanding</p>
+            <p className="mt-2 text-2xl font-semibold tracking-tight text-foreground font-numeric">{formatIDR(invoiceStats.outstanding)}</p>
+            <p className="mt-1 text-sm text-muted-foreground">Nilai invoice yang belum lunas</p>
+          </div>
+        </section>
+
         {invoices.length === 0 ? (
-          <div className="glass-card rounded-2xl">
+          <div className="glass-card rounded-[28px] border border-border/70 shadow-sm">
             <EmptyState
               icon={Inbox}
               title="Belum ada invoice"
@@ -341,7 +373,7 @@ export default function Invoices() {
         ) : (
           <>
             {/* Mobile Card View */}
-            <div className="md:hidden space-y-3">
+            <div className="md:hidden space-y-3 rounded-[28px] border border-border/70 bg-card/70 p-4 shadow-sm">
               {invoices.map((invoice, index) => {
                 const resolvedStatus = resolveInvoiceStatus({ status: invoice.status, due_date: invoice.due_date });
                 const dueDateInfo = formatDueDate(invoice.due_date);
@@ -349,7 +381,7 @@ export default function Invoices() {
                   <div
                     key={invoice.id}
                     onClick={() => navigate(`/invoices/${invoice.id}`)}
-                    className="glass-card rounded-xl p-4 card-hover animate-fade-in cursor-pointer"
+                    className="glass-card rounded-2xl p-4 card-hover animate-fade-in cursor-pointer"
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <div className="flex items-start justify-between mb-3">
@@ -447,7 +479,11 @@ export default function Invoices() {
             </div>
 
             {/* Desktop Table View */}
-            <div className="hidden md:block glass-card rounded-2xl overflow-hidden">
+            <div className="hidden md:block glass-card rounded-[28px] border border-border/70 overflow-hidden shadow-sm">
+              <div className="border-b border-border/70 px-5 py-4">
+                <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-foreground">Daftar Invoice</h2>
+                <p className="mt-1 text-sm text-muted-foreground">Lihat status, nominal, dan aksi utama tanpa perlu membuka invoice satu per satu.</p>
+              </div>
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border">
