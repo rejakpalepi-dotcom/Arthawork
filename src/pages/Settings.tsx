@@ -11,12 +11,12 @@ import { SubscriptionTab } from "@/components/settings/SubscriptionTab";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 
 const settingsSections = [
-  { id: "business", label: "Business Profile", icon: Building2 },
+  { id: "business", label: "Profil Bisnis", icon: Building2 },
   { id: "branding", label: "Branding", icon: Palette },
-  { id: "payment", label: "Payment Details", icon: CreditCard },
-  { id: "subscription", label: "Subscription", icon: Crown },
-  { id: "security", label: "Security", icon: Shield },
-  { id: "account", label: "Account", icon: User },
+  { id: "payment", label: "Detail Pembayaran", icon: CreditCard },
+  { id: "subscription", label: "Langganan", icon: Crown },
+  { id: "security", label: "Keamanan", icon: Shield },
+  { id: "account", label: "Akun", icon: User },
 ];
 
 export default function Settings() {
@@ -75,8 +75,8 @@ export default function Settings() {
     <DashboardLayout>
       <div className="p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Settings</h1>
-          <p className="text-muted-foreground">Configure your studio preferences</p>
+          <h1 className="text-3xl font-bold uppercase tracking-[0.03em] text-foreground mb-2">PENGATURAN</h1>
+          <p className="text-muted-foreground">Atur preferensi studio dan akun kamu.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

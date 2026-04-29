@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const actions = [
-  { label: "New Invoice", icon: FilePlus, path: "/invoices/new", color: "text-primary" },
-  { label: "New Proposal", icon: FileText, path: "/proposals/new", color: "text-primary" },
-  { label: "Add Client", icon: Users, path: null, action: "add-client", color: "text-success" },
-  { label: "New Project", icon: FolderOpen, path: "/projects/new", color: "text-warning" },
+  { label: "INVOICE BARU", icon: FilePlus, path: "/invoices/new", color: "text-primary" },
+  { label: "PROPOSAL BARU", icon: FileText, path: "/proposals/new", color: "text-primary" },
+  { label: "TAMBAH KLIEN", icon: Users, path: null, action: "add-client", color: "text-success" },
+  { label: "PROYEK BARU", icon: FolderOpen, path: "/projects/new", color: "text-warning" },
 ];
 
 interface QuickActionsProps {
@@ -21,20 +21,20 @@ export function QuickActions({ onExportReport }: QuickActionsProps) {
       navigate(action.path);
     } else if (action.action === "add-client") {
       navigate("/clients");
-      // The clients page has an "Add Client" button/modal
+      // Halaman klien menyediakan alur tambah klien.
     }
   };
 
   const handleExport = () => {
     onExportReport();
-    toast.success("Report exported", {
-      description: "Your monthly report has been downloaded as a CSV file.",
+    toast.success("Laporan berhasil diekspor", {
+      description: "Laporan bulanan kamu sudah diunduh dalam format CSV.",
     });
   };
 
   return (
     <div className="glass-card rounded-2xl p-6 animate-fade-in">
-      <h3 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
+      <h3 className="text-lg font-semibold uppercase tracking-[0.04em] text-foreground mb-4">AKSI CEPAT</h3>
       <div className="grid grid-cols-2 gap-3">
         {actions.map((action) => (
           <button
@@ -55,7 +55,7 @@ export function QuickActions({ onExportReport }: QuickActionsProps) {
         className="w-full mt-3 flex items-center justify-center gap-2 p-3 rounded-xl bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-all duration-200"
       >
         <FileDown className="w-4 h-4 text-primary" />
-        <span className="text-sm font-medium text-primary">Export Report</span>
+        <span className="text-sm font-medium text-primary">EKSPOR LAPORAN</span>
       </button>
     </div>
   );

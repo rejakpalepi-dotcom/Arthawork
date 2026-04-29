@@ -45,24 +45,24 @@ const navGroups = [
   {
     label: "Dokumen",
     items: [
-      { label: "Invoices", icon: Receipt, path: "/invoices" },
-      { label: "Proposals", icon: FileText, path: "/proposals" },
-      { label: "Contracts", icon: FileSignature, path: "/contracts" },
+      { label: "Invoice", icon: Receipt, path: "/invoices" },
+      { label: "Proposal", icon: FileText, path: "/proposals" },
+      { label: "Kontrak", icon: FileSignature, path: "/contracts" },
     ],
   },
   {
     label: "Kelola",
     items: [
-      { label: "Clients", icon: Users, path: "/clients" },
-      { label: "Services", icon: Briefcase, path: "/services" },
-      { label: "Projects", icon: FolderKanban, path: "/projects" },
+      { label: "Klien", icon: Users, path: "/clients" },
+      { label: "Layanan", icon: Briefcase, path: "/services" },
+      { label: "Proyek", icon: FolderKanban, path: "/projects" },
     ],
   },
 ];
 
 const bottomItems = [
-  { label: "Tax Summary", icon: Calculator, path: "/tax-summary" },
-  { label: "Settings", icon: Settings, path: "/settings" },
+  { label: "Ringkasan Pajak", icon: Calculator, path: "/tax-summary" },
+  { label: "Pengaturan", icon: Settings, path: "/settings" },
 ];
 
 export function Sidebar() {
@@ -83,7 +83,7 @@ export function Sidebar() {
 
     toast({
       title: "Signed out",
-      description: "You have been signed out and your session has been cleared.",
+      description: "Sesi kamu sudah diakhiri dan data autentikasi lokal sudah dibersihkan.",
     });
     navigate("/login", { replace: true });
   };
@@ -128,7 +128,7 @@ export function Sidebar() {
           )}
         >
           <Plus className="w-5 h-5 shrink-0" />
-          {!collapsed && <span>New Invoice</span>}
+          {!collapsed && <span>INVOICE BARU</span>}
         </NavLink>
       </div>
 
@@ -205,21 +205,21 @@ export function Sidebar() {
               aria-label="Sign out of your account"
             >
               <LogOut className="w-5 h-5 shrink-0" aria-hidden="true" />
-              {!collapsed && <span>Sign Out</span>}
+              {!collapsed && <span>Keluar</span>}
             </button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Sign out of Artha?</AlertDialogTitle>
+              <AlertDialogTitle>Keluar dari Artha?</AlertDialogTitle>
               <AlertDialogDescription>
-                This will end your current session and clear all stored authentication data.
-                You'll need to sign in again to access your account.
+                Tindakan ini akan mengakhiri sesi aktif dan membersihkan data autentikasi yang tersimpan.
+                Kamu perlu masuk lagi untuk mengakses akunmu.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>Batal</AlertDialogCancel>
               <AlertDialogAction onClick={handleLogout} className="bg-destructive hover:bg-destructive/90">
-                Sign Out
+                Keluar
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

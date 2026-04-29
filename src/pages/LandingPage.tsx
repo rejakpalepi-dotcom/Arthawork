@@ -76,14 +76,14 @@ const problemCards = [
 
 const valueMetrics = [
   { value: "< 10 menit", label: "Dari draft ke dokumen siap kirim" },
-  { value: "3 alur", label: "Proposal, invoice, dan client management dalam satu workspace" },
+  { value: "3 alur", label: "Proposal, invoice, dan manajemen klien dalam satu workspace" },
   { value: "ID-first", label: "Dirancang untuk workflow freelancer Indonesia" },
 ];
 
 const features = [
   {
     Icon: ProposalIcon,
-    title: "Proposal Builder",
+    title: "Builder Proposal",
     description:
       "Susun scope, deliverables, timeline, dan milestone payment dalam format yang enak dibaca klien.",
   },
@@ -95,7 +95,7 @@ const features = [
   },
   {
     Icon: ClientsIcon,
-    title: "Client records terpusat",
+    title: "Data klien terpusat",
     description:
       "Semua data klien, histori dokumen, dan detail project tersimpan rapi untuk project berikutnya.",
   },
@@ -107,7 +107,7 @@ const features = [
   },
   {
     Icon: ShieldIcon,
-    title: "Professional by default",
+    title: "Profesional sejak awal",
     description:
       "Copy, hierarchy, spacing, dan struktur dokumen dibuat agar terlihat lebih kredibel sejak pertama dibuka.",
   },
@@ -146,15 +146,15 @@ const audienceCards = [
     description: "Proposal branding, website, social media retainer, hingga invoice revisi tambahan.",
   },
   {
-    title: "Photographer & Videographer",
+    title: "Fotografer & Videografer",
     description: "Quote wedding, event rundown, DP structure, dan invoice pelunasan yang lebih mudah diikuti.",
   },
   {
-    title: "Web Developer",
+    title: "Developer Web",
     description: "Scope sprint, breakdown milestone, serah-terima, dan invoicing project berbasis fase.",
   },
   {
-    title: "Creative Studio",
+    title: "Studio Kreatif",
     description: "Rapikan handoff internal dan tampilkan proposal yang terasa lebih premium di depan klien besar.",
   },
 ];
@@ -162,7 +162,7 @@ const audienceCards = [
 const socialProof = [
   {
     name: "Andi Pratama",
-    role: "Freelance Designer",
+    role: "Desainer Freelance",
     quote:
       "Proposal saya jadi lebih jelas dan klien tidak lagi banyak tanya soal scope. Approval terasa lebih cepat.",
   },
@@ -183,12 +183,12 @@ const socialProof = [
 const exportMethods = [
   { name: "WhatsApp", Icon: MessageIcon, desc: "Kirim cepat ke channel yang paling sering dipakai klien." },
   { name: "Email", Icon: MailIcon, desc: "Bawaan terlihat formal untuk project bernilai lebih besar." },
-  { name: "Share Link", Icon: LinkIcon, desc: "Praktis untuk review tanpa bolak-balik file versi." },
+  { name: "Link Share", Icon: LinkIcon, desc: "Praktis untuk review tanpa bolak-balik file versi." },
 ];
 
 const pricingTiers = [
   {
-    name: "Free",
+    name: "Gratis",
     price: "Rp 0",
     period: "selamanya",
     description: "Untuk validasi workflow sebelum pindah penuh ke Artha.",
@@ -208,10 +208,10 @@ const pricingTiers = [
     period: "/bulan",
     description: "Untuk freelancer yang sudah rutin closing project dan butuh workflow lebih tajam.",
     features: [
-      "Unlimited invoice & proposal",
-      "Unlimited client records",
-      "Custom branding",
-      "Payment reminder",
+      "Invoice & proposal tanpa batas",
+      "Data klien tanpa batas",
+      "Branding kustom",
+      "Pengingat pembayaran",
       "Tanpa watermark",
     ],
     cta: "Pilih Pro",
@@ -219,18 +219,18 @@ const pricingTiers = [
     popular: true,
   },
   {
-    name: "Business",
+    name: "Bisnis",
     price: "Rp 199.000",
     period: "/bulan",
     description: "Untuk studio kecil atau tim yang perlu konsistensi antar account.",
     features: [
       "Semua fitur Pro",
       "5 anggota tim",
-      "Client portal",
-      "Tax summary",
+      "Portal klien",
+      "Ringkasan pajak",
       "White-label",
     ],
-    cta: "Lihat Business",
+    cta: "Lihat Bisnis",
     href: "/pricing",
     popular: false,
   },
@@ -271,13 +271,13 @@ export default function LandingPage() {
               <img src={arthaLogo} alt="Artha" className="h-9 w-9 rounded-2xl shadow-sm" />
               <div>
                 <p className="text-base font-semibold leading-none">Artha</p>
-                <p className="text-xs text-muted-foreground">Proposal & invoice workflow</p>
+                <p className="text-xs text-muted-foreground">Proposal & invoice untuk freelancer</p>
               </div>
             </Link>
 
             <div className="hidden items-center gap-6 md:flex">
               <a href="#features" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Fitur</a>
-              <a href="#workflow" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Workflow</a>
+              <a href="#workflow" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Alur</a>
               <a href="#pricing" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Harga</a>
               <a href="#faq" className="text-sm text-muted-foreground transition-colors hover:text-foreground">FAQ</a>
             </div>
@@ -312,12 +312,12 @@ export default function LandingPage() {
                   variants={fadeInUp}
                   className="mb-6 inline-flex rounded-full border border-primary/15 bg-white/85 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary shadow-sm"
                 >
-                  SaaS untuk freelancer Indonesia
+                  PLATFORM UNTUK FREELANCER INDONESIA
                 </motion.div>
 
                 <motion.h1
                   variants={fadeInUp}
-                  className="max-w-3xl font-heading text-[2.9rem] font-bold leading-[0.96] tracking-[-0.05em] text-slate-950 sm:text-[3.7rem] lg:text-[4.6rem]"
+                  className="max-w-3xl font-heading uppercase text-[2.9rem] font-bold leading-[0.96] tracking-[-0.05em] text-slate-950 sm:text-[3.7rem] lg:text-[4.6rem]"
                 >
                   Proposal lebih meyakinkan. Invoice lebih cepat dibayar.
                 </motion.h1>
@@ -347,7 +347,7 @@ export default function LandingPage() {
                 <motion.div variants={fadeInUp} className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm font-medium text-slate-500">
                   <span>Tanpa kartu kredit</span>
                   <span>Setup cepat</span>
-                  <span>Siap untuk proposal, invoice, dan client workflow</span>
+                  <span>Siap untuk proposal, invoice, dan alur klien</span>
                 </motion.div>
 
                 <motion.ul variants={fadeInUp} className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -371,30 +371,30 @@ export default function LandingPage() {
                   <div className="rounded-[1.6rem] border border-slate-800/80 bg-slate-950 p-5 text-white">
                     <div className="flex items-center justify-between border-b border-white/10 pb-4">
                       <div>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-200/85">Active proposal</p>
-                        <p className="mt-2 text-[1.15rem] font-semibold tracking-[-0.02em] text-white">Website redesign retainer</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-200/85">PROPOSAL AKTIF</p>
+                        <p className="mt-2 text-[1.15rem] font-semibold uppercase tracking-[-0.02em] text-white">Retainer redesign website</p>
                       </div>
                       <div className="rounded-full border border-emerald-300/18 bg-emerald-400/12 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-200">
-                        Ready to send
+                        SIAP DIKIRIM
                       </div>
                     </div>
 
                     <div className="mt-4 rounded-[1.45rem] border border-white/10 bg-white/5 p-5">
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <p className="text-[12px] font-medium uppercase tracking-[0.16em] text-white/56">Proposal summary</p>
-                          <p className="mt-2 text-[1.45rem] font-semibold leading-8 tracking-[-0.03em] text-white">
-                            Brand overhaul + landing page sprint
+                          <p className="text-[12px] font-medium uppercase tracking-[0.16em] text-white/56">RINGKASAN PROPOSAL</p>
+                          <p className="mt-2 text-[1.45rem] font-semibold uppercase leading-8 tracking-[-0.03em] text-white">
+                            Brand overhaul + sprint landing page
                           </p>
                         </div>
                         <div className="rounded-2xl bg-white/6 px-3 py-2 text-right">
-                          <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-white/55">Timeline</p>
+                          <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-white/55">TIMELINE</p>
                           <p className="mt-1 text-sm font-semibold text-white">3 minggu</p>
                         </div>
                       </div>
 
                       <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                        {["Discovery", "UI refinement", "Invoice handoff"].map((phase) => (
+                        {["Discovery", "Refinement UI", "Handoff invoice"].map((phase) => (
                           <div key={phase} className="rounded-2xl border border-white/8 bg-slate-900/55 px-3 py-3">
                             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-100/60">{phase}</p>
                             <div className="mt-3 h-1.5 rounded-full bg-white/8">
@@ -407,7 +407,7 @@ export default function LandingPage() {
 
                     <div className="mt-4 grid gap-4 sm:grid-cols-[1.05fr_0.95fr]">
                       <div className="rounded-[1.45rem] border border-cyan-300/20 bg-cyan-400/10 p-5">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-100/74">Estimated value</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-100/74">NILAI PROYEK</p>
                         <p className="mt-2 text-[1.95rem] font-semibold tracking-[-0.03em] text-white">Rp 18.500.000</p>
                         <p className="mt-2 text-sm leading-6 text-white/68">
                           Naikkan proposal ke invoice tanpa bongkar ulang detail proyek.
@@ -415,13 +415,13 @@ export default function LandingPage() {
                       </div>
 
                       <div className="rounded-[1.45rem] border border-white/10 bg-white/5 p-5">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/55">Client snapshot</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/55">RINGKASAN KLIEN</p>
                         <p className="mt-2 text-base font-semibold text-white">Mitra Studio</p>
                         <p className="mt-1 text-sm leading-6 text-white/68">
                           2 proposal aktif, 4 invoice, 1 retainer ongoing.
                         </p>
                         <div className="mt-4 flex flex-wrap gap-2">
-                          {["WhatsApp", "Email", "Share link"].map((item) => (
+                          {["WhatsApp", "Email", "Link share"].map((item) => (
                             <span key={item} className="rounded-full bg-white/8 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/78">
                               {item}
                             </span>
@@ -450,7 +450,7 @@ export default function LandingPage() {
             <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.8fr_1.2fr]">
               <AnimatedSection>
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Masalah yang sering terasa</p>
-                <h2 className="mt-4 max-w-lg font-heading text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
+                <h2 className="mt-4 max-w-lg font-heading uppercase text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
                   Kalau proposal dan invoice terlihat biasa, conversion ikut ikut turun.
                 </h2>
                 <p className="mt-4 max-w-xl text-[1.02rem] leading-8 text-slate-600">
@@ -485,7 +485,7 @@ export default function LandingPage() {
             <div className="mx-auto max-w-6xl">
               <AnimatedSection className="max-w-2xl">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Fitur inti</p>
-                <h2 className="mt-4 max-w-3xl font-heading text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
+                <h2 className="mt-4 max-w-3xl font-heading uppercase text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
                   Dirancang untuk menaikkan rasa percaya sebelum klien membuka angka.
                 </h2>
                 <p className="mt-4 max-w-2xl text-[1.02rem] leading-8 text-slate-600">
@@ -521,8 +521,8 @@ export default function LandingPage() {
           <section id="workflow" className="bg-muted/35 px-4 py-16 md:py-24">
             <div className="mx-auto max-w-6xl">
               <AnimatedSection className="text-center">
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Workflow</p>
-                <h2 className="mt-4 font-heading text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">ALUR KERJA</p>
+                <h2 className="mt-4 font-heading uppercase text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
                   Dari brief sampai invoice, tanpa putus konteks.
                 </h2>
               </AnimatedSection>
@@ -552,8 +552,8 @@ export default function LandingPage() {
           <section className="px-4 py-16 md:py-24">
             <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_1fr]">
               <AnimatedSection className="rounded-[2rem] border border-border/80 bg-slate-950 p-7 text-white shadow-[0_40px_100px_-60px_rgba(8,15,24,0.85)]">
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-200">Why it converts better</p>
-                <h2 className="mt-4 font-heading text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-white md:text-[2.9rem]">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-200">KENAPA INI LEBIH EFEKTIF</p>
+                <h2 className="mt-4 font-heading uppercase text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-white md:text-[2.9rem]">
                   Dokumen yang rapi bukan bonus. Itu bagian dari proses closing.
                 </h2>
                 <div className="mt-8 space-y-4">
@@ -573,8 +573,8 @@ export default function LandingPage() {
               </AnimatedSection>
 
               <AnimatedSection variants={fadeIn}>
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Use cases</p>
-                <h2 className="mt-4 font-heading text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">USE CASES</p>
+                <h2 className="mt-4 font-heading uppercase text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
                   Cocok untuk banyak pola kerja, bukan satu niche yang sempit.
                 </h2>
                 <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -606,8 +606,8 @@ export default function LandingPage() {
           <section className="bg-muted/35 px-4 py-16 md:py-24">
             <div className="mx-auto max-w-6xl">
               <AnimatedSection className="text-center">
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Distribution</p>
-                <h2 className="mt-4 font-heading text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">DISTRIBUSI</p>
+                <h2 className="mt-4 font-heading uppercase text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
                   Kirim dokumen lewat channel yang sudah dipakai klienmu.
                 </h2>
               </AnimatedSection>
@@ -640,8 +640,8 @@ export default function LandingPage() {
             <div className="mx-auto max-w-6xl">
               <AnimatedSection className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Testimonials</p>
-                  <h2 className="mt-4 font-heading text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
+                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">TESTIMONI</p>
+                  <h2 className="mt-4 font-heading uppercase text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
                     Dipakai untuk membuat first impression yang lebih matang.
                   </h2>
                 </div>
@@ -678,12 +678,12 @@ export default function LandingPage() {
           <section id="pricing" className="px-4 py-16 md:py-24">
             <div className="mx-auto max-w-6xl">
               <AnimatedSection className="text-center">
-                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Pricing</p>
-                  <h2 className="mt-4 font-heading text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
+                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">HARGA</p>
+                  <h2 className="mt-4 font-heading uppercase text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
                     Mulai gratis. Upgrade saat workflow-mu memang sudah butuh lebih.
                   </h2>
                 <p className="mx-auto mt-4 max-w-2xl text-[1.02rem] leading-8 text-slate-600">
-                  Pricing dibuat mudah dipahami. Tidak ada jargon yang menyembunyikan batasan utama
+                  Harga dibuat mudah dipahami. Tidak ada jargon yang menyembunyikan batasan utama
                   atau membuat user merasa harus nebak fitur penting ada di tier mana.
                 </p>
               </AnimatedSection>
@@ -758,7 +758,7 @@ export default function LandingPage() {
             <div className="mx-auto max-w-4xl">
               <AnimatedSection className="text-center">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">FAQ</p>
-                <h2 className="mt-4 font-heading text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
+                <h2 className="mt-4 font-heading uppercase text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] text-slate-950 md:text-[2.9rem]">
                   Hal yang biasanya ditanya sebelum pindah workflow.
                 </h2>
               </AnimatedSection>
@@ -797,8 +797,8 @@ export default function LandingPage() {
 
           <section className="px-4 py-16 md:py-24">
             <AnimatedSection className="mx-auto max-w-4xl rounded-[2.25rem] border border-border/80 bg-slate-950 px-6 py-10 text-center text-white shadow-[0_40px_120px_-70px_rgba(8,15,24,0.95)] md:px-12">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-200">Ready to move</p>
-              <h2 className="mt-4 font-heading text-[2.35rem] font-bold leading-[1.02] tracking-[-0.05em] md:text-[3.8rem]">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-200">SIAP MULAI</p>
+              <h2 className="mt-4 font-heading uppercase text-[2.35rem] font-bold leading-[1.02] tracking-[-0.05em] md:text-[3.8rem]">
                 Kalau kamu sudah lelah dengan proposal yang terlihat biasa, Artha layak dicoba.
               </h2>
               <p className="mx-auto mt-5 max-w-2xl text-[0.98rem] leading-8 text-white/74 md:text-[1.05rem]">
@@ -828,26 +828,26 @@ export default function LandingPage() {
                 <img src={arthaLogo} alt="Artha" className="h-9 w-9 rounded-2xl" />
                 <div>
                   <p className="font-semibold">Artha</p>
-                  <p className="text-sm text-muted-foreground">Proposal & invoice builder</p>
+                  <p className="text-sm text-muted-foreground">Proposal & invoice untuk freelancer</p>
                 </div>
               </div>
               <p className="mt-4 max-w-sm text-sm leading-6 text-muted-foreground">
-                SaaS untuk freelancer Indonesia yang ingin proposal lebih meyakinkan, invoice lebih
+                Platform untuk freelancer Indonesia yang ingin proposal lebih meyakinkan, invoice lebih
                 cepat dibayar, dan workflow klien yang terasa lebih profesional.
               </p>
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-foreground/85">Product</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-foreground/85">Produk</h3>
               <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
                 <li><a href="#features" className="hover:text-foreground">Fitur</a></li>
-                <li><a href="#workflow" className="hover:text-foreground">Workflow</a></li>
+                <li><a href="#workflow" className="hover:text-foreground">Alur</a></li>
                 <li><a href="#pricing" className="hover:text-foreground">Harga</a></li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-foreground/85">Resources</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-foreground/85">Referensi</h3>
               <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
                 <li><Link to="/faq" className="hover:text-foreground">FAQ</Link></li>
                 <li><Link to="/terms" className="hover:text-foreground">Syarat & Ketentuan</Link></li>
@@ -856,7 +856,7 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-foreground/85">Action</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-foreground/85">Aksi</h3>
               <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
                 <li><Link to="/signup" className="hover:text-foreground">Mulai gratis</Link></li>
                 <li><Link to="/login" className="hover:text-foreground">Masuk</Link></li>

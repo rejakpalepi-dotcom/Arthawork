@@ -34,8 +34,8 @@ export default function Dashboard() {
 
   const handleExport = () => {
     exportReport();
-    toast.success("Report exported", {
-      description: "Your monthly report has been downloaded as a CSV file.",
+    toast.success("Laporan berhasil diekspor", {
+      description: "Laporan bulanan kamu sudah diunduh dalam format CSV.",
     });
   };
 
@@ -61,26 +61,27 @@ export default function Dashboard() {
                   {greeting}, {userName}
                 </h1>
                 <p className="text-sm md:text-base text-muted-foreground">
-                  <span className="hidden sm:inline">{today} · </span>{upcomingDeadlines} deadline{upcomingDeadlines !== 1 ? 's' : ''} coming up
+                  <span className="hidden sm:inline">{today} · </span>
+                  {upcomingDeadlines} tenggat akan datang
                 </p>
               </>
             )}
           </div>
-          <nav className="hidden md:flex items-center gap-3" aria-label="Dashboard actions">
+          <nav className="hidden md:flex items-center gap-3" aria-label="Aksi dashboard">
             <NotificationCenter />
             <Button
               className="gap-2"
               onClick={() => navigate("/projects/new")}
-              aria-label="Create a new project"
+              aria-label="Buat proyek baru"
             >
               <Plus className="w-4 h-4" aria-hidden="true" />
-              New Project
+              PROYEK BARU
             </Button>
           </nav>
         </header>
 
         {/* Stats Grid - 4 columns with real-time metrics */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8" aria-label="Business metrics">
+        <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8" aria-label="Metrik bisnis">
           {loading ? (
             <>
               <Skeleton className="h-24 md:h-32 rounded-xl" />
@@ -91,28 +92,28 @@ export default function Dashboard() {
           ) : (
             <>
               <StatsCard
-                title="Pipeline Value"
+                title="Nilai Pipeline"
                 value={formatIDR(stats.pipelineValue)}
-                subtitle={`${stats.sentProposals} sent proposals`}
+                subtitle={`${stats.sentProposals} proposal terkirim`}
                 icon={TrendingUp}
                 trend={stats.pipelineValue > 0 && stats.pipelineTrend !== 0 ? { value: Math.abs(stats.pipelineTrend), positive: stats.pipelineTrend > 0 } : undefined}
               />
               <StatsCard
-                title="Acceptance Rate"
+                title="Tingkat Persetujuan"
                 value={`${acceptanceRate}%`}
-                subtitle={`${stats.acceptedProposals} accepted of ${stats.sentProposals + stats.acceptedProposals} sent`}
+                subtitle={`${stats.acceptedProposals} disetujui dari ${stats.sentProposals + stats.acceptedProposals} proposal`}
                 icon={Target}
                 trend={(stats.sentProposals + stats.acceptedProposals) > 0 && stats.acceptanceTrend !== 0 ? { value: Math.abs(stats.acceptanceTrend), positive: stats.acceptanceTrend > 0 } : undefined}
               />
               <StatsCard
-                title="Active Proposals"
+                title="Proposal Aktif"
                 value={stats.sentProposals.toString()}
-                subtitle="Awaiting response"
+                subtitle="Menunggu respons klien"
                 icon={FileText}
                 trend={stats.sentProposals > 0 && stats.proposalsTrend !== 0 ? { value: Math.abs(stats.proposalsTrend), positive: stats.proposalsTrend > 0 } : undefined}
               />
               <StatsCard
-                title="Total Earnings"
+                title="Total Pendapatan"
                 value={formatIDR(stats.totalRevenue)}
                 icon={Wallet}
                 trend={stats.totalRevenue > 0 && stats.revenueTrend !== 0 ? { value: Math.abs(stats.revenueTrend), positive: stats.revenueTrend > 0 } : undefined}
@@ -127,7 +128,7 @@ export default function Dashboard() {
           {/* Revenue Chart - takes 2 columns */}
           <div className="lg:col-span-2 order-2 lg:order-1">
             <div className="flex items-center justify-between mb-3 md:mb-4">
-              <h2 className="text-base md:text-lg font-semibold text-foreground">Revenue Trends</h2>
+              <h2 className="text-base md:text-lg font-semibold text-foreground">TREN PENDAPATAN</h2>
               <Button
                 variant="outline"
                 size="sm"
@@ -136,14 +137,14 @@ export default function Dashboard() {
                 disabled={loading}
               >
                 <FileDown className="w-3 h-3 md:w-4 md:h-4" />
-                <span className="hidden sm:inline">Export Report</span>
-                <span className="sm:hidden">Export</span>
+                <span className="hidden sm:inline">EKSPOR LAPORAN</span>
+                <span className="sm:hidden">EKSPOR</span>
               </Button>
             </div>
             <RevenueChart data={revenueData} />
           </div>
 
-          {/* Right sidebar - Quick Actions & Recent Invoices */}
+          {/* Right sidebar - action shortcuts and recent invoices */}
           <div className="space-y-4 md:space-y-6 order-1 lg:order-2">
             <div className="hidden md:block">
               <QuickActions onExportReport={exportReport} />

@@ -121,7 +121,7 @@ export default function Invoices() {
         .eq("id", invoiceId);
 
       if (error) throw error;
-      toast.success("Invoice marked as paid!");
+      toast.success("Invoice berhasil ditandai lunas!");
       fetchInvoices();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Failed to update invoice";
@@ -145,7 +145,7 @@ export default function Invoices() {
         .eq("id", deleteModal.invoiceId);
 
       if (error) throw error;
-      toast.success("Invoice deleted successfully!");
+      toast.success("Invoice berhasil dihapus!");
       fetchInvoices();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Failed to delete invoice";
@@ -207,13 +207,13 @@ export default function Invoices() {
             <div style="text-align: right;">
               <h1 style="font-size: 32px; font-weight: bold; color: #00D9FF; margin: 0;">INVOICE</h1>
               <p style="font-family: monospace; font-size: 18px; margin: 8px 0;">#${safeInvoiceNumber}</p>
-              <p style="color: #666; margin: 8px 0;">Issued: ${format(new Date(invoice.issue_date), "MMM d, yyyy")}</p>
-              ${invoice.due_date ? `<p style="color: #666; margin: 4px 0;">Due: ${format(new Date(invoice.due_date), "MMM d, yyyy")}</p>` : ""}
+              <p style="color: #666; margin: 8px 0;">Terbit: ${format(new Date(invoice.issue_date), "d MMM yyyy")}</p>
+              ${invoice.due_date ? `<p style="color: #666; margin: 4px 0;">Jatuh tempo: ${format(new Date(invoice.due_date), "d MMM yyyy")}</p>` : ""}
             </div>
           </div>
           
           <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-            <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Bill To</h3>
+            <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Ditagihkan Kepada</h3>
             <p style="font-size: 18px; font-weight: 600; margin: 0;">${safeClientName}</p>
             ${invoice.client_email ? `<p style="color: #666; margin: 4px 0;">${safeClientEmail}</p>` : ""}
             ${invoice.client_phone ? `<p style="color: #666; margin: 4px 0;">${safeClientPhone}</p>` : ""}
@@ -223,10 +223,10 @@ export default function Invoices() {
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
             <thead>
               <tr style="background: #f5f5f5;">
-                <th style="text-align: left; padding: 12px; font-size: 12px; color: #666; text-transform: uppercase;">Description</th>
+                <th style="text-align: left; padding: 12px; font-size: 12px; color: #666; text-transform: uppercase;">Deskripsi</th>
                 <th style="text-align: center; padding: 12px; font-size: 12px; color: #666; text-transform: uppercase;">Qty</th>
-                <th style="text-align: right; padding: 12px; font-size: 12px; color: #666; text-transform: uppercase;">Rate</th>
-                <th style="text-align: right; padding: 12px; font-size: 12px; color: #666; text-transform: uppercase;">Amount</th>
+                <th style="text-align: right; padding: 12px; font-size: 12px; color: #666; text-transform: uppercase;">Tarif</th>
+                <th style="text-align: right; padding: 12px; font-size: 12px; color: #666; text-transform: uppercase;">Jumlah</th>
               </tr>
             </thead>
             <tbody>
@@ -248,11 +248,11 @@ export default function Invoices() {
                 <span style="font-family: monospace;">Rp ${invoice.subtotal.toLocaleString("id-ID")}</span>
               </div>
               <div style="display: flex; justify-content: space-between; padding: 8px 0;">
-                <span style="color: #666;">Tax (${invoice.tax_rate || 0}%)</span>
+                <span style="color: #666;">Pajak (${invoice.tax_rate || 0}%)</span>
                 <span style="font-family: monospace;">Rp ${(invoice.tax_amount || 0).toLocaleString("id-ID")}</span>
               </div>
               <div style="display: flex; justify-content: space-between; padding: 12px 0; border-top: 2px solid #1a1a1a; margin-top: 8px;">
-                <span style="font-weight: 600;">Total Due</span>
+                <span style="font-weight: 600;">Total Tagihan</span>
                 <span style="font-size: 20px; font-weight: bold; color: #00D9FF; font-family: monospace;">Rp ${invoice.total.toLocaleString("id-ID")}</span>
               </div>
             </div>
@@ -260,24 +260,24 @@ export default function Invoices() {
           
           ${bankName || accountNumber ? `
             <div style="margin-top: 24px; padding: 16px; background: #f5f5f5; border-radius: 8px;">
-              <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 12px 0;">Payment Details</h3>
+              <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 12px 0;">Detail Pembayaran</h3>
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                 ${bankName ? `<div><p style="color: #666; margin: 0 0 4px 0; font-size: 12px;">Bank</p><p style="margin: 0; font-weight: 500;">${safeBankName}</p></div>` : ""}
-                ${accountNumber ? `<div><p style="color: #666; margin: 0 0 4px 0; font-size: 12px;">Account</p><p style="margin: 0; font-weight: 500; font-family: monospace;">${safeAccountNumber}</p></div>` : ""}
-                ${accountName ? `<div><p style="color: #666; margin: 0 0 4px 0; font-size: 12px;">Account Name</p><p style="margin: 0; font-weight: 500;">${safeAccountName}</p></div>` : ""}
+                ${accountNumber ? `<div><p style="color: #666; margin: 0 0 4px 0; font-size: 12px;">Nomor Rekening</p><p style="margin: 0; font-weight: 500; font-family: monospace;">${safeAccountNumber}</p></div>` : ""}
+                ${accountName ? `<div><p style="color: #666; margin: 0 0 4px 0; font-size: 12px;">Nama Rekening</p><p style="margin: 0; font-weight: 500;">${safeAccountName}</p></div>` : ""}
               </div>
             </div>
           ` : ""}
           
           ${invoice.notes ? `
             <div style="margin-top: 24px; padding: 16px; background: #f5f5f5; border-radius: 8px;">
-              <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Notes</h3>
+              <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Catatan</h3>
               <p style="color: #666; margin: 0; white-space: pre-line;">${safeNotes}</p>
             </div>
           ` : ""}
           
           <div style="margin-top: 40px; padding: 16px; background: #f0feff; text-align: center; border-radius: 8px;">
-            <p style="margin: 0; font-weight: 500;">Thank you for your business!</p>
+            <p style="margin: 0; font-weight: 500;">Terima kasih atas kepercayaan Anda.</p>
           </div>
         </div>
       `;
@@ -285,7 +285,7 @@ export default function Invoices() {
 
       await exportToPDF(`invoice-pdf-${invoice.id}`, `Invoice-${invoice.invoice_number}.pdf`);
       document.body.removeChild(container);
-      toast.success("PDF exported successfully!");
+      toast.success("PDF berhasil diekspor!");
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Failed to export PDF";
       toast.error(message);
@@ -299,8 +299,8 @@ export default function Invoices() {
       <DashboardLayout>
         <div className="p-8">
           <PageHeader
-            title="Invoices"
-            description="Track payments and manage invoices"
+            title="INVOICE"
+            description="Pantau pembayaran dan kelola invoice kamu."
           />
           <div className="glass-card rounded-2xl p-8">
             <div className="space-y-4">
@@ -318,12 +318,12 @@ export default function Invoices() {
     <DashboardLayout>
       <div className="p-4 md:p-8">
         <PageHeader
-          title="Invoices"
-          description="Track payments and manage invoices"
+          title="INVOICE"
+          description="Pantau pembayaran dan kelola invoice kamu."
           actions={
             <Button className="gap-2 w-full sm:w-auto min-h-[44px]" onClick={() => navigate("/invoices/new")}>
               <Plus className="w-4 h-4" />
-              New Invoice
+              INVOICE BARU
             </Button>
           }
         />
@@ -332,9 +332,9 @@ export default function Invoices() {
           <div className="glass-card rounded-2xl">
             <EmptyState
               icon={Inbox}
-              title="No invoices yet"
-              description="Create your first invoice to start tracking payments."
-              actionLabel="Create Invoice"
+              title="Belum ada invoice"
+              description="Buat invoice pertamamu untuk mulai melacak pembayaran."
+              actionLabel="BUAT INVOICE"
               onAction={() => navigate("/invoices/new")}
             />
           </div>
@@ -381,7 +381,7 @@ export default function Invoices() {
                             ) : (
                               <FileDown className="w-4 h-4 mr-2" />
                             )}
-                            Download PDF
+                            Unduh PDF
                           </DropdownMenuItem>
                           {invoice.status !== "paid" && (
                             <DropdownMenuItem onClick={(e) => {
@@ -389,7 +389,7 @@ export default function Invoices() {
                               handleMarkAsPaid(invoice.id);
                             }}>
                               <CreditCard className="w-4 h-4 mr-2" />
-                              Mark as Paid
+                              Tandai Lunas
                             </DropdownMenuItem>
                           )}
                           {invoice.status !== "paid" && invoice.client_phone && invoice.payment_token && (
@@ -419,7 +419,7 @@ export default function Invoices() {
                             }}
                           >
                             <Trash2 className="w-4 h-4 mr-2" />
-                            Delete
+                            Hapus
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -452,11 +452,11 @@ export default function Invoices() {
                 <thead>
                   <tr className="border-b border-border">
                     <th className="text-left p-4 text-sm font-medium text-muted-foreground">Invoice</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Client</th>
-                    <th className="text-right p-4 text-sm font-medium text-muted-foreground">Amount</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Due Date</th>
+                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Klien</th>
+                    <th className="text-right p-4 text-sm font-medium text-muted-foreground">Jumlah</th>
+                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Jatuh Tempo</th>
                     <th className="text-left p-4 text-sm font-medium text-muted-foreground">Status</th>
-                    <th className="text-right p-4 text-sm font-medium text-muted-foreground">Actions</th>
+                    <th className="text-right p-4 text-sm font-medium text-muted-foreground">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -520,7 +520,7 @@ export default function Invoices() {
                                 ) : (
                                   <FileDown className="w-4 h-4 mr-2" />
                                 )}
-                                Download PDF
+                                Unduh PDF
                               </DropdownMenuItem>
                               {invoice.status !== "paid" && (
                                 <DropdownMenuItem onClick={(e) => {
@@ -528,7 +528,7 @@ export default function Invoices() {
                                   handleMarkAsPaid(invoice.id);
                                 }}>
                                   <CreditCard className="w-4 h-4 mr-2" />
-                                  Mark as Paid
+                                  Tandai Lunas
                                 </DropdownMenuItem>
                               )}
                               {invoice.status !== "paid" && invoice.client_phone && invoice.payment_token && (
@@ -558,7 +558,7 @@ export default function Invoices() {
                                 }}
                               >
                                 <Trash2 className="w-4 h-4 mr-2" />
-                                Delete
+                                Hapus
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -578,8 +578,8 @@ export default function Invoices() {
         onOpenChange={(open) => setDeleteModal({ open, invoiceId: deleteModal.invoiceId })}
         onConfirm={handleDelete}
         loading={deleting}
-        title="Delete Invoice?"
-        description="This will permanently delete this invoice and all its items. This action cannot be undone."
+        title="Hapus Invoice?"
+        description="Invoice ini beserta seluruh itemnya akan dihapus permanen dan tindakan ini tidak bisa dibatalkan."
       />
     </DashboardLayout>
   );

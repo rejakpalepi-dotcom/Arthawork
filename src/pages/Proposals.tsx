@@ -47,7 +47,7 @@ interface ProposalStats {
   newThisWeek: number;
 }
 
-const tabs = ["All Proposals", "Drafts", "Sent", "Accepted"];
+const tabs = ["SEMUA PROPOSAL", "DRAF", "TERKIRIM", "DISETUJUI"];
 
 function getTimeAgo(date: string): string {
   return formatTimestamp(date);
@@ -68,7 +68,7 @@ export default function Proposals() {
     newThisWeek: 0,
   });
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("All Proposals");
+  const [activeTab, setActiveTab] = useState("SEMUA PROPOSAL");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteModal, setDeleteModal] = useState<{ open: boolean; proposalId: string | null }>({
@@ -95,7 +95,7 @@ export default function Proposals() {
     if (!error && data) {
       const mappedProposals = data.map((p) => {
         const client = p.clients as { name?: string } | null;
-        const clientName = client?.name || "Unknown Client";
+        const clientName = client?.name || "Klien Tanpa Nama";
         const row = p as Record<string, unknown>;
         return {
           id: p.id,
@@ -197,13 +197,13 @@ export default function Proposals() {
       if (error) throw error;
 
       const statusLabels: Record<string, string> = {
-        sent: "Sent",
-        approved: "Accepted",
-        rejected: "Declined",
-        draft: "Draft",
+        sent: "Terkirim",
+        approved: "Disetujui",
+        rejected: "Ditolak",
+        draft: "Draf",
       };
 
-      toast.success(`Proposal marked as ${statusLabels[newStatus] || newStatus}!`);
+      toast.success(`Proposal berhasil diubah ke status ${statusLabels[newStatus] || newStatus}!`);
       fetchProposals();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Failed to update status";
@@ -221,7 +221,7 @@ export default function Proposals() {
         .eq("id", deleteModal.proposalId);
 
       if (error) throw error;
-      toast.success("Proposal deleted successfully!");
+      toast.success("Proposal berhasil dihapus!");
       fetchProposals();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Failed to delete proposal";
@@ -253,12 +253,12 @@ export default function Proposals() {
             </div>
             <div style="text-align: right;">
               <h1 style="font-size: 32px; font-weight: bold; color: #00D9FF; margin: 0;">PROPOSAL</h1>
-              <p style="color: #666; margin: 8px 0;">Created: ${new Date(proposal.created_at).toLocaleDateString()}</p>
+              <p style="color: #666; margin: 8px 0;">Dibuat: ${new Date(proposal.created_at).toLocaleDateString("id-ID")}</p>
             </div>
           </div>
           
           <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-            <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Prepared For</h3>
+            <h3 style="font-size: 12px; color: #666; text-transform: uppercase; margin: 0 0 8px 0;">Disiapkan Untuk</h3>
             <p style="font-size: 18px; font-weight: 600; margin: 0;">${safeClientName}</p>
           </div>
           
@@ -275,7 +275,7 @@ export default function Proposals() {
           </div>
           
           <div style="margin-top: 40px; padding: 16px; background: #f0feff; text-align: center; border-radius: 8px;">
-            <p style="margin: 0; font-weight: 500;">Thank you for considering us!</p>
+            <p style="margin: 0; font-weight: 500;">Terima kasih sudah mempertimbangkan penawaran ini.</p>
           </div>
         </div>
       `;
@@ -283,7 +283,7 @@ export default function Proposals() {
 
       await exportToPDF(`proposal-pdf-${proposal.id}`, `Proposal-${proposal.title.replace(/[^a-z0-9]/gi, "-")}.pdf`);
       document.body.removeChild(container);
-      toast.success("PDF exported successfully!");
+      toast.success("PDF berhasil diekspor!");
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Failed to export PDF";
       toast.error(message);
@@ -294,10 +294,10 @@ export default function Proposals() {
 
   const filteredProposals = proposals.filter(p => {
     const matchesTab =
-      activeTab === "All Proposals" ||
-      (activeTab === "Drafts" && p.status === "draft") ||
-      (activeTab === "Sent" && p.status === "sent") ||
-      (activeTab === "Accepted" && p.status === "approved");
+      activeTab === "SEMUA PROPOSAL" ||
+      (activeTab === "DRAF" && p.status === "draft") ||
+      (activeTab === "TERKIRIM" && p.status === "sent") ||
+      (activeTab === "DISETUJUI" && p.status === "approved");
 
     const matchesSearch =
       searchQuery === "" ||
@@ -312,8 +312,8 @@ export default function Proposals() {
       <DashboardLayout>
         <div className="p-8">
           <PageHeader
-            title="Proposals"
-            description="Manage your active bids, draft contracts, and archival records."
+            title="PROPOSAL"
+            description="Kelola proposal aktif, draft, dan arsip penawaran kamu."
           />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {[1, 2, 3].map((i) => (
@@ -334,12 +334,12 @@ export default function Proposals() {
     <DashboardLayout>
       <div className="p-8">
         <PageHeader
-          title="Proposals"
-          description="Manage your active bids, draft contracts, and archival records."
+          title="PROPOSAL"
+          description="Kelola proposal aktif, draft, dan arsip penawaran kamu."
           actions={
             <Button className="gap-2" onClick={handleNewProposal}>
               <Plus className="w-4 h-4" />
-              New Proposal
+              PROPOSAL BARU
             </Button>
           }
         />
@@ -395,7 +395,7 @@ export default function Proposals() {
               <div className="p-2 rounded-lg bg-warning/10">
                 <Clock className="w-5 h-5 text-warning" />
               </div>
-              <span className="text-sm text-muted-foreground">Active Proposals</span>
+              <span className="text-sm text-muted-foreground">PROPOSAL AKTIF</span>
             </div>
             <p className="text-2xl font-semibold text-foreground mb-1">{stats.activeCount}</p>
             <div className="flex items-center gap-1">
@@ -427,7 +427,7 @@ export default function Proposals() {
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="gap-2">
               <Filter className="w-4 h-4" />
-              Filter
+              FILTER
             </Button>
             <div className="flex items-center gap-1 p-1 bg-secondary rounded-lg">
               <button
@@ -457,9 +457,9 @@ export default function Proposals() {
           <div className="glass-card rounded-2xl">
             <EmptyState
               icon={Inbox}
-              title="No proposals yet"
-              description="Create your first proposal to start winning more clients."
-              actionLabel="Create Proposal"
+              title="Belum ada proposal"
+              description="Buat proposal pertamamu untuk mulai menutup lebih banyak klien."
+              actionLabel="BUAT PROPOSAL"
               onAction={handleNewProposal}
             />
           </div>
@@ -475,8 +475,8 @@ export default function Proposals() {
               const timeLabel = isEdited
                 ? `Edited ${getTimeAgo(proposal.updated_at)}`
                 : proposal.status === "sent" || proposal.status === "approved"
-                  ? `Sent ${getTimeAgo(proposal.created_at)}`
-                  : `Created ${getTimeAgo(proposal.created_at)}`;
+                  ? `Terkirim ${getTimeAgo(proposal.created_at)}`
+                  : `Dibuat ${getTimeAgo(proposal.created_at)}`;
 
               return (
                 <div
@@ -514,20 +514,20 @@ export default function Proposals() {
                           ) : (
                             <FileDown className="w-4 h-4 mr-2" />
                           )}
-                          Export PDF
+                          Ekspor PDF
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         {proposal.status === "draft" && (
                           <DropdownMenuItem onClick={() => handleStatusUpdate(proposal.id, "sent")}>
                             <Send className="w-4 h-4 mr-2" />
-                            Mark as Sent
+                            Tandai Terkirim
                           </DropdownMenuItem>
                         )}
                         {proposal.status === "sent" && (
                           <>
                             <DropdownMenuItem onClick={() => handleStatusUpdate(proposal.id, "approved")}>
                               <CheckCircle className="w-4 h-4 mr-2" />
-                              Mark as Accepted
+                              Tandai Disetujui
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleStatusUpdate(proposal.id, "rejected")}>
                               <AlertCircle className="w-4 h-4 mr-2" />
@@ -541,7 +541,7 @@ export default function Proposals() {
                           onClick={() => setDeleteModal({ open: true, proposalId: proposal.id })}
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
-                          Delete
+                          Hapus
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -571,8 +571,8 @@ export default function Proposals() {
         onOpenChange={(open) => setDeleteModal({ open, proposalId: deleteModal.proposalId })}
         onConfirm={handleDelete}
         loading={deleting}
-        title="Delete Proposal?"
-        description="This will permanently delete this proposal. This action cannot be undone."
+        title="Hapus Proposal?"
+        description="Proposal ini akan dihapus permanen dan tindakan ini tidak bisa dibatalkan."
       />
     </DashboardLayout>
   );
