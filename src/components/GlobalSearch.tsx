@@ -24,16 +24,16 @@ interface SearchResult {
 
 const navigationItems: SearchResult[] = [
     { id: "nav-dashboard", type: "navigation", title: "Dashboard", icon: FolderOpen, path: "/dashboard" },
-    { id: "nav-clients", type: "navigation", title: "Clients", icon: Users, path: "/clients" },
-    { id: "nav-proposals", type: "navigation", title: "Proposals", icon: FileText, path: "/proposals" },
-    { id: "nav-invoices", type: "navigation", title: "Invoices", icon: CreditCard, path: "/invoices" },
-    { id: "nav-settings", type: "navigation", title: "Settings", icon: Settings, path: "/settings" },
+    { id: "nav-clients", type: "navigation", title: "Klien", icon: Users, path: "/clients" },
+    { id: "nav-proposals", type: "navigation", title: "Proposal", icon: FileText, path: "/proposals" },
+    { id: "nav-invoices", type: "navigation", title: "Invoice", icon: CreditCard, path: "/invoices" },
+    { id: "nav-settings", type: "navigation", title: "Pengaturan", icon: Settings, path: "/settings" },
 ];
 
 const quickActions: SearchResult[] = [
-    { id: "action-new-invoice", type: "navigation", title: "New Invoice", subtitle: "Create a new invoice", icon: Plus, path: "/invoices/new" },
-    { id: "action-new-proposal", type: "navigation", title: "New Proposal", subtitle: "Create a new proposal", icon: Plus, path: "/proposals/new" },
-    { id: "action-new-project", type: "navigation", title: "New Project", subtitle: "Start a new project", icon: Plus, path: "/projects/new" },
+    { id: "action-new-invoice", type: "navigation", title: "Invoice Baru", subtitle: "Buat invoice baru", icon: Plus, path: "/invoices/new" },
+    { id: "action-new-proposal", type: "navigation", title: "Proposal Baru", subtitle: "Buat proposal baru", icon: Plus, path: "/proposals/new" },
+    { id: "action-new-project", type: "navigation", title: "Proyek Baru", subtitle: "Mulai proyek baru", icon: Plus, path: "/projects/new" },
 ];
 
 export function GlobalSearch() {
@@ -156,12 +156,12 @@ export function GlobalSearch() {
 
     return (
         <CommandDialog open={open} onOpenChange={setOpen}>
-            <CommandInput placeholder="Search clients, invoices, proposals..." value={query} onValueChange={setQuery} />
+            <CommandInput placeholder="Cari klien, invoice, atau proposal..." value={query} onValueChange={setQuery} />
             <CommandList>
-                <CommandEmpty>{loading ? "Searching..." : "No results found."}</CommandEmpty>
+                <CommandEmpty>{loading ? "Mencari..." : "Tidak ada hasil yang ditemukan."}</CommandEmpty>
 
                 {filteredActions.length > 0 && (
-                    <CommandGroup heading="Quick Actions">
+                    <CommandGroup heading="Aksi Cepat">
                         {filteredActions.map((action) => (
                             <CommandItem key={action.id} onSelect={() => handleSelect(action.path)} className="flex items-center gap-3">
                                 <div className="p-1.5 rounded-md bg-primary/10">
@@ -179,7 +179,7 @@ export function GlobalSearch() {
                 {results.length > 0 && (
                     <>
                         <CommandSeparator />
-                        <CommandGroup heading="Search Results">
+                        <CommandGroup heading="Hasil Pencarian">
                             {results.map((result) => (
                                 <CommandItem key={result.id} onSelect={() => handleSelect(result.path)} className="flex items-center gap-3">
                                     <div className="p-1.5 rounded-md bg-secondary">
@@ -196,7 +196,7 @@ export function GlobalSearch() {
                 )}
 
                 <CommandSeparator />
-                <CommandGroup heading="Navigation">
+                <CommandGroup heading="Navigasi">
                     {filteredNav.map((item) => (
                         <CommandItem key={item.id} onSelect={() => handleSelect(item.path)} className="flex items-center gap-3">
                             <item.icon className="w-4 h-4 text-muted-foreground" />

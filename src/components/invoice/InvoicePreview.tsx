@@ -198,7 +198,7 @@ export function InvoicePreview({
       </div>
 
       <div className="px-8 py-6">
-        {/* ─── Bill To ─── */}
+        {/* ─── Ditagihkan Kepada ─── */}
         <div
           className="mb-6"
           data-print-element="bill-to"
@@ -257,7 +257,7 @@ export function InvoicePreview({
                   className="text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wider pb-2"
                   style={forExport ? exportStyles.mutedText : undefined}
                 >
-                  Description
+                  Deskripsi
                 </th>
                 <th
                   className="text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wider pb-2 w-14"
@@ -275,7 +275,7 @@ export function InvoicePreview({
                   className="text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wider pb-2 w-28"
                   style={forExport ? exportStyles.mutedText : undefined}
                 >
-                  Amount
+                Jumlah
                 </th>
               </tr>
             </thead>
@@ -301,7 +301,7 @@ export function InvoicePreview({
                       className="py-3 pr-4 text-sm text-gray-800"
                       style={forExport ? { color: "#1f2937" } : undefined}
                     >
-                      {item.description || "Item description"}
+                      {item.description || "Deskripsi item"}
                     </td>
                     <td
                       className="py-3 text-sm text-gray-700 text-center font-numeric"
@@ -348,7 +348,7 @@ export function InvoicePreview({
             </div>
             <div className="flex justify-between py-1.5 text-sm">
               <span className="text-gray-500" style={forExport ? exportStyles.mutedText : undefined}>
-                Tax ({data.taxRate}%)
+                Pajak ({data.taxRate}%)
               </span>
               <span
                 className="font-numeric text-gray-800"
@@ -366,7 +366,7 @@ export function InvoicePreview({
                 className="text-sm font-semibold text-gray-900"
                 style={forExport ? { color: "#111827" } : undefined}
               >
-                Total Due
+                Total Tagihan
               </span>
               <span
                 className="text-lg font-semibold font-numeric text-gray-900"
@@ -412,7 +412,7 @@ export function InvoicePreview({
                 className="text-[10px] text-gray-400 uppercase tracking-wider"
                 style={forExport ? exportStyles.subtleText : undefined}
               >
-                Account Number
+                Nomor Rekening
               </p>
               <p
                 className="text-sm font-medium text-gray-800 font-numeric mt-0.5"
@@ -427,7 +427,7 @@ export function InvoicePreview({
                 className="text-[10px] text-gray-400 uppercase tracking-wider"
                 style={forExport ? exportStyles.subtleText : undefined}
               >
-                Account Name
+                Nama Rekening
               </p>
               <p
                 className="text-sm font-medium text-gray-800 mt-0.5"
@@ -439,7 +439,7 @@ export function InvoicePreview({
           </div>
         </div>
 
-        {/* ─── Notes ─── */}
+        {/* ─── Catatan ─── */}
         {data.notes && (
           <div
             className="mt-6 pt-4 border-t border-gray-100"
@@ -450,7 +450,7 @@ export function InvoicePreview({
               className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
               style={forExport ? exportStyles.subtleText : undefined}
             >
-              Notes
+              Catatan
             </p>
             <p
               className="text-xs text-gray-500 whitespace-pre-line leading-relaxed"
@@ -472,7 +472,7 @@ export function InvoicePreview({
           className="text-xs text-gray-400 text-center"
           style={forExport ? exportStyles.subtleText : undefined}
         >
-          Thank you for your business
+          Terima kasih atas kepercayaan Anda
         </p>
       </div>
     </div>

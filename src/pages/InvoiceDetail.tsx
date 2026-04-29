@@ -93,7 +93,7 @@ export default function InvoiceDetail() {
       const clientData = invoiceData.clients as ClientData | null;
       setInvoice({
         ...invoiceData,
-        client_name: clientData?.name || "Unknown Client",
+        client_name: clientData?.name || "Klien tanpa nama",
         client_email: clientData?.email || null,
         client_phone: clientData?.phone || null,
         client_company: clientData?.company || null,
@@ -108,7 +108,7 @@ export default function InvoiceDetail() {
       if (itemsError) throw itemsError;
       setItems(itemsData || []);
     } catch (error: unknown) {
-      toast.error("Failed to load invoice");
+      toast.error("Gagal memuat invoice");
       navigate("/invoices");
     } finally {
       setLoading(false);
@@ -121,17 +121,17 @@ export default function InvoiceDetail() {
     try {
       const result = await exportToPDF("invoice-detail-preview", `Invoice-${invoice.invoice_number}.pdf`);
       if (result.success) {
-        toast.success("PDF exported successfully!");
+        toast.success("PDF berhasil diekspor");
       } else {
-        toast.error(result.error || "Failed to export PDF", {
+        toast.error(result.error || "Gagal mengekspor PDF", {
           action: {
-            label: "Retry",
+            label: "Coba Lagi",
             onClick: handleExportPDF,
           },
         });
       }
     } catch (error) {
-      toast.error("Failed to export PDF");
+      toast.error("Gagal mengekspor PDF");
     } finally {
       setExporting(false);
     }
@@ -146,10 +146,10 @@ export default function InvoiceDetail() {
         .eq("id", invoice.id);
 
       if (error) throw error;
-      toast.success("Invoice marked as paid!");
+      toast.success("Invoice berhasil ditandai lunas");
       fetchInvoice();
     } catch (error: unknown) {
-      toast.error("Failed to update status");
+      toast.error("Gagal memperbarui status");
     }
   };
 
@@ -167,9 +167,9 @@ export default function InvoiceDetail() {
     return (
       <DashboardLayout>
         <div className="p-8 text-center">
-          <p className="text-muted-foreground">Invoice not found</p>
+          <p className="text-muted-foreground">Invoice tidak ditemukan</p>
           <Button variant="outline" onClick={() => navigate("/invoices")} className="mt-4">
-            Back to Invoices
+            Kembali ke Invoice
           </Button>
         </div>
       </DashboardLayout>
@@ -191,11 +191,11 @@ export default function InvoiceDetail() {
             </Button>
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-semibold text-foreground">Invoice #{invoice.invoice_number}</h1>
+                <h1 className="text-2xl font-semibold text-foreground">INVOICE #{invoice.invoice_number}</h1>
                 <StatusBadge type="invoice" status={resolvedStatus} />
               </div>
               <p className="text-muted-foreground text-sm mt-1">
-                Issued on {new Date(invoice.issue_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                Diterbitkan pada {new Date(invoice.issue_date).toLocaleDateString("id-ID", { month: "long", day: "numeric", year: "numeric" })}
               </p>
             </div>
           </div>
@@ -203,12 +203,12 @@ export default function InvoiceDetail() {
             {invoice.status !== "paid" && (
               <Button variant="outline" onClick={handleMarkAsPaid}>
                 <CheckCircle className="w-4 h-4 mr-2" />
-                Mark as Paid
+                Tandai Lunas
               </Button>
             )}
             <Button variant="outline" onClick={handleExportPDF} disabled={exporting}>
               <Download className="w-4 h-4 mr-2" />
-              {exporting ? "Exporting..." : "Export PDF"}
+              {exporting ? "Mengekspor..." : "Ekspor PDF"}
             </Button>
           </div>
         </div>
@@ -224,7 +224,7 @@ export default function InvoiceDetail() {
                     <img src={settings.logo_url} alt="Logo" className="h-12 w-auto object-contain shrink-0" />
                   )}
                   <div>
-                    <h2 className="text-base font-semibold" style={{ color: '#111827' }}>{settings?.business_name || "Your Business"}</h2>
+                  <h2 className="text-base font-semibold" style={{ color: '#111827' }}>{settings?.business_name || "Bisnis Kamu"}</h2>
                     {settings?.address && <p className="text-xs mt-0.5 leading-relaxed" style={{ color: '#6b7280' }}>{settings.address}</p>}
                     {settings?.email && <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>{settings.email}</p>}
                     {settings?.phone && <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>{settings.phone}</p>}
@@ -241,30 +241,30 @@ export default function InvoiceDetail() {
             <div className="px-8 py-4 border-y" style={{ backgroundColor: '#f9fafb', borderColor: '#e5e7eb' }} data-print-element="meta">
               <div className="flex items-center gap-8">
                 <div>
-                  <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: '#9ca3af' }}>Issue Date</p>
+                  <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: '#9ca3af' }}>Tanggal Terbit</p>
                   <p className="text-sm font-medium mt-0.5" style={{ color: '#1f2937' }}>
-                    {new Date(invoice.issue_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    {new Date(invoice.issue_date).toLocaleDateString("id-ID", { month: "short", day: "numeric", year: "numeric" })}
                   </p>
                 </div>
                 {invoice.due_date && (
                   <div>
-                    <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: '#9ca3af' }}>Due Date</p>
+                    <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: '#9ca3af' }}>Jatuh Tempo</p>
                     <p className="text-sm font-medium mt-0.5" style={{ color: isOverdue ? '#dc2626' : '#1f2937' }}>
-                      {new Date(invoice.due_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                      {new Date(invoice.due_date).toLocaleDateString("id-ID", { month: "short", day: "numeric", year: "numeric" })}
                     </p>
                   </div>
                 )}
                 <div>
-                  <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: '#9ca3af' }}>Currency</p>
+                  <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: '#9ca3af' }}>Mata Uang</p>
                   <p className="text-sm font-medium font-numeric mt-0.5" style={{ color: '#1f2937' }}>IDR</p>
                 </div>
               </div>
             </div>
 
             <div className="px-8 py-6">
-              {/* Bill To */}
+              {/* Ditagihkan Kepada */}
               <div className="mb-6" data-print-element="bill-to">
-                <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: '#9ca3af' }}>Bill To</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: '#9ca3af' }}>Ditagihkan Kepada</p>
                 <p className="text-sm font-semibold" style={{ color: '#111827' }}>{invoice.client_name}</p>
                 {invoice.client_company && <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>{invoice.client_company}</p>}
                 {invoice.client_email && <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>{invoice.client_email}</p>}
@@ -305,7 +305,7 @@ export default function InvoiceDetail() {
                   </div>
                   {invoice.tax_rate && invoice.tax_rate > 0 && (
                     <div className="flex justify-between py-1.5 text-sm">
-                      <span style={{ color: '#6b7280' }}>Tax ({invoice.tax_rate}%)</span>
+                      <span style={{ color: '#6b7280' }}>Pajak ({invoice.tax_rate}%)</span>
                       <span className="font-numeric" style={{ color: '#1f2937' }}>{formatIDR(invoice.tax_amount || 0)}</span>
                     </div>
                   )}
@@ -327,7 +327,7 @@ export default function InvoiceDetail() {
                   )}
                   {settings?.bank_name && (
                     <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-wider mb-3" style={{ color: '#9ca3af' }}>Payment Details</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-wider mb-3" style={{ color: '#9ca3af' }}>Detail Pembayaran</p>
                       <div className="grid grid-cols-3 gap-x-6 gap-y-2">
                         <div>
                           <p className="text-[10px] uppercase tracking-wider" style={{ color: '#9ca3af' }}>Bank</p>
@@ -335,13 +335,13 @@ export default function InvoiceDetail() {
                         </div>
                         {settings.account_name && (
                           <div>
-                            <p className="text-[10px] uppercase tracking-wider" style={{ color: '#9ca3af' }}>Account Name</p>
+                            <p className="text-[10px] uppercase tracking-wider" style={{ color: '#9ca3af' }}>Nama Rekening</p>
                             <p className="text-sm font-medium mt-0.5" style={{ color: '#1f2937' }}>{settings.account_name}</p>
                           </div>
                         )}
                         {settings.account_number && (
                           <div>
-                            <p className="text-[10px] uppercase tracking-wider" style={{ color: '#9ca3af' }}>Account Number</p>
+                            <p className="text-[10px] uppercase tracking-wider" style={{ color: '#9ca3af' }}>Nomor Rekening</p>
                             <p className="text-sm font-medium font-numeric mt-0.5" style={{ color: '#1f2937' }}>{settings.account_number}</p>
                           </div>
                         )}
@@ -354,7 +354,7 @@ export default function InvoiceDetail() {
 
             {/* Footer */}
             <div className="px-8 py-4 border-t" style={{ backgroundColor: '#f9fafb', borderColor: '#e5e7eb' }} data-print-element="footer">
-              <p className="text-xs text-center" style={{ color: '#9ca3af' }}>Thank you for your business</p>
+               <p className="text-xs text-center" style={{ color: '#9ca3af' }}>Terima kasih atas kepercayaan Anda</p>
             </div>
           </div>
         </div>

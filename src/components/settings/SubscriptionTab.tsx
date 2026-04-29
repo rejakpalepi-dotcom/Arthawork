@@ -34,7 +34,7 @@ export function SubscriptionTab() {
 
     return (
         <div className="lg:col-span-3 space-y-6">
-            {/* Current Plan */}
+            {/* Current plan */}
             <Card>
                 <CardHeader>
                     <div className="flex items-center justify-between">
@@ -43,17 +43,17 @@ export function SubscriptionTab() {
                             {tier === "pro" && <Crown className="w-6 h-6 text-primary" />}
                             {tier === "business" && <Rocket className="w-6 h-6 text-warning" />}
                             <div>
-                                <CardTitle className="text-lg">Current Plan: {tierConfig.displayName}</CardTitle>
+                                <CardTitle className="text-lg">Paket Saat Ini: {tierConfig.displayName}</CardTitle>
                                 <CardDescription>
                                     {tier === "free"
-                                        ? "Upgrade to unlock unlimited features"
-                                        : "You have access to all premium features"}
+                                        ? "Naik paket untuk membuka fitur tanpa batas"
+                                        : "Anda sudah memiliki akses ke seluruh fitur premium"}
                                 </CardDescription>
                             </div>
                         </div>
                         {tier === "free" && (
                             <Button onClick={() => navigate("/pricing")}>
-                                Upgrade
+                                Naik Paket
                                 <ExternalLink className="w-4 h-4 ml-2" />
                             </Button>
                         )}
@@ -71,20 +71,20 @@ export function SubscriptionTab() {
                 </CardContent>
             </Card>
 
-            {/* Usage Stats - Only show for free tier */}
+            {/* Usage stats */}
             {tier === "free" && (
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-lg">Monthly Usage</CardTitle>
+                        <CardTitle className="text-lg">Pemakaian Bulanan</CardTitle>
                         <CardDescription>
-                            Your usage resets on the 1st of each month
+                            Kuota akan direset setiap tanggal 1
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                        {/* Invoice Usage */}
+                        {/* Invoice usage */}
                         <div className="space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Invoices</span>
+                                <span className="text-muted-foreground">Invoice</span>
                                 <span className="font-medium">
                                     {usage.invoices} / {invoiceLimit}
                                 </span>
@@ -98,14 +98,14 @@ export function SubscriptionTab() {
                                 )}
                             />
                             <p className="text-xs text-muted-foreground">
-                                {remainingInvoices()} invoices remaining this month
+                                Sisa {remainingInvoices()} invoice bulan ini
                             </p>
                         </div>
 
-                        {/* Proposal Usage */}
+                        {/* Proposal usage */}
                         <div className="space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Proposals</span>
+                                <span className="text-muted-foreground">Proposal</span>
                                 <span className="font-medium">
                                     {usage.proposals} / {proposalLimit}
                                 </span>
@@ -119,14 +119,14 @@ export function SubscriptionTab() {
                                 )}
                             />
                             <p className="text-xs text-muted-foreground">
-                                {remainingProposals()} proposals remaining this month
+                                Sisa {remainingProposals()} proposal bulan ini
                             </p>
                         </div>
 
-                        {/* Client Count */}
+                        {/* Client count */}
                         <div className="space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Clients</span>
+                                <span className="text-muted-foreground">Klien</span>
                                 <span className="font-medium">
                                     {usage.clients} / {tierConfig.limits.clients}
                                 </span>
@@ -140,10 +140,10 @@ export function SubscriptionTab() {
                 </Card>
             )}
 
-            {/* Compare Plans */}
+            {/* Compare plans */}
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-lg">Compare Plans</CardTitle>
+                    <CardTitle className="text-lg">Bandingkan Paket</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-3 gap-4 text-center">
@@ -160,12 +160,12 @@ export function SubscriptionTab() {
                                 >
                                     <p className="font-bold text-lg">{config.displayName}</p>
                                     <p className="text-2xl font-bold text-primary my-2">
-                                        {config.price === 0 ? "Free" : config.priceDisplay}
+                                        {config.price === 0 ? "Gratis" : config.priceDisplay}
                                     </p>
                                     <p className="text-xs text-muted-foreground">
                                         {config.limits.invoicesPerMonth === Infinity
-                                            ? "Unlimited"
-                                            : `${config.limits.invoicesPerMonth} invoices/mo`}
+                                            ? "Tanpa batas"
+                                            : `${config.limits.invoicesPerMonth} invoice/bulan`}
                                     </p>
                                     {!isCurrent && t !== "free" && (
                                         <Button
@@ -174,12 +174,12 @@ export function SubscriptionTab() {
                                             className="mt-3"
                                             onClick={() => navigate(`/pricing?tier=${t}`)}
                                         >
-                                            Upgrade
+                                            Naik Paket
                                         </Button>
                                     )}
                                     {isCurrent && (
                                         <span className="inline-block mt-3 px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
-                                            Current
+                                            Aktif
                                         </span>
                                     )}
                                 </div>

@@ -41,22 +41,22 @@ const arthaLogo = "/icon-512.png";
 
 const bottomNavItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-  { label: "Clients", icon: Users, path: "/clients" },
-  { label: "New", icon: Plus, path: "/invoices/new", isAction: true },
-  { label: "Invoices", icon: Receipt, path: "/invoices" },
+  { label: "Klien", icon: Users, path: "/clients" },
+  { label: "Baru", icon: Plus, path: "/invoices/new", isAction: true },
+  { label: "Invoice", icon: Receipt, path: "/invoices" },
   { label: "Menu", icon: Menu, path: "" },
 ];
 
 const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-  { label: "Clients", icon: Users, path: "/clients" },
-  { label: "Services", icon: Briefcase, path: "/services" },
-  { label: "Proposals", icon: FileText, path: "/proposals" },
-  { label: "Contracts", icon: FileSignature, path: "/contracts" },
-  { label: "Projects", icon: FolderKanban, path: "/projects" },
-  { label: "Invoices", icon: Receipt, path: "/invoices" },
-  { label: "Tax Summary", icon: Calculator, path: "/tax-summary" },
-  { label: "Settings", icon: Settings, path: "/settings" },
+  { label: "Klien", icon: Users, path: "/clients" },
+  { label: "Layanan", icon: Briefcase, path: "/services" },
+  { label: "Proposal", icon: FileText, path: "/proposals" },
+  { label: "Kontrak", icon: FileSignature, path: "/contracts" },
+  { label: "Proyek", icon: FolderKanban, path: "/projects" },
+  { label: "Invoice", icon: Receipt, path: "/invoices" },
+  { label: "Ringkasan Pajak", icon: Calculator, path: "/tax-summary" },
+  { label: "Pengaturan", icon: Settings, path: "/settings" },
 ];
 
 export function MobileNav() {
@@ -71,8 +71,8 @@ export function MobileNav() {
     localStorage.removeItem('sb-sfkcncwbsoaqqteqguyf-auth-token');
     await supabase.auth.signOut();
     toast({
-      title: "Signed out",
-      description: "You have been signed out successfully.",
+      title: "Berhasil keluar",
+      description: "Kamu sudah keluar dari akun.",
     });
     navigate("/login", { replace: true });
   };
@@ -154,20 +154,20 @@ export function MobileNav() {
               <AlertDialogTrigger asChild>
                 <button className="flex items-center gap-3 w-full px-4 py-3 min-h-[48px] text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg transition-colors">
                   <LogOut className="w-5 h-5" />
-                  <span className="font-medium">Sign Out</span>
+                  <span className="font-medium">Keluar</span>
                 </button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Sign out of Artha?</AlertDialogTitle>
+                  <AlertDialogTitle>Keluar dari Artha?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will end your current session.
+                    Tindakan ini akan mengakhiri sesi kamu saat ini.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>Batal</AlertDialogCancel>
                   <AlertDialogAction onClick={handleLogout} className="bg-destructive hover:bg-destructive/90">
-                    Sign Out
+                    Keluar
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

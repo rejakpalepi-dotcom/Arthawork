@@ -48,18 +48,18 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                             <AlertTriangle className="w-8 h-8 text-destructive" />
                         </div>
                         <h2 className="text-xl font-semibold text-foreground mb-2">
-                            Something went wrong
+                            Terjadi kendala
                         </h2>
                         <p className="text-muted-foreground mb-6">
-                            An error occurred while rendering this section. Please try refreshing.
+                            Ada masalah saat memuat bagian ini. Silakan coba muat ulang.
                         </p>
                         <div className="flex gap-3 justify-center">
                             <Button variant="outline" onClick={this.handleReset}>
                                 <RefreshCw className="w-4 h-4 mr-2" />
-                                Try Again
+                                Coba Lagi
                             </Button>
                             <Button onClick={() => window.location.reload()}>
-                                Refresh Page
+                                Muat Ulang Halaman
                             </Button>
                         </div>
                         {import.meta.env.DEV && this.state.error && (

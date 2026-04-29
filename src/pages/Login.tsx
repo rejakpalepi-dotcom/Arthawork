@@ -75,8 +75,8 @@ export default function Login() {
     if (rateCheck.limited) {
       const seconds = Math.ceil(rateCheck.resetIn / 1000);
       toast({
-        title: "Too Many Attempts",
-        description: `Please wait ${seconds} seconds before trying again.`,
+        title: "Terlalu Banyak Percobaan",
+        description: `Tunggu ${seconds} detik sebelum mencoba lagi.`,
         variant: "destructive",
       });
       return;
@@ -100,16 +100,16 @@ export default function Login() {
 
     if (error) {
       toast({
-        title: "Login Failed",
+        title: "Login Gagal",
         description: error.message,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Welcome back!",
+        title: "Selamat datang kembali",
         description: rememberMe
-          ? "You have been logged in. Your session will be remembered."
-          : "You have been logged in for this session only.",
+          ? "Kamu berhasil masuk dan sesi akan diingat."
+          : "Kamu berhasil masuk hanya untuk sesi ini.",
       });
       // Clear rate limit on successful login
       clearRateLimit("login");
@@ -133,7 +133,7 @@ export default function Login() {
     <>
       <SEOHead
         title="Login"
-        description="Sign in to Artha to manage your creative business. Access your proposals, invoices, and client management dashboard."
+        description="Masuk ke Artha untuk mengelola bisnis kreatifmu. Akses proposal, invoice, dan dashboard klien dalam satu tempat."
         canonical="https://artha.app/login"
       />
       <main className="min-h-screen bg-background flex">
@@ -145,12 +145,12 @@ export default function Login() {
           </header>
           <section className="space-y-4 animate-in fade-in slide-in-from-left-8 duration-700 delay-150">
             <h1 className="text-4xl font-semibold text-foreground">
-              Manage your business
+              Kelola bisnismu
               <br />
-              <span className="gradient-text animate-in fade-in duration-1000 delay-300">with confidence.</span>
+              <span className="gradient-text animate-in fade-in duration-1000 delay-300">dengan lebih percaya diri.</span>
             </h1>
             <p className="text-muted-foreground text-lg max-w-md animate-in fade-in duration-700 delay-500">
-              Streamline invoices, proposals, and client management all in one place.
+              Rapikan invoice, proposal, dan pengelolaan klien dalam satu workspace.
             </p>
           </section>
           <footer className="text-muted-foreground text-sm animate-in fade-in duration-500 delay-700">© 2025 Artha. All rights reserved.</footer>
@@ -164,13 +164,13 @@ export default function Login() {
                 <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain animate-bounce" />
                 <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
               </div>
-              <h2 className="text-2xl font-semibold text-foreground">Welcome to Artha</h2>
-              <p className="text-muted-foreground mt-2">Access your creative dashboard</p>
+              <h2 className="text-2xl font-semibold text-foreground">Masuk ke Artha</h2>
+              <p className="text-muted-foreground mt-2">Akses dashboard kerja kreatifmu</p>
             </div>
 
             <form onSubmit={handleLogin} className="space-y-6" autoComplete="on" method="post" action="#">
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">Alamat Email</Label>
                 <div className="relative">
                   <Mail
                     className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none"
@@ -203,7 +203,7 @@ export default function Login() {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
-                    placeholder="Enter your password"
+                    placeholder="Masukkan password kamu"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
@@ -214,7 +214,7 @@ export default function Login() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -233,11 +233,11 @@ export default function Login() {
                     htmlFor="remember"
                     className={`text-sm cursor-pointer transition-colors ${rememberMe ? "text-primary" : "text-muted-foreground"}`}
                   >
-                    Remember me
+                    Ingat saya
                   </Label>
                 </div>
                 <Link to="/forgot-password" className="text-sm text-primary hover:underline">
-                  Forgot password?
+                  Lupa password?
                 </Link>
               </div>
 
@@ -253,8 +253,8 @@ export default function Login() {
                 aria-hidden="true"
               />
 
-              <Button type="submit" className="w-full" disabled={loading} aria-label="Sign in to your Artha account">
-                {loading ? "Signing in..." : "Sign In"}
+              <Button type="submit" className="w-full" disabled={loading} aria-label="Masuk ke akun Artha kamu">
+                {loading ? "Masuk..." : "Masuk"}
               </Button>
 
               <div className="relative">
@@ -262,7 +262,7 @@ export default function Login() {
                   <div className="w-full border-t border-border"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-background px-4 text-muted-foreground">Or continue with</span>
+                  <span className="bg-background px-4 text-muted-foreground">Atau lanjut dengan</span>
                 </div>
               </div>
 
@@ -295,7 +295,7 @@ export default function Login() {
                     />
                   </svg>
                 )}
-                {oauthLoading === "google" ? "Signing in..." : "Continue with Google"}
+                {oauthLoading === "google" ? "Masuk..." : "Lanjut dengan Google"}
               </Button>
             </form>
 
@@ -304,20 +304,20 @@ export default function Login() {
               <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
                 <div className="text-center space-y-4">
                   <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
-                  <p className="text-foreground font-medium">Signing you in...</p>
-                  <p className="text-muted-foreground text-sm">Please wait while we redirect you</p>
+                  <p className="text-foreground font-medium">Sedang memproses login...</p>
+                  <p className="text-muted-foreground text-sm">Tunggu sebentar saat kami mengarahkanmu</p>
                 </div>
               </div>
             )}
 
             <p className="text-center text-muted-foreground">
-              Don't have an account?{" "}
+              Belum punya akun?{" "}
               <Link to="/signup" className="text-primary hover:underline">
-                Sign up
+                Daftar
               </Link>
             </p>
 
-            <p className="text-center text-xs text-muted-foreground">Need help signing in?</p>
+            <p className="text-center text-xs text-muted-foreground">Butuh bantuan untuk masuk?</p>
           </div>
         </section>
       </main>

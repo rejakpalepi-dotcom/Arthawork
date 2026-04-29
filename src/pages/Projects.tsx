@@ -84,12 +84,12 @@ export default function Projects() {
         <DashboardLayout>
             <div className="p-4 md:p-8">
                 <PageHeader
-                    title="Projects"
+                    title="PROYEK"
                     description="Kelola proyek dan portal klien premium dengan pin-point feedback."
                     actions={
                         <Button className="gap-2 w-full sm:w-auto min-h-[44px]" onClick={handleNewProject}>
                             <Plus className="w-4 h-4" />
-                            New Project
+                            Proyek Baru
                         </Button>
                     }
                 />
@@ -268,9 +268,9 @@ export default function Projects() {
                         <div className="glass-card rounded-2xl">
                             <EmptyState
                                 icon={Inbox}
-                                title="No projects yet"
-                                description="Create your first project to start sharing client portals."
-                                actionLabel="Create Project"
+                                title="Belum ada proyek"
+                                description="Buat proyek pertama untuk mulai membagikan portal klien."
+                                actionLabel="BUAT PROYEK"
                                 onAction={handleNewProject}
                             />
                         </div>

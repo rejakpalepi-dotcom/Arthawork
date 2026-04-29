@@ -32,10 +32,10 @@ import {
 import { useEffect } from "react";
 
 const projectSchema = z.object({
-  title: z.string().min(1, "Project title is required").max(100, "Title must be less than 100 characters"),
+  title: z.string().min(1, "Judul proyek wajib diisi").max(100, "Judul maksimal 100 karakter"),
   clientId: z.string().nullable(),
-  description: z.string().max(1000, "Description must be less than 1000 characters").optional(),
-  budget: z.number().min(0, "Budget must be positive").optional(),
+  description: z.string().max(1000, "Deskripsi maksimal 1000 karakter").optional(),
+  budget: z.number().min(0, "Budget harus bernilai positif").optional(),
   startDate: z.date().nullable(),
   deadline: z.date().nullable(),
   status: z.string().default("planning"),
@@ -49,10 +49,10 @@ interface Client {
 }
 
 const statusOptions = [
-  { value: "planning", label: "Planning", icon: Target },
-  { value: "in_progress", label: "In Progress", icon: Clock },
-  { value: "review", label: "Under Review", icon: FileText },
-  { value: "completed", label: "Completed", icon: CheckCircle },
+  { value: "planning", label: "Perencanaan", icon: Target },
+  { value: "in_progress", label: "Berjalan", icon: Clock },
+  { value: "review", label: "Dalam Review", icon: FileText },
+  { value: "completed", label: "Selesai", icon: CheckCircle },
 ];
 
 export default function ProjectBuilder() {
@@ -103,10 +103,10 @@ export default function ProjectBuilder() {
     try {
       // For now, show success since we don't have a projects table yet
       // This can be connected to a projects table when created
-      toast.success("Project created successfully!");
+      toast.success("Proyek berhasil dibuat");
       navigate("/dashboard");
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to create project";
+      const message = error instanceof Error ? error.message : "Gagal membuat proyek";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -135,19 +135,19 @@ export default function ProjectBuilder() {
                   <FolderOpen className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-foreground">New Project</h1>
-                  <p className="text-sm text-muted-foreground">Define your project scope and timeline</p>
+                  <h1 className="text-xl font-bold text-foreground">PROYEK BARU</h1>
+                  <p className="text-sm text-muted-foreground">Atur scope proyek dan timeline kerja</p>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <Button variant="outline" onClick={() => navigate("/dashboard")}>
-                Cancel
+                Batal
               </Button>
               <Button onClick={handleSubmit(onSubmit)} disabled={loading}>
                 {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 <Save className="w-4 h-4 mr-2" />
-                Create Project
+                Buat Proyek
               </Button>
             </div>
           </div>
@@ -156,19 +156,19 @@ export default function ProjectBuilder() {
         {/* Content */}
         <div className="p-8 max-w-4xl mx-auto">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Project Details */}
+            {/* Detail Proyek */}
             <div className="glass-card rounded-2xl p-8 animate-fade-in">
               <h2 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
                 <FileText className="w-5 h-5 text-primary" />
-                Project Details
+                DETAIL PROYEK
               </h2>
 
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="title">Project Title *</Label>
+                  <Label htmlFor="title">Judul Proyek *</Label>
                   <Input
                     id="title"
-                    placeholder="e.g., Website Redesign for Acme Corp"
+                    placeholder="Contoh: Redesain Website untuk Acme Corp"
                     {...register("title")}
                     className={errors.title ? "border-destructive" : ""}
                   />
@@ -181,14 +181,14 @@ export default function ProjectBuilder() {
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2">
                       <User className="w-4 h-4 text-muted-foreground" />
-                      Client
+                      Klien
                     </Label>
                     <Select
                       value={watchedValues.clientId || ""}
                       onValueChange={(value) => setValue("clientId", value || null)}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a client" />
+                        <SelectValue placeholder="Pilih klien" />
                       </SelectTrigger>
                       <SelectContent>
                         {clients.map((client) => (
@@ -227,10 +227,10 @@ export default function ProjectBuilder() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description">Deskripsi</Label>
                   <Textarea
                     id="description"
-                    placeholder="Describe the project scope, goals, and deliverables..."
+                    placeholder="Jelaskan scope proyek, tujuan, dan deliverables..."
                     rows={4}
                     {...register("description")}
                     className={errors.description ? "border-destructive" : ""}
@@ -246,14 +246,14 @@ export default function ProjectBuilder() {
             <div className="glass-card rounded-2xl p-8 animate-fade-in" style={{ animationDelay: "100ms" }}>
               <h2 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
                 <Clock className="w-5 h-5 text-primary" />
-                Timeline & Budget
+                TIMELINE & BUDGET
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2">
                     <CalendarIcon className="w-4 h-4 text-muted-foreground" />
-                    Start Date
+                    Tanggal Mulai
                   </Label>
                   <Popover>
                     <PopoverTrigger asChild>
@@ -267,7 +267,7 @@ export default function ProjectBuilder() {
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {watchedValues.startDate
                           ? format(watchedValues.startDate, "PPP")
-                          : "Select date"}
+                          : "Pilih tanggal"}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -298,7 +298,7 @@ export default function ProjectBuilder() {
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {watchedValues.deadline
                           ? format(watchedValues.deadline, "PPP")
-                          : "Select date"}
+                          : "Pilih tanggal"}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -338,7 +338,7 @@ export default function ProjectBuilder() {
             <div className="glass-card rounded-2xl p-8 animate-fade-in" style={{ animationDelay: "200ms" }}>
               <h2 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
                 <FolderOpen className="w-5 h-5 text-primary" />
-                Project Preview
+                PRATINJAU PROYEK
               </h2>
 
               <div className="bg-secondary/50 rounded-xl p-6 border border-border">
@@ -349,10 +349,10 @@ export default function ProjectBuilder() {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-foreground">
-                        {watchedValues.title || "Untitled Project"}
+                        {watchedValues.title || "Proyek Tanpa Judul"}
                       </h3>
                       <p className="text-sm text-muted-foreground">
-                        {selectedClient?.name || "No client selected"}
+                        {selectedClient?.name || "Belum ada klien dipilih"}
                       </p>
                     </div>
                   </div>
@@ -380,14 +380,14 @@ export default function ProjectBuilder() {
                   {watchedValues.startDate && (
                     <div className="flex items-center gap-2 text-sm">
                       <CalendarIcon className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">Start:</span>
+                      <span className="text-muted-foreground">Mulai:</span>
                       <span className="text-foreground">{format(watchedValues.startDate, "MMM d, yyyy")}</span>
                     </div>
                   )}
                   {watchedValues.deadline && (
                     <div className="flex items-center gap-2 text-sm">
                       <Clock className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">Due:</span>
+                      <span className="text-muted-foreground">Jatuh tempo:</span>
                       <span className="text-foreground">{format(watchedValues.deadline, "MMM d, yyyy")}</span>
                     </div>
                   )}

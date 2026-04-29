@@ -20,18 +20,18 @@ const COMMON_PASSWORDS = [
 ];
 
 const signupSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  email: z.string().email("Masukkan alamat email yang valid"),
   password: z.string()
-    .min(10, "Password must be at least 10 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(/[!@#$%^&*(),.?":{}|<>]/, "Password must contain at least one symbol")
+    .min(10, "Password minimal 10 karakter")
+    .regex(/[A-Z]/, "Password harus mengandung minimal satu huruf besar")
+    .regex(/[a-z]/, "Password harus mengandung minimal satu huruf kecil")
+    .regex(/[0-9]/, "Password harus mengandung minimal satu angka")
+    .regex(/[!@#$%^&*(),.?":{}|<>]/, "Password harus mengandung minimal satu simbol")
     .refine(
       (password) => !COMMON_PASSWORDS.some(common =>
         password.toLowerCase().includes(common.toLowerCase())
       ),
-      "Password is too common. Please choose a stronger password."
+      "Password terlalu umum. Gunakan kombinasi yang lebih kuat."
     ),
 });
 
@@ -91,8 +91,8 @@ export default function Signup() {
 
     if (!agreedToTerms) {
       toast({
-        title: "Terms Required",
-        description: "Please agree to the Terms of Service and Privacy Policy.",
+        title: "Persetujuan Diperlukan",
+        description: "Setujui Syarat & Ketentuan dan Kebijakan Privasi terlebih dahulu.",
         variant: "destructive",
       });
       return;
@@ -109,8 +109,8 @@ export default function Signup() {
     if (rateCheck.limited) {
       const seconds = Math.ceil(rateCheck.resetIn / 1000);
       toast({
-        title: "Too Many Attempts",
-        description: `Please wait ${seconds} seconds before trying again.`,
+        title: "Terlalu Banyak Percobaan",
+        description: `Tunggu ${seconds} detik sebelum mencoba lagi.`,
         variant: "destructive",
       });
       return;
@@ -128,14 +128,14 @@ export default function Signup() {
 
     if (error) {
       toast({
-        title: "Sign Up Failed",
+        title: "Pendaftaran Gagal",
         description: error.message,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Account Created!",
-        description: "Welcome to Artha.",
+        title: "Akun Berhasil Dibuat",
+        description: "Selamat datang di Artha.",
       });
       navigate("/dashboard", { replace: true });
     }
@@ -144,11 +144,11 @@ export default function Signup() {
   };
 
   const passwordRequirements = [
-    { met: password.length >= 10, text: "10+ characters" },
-    { met: /[A-Z]/.test(password), text: "Uppercase" },
-    { met: /[a-z]/.test(password), text: "Lowercase" },
-    { met: /[0-9]/.test(password), text: "Number" },
-    { met: /[!@#$%^&*(),.?":{}|<>]/.test(password), text: "Symbol" },
+    { met: password.length >= 10, text: "10+ karakter" },
+    { met: /[A-Z]/.test(password), text: "Huruf besar" },
+    { met: /[a-z]/.test(password), text: "Huruf kecil" },
+    { met: /[0-9]/.test(password), text: "Angka" },
+    { met: /[!@#$%^&*(),.?":{}|<>]/.test(password), text: "Simbol" },
   ];
 
   return (
@@ -179,7 +179,7 @@ export default function Signup() {
           </section>
 
           <footer className="text-muted-foreground text-sm">
-            © 2025 Artha. All rights reserved.
+            © 2025 Artha. Seluruh hak cipta dilindungi.
           </footer>
         </aside>
 
@@ -192,15 +192,15 @@ export default function Signup() {
                 <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
               </div>
               <Link to="/login">
-                <Button variant="outline" size="sm" aria-label="Log in to existing account">Log In</Button>
+                <Button variant="outline" size="sm" aria-label="Masuk ke akun yang sudah ada">Masuk</Button>
               </Link>
             </div>
 
             <div className="hidden lg:flex justify-end">
               <p className="text-muted-foreground text-sm">
-                Already a member?{" "}
+                Sudah punya akun?{" "}
                 <Link to="/login" className="text-primary hover:underline font-medium">
-                  Log In
+                  Masuk
                 </Link>
               </p>
             </div>
@@ -212,7 +212,7 @@ export default function Signup() {
 
             <form onSubmit={handleSignup} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">Alamat Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
@@ -231,13 +231,13 @@ export default function Signup() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Create Password</Label>
+                <Label htmlFor="password">Buat Password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Create a strong password"
+                    placeholder="Buat password yang kuat"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 pr-10"
@@ -330,7 +330,7 @@ export default function Signup() {
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                 </svg>
               )}
-              {oauthLoading === "google" ? "Signing in..." : "Lanjutkan dengan Google"}
+              {oauthLoading === "google" ? "Masuk..." : "Lanjutkan dengan Google"}
             </Button>
 
             {/* OAuth loading overlay */}

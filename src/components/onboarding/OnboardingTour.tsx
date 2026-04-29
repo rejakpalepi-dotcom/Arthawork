@@ -78,7 +78,7 @@ export function OnboardingTour() {
         element: 'aside nav',
         popover: {
           title: "PUSAT NAVIGASI",
-          description: "Akses Clients, Services, Proposals, dan Invoices dari sini.",
+          description: "Akses Klien, Layanan, Proposal, dan Invoice dari sini.",
           side: "right",
           align: "start",
         },
@@ -170,7 +170,7 @@ export function OnboardingTour() {
       {
         popover: {
           title: "NAVIGASI MOBILE",
-          description: "Gunakan menu di pojok kiri atas untuk akses Clients, Proposals, Invoices, dan Settings.",
+          description: "Gunakan menu di pojok kiri atas untuk akses Klien, Proposal, Invoice, dan Pengaturan.",
           side: "over",
           align: "center",
         },
@@ -182,8 +182,8 @@ export function OnboardingTour() {
       popover: {
         title: "TIPS PRO",
         description: mobileMode
-          ? "Tap menu untuk mulai. Explore Clients, buat Proposal, dan kirim Invoice pertama lu!"
-          : "Cmd+K = Global Search, Cmd+N = New Project. Kerja makin cepat!",
+          ? "Tap menu untuk mulai. Buka Klien, buat Proposal, dan kirim Invoice pertama Anda."
+          : "Cmd+K untuk pencarian global, Cmd+N untuk proyek baru. Kerja jadi lebih cepat.",
         side: "over",
         align: "center",
       },

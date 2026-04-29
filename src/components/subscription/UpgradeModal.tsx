@@ -25,15 +25,15 @@ export function UpgradeModal({ open, onOpenChange, reason, featureName }: Upgrad
     const getReasonText = () => {
         switch (reason) {
             case "invoice_limit":
-                return "You've reached your monthly invoice limit on the Free plan.";
+                return "Kuota invoice bulanan Anda di paket Gratis sudah habis.";
             case "proposal_limit":
-                return "You've reached your monthly proposal limit on the Free plan.";
+                return "Kuota proposal bulanan Anda di paket Gratis sudah habis.";
             case "client_limit":
-                return "You've reached your client limit on the Free plan.";
+                return "Batas klien untuk paket Gratis sudah tercapai.";
             case "feature":
-                return `${featureName || "This feature"} is available on Pro and Business plans.`;
+                return `${featureName || "Fitur ini"} tersedia di paket Pro dan Business.`;
             default:
-                return "Upgrade to unlock unlimited features and grow your business.";
+                return "Naik paket untuk membuka fitur tanpa batas dan mengembangkan bisnis Anda.";
         }
     };
 
@@ -48,7 +48,7 @@ export function UpgradeModal({ open, onOpenChange, reason, featureName }: Upgrad
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2 text-xl">
                         <Zap className="w-6 h-6 text-primary" />
-                        Upgrade Your Plan
+                        Tingkatkan Paket Anda
                     </DialogTitle>
                     <DialogDescription className="text-muted-foreground">
                         {getReasonText()}
@@ -88,7 +88,7 @@ export function UpgradeModal({ open, onOpenChange, reason, featureName }: Upgrad
                             variant={selectedTier === "pro" ? "default" : "outline"}
                             onClick={() => handleUpgrade("pro")}
                         >
-                            Upgrade to Pro
+                            Pilih Pro
                         </Button>
                     </div>
 
@@ -121,13 +121,13 @@ export function UpgradeModal({ open, onOpenChange, reason, featureName }: Upgrad
                             variant={selectedTier === "business" ? "default" : "outline"}
                             onClick={() => handleUpgrade("business")}
                         >
-                            Upgrade to Business
+                            Pilih Business
                         </Button>
                     </div>
                 </div>
 
                 <p className="text-center text-xs text-muted-foreground mt-4">
-                    All plans include a 14-day free trial. Cancel anytime.
+                    Semua paket berisi uji coba gratis 14 hari. Anda bisa berhenti kapan saja.
                 </p>
             </DialogContent>
         </Dialog>

@@ -123,4 +123,95 @@ describe("UI copy localization regressions", () => {
     expect(proposalEditor).not.toContain("Introduction Text");
     expect(proposalEditor).not.toContain("Hero Image");
   });
+
+  it("auth, projects, and mobile navigation avoid obvious English UI copy", () => {
+    const login = readProjectFile("src/pages/Login.tsx");
+    const forgotPassword = readProjectFile("src/pages/ForgotPassword.tsx");
+    const signup = readProjectFile("src/pages/Signup.tsx");
+    const projects = readProjectFile("src/pages/Projects.tsx");
+    const projectBuilder = readProjectFile("src/pages/ProjectBuilder.tsx");
+    const mobileNav = readProjectFile("src/components/layout/MobileNav.tsx");
+
+    expect(login).not.toContain("Welcome to Artha");
+    expect(login).not.toContain("Email Address");
+    expect(login).not.toContain("Remember me");
+    expect(login).not.toContain("Forgot password?");
+    expect(login).not.toContain("Sign In");
+    expect(forgotPassword).not.toContain("Forgot your password?");
+    expect(forgotPassword).not.toContain("Reset Password");
+    expect(forgotPassword).not.toContain("Send Reset Link");
+    expect(signup).not.toContain("Email Address");
+    expect(signup).not.toContain("Create Password");
+    expect(signup).not.toContain("Log In");
+    expect(projects).not.toContain('title="Projects"');
+    expect(projects).not.toContain("New Project");
+    expect(projects).not.toContain("No projects yet");
+    expect(projectBuilder).not.toContain("New Project");
+    expect(projectBuilder).not.toContain("Project Details");
+    expect(projectBuilder).not.toContain("Create Project");
+    expect(projectBuilder).not.toContain("Project Preview");
+    expect(mobileNav).not.toContain('"Clients"');
+    expect(mobileNav).not.toContain('"Invoices"');
+    expect(mobileNav).not.toContain('"Services"');
+    expect(mobileNav).not.toContain('"Projects"');
+    expect(mobileNav).not.toContain('"Settings"');
+    expect(mobileNav).not.toContain("Sign Out");
+    expect(mobileNav).not.toContain(">Cancel<");
+  });
+
+  it("invoice detail, previews, and global search use Indonesian user-facing copy", () => {
+    const invoiceDetail = readProjectFile("src/pages/InvoiceDetail.tsx");
+    const invoicePreview = readProjectFile("src/components/invoice/InvoicePreview.tsx");
+    const proposalPreview = readProjectFile("src/components/proposal/ProposalPreview.tsx");
+    const globalSearch = readProjectFile("src/components/GlobalSearch.tsx");
+
+    expect(invoiceDetail).not.toContain("Failed to load invoice");
+    expect(invoiceDetail).not.toContain("Export PDF");
+    expect(invoiceDetail).not.toContain("Mark as Paid");
+    expect(invoiceDetail).not.toContain("Invoice not found");
+    expect(invoicePreview).not.toContain("Bill To");
+    expect(invoicePreview).not.toContain("Description");
+    expect(invoicePreview).not.toContain("Total Due");
+    expect(invoicePreview).not.toContain("Notes");
+    expect(invoicePreview).not.toContain("Thank you for your business");
+    expect(invoicePreview).not.toContain("Account Number");
+    expect(invoicePreview).not.toContain("Account Name");
+    expect(proposalPreview).not.toContain("Untitled Service");
+    expect(proposalPreview).not.toContain("Untitled Phase");
+    expect(proposalPreview).not.toContain("Total Investment");
+    expect(globalSearch).not.toContain("Search clients, invoices, proposals...");
+    expect(globalSearch).not.toContain("Searching...");
+    expect(globalSearch).not.toContain("No results found.");
+    expect(globalSearch).not.toContain("Quick Actions");
+    expect(globalSearch).not.toContain("Search Results");
+    expect(globalSearch).not.toContain("New Invoice");
+  });
+
+  it("subscription, tax, onboarding, payment, and error states avoid obvious English copy", () => {
+    const taxSummary = readProjectFile("src/pages/TaxSummary.tsx");
+    const upgradeModal = readProjectFile("src/components/subscription/UpgradeModal.tsx");
+    const subscriptionTab = readProjectFile("src/components/settings/SubscriptionTab.tsx");
+    const paymentButton = readProjectFile("src/components/contract/PaymentButton.tsx");
+    const onboardingTour = readProjectFile("src/components/onboarding/OnboardingTour.tsx");
+    const errorBoundary = readProjectFile("src/components/ErrorBoundary.tsx");
+
+    expect(taxSummary).not.toContain("Export PDF");
+    expect(upgradeModal).not.toContain("Upgrade Your Plan");
+    expect(upgradeModal).not.toContain("Upgrade to Pro");
+    expect(upgradeModal).not.toContain("Upgrade to Business");
+    expect(upgradeModal).not.toContain("All plans include a 14-day free trial. Cancel anytime.");
+    expect(subscriptionTab).not.toContain("Current Plan");
+    expect(subscriptionTab).not.toContain("Monthly Usage");
+    expect(subscriptionTab).not.toContain("Compare Plans");
+    expect(subscriptionTab).not.toContain("Unlimited");
+    expect(subscriptionTab).not.toContain(" invoices remaining this month");
+    expect(subscriptionTab).not.toContain(" proposals remaining this month");
+    expect(paymentButton).not.toContain("Total Down Payment");
+    expect(paymentButton).not.toContain("Bank Transfer");
+    expect(onboardingTour).not.toContain("Clients, Services, Proposals, dan Invoices");
+    expect(onboardingTour).not.toContain("Explore Clients, buat Proposal, dan kirim Invoice pertama lu!");
+    expect(errorBoundary).not.toContain("Something went wrong");
+    expect(errorBoundary).not.toContain("Try Again");
+    expect(errorBoundary).not.toContain("Refresh Page");
+  });
 });

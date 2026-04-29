@@ -307,7 +307,7 @@ function ServicesPreview({ data, forExport }: PageProps) {
                       className="text-sm font-semibold text-gray-900"
                       style={forExport ? { color: "#111827" } : undefined}
                     >
-                      {service.name || "Untitled Service"}
+                      {service.name || "Layanan Tanpa Judul"}
                     </h3>
                   </div>
                   {service.description && (
@@ -400,7 +400,7 @@ function TimelinePreview({ data, forExport }: PageProps) {
                   className="text-sm font-semibold text-gray-900 mb-1"
                   style={forExport ? { color: "#111827" } : undefined}
                 >
-                  {milestone.title || "Untitled Phase"}
+                  {milestone.title || "Tahap Tanpa Judul"}
                 </h3>
                 {milestone.description && (
                   <p
@@ -473,7 +473,7 @@ function InvestmentPreview({ data, forExport, pageMode }: PageProps) {
                 className={cn("text-left pb-2 text-[10px] font-medium", shellSubtleTextClass)}
                 style={forExport ? { color: shellMutedColor } : undefined}
               >
-                Service
+                Layanan
               </th>
               <th
                 className={cn("text-center pb-2 text-[10px] font-medium w-20", shellSubtleTextClass)}
@@ -485,7 +485,7 @@ function InvestmentPreview({ data, forExport, pageMode }: PageProps) {
                 className={cn("text-right pb-2 text-[10px] font-medium w-28", shellSubtleTextClass)}
                 style={forExport ? { color: shellMutedColor } : undefined}
               >
-                Amount
+                Nilai
               </th>
             </tr>
           </thead>
@@ -500,7 +500,7 @@ function InvestmentPreview({ data, forExport, pageMode }: PageProps) {
                   className={cn("py-3 text-sm font-medium", shellTextClass)}
                   style={forExport ? { color: shellTitleColor } : undefined}
                 >
-                  {service.name || "Untitled"}
+                  {service.name || "Tanpa Judul"}
                 </td>
                 <td
                   className={cn("py-3 text-sm text-center", shellSubtleTextClass)}
@@ -535,7 +535,7 @@ function InvestmentPreview({ data, forExport, pageMode }: PageProps) {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className={shellSubtleTextClass} style={forExport ? { color: shellMutedColor } : undefined}>Tax ({data.taxRate}%)</span>
+                <span className={shellSubtleTextClass} style={forExport ? { color: shellMutedColor } : undefined}>Pajak ({data.taxRate}%)</span>
                 <span
                   className={cn("font-numeric", shellTextClass)}
                   style={forExport ? { fontFamily: FONT_NUMERIC_EXPORT, fontVariantNumeric: "tabular-nums", color: shellTitleColor } : undefined}
@@ -555,7 +555,7 @@ function InvestmentPreview({ data, forExport, pageMode }: PageProps) {
               className={cn("text-sm font-semibold", shellTextClass)}
               style={forExport ? { color: shellTitleColor } : undefined}
             >
-              Total Investment
+              Total Investasi
             </span>
             <span
               className={cn("text-xl font-numeric font-semibold", isClosingDark ? "text-cyan-300" : "text-gray-900")}

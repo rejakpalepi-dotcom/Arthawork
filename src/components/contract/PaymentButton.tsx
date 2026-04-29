@@ -75,7 +75,7 @@ export function PaymentButton({ contractToken, dpAmount, isPaid = false }: Payme
         <Card className="border-primary/30 bg-gradient-to-b from-primary/5 to-transparent overflow-hidden">
             <CardContent className="p-6 space-y-6">
                 <div className="text-center">
-                    <p className="text-sm text-muted-foreground mb-1">Total Down Payment</p>
+                    <p className="text-sm text-muted-foreground mb-1">Total Uang Muka</p>
                     <p className="text-3xl font-bold text-primary">{formatCurrency(dpAmount)}</p>
                 </div>
 
@@ -97,7 +97,7 @@ export function PaymentButton({ contractToken, dpAmount, isPaid = false }: Payme
                         <div className="p-3 rounded-lg bg-muted/50">
                             <CreditCard className="h-6 w-6" />
                         </div>
-                        <span className="text-xs">Bank Transfer</span>
+                        <span className="text-xs">Transfer Bank</span>
                     </div>
                 </div>
 

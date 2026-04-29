@@ -10,7 +10,7 @@ import { SEOHead } from "@/components/seo/SEOHead";
 import { z } from "zod";
 const arthaLogo = "/icon-512.png";
 
-const emailSchema = z.string().email("Please enter a valid email address");
+const emailSchema = z.string().email("Masukkan alamat email yang valid");
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -37,7 +37,7 @@ export default function ForgotPassword() {
       toast.error(error.message);
     } else {
       setSent(true);
-      toast.success("Password reset link sent to your email!");
+      toast.success("Link reset password berhasil dikirim ke email kamu");
     }
 
     setLoading(false);
@@ -46,8 +46,8 @@ export default function ForgotPassword() {
   return (
     <>
       <SEOHead
-        title="Forgot Password"
-        description="Reset your Artha account password. Enter your email to receive a password reset link."
+        title="Lupa Password"
+        description="Reset password akun Artha kamu. Masukkan email untuk menerima link pengaturan ulang password."
         canonical="https://artha.app/forgot-password"
         noIndex
       />
@@ -60,12 +60,12 @@ export default function ForgotPassword() {
           </header>
           <section className="space-y-4">
             <h1 className="text-4xl font-semibold text-foreground">
-              Forgot your password?
+              Lupa password?
               <br />
-              <span className="gradient-text">No worries.</span>
+              <span className="gradient-text">Tenang saja.</span>
             </h1>
             <p className="text-muted-foreground text-lg max-w-md">
-              Enter your email and we'll send you a link to reset your password.
+              Masukkan email dan kami akan kirimkan link untuk mengatur ulang password.
             </p>
           </section>
           <footer className="text-muted-foreground text-sm">© 2025 Artha. All rights reserved.</footer>
@@ -79,8 +79,8 @@ export default function ForgotPassword() {
                 <img src={arthaLogo} alt="Artha" className="h-10 w-10 object-contain" />
                 <span className="text-xl font-bold text-foreground tracking-tight">Artha</span>
               </div>
-              <h2 className="text-2xl font-semibold text-foreground">Reset Password</h2>
-              <p className="text-muted-foreground mt-2">Enter your email to receive a reset link</p>
+              <h2 className="text-2xl font-semibold text-foreground">Atur Ulang Password</h2>
+              <p className="text-muted-foreground mt-2">Masukkan email untuk menerima link reset</p>
             </div>
 
             {sent ? (
@@ -89,25 +89,25 @@ export default function ForgotPassword() {
                   <CheckCircle className="w-8 h-8 text-primary" />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-lg font-semibold text-foreground">Check your email</h3>
+                  <h3 className="text-lg font-semibold text-foreground">Cek email kamu</h3>
                   <p className="text-muted-foreground">
-                    We've sent a password reset link to <span className="text-primary font-medium">{email}</span>
+                    Kami sudah mengirim link reset password ke <span className="text-primary font-medium">{email}</span>
                   </p>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Didn't receive the email? Check your spam folder or{" "}
+                  Belum menerima email? Cek folder spam atau{" "}
                   <button
                     onClick={() => setSent(false)}
                     className="text-primary hover:underline"
                   >
-                    try again
+                    coba lagi
                   </button>
                 </p>
               </div>
             ) : (
               <form onSubmit={handleResetPassword} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
+                  <Label htmlFor="email">Alamat Email</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <Input
@@ -126,15 +126,15 @@ export default function ForgotPassword() {
                   type="submit"
                   className="w-full"
                   disabled={loading}
-                  aria-label="Send password reset link"
+                  aria-label="Kirim link reset password"
                 >
                   {loading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Sending...
+                      Mengirim...
                     </>
                   ) : (
-                    "Send Reset Link"
+                    "Kirim Link Reset"
                   )}
                 </Button>
               </form>
@@ -145,7 +145,7 @@ export default function ForgotPassword() {
               className="flex items-center justify-center gap-2 text-primary hover:underline"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to login
+              Kembali ke login
             </Link>
           </div>
         </section>

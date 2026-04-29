@@ -152,7 +152,7 @@ export default function TaxSummary() {
 
                         <Button variant="outline" className="gap-2">
                             <Download className="h-4 w-4" />
-                            Export PDF
+                            Ekspor PDF
                         </Button>
                     </div>
                 </div>
@@ -178,7 +178,7 @@ export default function TaxSummary() {
                             </div>
                             <div className="flex items-center gap-1 mt-2 text-sm text-green-500">
                                 <ArrowUpRight className="h-4 w-4" />
-                                <span>{invoiceStats?.totalInvoices || 0} invoice</span>
+                                <span>{invoiceStats?.totalInvoices || 0} tagihan tercatat</span>
                             </div>
                         </CardContent>
                     </Card>
@@ -330,9 +330,9 @@ export default function TaxSummary() {
                                                     <p className="text-sm font-medium">
                                                         {formatIDR(month.total_gross_income)}
                                                     </p>
-                                                    <p className="text-xs text-muted-foreground">
-                                                        {month.invoice_count} invoice
-                                                    </p>
+                                                     <p className="text-xs text-muted-foreground">
+                                                         {month.invoice_count} tagihan
+                                                     </p>
                                                 </div>
                                             </div>
                                             <div className="text-right">
