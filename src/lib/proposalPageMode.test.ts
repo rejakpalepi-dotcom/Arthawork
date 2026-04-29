@@ -27,9 +27,8 @@ describe("Proposal Page Mode", () => {
     expect(getProposalPageMode(5)).toBe("content_light");
   });
 
-  it("page 6 (investment) is content_light — NOT dark", () => {
-    // Regression: page 6 was previously dark, must now be light
-    expect(getProposalPageMode(6)).toBe("content_light");
+  it("page 6 (investment) is closing_dark to mirror the proposal closeout", () => {
+    expect(getProposalPageMode(6)).toBe("closing_dark");
   });
 
   it("invalid page 0 defaults to content_light", () => {

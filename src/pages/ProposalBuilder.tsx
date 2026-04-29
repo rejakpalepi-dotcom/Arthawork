@@ -9,6 +9,7 @@ import { BuilderContextBar } from "@/components/layout/BuilderContextBar";
 import { ProposalEditor } from "@/components/proposal/ProposalEditor";
 import { ProposalPreview } from "@/components/proposal/ProposalPreview";
 import { SaveStatusIndicator } from "@/components/ui/SaveStatusIndicator";
+import { Button } from "@/components/ui/button";
 import { exportProposalToPDF } from "@/lib/proposalPdfExport";
 import { useAutosave } from "@/hooks/useAutosave";
 import { Layout, FileText, Briefcase, Gem, Calendar, CreditCard, Download, Eye, FileEdit } from "lucide-react";
@@ -348,14 +349,15 @@ export default function ProposalBuilder() {
           autosave={autosave}
           actions={
             <>
-              <button
+              <Button
                 onClick={() => autosave.save()}
                 disabled={autosave.status === "saving" || isExporting}
-                className="px-3 md:px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50 min-h-[40px]"
+                size="sm"
+                className="min-h-[40px] px-4 font-semibold"
               >
                 {autosave.status === "saving" ? "Saving..." : "Save Draft"}
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={async () => {
                   setIsExporting(true);
                   try {
@@ -384,11 +386,13 @@ export default function ProposalBuilder() {
                 }}
                 disabled={isExporting}
                 data-export-pdf
-                className="hidden sm:flex px-3 md:px-4 py-2 text-sm bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors items-center gap-2 font-medium disabled:opacity-50 min-h-[40px]"
+                size="sm"
+                variant="outline"
+                className="hidden min-h-[40px] px-4 sm:inline-flex font-semibold"
               >
                 <Download className="h-4 w-4" />
                 {isExporting ? "Exporting..." : "Export PDF"}
-              </button>
+              </Button>
             </>
           }
         />
